@@ -18,6 +18,7 @@ class Command(BaseCommand):
     def calculate_days(self, assignment):
         day = assignment.date_from
         until = assignment.determine_date_until
+        one_day = timedelta(days=1)
 
         public_holidays = PublicHoliday.objects.filter(
             date__range=(day, until)).values_list('date', flat=True)
@@ -100,7 +101,7 @@ class Command(BaseCommand):
                     days['working_days'] += 1
 
 
-            day += timedelta(days=1)
+            day += one_day
 
             # Fetch new company holiday once the old one starts smelling funny.
             if company_holiday and company_holiday.date_until < day:
