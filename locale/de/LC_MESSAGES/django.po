@@ -19,7 +19,7 @@ msgstr ""
 
 #: models.py:10
 msgid "is active"
-msgstr "ist aktivo"
+msgstr "ist aktiv"
 
 #: models.py:11
 msgid "EIS No."

@@ -239,3 +239,6 @@ class CompanyHoliday(models.Model):
 
     def __unicode__(self):
         return u'%s - %s' % (self.date_from, self.date_until)
+
+    def is_contained(self, day):
+        return self.date_from <= day <= self.date_until
