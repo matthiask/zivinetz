@@ -8,16 +8,25 @@ class ZivinetzNavigationExtension(NavigationExtension):
     name = _('Zivinetz navigation extension')
 
     def children(self, page, **kwargs):
-        page.rght += 2 # Yeah, this page does have children
         url = page.get_navigation_url()
 
         return [
             PagePretender(
-                title=capfirst(_('Regional offices')),
+                title=capfirst(_('drudges')),
+                url='%sdrudges/' % url,
+                level=3,
+                tree_id=page.tree_id,
+                ),
+            PagePretender(
+                title=capfirst(_('regional offices')),
                 url='%sregional_offices/' % url,
                 level=3,
                 tree_id=page.tree_id,
-                lft=page.lft,
-                rght=page.rght+1,
+                ),
+            PagePretender(
+                title=capfirst(_('scope statements')),
+                url='%sscope_statements/' % url,
+                level=3,
+                tree_id=page.tree_id,
                 ),
             ]
