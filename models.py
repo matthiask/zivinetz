@@ -175,17 +175,16 @@ class Assignment(models.Model):
         return u'%s (%s - %s)' % (
             self.drudge,
             self.date_from,
-            self.determine_date_until,
+            self.determine_date_until(),
             )
 
-    @property
     def determine_date_until(self):
         return self.date_until_extension or self.date_until
+    determine_date_until.short_description = _('eff. until date')
 
-
-    def calculate_days(self):
+    def calculate_days(self, until=None):
         day = self.date_from
-        until = self.determine_date_until
+        until = until or self.determine_date_until()
         one_day = timedelta(days=1)
 
         public_holidays = PublicHoliday.objects.filter(
