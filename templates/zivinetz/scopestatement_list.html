@@ -1,0 +1,29 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n modelview_list %}
+
+{% block content %}
+
+	<div id="header_buttons" >
+		<a href="add/" class="button"><span>{% trans "New scope statement" %}</span></a>
+	</div>
+
+	<table class="objects">
+	    <thead>
+            <tr>
+                <th>{% trans "object"|capfirst %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for object in object_list %}
+            <tr class="{% cycle 'odd' 'even' %}">
+                {% for name, value in object|model_row:"is_active,eis_no" %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+
+                <th><a href="{{ object.get_absolute_url }}">{{ object }}</a></th>
+            </tr>
+        {% endfor %}
+        </tbody>
+	</table>
+{% endblock %}
