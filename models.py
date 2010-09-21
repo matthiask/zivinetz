@@ -1,4 +1,5 @@
 from datetime import timedelta
+from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.contrib.localflavor.ch import ch_states
@@ -286,8 +287,39 @@ class Assignment(models.Model):
             if company_holiday and company_holiday.date_until < day:
                 company_holiday = pop_company_holiday()
 
-        return days, monthly_expense_days
+        return days, sorted(monthly_expense_days.items(), key=lambda item: item[0])
 
+    def expenses(self):
+        assignment_days, monthly_expense_days = self.assignment_days()
+        expense = self.scope_statement_expense
+
+        clothing_total = Decimal('240.00')
+        expenses = {}
+
+        for month, days in monthly_expense_days:
+            free, working = days
+            total = free + working
+
+            expenses[month] = {
+                'spending_money': total * expense.spending_money,
+                'clothing': total * expense.clothing, # TODO apply 240 limit
+                'accomodation': free * expense.accomodation_free +\
+                                working * expense.accomodation_working,
+                'food': free * (expense.breakfast_free +\
+                                expense.lunch_free +\
+                                expense.supper_free) +\
+                        working * (expense.breakfast_working +\
+                                   expense.lunch_working +\
+                                   expense.supper_working),
+                }
+
+            clothing_total -= expenses[month]['clothing']
+
+            if clothing_total < 0:
+                expenses[month]['clothing'] += clothing_total
+                clothing_total = 0
+
+        return expenses
 
 
 class ExpenseReport(models.Model):

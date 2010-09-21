@@ -12,3 +12,4 @@ class Command(BaseCommand):
         for assignment in Assignment.objects.all():
             print 'Assignment days for %s' % assignment
             pprint.pprint(assignment.assignment_days())
+            pprint.pprint(assignment.expenses())
