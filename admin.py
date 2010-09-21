@@ -45,3 +45,7 @@ admin.site.register(models.CompanyHoliday,
     list_display=('date_from', 'date_until'),
     save_as=True,
     )
+
+admin.site.register(models.WaitList,
+    list_display=('created', 'drudge', '__unicode__'),
+    )

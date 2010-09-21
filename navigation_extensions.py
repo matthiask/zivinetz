@@ -35,4 +35,10 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 level=3,
                 tree_id=page.tree_id,
                 ),
+            PagePretender(
+                title=capfirst(_('expense reports')),
+                url='%sexpense_reports/' % url,
+                level=3,
+                tree_id=page.tree_id,
+                ),
             ]

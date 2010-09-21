@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from django.contrib.auth.models import User
@@ -149,6 +149,8 @@ class Assignment(models.Model):
         (MOBILIZED, _('mobilized')),
         (DECLINED, _('declined')),
         )
+
+    created = models.DateTimeField(_('created'), default=datetime.now)
 
     scope_statement_expense = models.ForeignKey(ScopeStatementExpense,
         verbose_name=_('scope statement expense'))
@@ -323,10 +325,23 @@ class Assignment(models.Model):
 
 
 class ExpenseReport(models.Model):
+    PENDING = 10
+    FILLED = 20
+    PAID = 30
+
+    STATUS_CHOICES = (
+        (PENDING, _('pending')),
+        (FILLED, _('filled')),
+        (PAID, _('paid')),
+        )
+
     assignment = models.ForeignKey(Assignment, verbose_name=_('assignment'),
         related_name='reports')
     date_from = models.DateField(_('date from'))
     date_until = models.DateField(_('date until'))
+
+    status = models.IntegerField(_('status'), choices=STATUS_CHOICES,
+        default=PENDING)
 
     class Meta:
         ordering = ['date_from']
@@ -335,6 +350,11 @@ class ExpenseReport(models.Model):
 
     def __unicode__(self):
         return u'%s - %s' % (self.date_from, self.date_until)
+
+    def is_editable(self):
+        return self.status < self.PAID
+    is_editable.boolean = True
+    is_editable.short_description = _('is editable')
 
 
 class ExpenseReportPeriod(models.Model):
@@ -381,3 +401,28 @@ class CompanyHoliday(models.Model):
 
     def is_contained(self, day):
         return self.date_from <= day <= self.date_until
+
+
+class WaitList(models.Model):
+    created = models.DateTimeField(_('created'), default=datetime.now)
+    drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'))
+
+    scope_statement_expense = models.ForeignKey(ScopeStatementExpense,
+        verbose_name=_('scope statement expense'))
+    assignment_date_from = models.DateField(_('date from'))
+    assignment_date_until = models.DateField(_('date until'))
+    assignment_duration = models.PositiveIntegerField(_('duration in days'))
+
+    notes = models.TextField(_('notes'), blank=True)
+
+    class Meta:
+        ordering = ['created']
+        verbose_name = _('waitlist')
+        verbose_name_plural = _('waitlist')
+
+    def __unicode__(self):
+        return u'%s - %s, %s days' % (
+            self.assignment_date_from,
+            self.assignment_date_until,
+            self.assignment_duration,
+            )
