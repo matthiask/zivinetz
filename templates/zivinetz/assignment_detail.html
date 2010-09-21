@@ -1,0 +1,48 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<h2>{{ object }}</h2>
+
+<table>
+    <tr>
+        <th>{% trans "scope statement"|capfirst %}<th>
+        <td><a href="{{ object.scope_statement_expense.get_absolute_url }}">{{ object.scope_statement_expense }}</a></td>
+    </tr>
+    <tr>
+        <th>{% trans "drudge"|capfirst %}<th>
+        <td><a href="{{ object.drudge.get_absolute_url }}">{{ object.drudge }}</a></td>
+    </tr>
+    <tr>
+        <th>{% trans "regional office"|capfirst %}<th>
+        <td><a href="{{ object.regional_office.get_absolute_url }}">{{ object.regional_office }}</a></td>
+    </tr>
+    <tr>
+        <th>{% trans "date from"|capfirst %}<th>
+        <td>{{ object.date_from }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "date until"|capfirst %}<th>
+        <td>{{ object.date_until }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "date until (extended)"|capfirst %}<th>
+        <td>{{ object.date_until_extension }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "part of long assignment"|capfirst %}<th>
+        <td>{{ object.part_of_long_assignment }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "status"|capfirst %}<th>
+        <td>{{ object.get_status_display }}</td>
+    </tr>
+</table>
+
+<div class="edit_buttons" >
+    <a href="delete/" class="button deleteconfirm"><span>{% trans "delete"|capfirst %}</span></a>
+    <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>
+</div>
+
+{% endblock %}

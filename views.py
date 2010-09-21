@@ -4,7 +4,7 @@ from django.forms.models import inlineformset_factory
 
 from django_modelviews import generic
 
-from zivinetz.models import Drudge, RegionalOffice, ScopeStatement, ScopeStatementExpense
+from zivinetz.models import Assignment, Drudge, RegionalOffice, ScopeStatement, ScopeStatementExpense
 
 
 class RegionalOfficeModelView(generic.ModelView):
@@ -37,3 +37,4 @@ scope_statement_views = ScopeStatementModelView(ScopeStatement)
 
 
 drudge_views = generic.ModelView(Drudge)
+assignment_views = generic.ModelView(Assignment)
