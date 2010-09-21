@@ -185,7 +185,7 @@ class Assignment(models.Model):
         return self.date_until_extension or self.date_until
     determine_date_until.short_description = _('eff. until date')
 
-    def calculate_days(self, until=None):
+    def assignment_days(self, until=None):
         day = self.date_from
         until = until or self.determine_date_until()
         one_day = timedelta(days=1)
@@ -220,6 +220,8 @@ class Assignment(models.Model):
             'forced_leave_days': 0, # days which aren't countable and are forced upon the drudge
             }
 
+        monthly_expense_days = {}
+
         def pop_company_holiday():
             try:
                 return company_holidays.pop(0)
@@ -232,6 +234,7 @@ class Assignment(models.Model):
             is_weekend = day.weekday() in (5, 6)
             is_public_holiday = day in public_holidays
             is_company_holiday = company_holiday and company_holiday.is_contained(day)
+            working_day = False
 
             if is_company_holiday:
                 days['company_holidays'] += 1
@@ -269,6 +272,12 @@ class Assignment(models.Model):
                 if not (is_public_holiday or is_weekend):
                     # Hard beer-drinking and pickaxing action.
                     days['working_days'] += 1
+                    working_day = True
+
+
+            key = day.strftime('%Y.%m')
+            monthly_expense_days.setdefault(key, [0, 0])
+            monthly_expense_days[key][working_day and 1 or 0] += 1
 
 
             day += one_day
@@ -277,7 +286,7 @@ class Assignment(models.Model):
             if company_holiday and company_holiday.date_until < day:
                 company_holiday = pop_company_holiday()
 
-        return days
+        return days, monthly_expense_days
 
 
 

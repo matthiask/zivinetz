@@ -10,5 +10,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for assignment in Assignment.objects.all():
-            print 'Calculating days for %s' % assignment
-            pprint.pprint(assignment.calculate_days())
+            print 'Assignment days for %s' % assignment
+            pprint.pprint(assignment.assignment_days())
