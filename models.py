@@ -72,6 +72,9 @@ class ScopeStatementExpense(models.Model):
             self.accomodation and ugettext('with accomodation') or ugettext('without accomodation'),
             )
 
+    def get_absolute_url(self):
+        return self.scope_statement.get_absolute_url()
+
 
 class RegionalOffice(models.Model):
     name = models.CharField(_('name'), max_length=100)
