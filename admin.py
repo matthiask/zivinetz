@@ -22,7 +22,7 @@ admin.site.register(models.Drudge)
 admin.site.register(models.Assignment,
     date_hierarchy='date_from',
     list_display=('scope_statement_expense', 'drudge', 'date_from',
-        'determine_date_until', 'status'),
+        'determine_date_until', 'status', 'admin_pdf_url'),
     list_filter=('scope_statement_expense', 'part_of_long_assignment', 'status'),
     )
 

@@ -5,6 +5,8 @@ from zivinetz.views import assignment_views, drudge_views,\
 
 
 urlpatterns = patterns('',
+    url(r'^assignments/pdf/(\d+)/$', 'zivinetz.views.assignment_pdf'),
+
     url(r'^regional_offices/', include(regional_office_views.urls)),
     url(r'^scope_statements/', include(scope_statement_views.urls)),
     url(r'^drudges/', include(drudge_views.urls)),

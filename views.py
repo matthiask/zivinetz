@@ -1,6 +1,7 @@
 # Create your views here.
 
 from django.forms.models import inlineformset_factory
+from django.shortcuts import get_object_or_404
 
 from django_modelviews import generic
 
@@ -59,3 +60,37 @@ class ExpenseReportModelView(generic.ModelView):
 
 
 expense_report_views = ExpenseReportModelView(ExpenseReport)
+
+
+
+from pdfdocument.document import PDFDocument, cm, mm
+from pdfdocument.elements import create_stationery_fn
+from pdfdocument.utils import pdf_response
+
+
+class AssignmentPDFStationery(object):
+    def __call__(self, canvas, pdfdocument):
+        canvas.saveState()
+        """
+        pdfdocument.draw_svg(canvas,
+            '/home/mk/Projects/sites/naturnetz.ch/zivinetz/data/einsatzvereinbarung-1.svg',
+            0,
+            0,
+            xsize=21*cm,
+            )
+            """
+        canvas.drawImage('/home/mk/Projects/sites/naturnetz.ch/zivinetz/data/3-0.jpg',
+            0, 0, 21*cm, 29.4*cm)
+        canvas.restoreState()
+
+
+def assignment_pdf(request, assignment_id):
+    assignment = get_object_or_404(Assignment, pk=assignment_id)
+
+    pdf, response = pdf_response('assignment-%s' % assignment.pk)
+    pdf.init_report(page_fn=create_stationery_fn(AssignmentPDFStationery()))
+
+    pdf.p('something')
+
+    pdf.generate()
+    return response

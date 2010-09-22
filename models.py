@@ -323,6 +323,15 @@ class Assignment(models.Model):
 
         return expenses
 
+    @models.permalink
+    def pdf_url(self):
+        return ('zivinetz.views.assignment_pdf', (self.pk,), {})
+
+    def admin_pdf_url(self):
+        return u'<a href="%s">PDF</a>' % self.pdf_url()
+    admin_pdf_url.allow_tags = True
+    admin_pdf_url.short_description = 'PDF'
+
 
 class ExpenseReport(models.Model):
     PENDING = 10
