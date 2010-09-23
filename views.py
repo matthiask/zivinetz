@@ -133,6 +133,7 @@ class AssignmentPDFStationery(object):
         }
 
     def draw_marker(self, canvas, key):
+        canvas.setFont('Helvetica', 11)
         canvas.drawString(self.markers[key][0]*mm, self.markers[key][1]*mm, 'x')
 
     def _draw_all_markers(self, canvas):
@@ -227,6 +228,7 @@ class AssignmentPDFStationery(object):
             (frame_11, 55*mm, 55*mm, 8.5*mm),
             ]
 
+        canvas.setFont('Helvetica', 9)
         for frame, x, y, line in frames:
             for i, text in enumerate(reversed(frame)):
                 canvas.drawString(x, y + i*line, text)
