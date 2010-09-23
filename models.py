@@ -304,7 +304,7 @@ class Assignment(models.Model):
 
             expenses[month] = {
                 'spending_money': total * expense.spending_money,
-                'clothing': total * expense.clothing, # TODO apply 240 limit
+                'clothing': working * expense.clothing,
                 'accomodation': free * expense.accomodation_free +\
                                 working * expense.accomodation_working,
                 'food': free * (expense.breakfast_free +\
