@@ -25,6 +25,7 @@
                 {% for name, value in object|model_row:"drudge,scope_statement_expense,status" %}
                     <td>{{ value }}</td>
                 {% endfor %}
+                <td>{{ object.admin_pdf_url|safe }}</td>
             </tr>
         {% endfor %}
         </tbody>
