@@ -265,6 +265,8 @@ class AssignmentPDFStationery(object):
                 if marker.endswith('at_accomodation'):
                     marker = marker.replace('at_accomodation',
                         spec.with_accomodation and 'at_company' or 'at_home')
+                elif marker.endswith('no_compensation'):
+                    marker = marker.replace('no_compensation', 'at_company')
 
                 self.draw_marker(canvas, marker)
 
