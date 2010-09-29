@@ -40,20 +40,14 @@ class Choices(object):
 
 class Specification(models.Model):
     ACCOMODATION = Choices((
-        ('offered_used', _('offered and used')),
-        ('offered_notused', _('offered but not used')),
-        ('at_home', _('at home')),
+        ('provided', _('provided')),
+        ('compensated', _('compensated')),
         ))
 
-    WORKING_DAYS = Choices((
-        ('at_company', _('at company')),
-        ('at_home', _('at home')),
+    MEAL = Choices((
+        ('no_compensation', _('no compensation')),
+        ('at_accomodation', _('at accomodation')),
         ('external', _('external')),
-        ))
-
-    FREE_DAYS = Choices((
-        ('at_company', _('at company')),
-        ('at_home', _('at home')),
         ))
 
     CLOTHING = Choices((
@@ -64,41 +58,79 @@ class Specification(models.Model):
     scope_statement = models.ForeignKey(ScopeStatement,
         verbose_name=_('scope statement'), related_name='specifications')
 
-    accomodation = models.CharField(_('accomodation'), **ACCOMODATION.kwargs)
+    with_accomodation = models.BooleanField(_('with accomodation'))
 
-    breakfast_working = models.CharField(_('breakfast on working days'), **WORKING_DAYS.kwargs)
-    breakfast_sick = models.CharField(_('breakfast on sick days'), **WORKING_DAYS.kwargs)
-    breakfast_free = models.CharField(_('breakfast on free days'), **FREE_DAYS.kwargs)
+    accomodation_working = models.CharField(_('accomodation on working days'), **ACCOMODATION.kwargs)
+    breakfast_working = models.CharField(_('breakfast on working days'), **MEAL.kwargs)
+    lunch_working = models.CharField(_('lunch on working days'), **MEAL.kwargs)
+    supper_working = models.CharField(_('supper on working days'), **MEAL.kwargs)
 
-    lunch_working = models.CharField(_('lunch on working days'), **WORKING_DAYS.kwargs)
-    lunch_sick = models.CharField(_('lunch on sick days'), **WORKING_DAYS.kwargs)
-    lunch_free = models.CharField(_('lunch on free days'), **FREE_DAYS.kwargs)
+    accomodation_sick = models.CharField(_('accomodation on sick days'), **ACCOMODATION.kwargs)
+    breakfast_sick = models.CharField(_('breakfast on sick days'), **MEAL.kwargs)
+    lunch_sick = models.CharField(_('lunch on sick days'), **MEAL.kwargs)
+    supper_sick = models.CharField(_('supper on sick days'), **MEAL.kwargs)
 
-    supper_working = models.CharField(_('supper on working days'), **WORKING_DAYS.kwargs)
-    supper_sick = models.CharField(_('supper on sick days'), **WORKING_DAYS.kwargs)
-    supper_free = models.CharField(_('supper on free days'), **FREE_DAYS.kwargs)
+    accomodation_free = models.CharField(_('accomodation on free days'), **ACCOMODATION.kwargs)
+    breakfast_free = models.CharField(_('breakfast on free days'), **MEAL.kwargs)
+    lunch_free = models.CharField(_('lunch on free days'), **MEAL.kwargs)
+    supper_free = models.CharField(_('supper on free days'), **MEAL.kwargs)
 
     clothing = models.CharField(_('clothing'), **CLOTHING.kwargs)
 
     class Meta:
-        unique_together = (('scope_statement', 'accomodation'),)
+        unique_together = (('scope_statement', 'with_accomodation'),)
         verbose_name = _('specification')
         verbose_name_plural = _('specifications')
 
     def __unicode__(self):
         return u'%s - %s' % (
             self.scope_statement,
-            self.get_accomodation_display(),
+            self.with_accomodation and ugettext('with accomodation') or ugettext('without accomodation'),
             )
 
-    def get_absolute_url(self):
-        return self.scope_statement.get_absolute_url()
+    def compensation(self, for_date=date.today):
+        cset = CompensationSet.objects.for_date(for_date)
+
+        compensation = {
+            'spending_money': cset.spending_money,
+            }
+
+        for day_type in ('working', 'sick', 'free'):
+            key = 'accomodation_%s' % day_type
+            value = getattr(self, key)
+
+            if value == self.ACCOMODATION.provided:
+                compensation[key] = Decimal('0.00')
+            else:
+                compensation[key] = cset.accomodation_home
+
+            for meal in ('breakfast', 'lunch', 'supper'):
+                key = '%s_%s' % (meal, day_type)
+                value = getattr(self, key)
+
+                if value == self.MEAL.no_compensation:
+                    compensation[key] = Decimal('0.00')
+                else:
+                    compensation[key] = getattr(cset, '%s_%s' % (meal, value))
+
+        if self.clothing == self.CLOTHING.provided:
+            compensation.update({
+                'clothing': Decimal('0.00'),
+                'clothing_limit_per_assignment': Decimal('0.00'),
+                })
+        else:
+            compensation.update({
+                'clothing': cset.clothing,
+                'clothing_limit_per_assignment': cset.clothing_limit_per_assignment,
+                })
+
+        return compensation
 
 
 class CompensationSetManager(models.Manager):
-    def for_date(self, date=date.today):
+    def for_date(self, for_date=date.today):
         try:
-            return self.filter(valid_from__lte=date).order_by('-valid_from')[0]
+            return self.filter(valid_from__lte=for_date).order_by('-valid_from')[0]
         except IndexError:
             raise self.model.DoesNotExist
 
@@ -108,20 +140,16 @@ class CompensationSet(models.Model):
 
     spending_money = models.DecimalField(_('spending money'), max_digits=10, decimal_places=2)
 
+    breakfast_at_accomodation = models.DecimalField(_('breakfast at accomodation'), max_digits=10, decimal_places=2)
+    lunch_at_accomodation = models.DecimalField(_('lunch at accomodation'), max_digits=10, decimal_places=2)
+    supper_at_accomodation = models.DecimalField(_('supper at accomodation'), max_digits=10, decimal_places=2)
+
+    breakfast_external = models.DecimalField(_('external breakfast'), max_digits=10, decimal_places=2)
+    lunch_external = models.DecimalField(_('external lunch'), max_digits=10, decimal_places=2)
+    supper_external = models.DecimalField(_('external supper'), max_digits=10, decimal_places=2)
+
     accomodation_home = models.DecimalField(_('accomodation'), max_digits=10, decimal_places=2,
         help_text=_('Daily compensation if drudge returns home for the night.'))
-
-    breakfast_at_company = models.DecimalField(_('breakfast at company'), max_digits=10, decimal_places=2)
-    breakfast_at_home = models.DecimalField(_('breakfast at home'), max_digits=10, decimal_places=2)
-    breakfast_external = models.DecimalField(_('external breakfast'), max_digits=10, decimal_places=2)
-
-    lunch_at_company = models.DecimalField(_('lunch at company'), max_digits=10, decimal_places=2)
-    lunch_at_home = models.DecimalField(_('lunch at home'), max_digits=10, decimal_places=2)
-    lunch_external = models.DecimalField(_('external lunch'), max_digits=10, decimal_places=2)
-
-    supper_at_company = models.DecimalField(_('supper at company'), max_digits=10, decimal_places=2)
-    supper_at_home = models.DecimalField(_('supper at home'), max_digits=10, decimal_places=2)
-    supper_external = models.DecimalField(_('external supper'), max_digits=10, decimal_places=2)
 
     private_transport_per_km = models.DecimalField(_('private transport per km'), max_digits=10, decimal_places=2,
         help_text=_('Only applies if public transport use is not reasonable.'))
@@ -359,12 +387,13 @@ class Assignment(models.Model):
 
     def expenses(self):
         assignment_days, monthly_expense_days = self.assignment_days()
-        expense = self.specification
+        specification = self.specification
 
         clothing_total = Decimal('240.00')
         expenses = {}
 
         for month, days in monthly_expense_days:
+            expense =  CompensationSet.objects.for_date(date(int(month[:4]), int(month[5:]), 1))
             free, working = days
             total = free + working
 

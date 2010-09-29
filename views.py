@@ -44,6 +44,9 @@ class ScopeStatementModelView(generic.ModelView):
 scope_statement_views = ScopeStatementModelView(ScopeStatement)
 
 
+specification_views = generic.ModelView(Specification)
+
+
 drudge_views = generic.ModelView(Drudge)
 assignment_views = generic.ModelView(Assignment)
 

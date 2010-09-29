@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 
 from zivinetz import models
 
@@ -6,7 +7,25 @@ from zivinetz import models
 class SpecificationInline(admin.StackedInline):
     model = models.Specification
     can_delete = False
+    extra = 0
     max_num = 2
+    fieldsets=(
+        (None, {
+            'fields': ('with_accomodation', 'clothing'),
+        }),
+        (_('working days'), {
+            'fields': ('accomodation_working', 'breakfast_working', 'lunch_working',
+                'supper_working'),
+        }),
+        (_('sick days'), {
+            'fields': ('accomodation_sick', 'breakfast_sick', 'lunch_sick',
+                'supper_sick'),
+        }),
+        (_('free days'), {
+            'fields': ('accomodation_free', 'breakfast_free', 'lunch_free',
+                'supper_free'),
+        }),
+    )
 
 admin.site.register(models.ScopeStatement,
     list_display=('is_active', 'eis_no', 'name'),
@@ -17,6 +36,23 @@ admin.site.register(models.ScopeStatement,
 
 admin.site.register(models.CompensationSet,
     save_as=True,
+    fieldsets=(
+        (None, {
+            'fields': ('valid_from', 'spending_money', 'accomodation_home',
+                'private_transport_per_km'),
+        }),
+        (_('clothing'), {
+            'fields': ('clothing', 'clothing_limit_per_assignment'),
+        }),
+        (_('meals at accomodation'), {
+            'fields': ('breakfast_at_accomodation', 'lunch_at_accomodation',
+                'supper_at_accomodation'),
+        }),
+        (_('meals external'), {
+            'fields': ('breakfast_external', 'lunch_external',
+                'supper_external'),
+        })
+        ),
     )
 
 admin.site.register(models.RegionalOffice)

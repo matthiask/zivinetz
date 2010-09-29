@@ -30,6 +30,12 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 tree_id=page.tree_id,
                 ),
             PagePretender(
+                title=capfirst(_('specifications')),
+                url='%sspecifications/' % url,
+                level=page.level+1,
+                tree_id=page.tree_id,
+                ),
+            PagePretender(
                 title=capfirst(_('assignments')),
                 url='%sassignments/' % url,
                 level=page.level+1,

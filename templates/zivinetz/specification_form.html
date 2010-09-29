@@ -1,0 +1,105 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<form method="post" action=".">{% csrf_token %}
+
+{{ form.errors }}
+
+<table>
+    <tr>
+        <th>{{ form.scope_statement.label_tag }}</th>
+        <td>{{ form.scope_statement }}</td>
+    </tr>
+    <tr>
+        <th>{{ form.with_accomodation.label_tag }}</th>
+        <td>{{ form.with_accomodation }}</td>
+    </tr>
+    <tr>
+        <th>{{ form.clothing.label_tag }}</th>
+        <td>{{ form.clothing }}</td>
+    </tr>
+    {% for key, formset in formsets.items %}
+        {{ formset }}
+    {% endfor %}
+</table>
+
+<table>
+    <tr>
+        <th></th>
+        <th>{% trans "accomodation"|capfirst %}</th>
+        <th>{% trans "breakfast"|capfirst %}</th>
+        <th>{% trans "lunch"|capfirst %}</th>
+        <th>{% trans "supper"|capfirst %}</th>
+    </tr>
+    <tr>
+        <th>{% trans "working days"|capfirst %}</th>
+        <td>{{ form.accomodation_working }}</td>
+        <td>{{ form.breakfast_working }}</td>
+        <td>{{ form.lunch_working }}</td>
+        <td>{{ form.supper_working }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "sick days"|capfirst %}</th>
+        <td>{{ form.accomodation_sick }}</td>
+        <td>{{ form.breakfast_sick }}</td>
+        <td>{{ form.lunch_sick }}</td>
+        <td>{{ form.supper_sick }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "free days"|capfirst %}</th>
+        <td>{{ form.accomodation_free }}</td>
+        <td>{{ form.breakfast_free }}</td>
+        <td>{{ form.lunch_free }}</td>
+        <td>{{ form.supper_free }}</td>
+    </tr>
+
+    {% with object.compensation as compensation %}
+    {% if compensation %}
+        <tr>
+            <th colspan="5">
+                <h2>{% trans "Current compensation rates" %}</h2>
+            </th>
+        </tr>
+        <tr>
+            <th>{% trans "working days"|capfirst %}</th>
+            <td>{{ compensation.accomodation_working|floatformat:2 }}</td>
+            <td>{{ compensation.breakfast_working|floatformat:2 }}</td>
+            <td>{{ compensation.lunch_working|floatformat:2 }}</td>
+            <td>{{ compensation.supper_working|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "sick days"|capfirst %}</th>
+            <td>{{ compensation.accomodation_sick|floatformat:2 }}</td>
+            <td>{{ compensation.breakfast_sick|floatformat:2 }}</td>
+            <td>{{ compensation.lunch_sick|floatformat:2 }}</td>
+            <td>{{ compensation.supper_sick|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "free days"|capfirst %}</th>
+            <td>{{ compensation.accomodation_free|floatformat:2 }}</td>
+            <td>{{ compensation.breakfast_free|floatformat:2 }}</td>
+            <td>{{ compensation.lunch_free|floatformat:2 }}</td>
+            <td>{{ compensation.supper_free|floatformat:2 }}</td>
+        </tr>
+    {% endif %}
+    {% endwith %}
+</table>
+
+<table>
+    <tr>
+        <td>&nbsp;</td>
+        <td>
+            <button type="submit">{% trans "save"|capfirst %}</button>
+            <button type="submit" name="_continue">{% trans "save and continue editing" %}</button>
+            <button type="button" onclick="window.location.assign('../')">{% trans "cancel"|capfirst %}</button>
+        </td>
+    </tr>
+</table>
+</form>
+{% endblock %}
