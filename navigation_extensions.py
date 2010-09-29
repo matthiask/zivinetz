@@ -14,31 +14,31 @@ class ZivinetzNavigationExtension(NavigationExtension):
             PagePretender(
                 title=capfirst(_('drudges')),
                 url='%sdrudges/' % url,
-                level=3,
+                level=page.level+1,
                 tree_id=page.tree_id,
                 ),
             PagePretender(
                 title=capfirst(_('regional offices')),
                 url='%sregional_offices/' % url,
-                level=3,
+                level=page.level+1,
                 tree_id=page.tree_id,
                 ),
             PagePretender(
                 title=capfirst(_('scope statements')),
                 url='%sscope_statements/' % url,
-                level=3,
+                level=page.level+1,
                 tree_id=page.tree_id,
                 ),
             PagePretender(
                 title=capfirst(_('assignments')),
                 url='%sassignments/' % url,
-                level=3,
+                level=page.level+1,
                 tree_id=page.tree_id,
                 ),
             PagePretender(
                 title=capfirst(_('expense reports')),
                 url='%sexpense_reports/' % url,
-                level=3,
+                level=page.level+1,
                 tree_id=page.tree_id,
                 ),
             ]
