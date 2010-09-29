@@ -266,12 +266,11 @@ class AssignmentPDFStationery(object):
                     marker = marker.replace('at_accomodation',
                         spec.with_accomodation and 'at_company' or 'at_home')
                 elif marker.endswith('no_compensation'):
+                    # in this context, at_company is the same
+                    # as no_compensation
                     marker = marker.replace('no_compensation', 'at_company')
 
                 self.draw_marker(canvas, marker)
-
-                # this resolves f.e. to:
-                # self.draw_marker(canvas, 'lunch_working_external', spec.lunch_working)
 
         self.draw_marker(canvas, 'clothing_%s' % spec.clothing)
         # TODO automatically draw arrangement marker?
