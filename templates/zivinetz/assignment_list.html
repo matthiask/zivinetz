@@ -22,7 +22,7 @@
                         {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
                     </a>
                 </th>
-                {% for name, value in object|model_row:"drudge,scope_statement_expense,status" %}
+                {% for name, value in object|model_row:"drudge,specification,status" %}
                     <td>{{ value }}</td>
                 {% endfor %}
                 <td>{{ object.admin_pdf_url|safe }}</td>

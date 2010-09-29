@@ -12,7 +12,7 @@ from pdfdocument.utils import pdf_response
 from zivinetz.models import Assignment, CompanyHoliday, Drudge,\
     ExpenseReport,\
     ExpenseReportPeriod, RegionalOffice, ScopeStatement,\
-    ScopeStatementExpense
+    Specification
 
 
 class RegionalOfficeModelView(generic.ModelView):
@@ -24,8 +24,8 @@ class RegionalOfficeModelView(generic.ModelView):
 regional_office_views = RegionalOfficeModelView(RegionalOffice)
 
 
-ScopeStatementExpenseFormSet = inlineformset_factory(ScopeStatement,
-    ScopeStatementExpense,
+SpecificationFormSet = inlineformset_factory(ScopeStatement,
+    Specification,
     extra=1,
     #formfield_callback=forms.stripped_formfield_callback,
     )
@@ -37,7 +37,7 @@ class ScopeStatementModelView(generic.ModelView):
         kwargs['instance'] = instance
 
         return {
-            'expenses': ScopeStatementExpenseFormSet(*args, **kwargs),
+            'specifications': SpecificationFormSet(*args, **kwargs),
             }
 
 
@@ -98,28 +98,28 @@ class AssignmentPDFStationery(object):
         'accomodation_offered': (69.5, 256),
         'accomodation_used': (75, 251),
         'accomodation_notused': (113.5, 251),
-        'accomodation_home': (69.5, 247),
+        'accomodation_at_home': (69.5, 247),
 
-        'breakfast_working_business': (69.5, 236),
-        'breakfast_working_home': (69.5, 231.5),
-        'breakfast_working_extern': (69.5, 227),
+        'breakfast_working_at_company': (69.5, 236),
+        'breakfast_working_at_home': (69.5, 231.5),
+        'breakfast_working_external': (69.5, 227),
 
-        'breakfast_free_business': (113.5, 236),
-        'breakfast_free_home': (113.5, 231.5),
+        'breakfast_free_at_company': (113.5, 236),
+        'breakfast_free_at_home': (113.5, 231.5),
 
-        'lunch_working_business': (69.5, 223),
-        'lunch_working_home': (69.5, 218.5),
-        'lunch_working_extern': (69.5, 214),
+        'lunch_working_at_company': (69.5, 223),
+        'lunch_working_at_home': (69.5, 218.5),
+        'lunch_working_external': (69.5, 214),
 
-        'lunch_free_business': (113.5, 223),
-        'lunch_free_home': (113.5, 218.5),
+        'lunch_free_at_company': (113.5, 223),
+        'lunch_free_at_home': (113.5, 218.5),
 
-        'supper_working_business': (69.5, 210),
-        'supper_working_home': (69.5, 205.5),
-        'supper_working_extern': (69.5, 201),
+        'supper_working_at_company': (69.5, 210),
+        'supper_working_at_home': (69.5, 205.5),
+        'supper_working_external': (69.5, 201),
 
-        'supper_free_business': (113.5, 210),
-        'supper_free_home': (113.5, 205.5),
+        'supper_free_at_company': (113.5, 210),
+        'supper_free_at_home': (113.5, 205.5),
 
         'public_transports': (31, 159),
         'private_transport': (113.5, 159),
@@ -204,8 +204,8 @@ class AssignmentPDFStationery(object):
 
         frame_10 = [
             u'%s %s' % (
-                self.assignment.scope_statement_expense.scope_statement.eis_no,
-                self.assignment.scope_statement_expense.scope_statement.name,
+                self.assignment.specification.scope_statement.eis_no,
+                self.assignment.specification.scope_statement.name,
                 ),
             ]
 
@@ -255,18 +255,28 @@ class AssignmentPDFStationery(object):
     def page_2(self, canvas, pdfdocument):
         self.background(canvas, '3-1.jpg')
 
-        if self.assignment.scope_statement_expense.accomodation:
-            self.draw_marker(canvas, 'accomodation_offered')
-            self.draw_marker(canvas, 'accomodation_used')
+        spec = self.assignment.specification
 
-            # TODO this has to be configurable through the assignment model
-            #self.draw_marker(canvas,
+        accomodation_markers = {
+            Specification.ACCOMODATION.offered_used: ('accomodation_offered', 'accomodation_used'),
+            Specification.ACCOMODATION.offered_notused: ('accomodation_offered', 'accomodation_notused'),
+            Specification.ACCOMODATION.at_home: ('accomodation_at_home',),
+            }
 
-        else:
-            self.draw_marker(canvas, 'accomodation_home')
+        for marker in accomodation_markers[spec.accomodation]:
+            self.draw_marker(canvas, marker)
 
-        self.draw_marker(canvas, 'clothing_compensated')
+        for meal in ('breakfast', 'lunch', 'supper'):
+            for day_type in ('working', 'free'):
+                self.draw_marker(canvas, '%s_%s_%s' % (
+                    meal,
+                    day_type,
+                    getattr(spec, '%s_%s' % (meal, day_type))))
 
+                # this resolves f.e. to:
+                # self.draw_marker(canvas, 'lunch_working_external', spec.lunch_working)
+
+        self.draw_marker(canvas, 'clothing_%s' % spec.clothing)
         # TODO automatically draw arrangement marker?
 
 

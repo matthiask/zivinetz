@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from django.contrib.auth.models import User
@@ -20,61 +20,127 @@ class ScopeStatement(models.Model):
         return u'%s (%s)' % (self.name, self.eis_no)
 
 
-class DayType(object):
-    WORKING = 'working'
-    FREE = 'free'
-    SICK = 'sick'
-    PAID_LEAVE = 'paid_leave'
-    UNPAID_LEAVE = 'unpaid_leave'
+class Choices(object):
+    def __init__(self, choices):
+        self._choices = choices
+        self._choice_dict = dict(choices)
 
-    CHOICES = (
-        (WORKING, _('working')),
-        (FREE, _('free')),
-        (SICK, _('sick')),
-        (PAID_LEAVE, _('paid leave')),
-        (UNPAID_LEAVE, _('unpaid leave')),
-        )
+    @property
+    def kwargs(self):
+        return {
+            'max_length': 20,
+            'choices': self.__dict__['_choices'],
+            'default': self.__dict__['_choices'][0][0],
+            }
+
+    def __getattr__(self, k):
+        self.__dict__['_choice_dict'][k] # raise KeyError if key does not exist
+        return k
 
 
-class ScopeStatementExpense(models.Model):
+class Specification(models.Model):
+    ACCOMODATION = Choices((
+        ('offered_used', _('offered and used')),
+        ('offered_notused', _('offered but not used')),
+        ('at_home', _('at home')),
+        ))
+
+    WORKING_DAYS = Choices((
+        ('at_company', _('at company')),
+        ('at_home', _('at home')),
+        ('external', _('external')),
+        ))
+
+    FREE_DAYS = Choices((
+        ('at_company', _('at company')),
+        ('at_home', _('at home')),
+        ))
+
+    CLOTHING = Choices((
+        ('provided', _('provided')),
+        ('compensated', _('compensated')),
+        ))
+
     scope_statement = models.ForeignKey(ScopeStatement,
-        verbose_name=_('scope statement'),
-        related_name='expenses')
-    accomodation = models.BooleanField(_('accomodation'), default=True)
+        verbose_name=_('scope statement'), related_name='specifications')
 
-    # these are all daily values
-    spending_money = models.DecimalField(_('spending money'), max_digits=10, decimal_places=2)
-    clothing = models.DecimalField(_('clothing'), max_digits=10, decimal_places=2)
+    accomodation = models.CharField(_('accomodation'), **ACCOMODATION.kwargs)
 
-    accomodation_working = models.DecimalField(_('accomodation (working)'), max_digits=10, decimal_places=2)
-    accomodation_sick = models.DecimalField(_('accomodation (sick)'), max_digits=10, decimal_places=2)
-    accomodation_free = models.DecimalField(_('accomodation (free)'), max_digits=10, decimal_places=2)
+    breakfast_working = models.CharField(_('breakfast on working days'), **WORKING_DAYS.kwargs)
+    breakfast_sick = models.CharField(_('breakfast on sick days'), **WORKING_DAYS.kwargs)
+    breakfast_free = models.CharField(_('breakfast on free days'), **FREE_DAYS.kwargs)
 
-    breakfast_working = models.DecimalField(_('breakfast (working)'), max_digits=10, decimal_places=2)
-    breakfast_sick = models.DecimalField(_('breakfast (sick)'), max_digits=10, decimal_places=2)
-    breakfast_free = models.DecimalField(_('breakfast (free)'), max_digits=10, decimal_places=2)
+    lunch_working = models.CharField(_('lunch on working days'), **WORKING_DAYS.kwargs)
+    lunch_sick = models.CharField(_('lunch on sick days'), **WORKING_DAYS.kwargs)
+    lunch_free = models.CharField(_('lunch on free days'), **FREE_DAYS.kwargs)
 
-    lunch_working = models.DecimalField(_('lunch (working)'), max_digits=10, decimal_places=2)
-    lunch_sick = models.DecimalField(_('lunch (sick)'), max_digits=10, decimal_places=2)
-    lunch_free = models.DecimalField(_('lunch (free)'), max_digits=10, decimal_places=2)
+    supper_working = models.CharField(_('supper on working days'), **WORKING_DAYS.kwargs)
+    supper_sick = models.CharField(_('supper on sick days'), **WORKING_DAYS.kwargs)
+    supper_free = models.CharField(_('supper on free days'), **FREE_DAYS.kwargs)
 
-    supper_working = models.DecimalField(_('supper (working)'), max_digits=10, decimal_places=2)
-    supper_sick = models.DecimalField(_('supper (sick)'), max_digits=10, decimal_places=2)
-    supper_free = models.DecimalField(_('supper (free)'), max_digits=10, decimal_places=2)
+    clothing = models.CharField(_('clothing'), **CLOTHING.kwargs)
 
     class Meta:
         unique_together = (('scope_statement', 'accomodation'),)
-        verbose_name = _('scope statement expense')
-        verbose_name_plural = _('scope statement expenses')
+        verbose_name = _('specification')
+        verbose_name_plural = _('specifications')
 
     def __unicode__(self):
         return u'%s - %s' % (
             self.scope_statement,
-            self.accomodation and ugettext('with accomodation') or ugettext('without accomodation'),
+            self.get_accomodation_display(),
             )
 
     def get_absolute_url(self):
         return self.scope_statement.get_absolute_url()
+
+
+class CompensationSetManager(models.Manager):
+    def for_date(self, date=date.today):
+        try:
+            return self.filter(valid_from__lte=date).order_by('-valid_from')[0]
+        except IndexError:
+            raise self.model.DoesNotExist
+
+
+class CompensationSet(models.Model):
+    valid_from = models.DateField(_('valid from'), unique=True)
+
+    spending_money = models.DecimalField(_('spending money'), max_digits=10, decimal_places=2)
+
+    accomodation_home = models.DecimalField(_('accomodation'), max_digits=10, decimal_places=2,
+        help_text=_('Daily compensation if drudge returns home for the night.'))
+
+    breakfast_at_company = models.DecimalField(_('breakfast at company'), max_digits=10, decimal_places=2)
+    breakfast_at_home = models.DecimalField(_('breakfast at home'), max_digits=10, decimal_places=2)
+    breakfast_external = models.DecimalField(_('external breakfast'), max_digits=10, decimal_places=2)
+
+    lunch_at_company = models.DecimalField(_('lunch at company'), max_digits=10, decimal_places=2)
+    lunch_at_home = models.DecimalField(_('lunch at home'), max_digits=10, decimal_places=2)
+    lunch_external = models.DecimalField(_('external lunch'), max_digits=10, decimal_places=2)
+
+    supper_at_company = models.DecimalField(_('supper at company'), max_digits=10, decimal_places=2)
+    supper_at_home = models.DecimalField(_('supper at home'), max_digits=10, decimal_places=2)
+    supper_external = models.DecimalField(_('external supper'), max_digits=10, decimal_places=2)
+
+    private_transport_per_km = models.DecimalField(_('private transport per km'), max_digits=10, decimal_places=2,
+        help_text=_('Only applies if public transport use is not reasonable.'))
+
+    clothing = models.DecimalField(_('clothing'), max_digits=10, decimal_places=2,
+        help_text=_('Daily compensation for clothes if clothing isn\'t offered by the company.'))
+    clothing_limit_per_assignment = models.DecimalField(_('clothing limit per assignment'),
+        max_digits=10, decimal_places=2,
+        help_text=_('Maximal compensation for clothing per assignment.'))
+
+    class Meta:
+        ordering = ['valid_from']
+        verbose_name = _('compensation set')
+        verbose_name_plural = _('compensation sets')
+
+    objects = CompensationSetManager()
+
+    def __unicode__(self):
+        return ugettext('compensation set, valid from %s') % self.valid_from
 
 
 class RegionalOffice(models.Model):
@@ -152,8 +218,8 @@ class Assignment(models.Model):
 
     created = models.DateTimeField(_('created'), default=datetime.now)
 
-    scope_statement_expense = models.ForeignKey(ScopeStatementExpense,
-        verbose_name=_('scope statement expense'))
+    specification = models.ForeignKey(Specification,
+        verbose_name=_('specification'))
     drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'))
     regional_office = models.ForeignKey(RegionalOffice,
         verbose_name=('regional office'))
@@ -293,7 +359,7 @@ class Assignment(models.Model):
 
     def expenses(self):
         assignment_days, monthly_expense_days = self.assignment_days()
-        expense = self.scope_statement_expense
+        expense = self.specification
 
         clothing_total = Decimal('240.00')
         expenses = {}
@@ -369,8 +435,8 @@ class ExpenseReport(models.Model):
 class ExpenseReportPeriod(models.Model):
     expense_report = models.ForeignKey(ExpenseReport, verbose_name=_('expense report'),
         related_name='periods')
-    scope_statement_expense = models.ForeignKey(ScopeStatementExpense,
-        verbose_name=_('scope statement expense'))
+    specification = models.ForeignKey(Specification,
+        verbose_name=_('specification'))
 
     date_from = models.DateField(_('date from'))
 
@@ -416,8 +482,8 @@ class WaitList(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'))
 
-    scope_statement_expense = models.ForeignKey(ScopeStatementExpense,
-        verbose_name=_('scope statement expense'))
+    specification = models.ForeignKey(Specification,
+        verbose_name=_('specification'))
     assignment_date_from = models.DateField(_('date from'))
     assignment_date_until = models.DateField(_('date until'))
     assignment_duration = models.PositiveIntegerField(_('duration in days'))

@@ -3,8 +3,8 @@ from django.contrib import admin
 from zivinetz import models
 
 
-class ScopeStatementExpenseInline(admin.StackedInline):
-    model = models.ScopeStatementExpense
+class SpecificationInline(admin.StackedInline):
+    model = models.Specification
     can_delete = False
     max_num = 2
 
@@ -12,7 +12,11 @@ admin.site.register(models.ScopeStatement,
     list_display=('is_active', 'eis_no', 'name'),
     list_display_links=('name',),
     list_filter=('is_active',),
-    inlines=[ScopeStatementExpenseInline],
+    inlines=[SpecificationInline],
+    )
+
+admin.site.register(models.CompensationSet,
+    save_as=True,
     )
 
 admin.site.register(models.RegionalOffice)
@@ -21,9 +25,9 @@ admin.site.register(models.Drudge)
 
 admin.site.register(models.Assignment,
     date_hierarchy='date_from',
-    list_display=('scope_statement_expense', 'drudge', 'date_from',
+    list_display=('specification', 'drudge', 'date_from',
         'determine_date_until', 'status', 'admin_pdf_url'),
-    list_filter=('scope_statement_expense', 'part_of_long_assignment', 'status'),
+    list_filter=('specification', 'part_of_long_assignment', 'status'),
     )
 
 
