@@ -246,21 +246,24 @@ class AssignmentPDFStationery(object):
 
         spec = self.assignment.specification
 
-        accomodation_markers = {
-            Specification.ACCOMODATION.offered_used: ('accomodation_offered', 'accomodation_used'),
-            Specification.ACCOMODATION.offered_notused: ('accomodation_offered', 'accomodation_notused'),
-            Specification.ACCOMODATION.at_home: ('accomodation_at_home',),
-            }
-
-        for marker in accomodation_markers[spec.accomodation]:
-            self.draw_marker(canvas, marker)
+        if spec.with_accomodation:
+            self.draw_marker(canvas, 'accomodation_offered')
+            self.draw_marker(canvas, 'accomodation_used')
+        else:
+            self.draw_marker(canvas, 'accomodation_at_home')
 
         for meal in ('breakfast', 'lunch', 'supper'):
             for day_type in ('working', 'free'):
-                self.draw_marker(canvas, '%s_%s_%s' % (
+                marker = '%s_%s_%s' % (
                     meal,
                     day_type,
-                    getattr(spec, '%s_%s' % (meal, day_type))))
+                    getattr(spec, '%s_%s' % (meal, day_type)))
+
+                if marker.endswith('at_accomodation'):
+                    marker = marker.replace('at_accomodation',
+                        spec.with_accomodation and 'at_company' or 'at_home')
+
+                self.draw_marker(canvas, marker)
 
                 # this resolves f.e. to:
                 # self.draw_marker(canvas, 'lunch_working_external', spec.lunch_working)
