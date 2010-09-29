@@ -31,22 +31,8 @@ SpecificationFormSet = inlineformset_factory(ScopeStatement,
     )
 
 
-class ScopeStatementModelView(generic.ModelView):
-    def get_formset_instances(self, request, instance=None, **kwargs):
-        args = self.extend_args_if_post(request, [])
-        kwargs['instance'] = instance
-
-        return {
-            'specifications': SpecificationFormSet(*args, **kwargs),
-            }
-
-
-scope_statement_views = ScopeStatementModelView(ScopeStatement)
-
-
+scope_statement_views = generic.ModelView(ScopeStatement)
 specification_views = generic.ModelView(Specification)
-
-
 drudge_views = generic.ModelView(Drudge)
 assignment_views = generic.ModelView(Assignment)
 
