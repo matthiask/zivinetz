@@ -374,10 +374,9 @@ class Assignment(models.Model):
                     working_day = True
 
 
-            key = day.strftime('%Y.%m')
+            key = (day.year, day.month)
             monthly_expense_days.setdefault(key, [0, 0])
             monthly_expense_days[key][working_day and 1 or 0] += 1
-
 
             day += one_day
 
@@ -391,25 +390,26 @@ class Assignment(models.Model):
         assignment_days, monthly_expense_days = self.assignment_days()
         specification = self.specification
 
-        clothing_total = Decimal('240.00')
+        clothing_total = Decimal('240.00') # TODO don't hardcode this
         expenses = {}
 
         for month, days in monthly_expense_days:
-            expense =  CompensationSet.objects.for_date(date(int(month[:4]), int(month[5:]), 1))
+            compensation = specification.compensation(date(month[0], month[1], 1))
+
             free, working = days
             total = free + working
 
             expenses[month] = {
-                'spending_money': total * expense.spending_money,
-                'clothing': working * expense.clothing,
-                'accomodation': free * expense.accomodation_free +\
-                                working * expense.accomodation_working,
-                'food': free * (expense.breakfast_free +\
-                                expense.lunch_free +\
-                                expense.supper_free) +\
-                        working * (expense.breakfast_working +\
-                                   expense.lunch_working +\
-                                   expense.supper_working),
+                'spending_money': total * compensation['spending_money'],
+                'clothing': working * compensation['clothing'],
+                'accomodation': free * compensation['accomodation_free'] +\
+                                working * compensation['accomodation_working'],
+                'food': free * (compensation['breakfast_free'] +\
+                                compensation['lunch_free'] +\
+                                compensation['supper_free']) +\
+                        working * (compensation['breakfast_working'] +\
+                                   compensation['lunch_working'] +\
+                                   compensation['supper_working']),
                 }
 
             clothing_total -= expenses[month]['clothing']
