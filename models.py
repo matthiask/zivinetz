@@ -13,6 +13,7 @@ class ScopeStatement(models.Model):
     name = models.CharField(_('name'), max_length=100)
 
     class Meta:
+        ordering = ['name']
         verbose_name = _('scope statement')
         verbose_name_plural = _('scope statements')
 
@@ -78,6 +79,7 @@ class Specification(models.Model):
     clothing = models.CharField(_('clothing'), **CLOTHING.kwargs)
 
     class Meta:
+        ordering = ['scope_statement', 'with_accomodation']
         unique_together = (('scope_statement', 'with_accomodation'),)
         verbose_name = _('specification')
         verbose_name_plural = _('specifications')
