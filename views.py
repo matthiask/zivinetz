@@ -1,5 +1,7 @@
 # coding=utf-8
 
+import os
+
 from django.forms.models import inlineformset_factory
 from django.shortcuts import get_object_or_404
 
@@ -72,7 +74,8 @@ class AssignmentPDFStationery(object):
 
     def background(self, canvas, image):
         canvas.drawImage(
-            '/home/mk/Projects/sites/naturnetz.ch/zivinetz/data/%s' % image,
+            os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                'data', image),
             0, 0, 21*cm, 29.4*cm)
 
     markers = {
