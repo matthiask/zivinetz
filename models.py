@@ -401,7 +401,7 @@ class Assignment(models.Model):
 
             expenses[month] = {
                 'spending_money': total * compensation['spending_money'],
-                'clothing': working * compensation['clothing'],
+                'clothing': total * compensation['clothing'],
                 'accomodation': free * compensation['accomodation_free'] +\
                                 working * compensation['accomodation_working'],
                 'food': free * (compensation['breakfast_free'] +\
