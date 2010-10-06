@@ -156,7 +156,7 @@ class CompensationSet(models.Model):
     private_transport_per_km = models.DecimalField(_('private transport per km'), max_digits=10, decimal_places=2,
         help_text=_('Only applies if public transport use is not reasonable.'))
 
-    clothing = models.DecimalField(_('clothing'), max_digits=10, decimal_places=2,
+    clothing = models.DecimalField(_('clothing'), max_digits=10, decimal_places=6,
         help_text=_('Daily compensation for clothes if clothing isn\'t offered by the company.'))
     clothing_limit_per_assignment = models.DecimalField(_('clothing limit per assignment'),
         max_digits=10, decimal_places=2,
