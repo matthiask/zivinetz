@@ -299,8 +299,10 @@ class Assignment(models.Model):
         assignment_days = (self.date_until - self.date_from).days + 1 # +1 because the range is inclusive
 
         if assignment_days >= 180:
-            # TODO 30 days isn't exactly one month... (see ZDV Art. 72)
-            vacation_days = 8 + (assignment_days - 180) / 30 * 2
+            # 30 days isn't exactly one month. But that's good enough for us.
+            # We grant 2 additional vacation days per 30 full days only
+            # (see ZDV Art. 72)
+            vacation_days = 8 + int((assignment_days - 180) / 30) * 2
 
         days = {
             'assignment_days': assignment_days,
