@@ -74,6 +74,7 @@ admin.site.register(models.ExpenseReport,
     date_hierarchy='date_from',
     list_display=('__unicode__', 'assignment', 'date_from', 'date_until'),
     inlines=[ExpenseReportPeriodInline],
+    raw_id_fields=('assignment',),
     )
 
 admin.site.register(models.PublicHoliday,

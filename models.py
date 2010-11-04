@@ -445,9 +445,22 @@ class ExpenseReport(models.Model):
         related_name='reports')
     date_from = models.DateField(_('date from'))
     date_until = models.DateField(_('date until'))
+    report_no = models.CharField(_('report no.'), max_length=10, blank=True)
 
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES,
         default=PENDING)
+
+    working_days = models.PositiveIntegerField(_('working days'))
+    free_days = models.PositiveIntegerField(_('free days'))
+    sick_days = models.PositiveIntegerField(_('sick days'))
+    holi_days = models.PositiveIntegerField(_('holiday days'),
+        help_text=_('These days are still countable towards the assignment total days.'))
+    forced_leave_days = models.PositiveIntegerField(_('forced leave days'))
+
+    clothing_expenses = models.DecimalField(_('clothing expenses'),
+        max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    transport_expenses = models.DecimalField(_('transport expenses'),
+        max_digits=10, decimal_places=2, default=Decimal('0.00'))
 
     class Meta:
         ordering = ['date_from']
@@ -461,6 +474,11 @@ class ExpenseReport(models.Model):
         return self.status < self.PAID
     is_editable.boolean = True
     is_editable.short_description = _('is editable')
+
+    @property
+    def total_days(self):
+        return self.working_days + self.free_days + self.sick_days + self.holi_days\
+            + self.forced_leave_days
 
 
 class ExpenseReportPeriod(models.Model):
