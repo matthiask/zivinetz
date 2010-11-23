@@ -5,7 +5,7 @@ import os
 from django.forms.models import inlineformset_factory
 from django.shortcuts import get_object_or_404
 
-from django_modelviews import generic
+from towel import modelview
 
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
@@ -17,7 +17,7 @@ from zivinetz.models import Assignment, CompanyHoliday, Drudge,\
     Specification
 
 
-class RegionalOfficeModelView(generic.ModelView):
+class RegionalOfficeModelView(modelview.ModelView):
     def deletion_allowed(self, request, instance):
         # TODO run a few checks here
         return True
@@ -33,10 +33,10 @@ SpecificationFormSet = inlineformset_factory(ScopeStatement,
     )
 
 
-scope_statement_views = generic.ModelView(ScopeStatement)
-specification_views = generic.ModelView(Specification)
-drudge_views = generic.ModelView(Drudge)
-assignment_views = generic.ModelView(Assignment)
+scope_statement_views = modelview.ModelView(ScopeStatement)
+specification_views = modelview.ModelView(Specification)
+drudge_views = modelview.ModelView(Drudge)
+assignment_views = modelview.ModelView(Assignment)
 
 
 ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
@@ -45,7 +45,7 @@ ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
     )
 
 
-class ExpenseReportModelView(generic.ModelView):
+class ExpenseReportModelView(modelview.ModelView):
     def get_formset_instances(self, request, instance=None, **kwargs):
         args = self.extend_args_if_post(request, [])
         kwargs['instance'] = instance
