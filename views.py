@@ -28,7 +28,7 @@ regional_office_views = RegionalOfficeModelView(RegionalOffice)
 
 SpecificationFormSet = inlineformset_factory(ScopeStatement,
     Specification,
-    extra=1,
+    extra=0,
     #formfield_callback=forms.stripped_formfield_callback,
     )
 
@@ -41,7 +41,7 @@ assignment_views = modelview.ModelView(Assignment)
 
 ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
     ExpenseReportPeriod,
-    extra=1,
+    extra=0,
     )
 
 
