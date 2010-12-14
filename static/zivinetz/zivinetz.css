@@ -1,0 +1,54 @@
+div.buttons {
+    border-top: 1px solid #cfcfcf;
+    margin: 10px 0;
+    padding: 10px 3px 10px 3px;
+}
+
+a.button, button {
+    -webkit-border-radius: 5px;
+    background: #cfcfcf;
+    padding: 9px 15px;
+    min-width: 50px;
+    text-align: center;
+    float: left;
+    display: block;
+    margin: 0 10px 0 0;
+    text-decoration: none;
+    color: #000000;
+    border: none;
+}
+
+a.button:hover, button:hover {
+    background-color: #a0a0a0;
+    color: #ffffff;
+}
+
+a.button.right button.right {
+    float: right;
+}
+
+label {
+    display: block;
+    font-weight: normal;
+    padding-top: 7px;
+}
+
+.required label {
+    font-weight: bold;
+}
+
+.empty { display: none; }
+
+.invalid label { color: red; }
+.invalid input { border-color: red; border-left: 5px solid red; padding-left: 5px; }
+
+form input[type=text], form input[type=password], form select {
+    border: 1px solid #cfcfcf;
+    padding: 7px 5px 7px 9px;
+    min-width: 250px;
+}
+
+
+input[readonly] { background: #e8e8e8; }
+
+form table { width: auto; }
