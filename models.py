@@ -335,7 +335,7 @@ class Assignment(models.Model):
             is_weekend = day.weekday() in (5, 6)
             is_public_holiday = day in public_holidays
             is_company_holiday = company_holiday and company_holiday.is_contained(day)
-            working_day = False
+            slot = 'free'
 
             if is_company_holiday:
                 days['company_holidays'] += 1
@@ -365,6 +365,7 @@ class Assignment(models.Model):
                             # beginning. The drudge has to pause his assignment for
                             # this time.
                             days['forced_leave_days'] += 1
+                            slot = 'forced'
 
             else:
                 # No company holiday... business as usual, maybe.
@@ -373,12 +374,14 @@ class Assignment(models.Model):
                 if not (is_public_holiday or is_weekend):
                     # Hard beer-drinking and pickaxing action.
                     days['working_days'] += 1
-                    working_day = True
+                    slot = 'working'
 
 
             key = (day.year, day.month)
-            monthly_expense_days.setdefault(key, [0, 0])
-            monthly_expense_days[key][working_day and 1 or 0] += 1
+            monthly_expense_days.setdefault(key, {
+                'free': 0, 'working': 0, 'forced': 0, 'start': day})
+            monthly_expense_days[key][slot] += 1
+            monthly_expense_days[key]['end'] = day
 
             day += one_day
 
@@ -430,6 +433,27 @@ class Assignment(models.Model):
         return u'<a href="%s">PDF</a>' % self.pdf_url()
     admin_pdf_url.allow_tags = True
     admin_pdf_url.short_description = 'PDF'
+
+    def generate_expensereports(self):
+        self.reports.all().delete()
+
+        assignment_days, monthly_expense_days = self.assignment_days()
+
+        for ym, days in monthly_expense_days:
+            report = self.reports.create(
+                date_from=days['start'],
+                date_until=days['end'],
+                working_days=days['working'],
+                free_days=days['free'],
+                sick_days=0,
+                holi_days=0,
+                forced_leave_days=days['forced'],
+                )
+
+            report.periods.create(
+                specification=self.specification,
+                date_from=days['start'],
+                )
 
 
 class ExpenseReport(models.Model):
