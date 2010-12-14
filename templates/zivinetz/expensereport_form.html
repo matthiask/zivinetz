@@ -43,16 +43,12 @@
     </tfoot>
 </table>
 
-<table>
-    <tr>
-        <td>&nbsp;</td>
-        <td>
-            <button type="submit">{% trans "Save" %}</button>
-            <button type="submit" name="_continue">{% trans "Save and continue editing" %}</button>
-            <button type="button" onclick="window.location.assign('../')">{% trans "Cancel" %}</button>
-        </td>
-    </tr>
-</table>
+<div class="buttons">
+    <button type="submit">{% trans "Save" %}</button>
+    <button type="submit" name="_continue">{% trans "Save and continue editing" %}</button>
+    <button type="button" onclick="window.location.assign('../')">{% trans "Cancel" %}</button>
+</div>
+
 </form>
 
 <script type="text/javascript">
@@ -66,31 +62,32 @@ $(function() {
 
     working_days.attr('readonly', 'readonly');
 
-    var total = parseInt(working_days.val()) + parseInt(free_days.val()) +
-        parseInt(holi_days.val()) + parseInt(sick_days.val()) +
-        parseInt(forced_leave_days.val());
+    function tryint($f) {
+        var val = parseInt($f.val(), 10);
+        if (isNaN(val)) {
+            val = 0;
+            $f.val(0);
+        }
+
+        return val;
+    }
+
+    var total = tryint(working_days) + tryint(free_days) +
+        tryint(holi_days) + tryint(sick_days) +
+        tryint(forced_leave_days);
 
     function recalculate() {
-        var minus = parseInt(free_days.val()) +
-            parseInt(holi_days.val()) + parseInt(sick_days.val()) +
-            parseInt(forced_leave_days.val());
+        var minus = tryint(free_days) +
+            tryint(holi_days) + tryint(sick_days) +
+            tryint(forced_leave_days);
 
         working_days.val(total - minus);
     }
 
-    free_days.blur(recalculate);
-    holi_days.blur(recalculate);
-    sick_days.blur(recalculate);
-    forced_leave_days.blur(recalculate);
+    free_days.keyup(recalculate).change(recalculate);
+    holi_days.keyup(recalculate).change(recalculate);
+    sick_days.keyup(recalculate).change(recalculate);
+    forced_leave_days.keyup(recalculate).change(recalculate);
 });
 </script>
-<style type="text/css">
-.empty { display: none; }
-
-.invalid label { color: red; }
-.invalid input { border-color: red; border-left: 5px solid red; padding-left: 5px; }
-
-input { border: 1px solid #cfcfcf; padding: 5px 5px 5px 9px; }
-input[readonly] { background: #e8e8e8; }
-</style>
 {% endblock %}

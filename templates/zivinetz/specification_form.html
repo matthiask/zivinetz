@@ -91,15 +91,11 @@
     {% endwith %}
 </table>
 
-<table>
-    <tr>
-        <td>&nbsp;</td>
-        <td>
-            <button type="submit">{% trans "Save" %}</button>
-            <button type="submit" name="_continue">{% trans "Save and continue editing" %}</button>
-            <button type="button" onclick="window.location.assign('../')">{% trans "Cancel" %}</button>
-        </td>
-    </tr>
-</table>
+<div class="buttons">
+    <button type="submit">{% trans "Save" %}</button>
+    <button type="submit" name="_continue">{% trans "Save and continue editing" %}</button>
+    <button type="button" onclick="window.location.assign('../')">{% trans "Cancel" %}</button>
+</div>
+
 </form>
 {% endblock %}
