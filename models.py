@@ -401,7 +401,9 @@ class Assignment(models.Model):
         for month, days in monthly_expense_days:
             compensation = specification.compensation(date(month[0], month[1], 1))
 
-            free, working = days
+            free = days['free']
+            working = days['working']
+
             total = free + working
 
             expenses[month] = {
