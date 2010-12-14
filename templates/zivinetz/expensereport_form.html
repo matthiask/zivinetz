@@ -55,10 +55,42 @@
 </table>
 </form>
 
+<script type="text/javascript">
+$(function() {
+    var working_days = $('#{{ form.working_days.auto_id }}');
+    var free_days = $('#{{ form.free_days.auto_id }}');
+
+    var holi_days = $('#{{ form.holi_days.auto_id }}');
+    var sick_days = $('#{{ form.sick_days.auto_id }}');
+    var forced_leave_days = $('#{{ form.forced_leave_days.auto_id }}');
+
+    working_days.attr('readonly', 'readonly');
+
+    var total = parseInt(working_days.val()) + parseInt(free_days.val()) +
+        parseInt(holi_days.val()) + parseInt(sick_days.val()) +
+        parseInt(forced_leave_days.val());
+
+    function recalculate() {
+        var minus = parseInt(free_days.val()) +
+            parseInt(holi_days.val()) + parseInt(sick_days.val()) +
+            parseInt(forced_leave_days.val());
+
+        working_days.val(total - minus);
+    }
+
+    free_days.blur(recalculate);
+    holi_days.blur(recalculate);
+    sick_days.blur(recalculate);
+    forced_leave_days.blur(recalculate);
+});
+</script>
 <style type="text/css">
 .empty { display: none; }
 
 .invalid label { color: red; }
-.invalid input { border-color: red; }
+.invalid input { border-color: red; border-left: 5px solid red; padding-left: 5px; }
+
+input { border: 1px solid #cfcfcf; padding: 5px 5px 5px 9px; }
+input[readonly] { background: #e8e8e8; }
 </style>
 {% endblock %}
