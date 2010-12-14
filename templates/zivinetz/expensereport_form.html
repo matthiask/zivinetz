@@ -1,0 +1,64 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n towel_form_tags %}
+
+{% block title %}{{ title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<form method="post" action=".">{% csrf_token %}
+{% form_errors form formsets %}
+
+<table>
+{% for field in form %}{% form_item field %}{% endfor %}
+</table>
+
+<h3>{% trans "Periods" %}
+{{ formsets.periods.management_form }}
+<table>
+    <thead>
+        <tr>
+            <th>{% trans "Specification" %}</th>
+            <th>{% trans "From" %}</th>
+            <th>{% trans "Delete" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% dynamic_formset formsets.periods "periods" %}
+        <tr id="{{ form_id }}" {% if empty %}class="empty"{% endif %}>
+            <td>
+                {{ form.id }}
+                {% form_item_plain form.specification %}
+            </td>
+            <td>{% form_item_plain form.date_from %}</td>
+            <td>{{ form.DELETE }}</td>
+        </tr>
+    {% enddynamic_formset %}
+    </tbody>
+    <tfoot>
+        <tr><td colspan="3">
+        <button type="button" onclick="towel_add_subform('periods')">{% trans "New period" %}</button>
+        </td></tr>
+    </tfoot>
+</table>
+
+<table>
+    <tr>
+        <td>&nbsp;</td>
+        <td>
+            <button type="submit">{% trans "Save" %}</button>
+            <button type="submit" name="_continue">{% trans "Save and continue editing" %}</button>
+            <button type="button" onclick="window.location.assign('../')">{% trans "Cancel" %}</button>
+        </td>
+    </tr>
+</table>
+</form>
+
+<style type="text/css">
+.empty { display: none; }
+
+.invalid label { color: red; }
+.invalid input { border-color: red; }
+</style>
+{% endblock %}
