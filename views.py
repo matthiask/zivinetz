@@ -2,10 +2,11 @@
 
 import os
 
-from django.forms.models import inlineformset_factory
+from django.forms.models import modelform_factory, inlineformset_factory
 from django.shortcuts import get_object_or_404
 
 from towel import modelview
+from towel import forms as towel_forms
 
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
@@ -17,7 +18,13 @@ from zivinetz.models import Assignment, CompanyHoliday, Drudge,\
     Specification
 
 
-class RegionalOfficeModelView(modelview.ModelView):
+class ZivinetzModelView(modelview.ModelView):
+    def get_form(self, request, instance=None, **kwargs):
+        return modelform_factory(self.model,
+            formfield_callback=towel_forms.stripped_formfield_callback, **kwargs)
+
+
+class RegionalOfficeModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
         # TODO run a few checks here
         return True
@@ -29,23 +36,24 @@ regional_office_views = RegionalOfficeModelView(RegionalOffice)
 SpecificationFormSet = inlineformset_factory(ScopeStatement,
     Specification,
     extra=0,
-    #formfield_callback=forms.stripped_formfield_callback,
+    formfield_callback=towel_forms.stripped_formfield_callback,
     )
 
 
-scope_statement_views = modelview.ModelView(ScopeStatement)
-specification_views = modelview.ModelView(Specification)
-drudge_views = modelview.ModelView(Drudge)
-assignment_views = modelview.ModelView(Assignment)
+scope_statement_views = ZivinetzModelView(ScopeStatement)
+specification_views = ZivinetzModelView(Specification)
+drudge_views = ZivinetzModelView(Drudge)
+assignment_views = ZivinetzModelView(Assignment)
 
 
 ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
     ExpenseReportPeriod,
     extra=0,
+    formfield_callback=towel_forms.stripped_formfield_callback,
     )
 
 
-class ExpenseReportModelView(modelview.ModelView):
+class ExpenseReportModelView(ZivinetzModelView):
     def get_formset_instances(self, request, instance=None, **kwargs):
         args = self.extend_args_if_post(request, [])
         kwargs['instance'] = instance
