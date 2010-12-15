@@ -1,12 +1,8 @@
-{% extends base_template|default:"base.html" %}
+{% extends "modelview/object_list.html" %}
 
 {% load i18n modelview_list towel_form_tags %}
 
-{% block content %}
-
-<div class="buttons">
-    <a href="add/" class="button"><span>{% trans "New object" %}</span></a>
-</div>
+{% block objects %}
 
 <div class="box searchbox {{ form.searching }}">
     <a href="?clear=1" class="searching">clear</a>
