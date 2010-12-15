@@ -1,1 +1,10 @@
 {% extends "base.html" %}
+
+{% block extra-head %}{{ block.super }}
+
+<script type="text/javascript" src="{{ STATIC_URL }}towel/towel.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}naturnetz/js/global.js"></script>
+
+<link rel="stylesheet" href="{{ STATIC_URL }}zivinetz/zivinetz.css" type="text/css" media="screen, projection, print" />
+<script type="text/javascript" src="{{ STATIC_URL }}zivinetz/zivinetz.js"></script>
+{% endblock %}

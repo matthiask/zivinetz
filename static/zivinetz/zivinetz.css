@@ -14,7 +14,9 @@ div.buttons:after {
 }
 
 a.button, button {
+    border-radius: 5px;
     -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
     background: #cfcfcf;
     padding: 9px 15px;
     min-width: 50px;
@@ -57,7 +59,11 @@ form input[type=text], form input[type=password], form select {
     min-width: 250px;
 }
 
+form input[type=radio], form input[type=checkbox] {
+    margin-top: 7px;
+}
 
 input[readonly] { background: #e8e8e8; }
 
 form table { width: auto; }
+form th, form td { padding: 2px 5px 2px 0; }
