@@ -105,6 +105,10 @@ ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
 
 
 class ExpenseReportModelView(ZivinetzModelView):
+    def deletion_allowed(self, request, instance):
+        return self.deletion_allowed_if_only(request, instance,
+            [ExpenseReport, ExpenseReportPeriod])
+
     def get_formset_instances(self, request, instance=None, **kwargs):
         args = self.extend_args_if_post(request, [])
         kwargs['instance'] = instance
