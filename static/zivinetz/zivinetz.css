@@ -67,3 +67,22 @@ input[readonly] { background: #e8e8e8; }
 
 form table { width: auto; }
 form th, form td { padding: 2px 5px 2px 0; }
+
+
+ul.messages {
+    list-style: none;
+}
+
+ul.messages li {
+    border: 1px solid #cfcfcf;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    padding: 3px 5px 3px 25px;
+    margin: 0 0 3px 0;
+}
+
+ul.messages li.info { background: #88aaff url(info.png) 5px 3px no-repeat; }
+ul.messages li.success { background: #88ff88 url(success.png) 5px 3px no-repeat; }
+ul.messages li.warning { background: #ffaa44 url(warning.png) 5px 3px no-repeat; }
+ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
