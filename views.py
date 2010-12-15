@@ -30,25 +30,6 @@ class ZivinetzModelView(modelview.ModelView):
         return modelform_factory(self.model,
             formfield_callback=towel_forms.stripped_formfield_callback, **kwargs)
 
-    def list_view(self, request):
-        search_form = getattr(self, 'search_form', None)
-
-        ctx = {}
-        queryset = self.get_query_set(request)
-
-        if search_form:
-            form = search_form(request.GET, request=request)
-            data = form.safe_cleaned_data
-
-            queryset = form.apply_filters(self.model.objects.search(data.get('query')), data)
-
-            ctx['form'] = form
-        else:
-            queryset = self.get_query_set(request)
-
-        ctx[self.template_object_list_name] = queryset
-        return self.render_list(request, ctx)
-
 
 class RegionalOfficeModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
@@ -65,9 +46,38 @@ SpecificationFormSet = inlineformset_factory(ScopeStatement,
     )
 
 
-scope_statement_views = ZivinetzModelView(ScopeStatement)
-specification_views = ZivinetzModelView(Specification)
-drudge_views = ZivinetzModelView(Drudge)
+class ScopeStatementModelView(ZivinetzModelView):
+    def deletion_allowed(self, request, instance):
+        return self.deletion_allowed_if_only(request, instance, [ScopeStatement, Specification])
+
+
+scope_statement_views = ScopeStatementModelView(ScopeStatement)
+
+
+class SpecificationModelView(ZivinetzModelView):
+    def deletion_allowed(self, request, instance):
+        return self.deletion_allowed_if_only(request, instance, [Specification])
+
+
+specification_views = SpecificationModelView(Specification)
+
+
+class DrudgeModelView(ZivinetzModelView):
+    def deletion_allowed(self, request, instance):
+        return self.deletion_allowed_if_only(request, instance, [Drudge])
+
+
+class DrudgeSearchForm(towel_forms.SearchForm):
+    pass
+
+
+drudge_views = DrudgeModelView(Drudge,
+    search_form=DrudgeSearchForm)
+
+
+class AssignmentModelView(ZivinetzModelView):
+    def deletion_allowed(self, request, instance):
+        return self.deletion_allowed_if_only(request, instance, [Assignment])
 
 
 class AssignmentSearchForm(towel_forms.SearchForm):
@@ -83,7 +93,7 @@ class AssignmentSearchForm(towel_forms.SearchForm):
         Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
 
 
-assignment_views = ZivinetzModelView(Assignment,
+assignment_views = AssignmentModelView(Assignment,
     search_form=AssignmentSearchForm)
 
 

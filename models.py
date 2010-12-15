@@ -187,6 +187,13 @@ class RegionalOffice(models.Model):
             return self.name
 
 
+class DrudgeManager(SearchManager):
+    search_fields = ('user__first_name', 'user__last_name', 'zdp_no', 'address',
+        'zip_code', 'city', 'place_of_citizenship_city', 'place_of_citizenship_state',
+        'phone_home', 'phone_office', 'mobile', 'bank_account', 'health_insurance_account',
+        'health_insurance_company', 'education_occupation')
+
+
 class Drudge(models.Model):
     user = models.OneToOneField(User)
 
@@ -226,6 +233,8 @@ class Drudge(models.Model):
     class Meta:
         verbose_name = _('drudge')
         verbose_name_plural = _('drudges')
+
+    objects = DrudgeManager()
 
     def __unicode__(self):
         return u'%s %s (%s)' % (

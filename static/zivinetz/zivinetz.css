@@ -105,7 +105,7 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 .searchbox button {
     position: absolute;
     bottom: 7px;
-    right: 10px;
+    left: 380px;
     background-color: #a0a0a0;
 }
 
