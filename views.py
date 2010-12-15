@@ -2,6 +2,7 @@
 
 import os
 
+from django.contrib import messages
 from django.forms.models import modelform_factory, inlineformset_factory
 from django.shortcuts import get_object_or_404
 
@@ -31,8 +32,7 @@ class ZivinetzModelView(modelview.ModelView):
 
 class RegionalOfficeModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
-        # TODO run a few checks here
-        return True
+        return self.deletion_allowed_if_only(request, instance, [RegionalOffice])
 
 
 regional_office_views = RegionalOfficeModelView(RegionalOffice)
