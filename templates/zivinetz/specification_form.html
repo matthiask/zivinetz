@@ -1,6 +1,6 @@
 {% extends base_template|default:"base.html" %}
 
-{% load i18n %}
+{% load i18n l10n %}
 
 {% block title %}{{ title }} - {{ block.super }}{% endblock %}
 
@@ -60,6 +60,7 @@
     </tr>
 
     {% with object.compensation as compensation %}
+    {% localize off %}
     {% if compensation %}
         <tr>
             <th colspan="5">
@@ -68,26 +69,27 @@
         </tr>
         <tr>
             <th>{% trans "working days"|capfirst %}</th>
-            <td>{{ compensation.accomodation_working|floatformat:2 }}</td>
-            <td>{{ compensation.breakfast_working|floatformat:2 }}</td>
-            <td>{{ compensation.lunch_working|floatformat:2 }}</td>
-            <td>{{ compensation.supper_working|floatformat:2 }}</td>
+            <td>{{ compensation.accomodation_working }}</td>
+            <td>{{ compensation.breakfast_working }}</td>
+            <td>{{ compensation.lunch_working }}</td>
+            <td>{{ compensation.supper_working }}</td>
         </tr>
         <tr>
             <th>{% trans "sick days"|capfirst %}</th>
-            <td>{{ compensation.accomodation_sick|floatformat:2 }}</td>
-            <td>{{ compensation.breakfast_sick|floatformat:2 }}</td>
-            <td>{{ compensation.lunch_sick|floatformat:2 }}</td>
-            <td>{{ compensation.supper_sick|floatformat:2 }}</td>
+            <td>{{ compensation.accomodation_sick }}</td>
+            <td>{{ compensation.breakfast_sick }}</td>
+            <td>{{ compensation.lunch_sick }}</td>
+            <td>{{ compensation.supper_sick }}</td>
         </tr>
         <tr>
             <th>{% trans "free days"|capfirst %}</th>
-            <td>{{ compensation.accomodation_free|floatformat:2 }}</td>
-            <td>{{ compensation.breakfast_free|floatformat:2 }}</td>
-            <td>{{ compensation.lunch_free|floatformat:2 }}</td>
-            <td>{{ compensation.supper_free|floatformat:2 }}</td>
+            <td>{{ compensation.accomodation_free }}</td>
+            <td>{{ compensation.breakfast_free }}</td>
+            <td>{{ compensation.lunch_free }}</td>
+            <td>{{ compensation.supper_free }}</td>
         </tr>
     {% endif %}
+    {% endlocalize %}
     {% endwith %}
 </table>
 
