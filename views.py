@@ -19,6 +19,11 @@ from zivinetz.models import Assignment, CompanyHoliday, Drudge,\
 
 
 class ZivinetzModelView(modelview.ModelView):
+    def get_context(self, request, context):
+        ctx = super(ZivinetzModelView, self).get_context(request, context)
+        ctx['base_template'] = 'zivinetz_base.html'
+        return ctx
+
     def get_form(self, request, instance=None, **kwargs):
         return modelform_factory(self.model,
             formfield_callback=towel_forms.stripped_formfield_callback, **kwargs)
