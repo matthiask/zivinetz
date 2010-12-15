@@ -17,9 +17,7 @@
         <table>
             {% for field in form.fields_iterator %}{% form_item field %}{% endfor %}
         </table>
-        <div class="buttons">
-            <button type="submit"><span>{% trans "Search" %}</span></button>
-        </div>
+        <button type="submit"><span>{% trans "Search" %}</span></button>
     </form>
 </div>
 

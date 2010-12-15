@@ -1,6 +1,8 @@
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 
+from towel.managers import SearchManager
+
 from django.contrib.auth.models import User
 from django.contrib.localflavor.ch import ch_states
 from django.db import models
@@ -233,6 +235,10 @@ class Drudge(models.Model):
             )
 
 
+class AssignmentManager(SearchManager):
+    search_fields = ('specification__scope_statement__name',)
+
+
 class Assignment(models.Model):
     TENTATIVE = 10
     ARRANGED = 20
@@ -272,6 +278,8 @@ class Assignment(models.Model):
         ordering = ['date_from']
         verbose_name = _('assignment')
         verbose_name_plural = _('assignments')
+
+    objects = AssignmentManager()
 
     def __unicode__(self):
         return u'%s (%s - %s)' % (

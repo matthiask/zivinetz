@@ -90,3 +90,25 @@ ul.messages li.info { background: #88aaff url(info.png) 5px 3px no-repeat; }
 ul.messages li.success { background: #88ff88 url(success.png) 5px 3px no-repeat; }
 ul.messages li.warning { background: #ffaa44 url(warning.png) 5px 3px no-repeat; }
 ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
+
+
+
+
+.searchbox {
+    padding: 10px; background: #cdcdcd; position: relative; }
+.searchbox a.searching { display: none; }
+.searchbox.searching a.searching {
+    display: block; width: 20px; height: 20px; background: url(img/clear.png);
+    position: absolute; right: 10px; top: 10px; text-indent: 000em; z-index: 999; }
+.searchbox.searching a.searching:hover { background-position: 0 -20px; }
+
+.searchbox button {
+    position: absolute;
+    bottom: 7px;
+    right: 10px;
+    background-color: #a0a0a0;
+}
+
+.searchbox label { width: 100px; }
+.searchbox select, .searchbox input { width: 250px; }
+.searchbox #id_query { width: 339px; }
