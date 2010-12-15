@@ -1,7 +1,7 @@
 div.buttons {
     border-top: 1px solid #cfcfcf;
     margin: 10px 0;
-    padding: 10px 3px 10px 3px;
+    padding: 10px 3px 10px 0;
 }
 
 div.buttons:after,
@@ -99,6 +99,8 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
     -moz-border-radius: 10px;
 }
 
+
+
 .searchbox {
     padding: 10px; background: #cdcdcd; position: relative; }
 .searchbox a.searching { display: none; }
@@ -125,5 +127,5 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 
 .pagination ul { list-style: none; }
 .pagination li { float: left; }
-.pagination a { display: block; padding: 4px; border: 1px solid #cfcfcf; margin-right: 3px; }
-.pagination span { display: block; padding: 4px; }
+.pagination a { display: block; padding: 2px 4px; border: 1px solid #cfcfcf; margin-right: 3px; }
+.pagination span { display: block; padding: 2px 4px; }
