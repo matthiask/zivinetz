@@ -4,7 +4,8 @@ div.buttons {
     padding: 10px 3px 10px 3px;
 }
 
-div.buttons:after {
+div.buttons:after,
+div.pagination:after {
 	content: ".";
 	display: block;
 	clear: both;
@@ -112,3 +113,12 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 .searchbox label { width: 100px; }
 .searchbox select, .searchbox input { width: 250px; }
 .searchbox #id_query { width: 339px; }
+
+.even {
+    background: #e8e8e8;
+}
+
+
+.pagination ul { list-style: none; }
+.pagination li { float: left; }
+.pagination a { display: block; padding: 4px; border: 1px solid #cfcfcf; margin-right: 3px; }

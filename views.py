@@ -118,7 +118,8 @@ class ExpenseReportModelView(ZivinetzModelView):
             }
 
 
-expense_report_views = ExpenseReportModelView(ExpenseReport)
+expense_report_views = ExpenseReportModelView(ExpenseReport,
+    paginate_by=5)
 
 
 

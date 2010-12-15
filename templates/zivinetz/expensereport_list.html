@@ -1,34 +1,29 @@
-{% extends base_template|default:"base.html" %}
+{% extends "modelview/object_list.html" %}
 
 {% load i18n modelview_list %}
 
-{% block content %}
-
-	<div class="buttons">
-		<a href="add/" class="button"><span>{% trans "New object" %}</span></a>
-	</div>
-
-	<table class="objects">
-	    <thead>
-            <tr>
-                <th>{% trans "object"|capfirst %}</th>
-                <th>{% trans "assignment"|capfirst %}</th>
-                <th>{% trans "total days"|capfirst %}</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for object in object_list %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <th>
-                    <a href="{{ object.get_absolute_url }}">
-                        {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
-                    </a>
-                </th>
-                {% for name, value in object|model_row:"assignment,total_days" %}
-                    <td>{{ value }}</td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
-        </tbody>
-	</table>
+{% block objects %}
+<table class="objects">
+    <thead>
+        <tr>
+            <th>{% trans "object"|capfirst %}</th>
+            <th>{% trans "assignment"|capfirst %}</th>
+            <th>{% trans "total days"|capfirst %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+        <tr class="{% cycle 'odd' 'even' %}">
+            <th>
+                <a href="{{ object.get_absolute_url }}">
+                    {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
+                </a>
+            </th>
+            {% for name, value in object|model_row:"assignment,total_days" %}
+                <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
