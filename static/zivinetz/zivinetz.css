@@ -4,6 +4,15 @@ div.buttons {
     padding: 10px 3px 10px 3px;
 }
 
+div.buttons:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+
 a.button, button {
     -webkit-border-radius: 5px;
     background: #cfcfcf;
