@@ -2,9 +2,10 @@
 
 import os
 
-from django.contrib import messages
+from django import forms
 from django.forms.models import modelform_factory, inlineformset_factory
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 from towel import modelview
 from towel import forms as towel_forms
@@ -29,6 +30,22 @@ class ZivinetzModelView(modelview.ModelView):
         return modelform_factory(self.model,
             formfield_callback=towel_forms.stripped_formfield_callback, **kwargs)
 
+    def list_view(self, request):
+        search_form = getattr(self, 'search_form', None)
+
+        ctx = {}
+        queryset = self.get_query_set(request)
+
+        if search_form:
+            form = search_form(request.GET, request=request)
+            data = form.safe_cleaned_data
+            queryset = form.apply_filters(queryset, data)
+
+            ctx['form'] = form
+
+        ctx[self.template_object_list_name] = queryset
+        return self.render_list(request, ctx)
+
 
 class RegionalOfficeModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
@@ -48,7 +65,23 @@ SpecificationFormSet = inlineformset_factory(ScopeStatement,
 scope_statement_views = ZivinetzModelView(ScopeStatement)
 specification_views = ZivinetzModelView(Specification)
 drudge_views = ZivinetzModelView(Drudge)
-assignment_views = ZivinetzModelView(Assignment)
+
+
+class AssignmentSearchForm(towel_forms.SearchForm):
+    default = {
+        'status': (Assignment.TENTATIVE, Assignment.ARRANGED),
+        }
+
+    specification__scope_statement = forms.ModelChoiceField(
+        ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'), required=False)
+    drudge = forms.ModelChoiceField(
+        Drudge.objects.all(), label=ugettext_lazy('drudge'), required=False)
+    status = forms.MultipleChoiceField(
+        Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
+
+
+assignment_views = ZivinetzModelView(Assignment,
+    search_form=AssignmentSearchForm)
 
 
 ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,

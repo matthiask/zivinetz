@@ -59,6 +59,10 @@ form input[type=text], form input[type=password], form select {
     min-width: 250px;
 }
 
+form select {
+    min-width: 0;
+}
+
 form input[type=radio], form input[type=checkbox] {
     margin-top: 7px;
 }
