@@ -475,6 +475,10 @@ class Assignment(models.Model):
                 )
 
 
+class ExpenseReportManager(SearchManager):
+    search_fields = ('report_no',)
+
+
 class ExpenseReport(models.Model):
     PENDING = 10
     FILLED = 20
@@ -511,6 +515,8 @@ class ExpenseReport(models.Model):
         ordering = ['date_from']
         verbose_name = _('expense report')
         verbose_name_plural = _('expense reports')
+
+    objects = ExpenseReportManager()
 
     def __unicode__(self):
         return u'%s - %s' % (self.date_from, self.date_until)

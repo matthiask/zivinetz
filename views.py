@@ -118,7 +118,13 @@ class ExpenseReportModelView(ZivinetzModelView):
             }
 
 
+class ExpenseReportSearchForm(towel_forms.SearchForm):
+    assignment = forms.ModelChoiceField(
+        Assignment.objects.all(), label=ugettext_lazy('assignment'), required=False)
+
+
 expense_report_views = ExpenseReportModelView(ExpenseReport,
+    search_form=ExpenseReportSearchForm,
     paginate_by=5)
 
 

@@ -93,7 +93,11 @@ ul.messages li.warning { background: #ffaa44 url(warning.png) 5px 3px no-repeat;
 ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 
 
-
+.box {
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+}
 
 .searchbox {
     padding: 10px; background: #cdcdcd; position: relative; }
@@ -122,3 +126,4 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 .pagination ul { list-style: none; }
 .pagination li { float: left; }
 .pagination a { display: block; padding: 4px; border: 1px solid #cfcfcf; margin-right: 3px; }
+.pagination span { display: block; padding: 4px; }
