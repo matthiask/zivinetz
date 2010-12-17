@@ -94,7 +94,8 @@ class AssignmentSearchForm(towel_forms.SearchForm):
 
 
 assignment_views = AssignmentModelView(Assignment,
-    search_form=AssignmentSearchForm)
+    search_form=AssignmentSearchForm,
+    paginate_by=50)
 
 
 ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
@@ -127,7 +128,7 @@ class ExpenseReportSearchForm(towel_forms.SearchForm):
 
 expense_report_views = ExpenseReportModelView(ExpenseReport,
     search_form=ExpenseReportSearchForm,
-    paginate_by=5)
+    paginate_by=50)
 
 
 
