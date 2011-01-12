@@ -6,7 +6,7 @@
 <h1>{% trans "scheduling"|capfirst %}</h1>
 
 
-<table id="scheduler">
+{% spaceless %}<table id="scheduler">
     <thead>
         <tr>
             <th></th>
@@ -17,25 +17,25 @@
         <tr>
             <th></th>
             {% for monday, year, week in scheduler.weeks %}
-                <th>W{{ week }}&nbsp;</th>
+                <th>W{{ week|stringformat:"02d" }}&nbsp;</th>
             {% endfor %}
         </tr>
     </thead>
 {% for assignment, scheduled in scheduler.assignments %}
     <tr>
-        <th>{{ assignment }}</th>
+        <th>{{ assignment.drudge }}</th>
         {% for week in scheduled %}
-            <td class="{{ week }}"></td>
+            <td{% if week %} class="a"{% endif %}></td>
         {% endfor %}
     </tr>
 {% endfor %}
-</table>
+</table>{% endspaceless %}
 
 <style type="text/css">
 #scheduler { background: #fff; }
 #scheduler td { border: 1px solid #444; }
+#scheduler th:first-child { white-space: nowrap; }
 #scheduler td.a { background-color: green; }
-
 </style>
 
 {% endblock %}
