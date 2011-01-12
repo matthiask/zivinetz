@@ -5,6 +5,18 @@
 {% block content %}
 <h1>{% trans "scheduling"|capfirst %}</h1>
 
+<style type="text/css">
+#scheduler .odd td { background: #fff; }
+#scheduler .even td { background-color: #e4e4e4; }
+
+#scheduler td { border: 1px solid #444; text-align: center; }
+#scheduler th:first-child { white-space: nowrap; }
+
+#scheduler tr.status10 td.a { background-color: orange; }
+#scheduler tr.status20 td.a { background-color: blue; }
+#scheduler tr.status30 td.a { background-color: green; }
+#scheduler tr.status40 td.a { background-color: grey; }
+</style>
 
 {% spaceless %}<table id="scheduler">
     <thead>
@@ -22,20 +34,13 @@
         </tr>
     </thead>
 {% for assignment, scheduled in scheduler.assignments %}
-    <tr>
+    <tr class="status{{ assignment.status }} {% cycle "odd" "even" %}">
         <th>{{ assignment.drudge }}</th>
-        {% for week in scheduled %}
-            <td{% if week %} class="a"{% endif %}></td>
+        {% for week, text in scheduled %}
+            <td{% if week %} class="a"{% endif %}>{{ text }}</td>
         {% endfor %}
     </tr>
 {% endfor %}
 </table>{% endspaceless %}
-
-<style type="text/css">
-#scheduler { background: #fff; }
-#scheduler td { border: 1px solid #444; }
-#scheduler th:first-child { white-space: nowrap; }
-#scheduler td.a { background-color: green; }
-</style>
 
 {% endblock %}

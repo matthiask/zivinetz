@@ -284,7 +284,7 @@ class Assignment(models.Model):
         default=TENTATIVE)
 
     class Meta:
-        ordering = ['date_from']
+        ordering = ['date_from', 'date_until']
         verbose_name = _('assignment')
         verbose_name_plural = _('assignments')
 

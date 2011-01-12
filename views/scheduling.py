@@ -77,9 +77,12 @@ class Scheduler(object):
         week_from = (date_from - self.date_from).days // 7
         week_until = (date_until - self.date_from).days // 7
 
-        weeks = [False] * week_from
-        weeks.extend([True] * (week_until - week_from + 1))
-        weeks.extend([False] * (self.week_count - week_until - 1))
+        weeks = [[False, '']] * week_from
+        weeks.append([True, date_from.day])
+        # TODO handle single-week assignments
+        weeks.extend([[True, '']] * (week_until - week_from - 1))
+        weeks.append([True, date_until.day])
+        weeks.extend([[False, '']] * (self.week_count - week_until - 1))
 
         return weeks
 
