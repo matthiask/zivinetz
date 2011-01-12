@@ -1,0 +1,41 @@
+{% extends "zivinetz_base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans "scheduling"|capfirst %}</h1>
+
+
+<table id="scheduler">
+    <thead>
+        <tr>
+            <th></th>
+            {% for monday, year, week in scheduler.weeks %}
+                <th>{% ifchanged year %}{{ year }}{% endifchanged %}</th>
+            {% endfor %}
+        </tr>
+        <tr>
+            <th></th>
+            {% for monday, year, week in scheduler.weeks %}
+                <th>W{{ week }}&nbsp;</th>
+            {% endfor %}
+        </tr>
+    </thead>
+{% for assignment, scheduled in scheduler.assignments %}
+    <tr>
+        <th>{{ assignment }}</th>
+        {% for week in scheduled %}
+            <td class="{{ week }}"></td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+</table>
+
+<style type="text/css">
+#scheduler { background: #fff; }
+#scheduler td { border: 1px solid #444; }
+#scheduler td.a { background-color: green; }
+
+</style>
+
+{% endblock %}

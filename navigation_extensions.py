@@ -47,4 +47,11 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 level=page.level+1,
                 tree_id=page.tree_id,
                 ),
+
+            PagePretender(
+                title=capfirst(_('scheduling')),
+                url='%sscheduling/' % url,
+                level=page.level+1,
+                tree_id=page.tree_id,
+                ),
             ]

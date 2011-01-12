@@ -14,4 +14,6 @@ urlpatterns = patterns('zivinetz.views',
     url(r'^drudges/', include(drudge_views.urls)),
     url(r'^assignments/', include(assignment_views.urls)),
     url(r'^expense_reports/', include(expense_report_views.urls)),
+
+    url(r'^scheduling/$', 'scheduling.scheduling'),
 )
