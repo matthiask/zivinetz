@@ -1,12 +1,12 @@
 from django.conf.urls.defaults import *
 
-from zivinetz.views import assignment_views, drudge_views,\
+from zivinetz.views.modelviews import assignment_views, drudge_views,\
     expense_report_views, regional_office_views, scope_statement_views,\
     specification_views
 
 
-urlpatterns = patterns('',
-    url(r'^assignments/pdf/(\d+)/$', 'zivinetz.views.assignment_pdf'),
+urlpatterns = patterns('zivinetz.views',
+    url(r'^assignments/pdf/(\d+)/$', 'reporting.assignment_pdf'),
 
     url(r'^regional_offices/', include(regional_office_views.urls)),
     url(r'^scope_statements/', include(scope_statement_views.urls)),
