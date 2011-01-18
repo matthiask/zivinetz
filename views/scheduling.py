@@ -94,7 +94,7 @@ class Scheduler(object):
 
     def assignments(self):
         for assignment in self.queryset.select_related('specification__scope_statement',
-                'drudge'):
+                'drudge').order_by('date_from', 'date_until'):
             yield assignment, self._schedule_assignment(
                 assignment.date_from, assignment.determine_date_until())
 
@@ -118,10 +118,7 @@ class SchedulingSearchForm(SearchForm):
 
 def scheduling(request):
     search_form = SchedulingSearchForm(request.GET, request=request)
-    data = search_form.safe_cleaned_data
-
-    scheduler = Scheduler(search_form.apply_filters(
-        Assignment.objects.search(data.get('query')), data))
+    scheduler = Scheduler(search_form.queryset(Assignment))
 
     return render(request, 'zivinetz/scheduling.html', {
         'scheduler': scheduler,
