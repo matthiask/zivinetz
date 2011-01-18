@@ -65,17 +65,19 @@ class Scheduler(object):
         if max_ext['max']:
             self.date_until = max(self.date_until, max_ext['max'])
 
-        self.week_count = (self.date_until - self.date_from).days // 7 + 1
+        if self.date_from: # Is None if no assignments in queryset
+            self.week_count = (self.date_until - self.date_from).days // 7 + 1
 
     def weeks(self):
-        monday = self.date_from - timedelta(days=self.date_from.weekday())
+        if self.date_from:
+            monday = self.date_from - timedelta(days=self.date_from.weekday())
 
-        while True:
-            yield (monday,) + calendar_week(monday)
+            while True:
+                yield (monday,) + calendar_week(monday)
 
-            monday += timedelta(days=7)
-            if monday > self.date_until:
-                break
+                monday += timedelta(days=7)
+                if monday > self.date_until:
+                    break
 
     def _schedule_assignment(self, date_from, date_until):
         week_from = (date_from - self.date_from).days // 7
