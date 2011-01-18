@@ -1,10 +1,14 @@
 import calendar
 from datetime import datetime, date, timedelta
 
+from django import forms
 from django.db.models import Max, Min
 from django.shortcuts import render
+from django.utils.translation import ugettext_lazy
 
-from zivinetz.models import Assignment
+from towel.forms import SearchForm, stripped_formfield_callback
+
+from zivinetz.models import Assignment, Specification
 
 
 # Calendar week calculation according to ISO 8601
@@ -93,9 +97,23 @@ class Scheduler(object):
                 assignment.date_from, assignment.determine_date_until())
 
 
+class SchedulingSearchForm(SearchForm):
+    specification = forms.ModelMultipleChoiceField(Specification.objects.all(),
+        label=ugettext_lazy('specification'), required=False)
+    date_from__gte = forms.DateField(label=ugettext_lazy('Start date after'),
+        required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
+    date_from__lte = forms.DateField(label=ugettext_lazy('Start date before'),
+        required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+
 def scheduling(request):
-    scheduler = Scheduler(Assignment.objects.all())
+    search_form = SchedulingSearchForm(request.GET, request=request)
+    data = search_form.safe_cleaned_data
+
+    scheduler = Scheduler(search_form.apply_filters(
+        Assignment.objects.search(data.get('query')), data))
 
     return render(request, 'zivinetz/scheduling.html', {
         'scheduler': scheduler,
+        'search_form': search_form,
         })

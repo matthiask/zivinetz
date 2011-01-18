@@ -62,6 +62,8 @@ class Specification(models.Model):
         verbose_name=_('scope statement'), related_name='specifications')
 
     with_accomodation = models.BooleanField(_('with accomodation'))
+    code = models.CharField(_('code'), max_length=10,
+        help_text=_('Short, unique code identifying this specification.'))
 
     accomodation_working = models.CharField(_('accomodation on working days'), **ACCOMODATION.kwargs)
     breakfast_working = models.CharField(_('breakfast on working days'), **MEAL.kwargs)

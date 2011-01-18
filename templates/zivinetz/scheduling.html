@@ -1,9 +1,25 @@
 {% extends "zivinetz_base.html" %}
 
-{% load i18n %}
+{% load i18n towel_form_tags %}
 
 {% block content %}
 <h1>{% trans "scheduling"|capfirst %}</h1>
+
+<div class="box searchbox {{ search_form.searching }}">
+    <a href="?clear=1" class="searching">clear</a>
+
+    <form id="filterform" method="get" action=".">
+        <input type="hidden" name="s" value="1" />
+        {% form_item_plain search_form.query %}
+        {% for field in search_form.fields_iterator %}
+            {% if forloop.first %}<table>{% endif %}
+            {% form_item field %}
+            {% if forloop.last %}</table>{% endif %}
+        {% endfor %}
+        <button type="submit"><span>{% trans "Search" %}</span></button>
+    </form>
+</div>
+
 
 <style type="text/css">
 #scheduler .odd td { background: #fff; }
@@ -21,13 +37,13 @@
 {% spaceless %}<table id="scheduler">
     <thead>
         <tr>
-            <th></th>
+            <th colspan="2"></th>
             {% for monday, year, week in scheduler.weeks %}
                 <th>{% ifchanged year %}{{ year }}{% endifchanged %}</th>
             {% endfor %}
         </tr>
         <tr>
-            <th></th>
+            <th colspan="2"></th>
             {% for monday, year, week in scheduler.weeks %}
                 <th>W{{ week|stringformat:"02d" }}&nbsp;</th>
             {% endfor %}
@@ -36,6 +52,7 @@
 {% for assignment, scheduled in scheduler.assignments %}
     <tr class="status{{ assignment.status }} {% cycle "odd" "even" %}">
         <th>{{ assignment.drudge }}</th>
+        <th>{{ assignment.specification.code }}</th>
         {% for week, text in scheduled %}
             <td{% if week %} class="a"{% endif %}>{{ text }}</td>
         {% endfor %}

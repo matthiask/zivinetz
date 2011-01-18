@@ -1,6 +1,6 @@
 {% extends base_template|default:"base.html" %}
 
-{% load i18n l10n %}
+{% load i18n l10n towel_form_tags %}
 
 {% block title %}{{ title }} - {{ block.super }}{% endblock %}
 
@@ -9,21 +9,14 @@
 
 <form method="post" action=".">{% csrf_token %}
 
-{{ form.errors }}
+{% form_errors form formsets %}
 
 <table>
-    <tr>
-        <th>{{ form.scope_statement.label_tag }}</th>
-        <td>{{ form.scope_statement }}</td>
-    </tr>
-    <tr>
-        <th>{{ form.with_accomodation.label_tag }}</th>
-        <td>{{ form.with_accomodation }}</td>
-    </tr>
-    <tr>
-        <th>{{ form.clothing.label_tag }}</th>
-        <td>{{ form.clothing }}</td>
-    </tr>
+    {% form_item form.scope_statement %}
+    {% form_item form.with_accomodation %}
+    {% form_item form.code %}
+    {% form_item form.clothing %}
+
     {% for key, formset in formsets.items %}
         {{ formset }}
     {% endfor %}
@@ -39,24 +32,24 @@
     </tr>
     <tr>
         <th>{% trans "working days"|capfirst %}</th>
-        <td>{{ form.accomodation_working }}</td>
-        <td>{{ form.breakfast_working }}</td>
-        <td>{{ form.lunch_working }}</td>
-        <td>{{ form.supper_working }}</td>
+        <td>{% form_item_plain form.accomodation_working %}</td>
+        <td>{% form_item_plain form.breakfast_working %}</td>
+        <td>{% form_item_plain form.lunch_working %}</td>
+        <td>{% form_item_plain form.supper_working %}</td>
     </tr>
     <tr>
         <th>{% trans "sick days"|capfirst %}</th>
-        <td>{{ form.accomodation_sick }}</td>
-        <td>{{ form.breakfast_sick }}</td>
-        <td>{{ form.lunch_sick }}</td>
-        <td>{{ form.supper_sick }}</td>
+        <td>{% form_item_plain form.accomodation_sick %}</td>
+        <td>{% form_item_plain form.breakfast_sick %}</td>
+        <td>{% form_item_plain form.lunch_sick %}</td>
+        <td>{% form_item_plain form.supper_sick %}</td>
     </tr>
     <tr>
         <th>{% trans "free days"|capfirst %}</th>
-        <td>{{ form.accomodation_free }}</td>
-        <td>{{ form.breakfast_free }}</td>
-        <td>{{ form.lunch_free }}</td>
-        <td>{{ form.supper_free }}</td>
+        <td>{% form_item_plain form.accomodation_free %}</td>
+        <td>{% form_item_plain form.breakfast_free %}</td>
+        <td>{% form_item_plain form.lunch_free %}</td>
+        <td>{% form_item_plain form.supper_free %}</td>
     </tr>
 
     {% with object.compensation as compensation %}
