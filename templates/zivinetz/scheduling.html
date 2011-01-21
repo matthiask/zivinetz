@@ -51,7 +51,7 @@
     </thead>
 {% for assignment, scheduled in scheduler.assignments %}
     <tr class="status{{ assignment.status }} {% cycle "odd" "even" %}">
-        <th>{{ assignment.drudge }}</th>
+        <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge }}</a></th>
         <th>{{ assignment.specification.code }}</th>
         {% for week, text in scheduled %}
             <td{% if week %} class="a"{% endif %}>{{ text }}</td>
