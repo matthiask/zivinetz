@@ -100,20 +100,17 @@ class Scheduler(object):
 
 
 class SchedulingSearchForm(SearchForm):
+    default = {
+        'date_from__gte': lambda request: date(date.today().year, 1, 1),
+        'date_from__lte': lambda request: date(date.today().year, 12, 31),
+        }
+
     specification = forms.ModelMultipleChoiceField(Specification.objects.all(),
         label=ugettext_lazy('specification'), required=False)
     date_from__gte = forms.DateField(label=ugettext_lazy('Start date after'),
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
     date_from__lte = forms.DateField(label=ugettext_lazy('Start date before'),
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
-
-    def prepare_data(self, data, request):
-        if 'date_from__gte' not in data:
-            data = data.copy()
-            data['date_from__gte'] = date(date.today().year, 1, 1)
-            data['date_from__lte'] = date(date.today().year, 12, 31)
-
-        return data
 
 
 def scheduling(request):
