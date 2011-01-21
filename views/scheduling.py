@@ -53,8 +53,9 @@ def calendar_week(day):
 
 
 class Scheduler(object):
-    def __init__(self, assignments):
+    def __init__(self, assignments, date_range):
         self.queryset = assignments
+        self.date_range = date_range
 
         max_min = self.queryset.aggregate(min=Min('date_from'), max=Max('date_until'))
         max_ext = self.queryset.filter(date_until_extension__isnull=False).aggregate(
@@ -69,16 +70,24 @@ class Scheduler(object):
         if self.date_from: # Is None if no assignments in queryset
             self.week_count = (self.date_until - self.date_from).days // 7 + 1
 
+            self.date_slice = slice(
+                (self.date_range[0] - self.date_from).days // 7,
+                (self.date_range[1] - self.date_from).days // 7 + 1)
+
     def weeks(self):
+        ret = []
+
         if self.date_from:
             monday = self.date_from - timedelta(days=self.date_from.weekday())
 
             while True:
-                yield (monday,) + calendar_week(monday)
+                ret.append((monday,) + calendar_week(monday))
 
                 monday += timedelta(days=7)
                 if monday > self.date_until:
                     break
+
+        return ret[self.date_slice]
 
     def _schedule_assignment(self, date_from, date_until):
         week_from = (date_from - self.date_from).days // 7
@@ -91,7 +100,7 @@ class Scheduler(object):
         weeks.append([1, date_until.day])
         weeks.extend([[0, '']] * (self.week_count - week_until - 1))
 
-        return weeks
+        return weeks[self.date_slice]
 
     def assignments(self):
         assignments = [(
@@ -112,21 +121,29 @@ class Scheduler(object):
 
 class SchedulingSearchForm(SearchForm):
     default = {
-        'date_from__gte': lambda request: date(date.today().year, 1, 1),
+        'date_until__gte': lambda request: date(date.today().year, 1, 1),
         'date_from__lte': lambda request: date(date.today().year, 12, 31),
         }
 
     specification = forms.ModelMultipleChoiceField(Specification.objects.all(),
         label=ugettext_lazy('specification'), required=False)
-    date_from__gte = forms.DateField(label=ugettext_lazy('Start date after'),
+    date_until__gte = forms.DateField(label=ugettext_lazy('Start date'),
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
-    date_from__lte = forms.DateField(label=ugettext_lazy('Start date before'),
+    date_from__lte = forms.DateField(label=ugettext_lazy('End date'),
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+    def queryset(self):
+        data = self.safe_cleaned_data
+        queryset = self.apply_filters(Assignment.objects.search(data.get('query')),
+            data, exclude=())
+        return queryset
 
 
 def scheduling(request):
     search_form = SchedulingSearchForm(request.GET, request=request)
-    scheduler = Scheduler(search_form.queryset(Assignment))
+    scheduler = Scheduler(search_form.queryset(), (
+        search_form.safe_cleaned_data.get('date_until__gte'),
+        search_form.safe_cleaned_data.get('date_from__lte')))
 
     return render(request, 'zivinetz/scheduling.html', {
         'scheduler': scheduler,
