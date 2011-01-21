@@ -72,7 +72,7 @@ class Scheduler(object):
 
             self.date_slice = slice(
                 (self.date_range[0] - self.date_from).days // 7,
-                (self.date_range[1] - self.date_from).days // 7 + 1)
+                (self.date_range[1] - self.date_from).days // 7 + 2)
 
     def weeks(self):
         ret = []
