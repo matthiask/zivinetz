@@ -1,5 +1,6 @@
 import calendar
 from datetime import datetime, date, timedelta
+import operator
 
 from django import forms
 from django.db.models import Max, Min
@@ -83,20 +84,30 @@ class Scheduler(object):
         week_from = (date_from - self.date_from).days // 7
         week_until = (date_until - self.date_from).days // 7
 
-        weeks = [[False, '']] * week_from
-        weeks.append([True, date_from.day])
+        weeks = [[0, '']] * week_from
+        weeks.append([1, date_from.day])
         # TODO handle single-week assignments
-        weeks.extend([[True, '']] * (week_until - week_from - 1))
-        weeks.append([True, date_until.day])
-        weeks.extend([[False, '']] * (self.week_count - week_until - 1))
+        weeks.extend([[1, '']] * (week_until - week_from - 1))
+        weeks.append([1, date_until.day])
+        weeks.extend([[0, '']] * (self.week_count - week_until - 1))
 
         return weeks
 
     def assignments(self):
-        for assignment in self.queryset.select_related('specification__scope_statement',
-                'drudge').order_by('date_from', 'date_until'):
-            yield assignment, self._schedule_assignment(
-                assignment.date_from, assignment.determine_date_until())
+        assignments = [(
+            assignment,
+            self._schedule_assignment(assignment.date_from, assignment.determine_date_until()),
+            ) for assignment in self.queryset.select_related('specification__scope_statement',
+                'drudge').order_by('date_from', 'date_until')]
+
+        data = [[a for a, b in d] for a, d in assignments]
+
+        return [[
+            None, [(sum(week), sum(week)) for week in zip(*data)]
+            ]] + assignments
+
+
+        return assignments
 
 
 class SchedulingSearchForm(SearchForm):
