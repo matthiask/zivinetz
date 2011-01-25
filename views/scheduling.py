@@ -4,6 +4,7 @@ import operator
 
 from django import forms
 from django.db.models import Max, Min
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import ugettext_lazy
 
@@ -87,7 +88,9 @@ class Scheduler(object):
                 if monday > self.date_until:
                     break
 
-        return ret[self.date_slice]
+            ret = ret[self.date_slice]
+
+        return ret
 
     def _schedule_assignment(self, date_from, date_until):
         week_from = (date_from - self.date_from).days // 7
@@ -115,7 +118,6 @@ class Scheduler(object):
             None, [(sum(week), sum(week)) for week in zip(*data)]
             ]] + assignments
 
-
         return assignments
 
 
@@ -141,9 +143,14 @@ class SchedulingSearchForm(SearchForm):
 
 def scheduling(request):
     search_form = SchedulingSearchForm(request.GET, request=request)
-    scheduler = Scheduler(search_form.queryset(), (
+
+    date_range = (
         search_form.safe_cleaned_data.get('date_until__gte'),
-        search_form.safe_cleaned_data.get('date_from__lte')))
+        search_form.safe_cleaned_data.get('date_from__lte'))
+    if not all(date_range):
+        return HttpResponseRedirect('?clear=1')
+
+    scheduler = Scheduler(search_form.queryset(), date_range)
 
     return render(request, 'zivinetz/scheduling.html', {
         'scheduler': scheduler,
