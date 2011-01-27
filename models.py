@@ -233,6 +233,7 @@ class Drudge(models.Model):
         blank=True)
 
     class Meta:
+        ordering = ['user__first_name', 'user__last_name', 'zdp_no']
         verbose_name = _('drudge')
         verbose_name_plural = _('drudges')
 
