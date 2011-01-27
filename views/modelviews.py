@@ -29,7 +29,6 @@ class RegionalOfficeModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [RegionalOffice])
 
-
 regional_office_views = RegionalOfficeModelView(RegionalOffice)
 
 
@@ -44,7 +43,6 @@ class ScopeStatementModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [ScopeStatement, Specification])
 
-
 scope_statement_views = ScopeStatementModelView(ScopeStatement)
 
 
@@ -52,44 +50,40 @@ class SpecificationModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Specification])
 
-
 specification_views = SpecificationModelView(Specification)
 
 
 class DrudgeModelView(ZivinetzModelView):
+    paginate_by = 50
+
+    class search_form(towel_forms.SearchForm):
+        pass
+
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Drudge])
 
-
-class DrudgeSearchForm(towel_forms.SearchForm):
-    pass
-
-
-drudge_views = DrudgeModelView(Drudge,
-    search_form=DrudgeSearchForm)
+drudge_views = DrudgeModelView(Drudge)
 
 
 class AssignmentModelView(ZivinetzModelView):
+    paginate_by = 50
+
+    class search_form(towel_forms.SearchForm):
+        default = {
+            'status': (Assignment.TENTATIVE, Assignment.ARRANGED),
+            }
+
+        specification__scope_statement = forms.ModelChoiceField(
+            ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'), required=False)
+        drudge = forms.ModelChoiceField(
+            Drudge.objects.all(), label=ugettext_lazy('drudge'), required=False)
+        status = forms.MultipleChoiceField(
+            Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
+
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Assignment])
 
-
-class AssignmentSearchForm(towel_forms.SearchForm):
-    default = {
-        'status': (Assignment.TENTATIVE, Assignment.ARRANGED),
-        }
-
-    specification__scope_statement = forms.ModelChoiceField(
-        ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'), required=False)
-    drudge = forms.ModelChoiceField(
-        Drudge.objects.all(), label=ugettext_lazy('drudge'), required=False)
-    status = forms.MultipleChoiceField(
-        Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
-
-
-assignment_views = AssignmentModelView(Assignment,
-    search_form=AssignmentSearchForm,
-    paginate_by=50)
+assignment_views = AssignmentModelView(Assignment)
 
 
 ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
@@ -100,6 +94,14 @@ ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
 
 
 class ExpenseReportModelView(ZivinetzModelView):
+    paginate_by = 50
+
+    class search_form(towel_forms.SearchForm):
+        assignment = forms.ModelChoiceField(
+            Assignment.objects.all(), label=ugettext_lazy('assignment'), required=False)
+        assignment__drudge = forms.ModelChoiceField(
+            Drudge.objects.all(), label=ugettext_lazy('drudge'), required=False)
+
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance,
             [ExpenseReport, ExpenseReportPeriod])
@@ -112,15 +114,4 @@ class ExpenseReportModelView(ZivinetzModelView):
             'periods': ExpenseReportPeriodFormSet(*args, **kwargs),
             }
 
-
-class ExpenseReportSearchForm(towel_forms.SearchForm):
-    assignment = forms.ModelChoiceField(
-        Assignment.objects.all(), label=ugettext_lazy('assignment'), required=False)
-    assignment__drudge = forms.ModelChoiceField(
-        Drudge.objects.all(), label=ugettext_lazy('drudge'), required=False)
-
-
-expense_report_views = ExpenseReportModelView(ExpenseReport,
-    search_form=ExpenseReportSearchForm,
-    paginate_by=50)
-
+expense_report_views = ExpenseReportModelView(ExpenseReport)
