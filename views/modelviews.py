@@ -1,6 +1,8 @@
 # coding=utf-8
 
 from django import forms
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.forms.models import modelform_factory, inlineformset_factory
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext as _, ugettext_lazy
@@ -15,6 +17,12 @@ from zivinetz.models import Assignment, CompanyHoliday, Drudge,\
 
 
 class ZivinetzModelView(modelview.ModelView):
+    def view_decorator(self, func):
+        return login_required(func)
+
+    def crud_view_decorator(self, func):
+        return staff_member_required(func)
+
     def get_context(self, request, context):
         ctx = super(ZivinetzModelView, self).get_context(request, context)
         ctx['base_template'] = 'zivinetz_base.html'
