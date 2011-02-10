@@ -129,3 +129,6 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 .pagination li { float: left; }
 .pagination a { display: block; padding: 2px 4px; border: 1px solid #cfcfcf; margin-right: 3px; }
 .pagination span { display: block; padding: 2px 4px; }
+
+table.objects { width: 97%; }
+table.objects th, table.objects td { padding: 2px 3px 2px 3px; }
