@@ -179,6 +179,10 @@ class CompensationSet(models.Model):
 
 class RegionalOffice(models.Model):
     name = models.CharField(_('name'), max_length=100)
+    city = models.CharField(_('city'), max_length=100)
+    address = models.TextField(_('address'), blank=True)
+    code = models.CharField(_('code'), max_length=10,
+        help_text=_('Short, unique identifier.'))
 
     class Meta:
         ordering = ['name']
