@@ -3,5 +3,5 @@ from django.shortcuts import render
 
 
 def home(request):
-    return render(request, 'zivinetz_base.html', {
+    return render(request, 'zivinetz/base.html', {
         })

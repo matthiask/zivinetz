@@ -25,7 +25,7 @@ class ZivinetzModelView(modelview.ModelView):
 
     def get_context(self, request, context):
         ctx = super(ZivinetzModelView, self).get_context(request, context)
-        ctx['base_template'] = 'zivinetz_base.html'
+        ctx['base_template'] = 'zivinetz/base.html'
         return ctx
 
     def get_form(self, request, instance=None, **kwargs):
