@@ -3,6 +3,7 @@ from datetime import datetime, date, timedelta
 import operator
 
 from django import forms
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Max, Min
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -141,6 +142,7 @@ class SchedulingSearchForm(SearchForm):
         return queryset
 
 
+@staff_member_required
 def scheduling(request):
     search_form = SchedulingSearchForm(request.GET, request=request)
 

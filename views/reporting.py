@@ -2,6 +2,8 @@
 
 import os
 
+from django.contrib.admin.views.decorators import staff_member_required
+
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
 from pdfdocument.utils import pdf_response
@@ -224,6 +226,7 @@ class AssignmentPDFStationery(object):
         # TODO automatically draw arrangement marker?
 
 
+@staff_member_required
 def assignment_pdf(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
 
@@ -236,12 +239,3 @@ def assignment_pdf(request, assignment_id):
 
     pdf.generate()
     return response
-
-
-def scheduling(request):
-    assignments = Assignment.objects.select_related('specification__scope_statement',
-        'drudge')
-
-    return render(request, 'zivinetz/scheduling.html', {
-        'assignments': assignments,
-        })
