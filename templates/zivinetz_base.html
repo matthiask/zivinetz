@@ -12,8 +12,13 @@
 {% endblock %}
 
 {% block content-before %}{{ block.super }}
+<div class="span-22 prepend-1 append-1 last">
 {% feincms_navigation of feincms_page as pages level=4 %}
 {% for page in pages %}
     <a {% if page|is_equal_or_parent_of:feincms_page %}class="current"{% endif %} href="{{ page.get_navigation_url }}"><span>{{ page.title }}</span></a>
 {% endfor %}
+{% endblock %}
+
+{% block content-after %}
+</div>
 {% endblock %}
