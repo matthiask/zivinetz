@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load feincms_tags feincms_page_tags i18n %}
+
 {% block extra-head %}{{ block.super }}
 
 <script type="text/javascript" src="{{ STATIC_URL }}towel/towel.js"></script>
@@ -7,4 +9,11 @@
 
 <link rel="stylesheet" href="{{ STATIC_URL }}zivinetz/zivinetz.css" type="text/css" media="screen, projection, print" />
 <script type="text/javascript" src="{{ STATIC_URL }}zivinetz/zivinetz.js"></script>
+{% endblock %}
+
+{% block content-before %}{{ block.super }}
+{% feincms_navigation of feincms_page as pages level=4 %}
+{% for page in pages %}
+    <a {% if page|is_equal_or_parent_of:feincms_page %}class="current"{% endif %} href="{{ page.get_navigation_url }}"><span>{{ page.title }}</span></a>
+{% endfor %}
 {% endblock %}
