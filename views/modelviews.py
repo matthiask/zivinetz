@@ -65,7 +65,8 @@ class DrudgeModelView(ZivinetzModelView):
     paginate_by = 50
 
     class search_form(towel_forms.SearchForm):
-        pass
+        regional_office = forms.ModelChoiceField(RegionalOffice.objects.all(),
+            label=ugettext_lazy('regional office'), required=False)
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Drudge])

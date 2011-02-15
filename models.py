@@ -236,6 +236,9 @@ class Drudge(models.Model):
     other_card = models.CharField(_('other card'), max_length=100,
         blank=True)
 
+    regional_office = models.ForeignKey(RegionalOffice, verbose_name=_('regional office'))
+    notes = models.TextField(_('notes'), blank=True)
+
     class Meta:
         ordering = ['user__last_name', 'user__first_name', 'zdp_no']
         verbose_name = _('drudge')
