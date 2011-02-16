@@ -3,8 +3,11 @@
 from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.core import urlresolvers
 from django.forms.models import modelform_factory, inlineformset_factory
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils import simplejson
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from towel import modelview
@@ -64,6 +67,19 @@ specification_views = SpecificationModelView(Specification)
 class DrudgeModelView(ZivinetzModelView):
     paginate_by = 50
 
+    def get_action_urls(self):
+        return [
+            (r'^autocomplete/$', self.autocomplete, 'autocomplete'),
+        ]
+
+    def autocomplete(self, request):
+        queryset = Drudge.objects.search(request.GET.get('term', ''))
+
+        return HttpResponse(simplejson.dumps([{
+            'label': unicode(d),
+            'value': d.id,
+            } for d in queryset[:20]]), mimetype='application/json')
+
     class search_form(towel_forms.SearchForm):
         regional_office = forms.ModelChoiceField(RegionalOffice.objects.all(),
             label=ugettext_lazy('regional office'), required=False)
@@ -99,8 +115,10 @@ class AssignmentModelView(ZivinetzModelView):
 
         specification__scope_statement = forms.ModelChoiceField(
             ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'), required=False)
-        drudge = forms.ModelChoiceField(
-            Drudge.objects.all(), label=ugettext_lazy('drudge'), required=False)
+        drudge = forms.ModelChoiceField(Drudge.objects.all(),
+            widget=towel_forms.ModelAutocompleteWidget(url=
+                lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
+            label=ugettext_lazy('drudge'), required=False)
         status = forms.MultipleChoiceField(
             Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
 
