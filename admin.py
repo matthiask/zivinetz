@@ -57,7 +57,11 @@ admin.site.register(models.CompensationSet,
 
 admin.site.register(models.RegionalOffice)
 
-admin.site.register(models.Drudge)
+admin.site.register(models.Drudge,
+    list_display=('__unicode__', 'date_of_birth', 'phone_home', 'phone_office', 'mobile', 'regional_office'),
+    list_filter=('regional_office', 'driving_license'),
+    search_fields=('user__first_name', 'user__last_name', 'user__email', 'address', 'zip_code', 'city'),
+    )
 
 admin.site.register(models.Assignment,
     date_hierarchy='date_from',
