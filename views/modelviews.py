@@ -67,6 +67,21 @@ class DrudgeModelView(ZivinetzModelView):
     class search_form(towel_forms.SearchForm):
         regional_office = forms.ModelChoiceField(RegionalOffice.objects.all(),
             label=ugettext_lazy('regional office'), required=False)
+        only_active = forms.BooleanField(label=ugettext_lazy('only active'),
+            required=False)
+
+        def queryset(self, model):
+            data = self.safe_cleaned_data
+            queryset = self.apply_filters(model.objects.search(data.get('query')),
+                data, exclude=('only_active',))
+
+            from datetime import date
+            if data.get('only_active'):
+                queryset = queryset.filter(
+                    id__in=Assignment.objects.for_date().filter(status__in=(
+                        Assignment.ARRANGED, Assignment.MOBILIZED)).values('drudge'))
+
+            return queryset
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Drudge])

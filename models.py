@@ -6,6 +6,7 @@ from towel.managers import SearchManager
 from django.contrib.auth.models import User
 from django.contrib.localflavor.ch import ch_states
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 
@@ -256,6 +257,16 @@ class Drudge(models.Model):
 
 class AssignmentManager(SearchManager):
     search_fields = ('specification__scope_statement__name',)
+
+    def for_date(self, day=None):
+        day = day if day else date.today()
+
+        return self.filter(
+            Q(date_from__lte=day) & (
+                Q(date_until__gte=day) | (
+                    Q(date_until_extension__isnull=False) & Q(date_until_extension__gte=day)
+                )
+            ))
 
 
 class Assignment(models.Model):
