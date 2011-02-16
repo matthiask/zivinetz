@@ -456,7 +456,7 @@ class Assignment(models.Model):
 
     @models.permalink
     def pdf_url(self):
-        return ('zivinetz.views.assignment_pdf', (self.pk,), {})
+        return ('zivinetz.views.reporting.assignment_pdf', (self.pk,), {})
 
     def admin_pdf_url(self):
         return u'<a href="%s">PDF</a>' % self.pdf_url()
