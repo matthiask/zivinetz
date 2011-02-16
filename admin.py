@@ -72,7 +72,8 @@ class ExpenseReportPeriodInline(admin.TabularInline):
 
 admin.site.register(models.ExpenseReport,
     date_hierarchy='date_from',
-    list_display=('__unicode__', 'assignment', 'date_from', 'date_until'),
+    list_display=('__unicode__', 'assignment', 'date_from', 'date_until', 'status'),
+    list_filter=('status',),
     inlines=[ExpenseReportPeriodInline],
     raw_id_fields=('assignment',),
     )
