@@ -22,6 +22,8 @@
 
 
 <style type="text/css">
+#scheduler { background: #eee; border-collapse: collapse; font-size: 80%; }
+#scheduler td, #scheduler th { padding: 0; }
 #scheduler td { border: 1px solid #444; text-align: center; }
 #scheduler th:first-child { white-space: nowrap; }
 
@@ -29,6 +31,9 @@
 #scheduler tr.status20 td.a { background-color: blue; }
 #scheduler tr.status30 td.a { background-color: green; }
 #scheduler tr.status40 td.a { background-color: grey; }
+
+#scheduler tr:nth-child(10n),
+#scheduler td:nth-child(10n+2) { background-color: #ccc; }
 </style>
 
 {% spaceless %}<table id="scheduler">
