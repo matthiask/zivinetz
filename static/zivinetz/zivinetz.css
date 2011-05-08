@@ -1,11 +1,11 @@
-div.buttons {
+#content div.buttons {
     border-top: 1px solid #cfcfcf;
     margin: 10px 0;
     padding: 10px 3px 10px 0;
 }
 
-div.buttons:after,
-div.pagination:after {
+#content div.buttons:after,
+#content div.pagination:after {
 	content: ".";
 	display: block;
 	clear: both;
@@ -14,7 +14,8 @@ div.pagination:after {
 	height: 0;
 }
 
-a.button, button {
+#content a.button,
+#content button {
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -30,48 +31,54 @@ a.button, button {
     border: none;
 }
 
-a.button:hover, button:hover {
+#content a.button:hover,
+#content button:hover {
     background-color: #a0a0a0;
     color: #ffffff;
 }
 
-a.button.right button.right {
+#content a.button.right,
+#content button.right {
     float: right;
 }
 
-label {
+#content label {
     display: block;
     font-weight: normal;
     padding-top: 7px;
 }
 
-.required label {
+#content .required label {
     font-weight: bold;
 }
 
-.empty { display: none; }
+#content .empty { display: none; }
 
-.invalid label { color: red; }
-.invalid input { border-color: red; border-left: 5px solid red; padding-left: 5px; }
+#content .invalid label { color: red; }
+#content .invalid input { border-color: red; border-left: 5px solid red; padding-left: 5px; }
 
-form input[type=text], form input[type=password], form select {
+#content form input[type=text],
+#content form input[type=password],
+#content form select {
     border: 1px solid #cfcfcf;
     padding: 7px 5px 7px 9px;
     min-width: 250px;
 }
 
-form select {
+#content form select {
     min-width: 0;
 }
 
-form input[type=radio], form input[type=checkbox] {
+#content form input[type=radio],
+#content form input[type=checkbox] {
     margin-top: 7px;
 }
 
-input[readonly] { background: #e8e8e8; }
+#content input[readonly] { background: #e8e8e8; }
 
-form table { width: auto; }
-form th, form td { padding: 2px 5px 2px 0; }
+#content form table { width: auto; }
+#content form th,
+#content form td { padding: 2px 5px 2px 0; }
 
 
 ul.messages {
@@ -93,7 +100,7 @@ ul.messages li.warning { background: #ffaa44 url(warning.png) 5px 3px no-repeat;
 ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 
 
-.box {
+#content .box {
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -101,34 +108,36 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 
 
 
-.searchbox {
+#content .searchbox {
     padding: 10px; background: #cdcdcd; position: relative; }
-.searchbox a.searching { display: none; }
-.searchbox.searching a.searching {
+#content .searchbox a.searching { display: none; }
+#content .searchbox.searching a.searching {
     display: block; width: 20px; height: 20px; background: url(img/clear.png);
     position: absolute; right: 10px; top: 10px; text-indent: 000em; z-index: 999; }
-.searchbox.searching a.searching:hover { background-position: 0 -20px; }
+#content .searchbox.searching a.searching:hover { background-position: 0 -20px; }
 
-.searchbox button {
+#content .searchbox button {
     position: absolute;
     bottom: 7px;
     left: 380px;
     background-color: #a0a0a0;
 }
 
-.searchbox label { width: 100px; }
-.searchbox select, .searchbox input { width: 250px; }
-.searchbox #id_query { width: 339px; }
+#content .searchbox label { width: 100px; }
+#content .searchbox select,
+#content .searchbox input { width: 250px; }
+#content .searchbox #id_query { width: 339px; }
 
-.even {
+#content .even {
     background: #e8e8e8;
 }
 
 
-.pagination ul { list-style: none; }
-.pagination li { float: left; }
-.pagination a { display: block; padding: 2px 4px; border: 1px solid #cfcfcf; margin-right: 3px; }
-.pagination span { display: block; padding: 2px 4px; }
+#content .pagination ul { list-style: none; }
+#content .pagination li { float: left; }
+#content .pagination a { display: block; padding: 2px 4px; border: 1px solid #cfcfcf; margin-right: 3px; }
+#content .pagination span { display: block; padding: 2px 4px; }
 
-table.objects { width: 97%; }
-table.objects th, table.objects td { padding: 2px 3px 2px 3px; }
+#content table.objects { width: 97%; }
+#content table.objects th,
+#content table.objects td { padding: 2px 3px 2px 3px; }
