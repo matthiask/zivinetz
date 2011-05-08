@@ -3,6 +3,9 @@
 import os
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import get_object_or_404
+
+from zivinetz.models import Assignment, CompanyHoliday
 
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
@@ -24,7 +27,7 @@ class AssignmentPDFStationery(object):
 
     def background(self, canvas, image):
         canvas.drawImage(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)),
+            os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                 'data', image),
             0, 0, 21*cm, 29.4*cm)
 
