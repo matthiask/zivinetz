@@ -80,10 +80,11 @@ class Scheduler(object):
         ret = []
 
         if self.date_from:
-            monday = self.date_from - timedelta(days=self.date_from.weekday())
+            monday = _monday(self.date_from)
+            this_monday = _monday(date.today())
 
             while True:
-                ret.append((monday,) + calendar_week(monday))
+                ret.append((monday,) + calendar_week(monday) + (monday == this_monday,))
 
                 monday += timedelta(days=7)
                 if monday > self.date_until:

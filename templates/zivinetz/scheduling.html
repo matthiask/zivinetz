@@ -34,20 +34,22 @@
 
 #scheduler tr:nth-child(10n),
 #scheduler td:nth-child(10n+2) { background-color: #ccc; }
+
+#scheduler th.current { color: red; }
 </style>
 
 {% spaceless %}<table id="scheduler">
     <thead>
         <tr>
             <th colspan="2"></th>
-            {% for monday, year, week in scheduler.weeks %}
+            {% for monday, year, week, current in scheduler.weeks %}
                 <th>{% ifchanged year %}{{ year }}{% endifchanged %}</th>
             {% endfor %}
         </tr>
         <tr>
             <th colspan="2"></th>
-            {% for monday, year, week in scheduler.weeks %}
-                <th>W{{ week|stringformat:"02d" }}&nbsp;</th>
+            {% for monday, year, week, current in scheduler.weeks %}
+                <th {% if current %}class="current"{% endif %}>W{{ week|stringformat:"02d" }}&nbsp;</th>
             {% endfor %}
         </tr>
     </thead>
