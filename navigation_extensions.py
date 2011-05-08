@@ -60,4 +60,19 @@ class ZivinetzNavigationExtension(NavigationExtension):
                     ),
                 ]
 
-        return []
+        else:
+
+            return [
+                PagePretender(
+                    title=capfirst(_('home')),
+                    url='%s' % url,
+                    level=page.level+1,
+                    tree_id=page.tree_id,
+                    ),
+                PagePretender(
+                    title=capfirst(_('profile')),
+                    url='%sprofile/' % url,
+                    level=page.level+1,
+                    tree_id=page.tree_id,
+                    ),
+                ]

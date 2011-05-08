@@ -76,6 +76,10 @@
     margin-top: 7px;
 }
 
+#content form textarea {
+    height: 100px;
+}
+
 #content input[readonly] { background: #e8e8e8; }
 
 #content form table { width: auto; }
