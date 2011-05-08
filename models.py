@@ -500,7 +500,8 @@ class Assignment(models.Model):
 
 
 class ExpenseReportManager(SearchManager):
-    search_fields = ('report_no',)
+    search_fields = ['report_no'] + \
+        ['assignment__%s' % f for f in AssignmentManager.search_fields]
 
 
 class ExpenseReport(models.Model):
