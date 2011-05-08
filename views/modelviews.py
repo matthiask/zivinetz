@@ -122,6 +122,10 @@ class AssignmentModelView(ZivinetzModelView):
         status = forms.MultipleChoiceField(
             Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
 
+    def get_form(self, request, instance=None, **kwargs):
+        return super(AssignmentModelView, self).get_form(request, instance=instance,
+            exclude=('created',))
+
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Assignment])
 
