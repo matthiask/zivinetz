@@ -80,7 +80,9 @@
 
 #content form table { width: auto; }
 #content form th,
-#content form td { padding: 2px 5px 2px 0; }
+#content form td { padding: 2px 5px 2px 0; vertical-align: top; }
+
+#content form p.help { font-size: 90%; margin: 1px 0 0 2px; }
 
 
 ul.messages {
