@@ -67,9 +67,9 @@ specification_views = SpecificationModelView(Specification)
 class DrudgeModelView(ZivinetzModelView):
     paginate_by = 50
 
-    def get_action_urls(self):
+    def additional_urls(self):
         return [
-            (r'^autocomplete/$', self.autocomplete, 'autocomplete'),
+            (r'^autocomplete/$', self.view_decorator(self.autocomplete)),
         ]
 
     def autocomplete(self, request):
