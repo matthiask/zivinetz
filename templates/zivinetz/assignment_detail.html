@@ -1,0 +1,48 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n modelview_detail modelview_list %}
+
+{% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>{{ object }}</h2>
+
+<table>
+{% for title, value in object|model_details %}
+    <tr class="{% cycle "odd" "even" %}">
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+<h2>{% trans "expense reports" %}</h2>
+<table class="objects">
+    <thead>
+        <tr>
+            <th>{% trans "object"|capfirst %}</th>
+            <th>{% trans "total days"|capfirst %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for object in object.reports.all %}
+        <tr class="{% cycle 'odd' 'even' %}">
+            <th>
+                <a href="{{ object.get_absolute_url }}">
+                    {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
+                </a>
+            </th>
+            {% for name, value in object|model_row:"total_days" %}
+                <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="buttons">
+    <a href="delete/" class="button"><span>{% trans "delete"|capfirst %}</span></a>
+    <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>
+</div>
+
+{% endblock %}
