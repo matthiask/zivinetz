@@ -17,6 +17,15 @@
 {% for page in pages %}
     <a {% if page|is_equal_or_parent_of:feincms_page %}class="current"{% endif %} href="{{ page.get_navigation_url }}"><span>{{ page.title }}</span></a>
 {% endfor %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
 {% endblock %}
 
 {% block content-after %}
