@@ -1,0 +1,100 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n l10n modelview_detail %}
+
+{% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>{{ object }}</h2>
+
+<table>
+    <tr>
+        <th>{% trans "scope statement"|capfirst %}</th>
+        <td><a href="{{ object.scope_statement }}">{{ object.scope_statement }}</a></td>
+    </tr>
+    <tr>
+        <th>{% trans "with accomodation"|capfirst %}</th>
+        <td>{{ object.with_accomodation|yesno:_("Yes,No") }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "code"|capfirst %}</th>
+        <td>{{ object.code }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "clothing"|capfirst %}</th>
+        <td>{{ object.get_clothing_display }}</td>
+    </tr>
+</table>
+
+<table>
+
+    <tr>
+        <th></th>
+        <th>{% trans "accomodation"|capfirst %}</th>
+        <th>{% trans "breakfast"|capfirst %}</th>
+        <th>{% trans "lunch"|capfirst %}</th>
+        <th>{% trans "supper"|capfirst %}</th>
+    </tr>
+    <tr>
+        <th>{% trans "working days"|capfirst %}</th>
+        <td>{{ object.get_accomodation_working_display }}</td>
+        <td>{{ object.get_breakfast_working_display }}</td>
+        <td>{{ object.get_lunch_working_display }}</td>
+        <td>{{ object.get_supper_working_display }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "sick days"|capfirst %}</th>
+        <td>{{ object.get_accomodation_sick_display }}</td>
+        <td>{{ object.get_breakfast_sick_display }}</td>
+        <td>{{ object.get_lunch_sick_display }}</td>
+        <td>{{ object.get_supper_sick_display }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "free days"|capfirst %}</th>
+        <td>{{ object.get_accomodation_free_display }}</td>
+        <td>{{ object.get_breakfast_free_display }}</td>
+        <td>{{ object.get_lunch_free_display }}</td>
+        <td>{{ object.get_supper_free_display }}</td>
+    </tr>
+
+    {% with object.compensation as compensation %}
+    {% localize off %}
+    {% if compensation %}
+        <tr>
+            <th colspan="5">
+                <h2>{% trans "Current compensation rates" %}</h2>
+            </th>
+        </tr>
+        <tr>
+            <th>{% trans "working days"|capfirst %}</th>
+            <td>{{ compensation.accomodation_working }}</td>
+            <td>{{ compensation.breakfast_working }}</td>
+            <td>{{ compensation.lunch_working }}</td>
+            <td>{{ compensation.supper_working }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "sick days"|capfirst %}</th>
+            <td>{{ compensation.accomodation_sick }}</td>
+            <td>{{ compensation.breakfast_sick }}</td>
+            <td>{{ compensation.lunch_sick }}</td>
+            <td>{{ compensation.supper_sick }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "free days"|capfirst %}</th>
+            <td>{{ compensation.accomodation_free }}</td>
+            <td>{{ compensation.breakfast_free }}</td>
+            <td>{{ compensation.lunch_free }}</td>
+            <td>{{ compensation.supper_free }}</td>
+        </tr>
+    {% endif %}
+    {% endlocalize %}
+    {% endwith %}
+</table>
+
+
+<div class="buttons">
+    <a href="delete/" class="button"><span>{% trans "delete"|capfirst %}</span></a>
+    <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>
+</div>
+
+{% endblock %}
