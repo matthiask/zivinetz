@@ -16,7 +16,7 @@ from towel import forms as towel_forms
 from zivinetz.models import Assignment, CompanyHoliday, Drudge,\
     ExpenseReport,\
     ExpenseReportPeriod, RegionalOffice, ScopeStatement,\
-    Specification
+    Specification, WaitList
 
 
 class ZivinetzModelView(modelview.ModelView):
@@ -165,3 +165,12 @@ class ExpenseReportModelView(ZivinetzModelView):
             }
 
 expense_report_views = ExpenseReportModelView(ExpenseReport)
+
+
+class WaitListModelView(ZivinetzModelView):
+    paginate_by = 50
+
+    def deletion_allowed(self, request, instance):
+        return True
+
+waitlist_views = WaitListModelView(WaitList)

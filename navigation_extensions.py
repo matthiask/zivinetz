@@ -51,6 +51,12 @@ class ZivinetzNavigationExtension(NavigationExtension):
                     level=page.level+1,
                     tree_id=page.tree_id,
                     ),
+                PagePretender(
+                    title=capfirst(_('waitlist')),
+                    url='%sadmin/waitlist/' % url,
+                    level=page.level+1,
+                    tree_id=page.tree_id,
+                    ),
 
                 PagePretender(
                     title=capfirst(_('scheduling')),

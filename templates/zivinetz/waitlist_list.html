@@ -1,0 +1,32 @@
+{% extends "modelview/object_list.html" %}
+
+{% load i18n modelview_list %}
+
+{% block objects %}
+<table class="objects">
+    <thead>
+        <tr>
+            <th>{% trans "drudge"|capfirst %}</th>
+            <th>{% trans "date period"|capfirst %}</th>
+            <th>{% trans "specification"|capfirst %}</th>
+            <th>{% trans "duration in days"|capfirst %}</th>
+            <th>{% trans "created"|capfirst %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+        <tr class="{% cycle 'odd' 'even' %}">
+            <th>
+                <a href="{{ object.get_absolute_url }}">
+                    {{ object.drudge }}
+                </a>
+            </th>
+            <td>{{ object.assignment_date_from|date:"d.m.Y" }} - {{ object.assignment_date_until|date:"d.m.Y" }}</td>
+            <td title="{{ object.specification }}">{{ object.specification.code }}</td>
+            <td>{{ object.assignment_duration }}</td>
+            <td>{{ object.created|date:"d.m.Y" }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
