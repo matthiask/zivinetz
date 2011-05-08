@@ -11,7 +11,13 @@
 {% form_errors form formsets %}
 
 <table>
-{% for field in form %}{% form_item field %}{% endfor %}
+    {% if object %}
+    <tr>
+        <th>{% trans "assignment"|capfirst %}</th>
+        <td><a href="{{ object.assignment.get_absolute_url }}">{{ object.assignment }}</a></td>
+    </tr>
+    {% endif %}
+    {% for field in form %}{% form_item field %}{% endfor %}
 </table>
 
 <h3>{% trans "Periods" %}</h3>

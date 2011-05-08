@@ -152,6 +152,10 @@ class ExpenseReportModelView(ZivinetzModelView):
         return self.deletion_allowed_if_only(request, instance,
             [ExpenseReport, ExpenseReportPeriod])
 
+    def get_form(self, request, instance=None, **kwargs):
+        return super(ExpenseReportModelView, self).get_form(request, instance=instance,
+            exclude=('assignment',))
+
     def get_formset_instances(self, request, instance=None, change=None, **kwargs):
         args = self.extend_args_if_post(request, [])
         kwargs['instance'] = instance
