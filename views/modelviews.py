@@ -109,9 +109,9 @@ class AssignmentModelView(ZivinetzModelView):
     paginate_by = 50
 
     class search_form(towel_forms.SearchForm):
-        default = {
-            'status': (Assignment.TENTATIVE, Assignment.ARRANGED),
-            }
+        #default = {
+        #    'status': (Assignment.TENTATIVE, Assignment.ARRANGED),
+        #    }
 
         specification__scope_statement = forms.ModelChoiceField(
             ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'), required=False)
