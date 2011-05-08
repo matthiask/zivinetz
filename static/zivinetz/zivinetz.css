@@ -112,13 +112,18 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
     padding: 10px; background: #cdcdcd; position: relative; }
 #content .searchbox a.searching { display: none; }
 #content .searchbox.searching a.searching {
-    display: block; width: 20px; height: 20px; background: url(img/clear.png);
-    position: absolute; right: 10px; top: 10px; text-indent: 000em; z-index: 999; }
+    display: block; width: 20px; height: 20px; background: url(clear.png);
+    position: absolute; right: 10px; top: 10px; text-indent: -4000em; z-index: 999; }
 #content .searchbox.searching a.searching:hover { background-position: 0 -20px; }
+
+#content .ac_clear { background: url(clear.png); text-indent: -4000em;
+    display: block; float: right; position: relative; top: 11px; left: 3px;
+    width: 20px; height: 20px; }
+#content form input[type=text].ac_nullable { width: 215px !important; min-width: 0; }
 
 #content .searchbox button {
     position: absolute;
-    bottom: 7px;
+    bottom: 14px;
     left: 380px;
     background-color: #a0a0a0;
 }
@@ -133,10 +138,10 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 }
 
 
-#content .pagination ul { list-style: none; }
+#content .pagination ul { list-style: none; float: left; padding: 0; margin: 0 5px 0 0; }
 #content .pagination li { float: left; }
 #content .pagination a { display: block; padding: 2px 4px; border: 1px solid #cfcfcf; margin-right: 3px; }
-#content .pagination span { display: block; padding: 2px 4px; }
+#content .pagination span { display: block; padding: 4px 0 0 0; }
 
 #content table.objects { width: 97%; }
 #content table.objects th,
