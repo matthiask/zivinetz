@@ -1,0 +1,12 @@
+{% extends "zivinetz/base.html" %}
+
+{% block content %}
+<h1>Willkommen zum Zivinetz, {{ user }}</h1>
+
+{% if is_staff %}
+Admin
+{% else %}
+Nicht admin
+{% endif %}
+
+{% endblock %}

@@ -10,48 +10,54 @@ class ZivinetzNavigationExtension(NavigationExtension):
     def children(self, page, **kwargs):
         url = page.get_navigation_url()
 
-        return [
-            PagePretender(
-                title=capfirst(_('drudges')),
-                url='%sdrudges/' % url,
-                level=page.level+1,
-                tree_id=page.tree_id,
-                ),
-            PagePretender(
-                title=capfirst(_('regional offices')),
-                url='%sregional_offices/' % url,
-                level=page.level+1,
-                tree_id=page.tree_id,
-                ),
-            PagePretender(
-                title=capfirst(_('scope statements')),
-                url='%sscope_statements/' % url,
-                level=page.level+1,
-                tree_id=page.tree_id,
-                ),
-            PagePretender(
-                title=capfirst(_('specifications')),
-                url='%sspecifications/' % url,
-                level=page.level+1,
-                tree_id=page.tree_id,
-                ),
-            PagePretender(
-                title=capfirst(_('assignments')),
-                url='%sassignments/' % url,
-                level=page.level+1,
-                tree_id=page.tree_id,
-                ),
-            PagePretender(
-                title=capfirst(_('expense reports')),
-                url='%sexpense_reports/' % url,
-                level=page.level+1,
-                tree_id=page.tree_id,
-                ),
+        request = kwargs.get('request')
 
-            PagePretender(
-                title=capfirst(_('scheduling')),
-                url='%sscheduling/' % url,
-                level=page.level+1,
-                tree_id=page.tree_id,
-                ),
-            ]
+        if request.user.is_authenticated() and request.user.is_staff:
+
+            return [
+                PagePretender(
+                    title=capfirst(_('drudges')),
+                    url='%sadmin/drudges/' % url,
+                    level=page.level+1,
+                    tree_id=page.tree_id,
+                    ),
+                PagePretender(
+                    title=capfirst(_('regional offices')),
+                    url='%sadmin/regional_offices/' % url,
+                    level=page.level+1,
+                    tree_id=page.tree_id,
+                    ),
+                PagePretender(
+                    title=capfirst(_('scope statements')),
+                    url='%sadmin/scope_statements/' % url,
+                    level=page.level+1,
+                    tree_id=page.tree_id,
+                    ),
+                PagePretender(
+                    title=capfirst(_('specifications')),
+                    url='%sadmin/specifications/' % url,
+                    level=page.level+1,
+                    tree_id=page.tree_id,
+                    ),
+                PagePretender(
+                    title=capfirst(_('assignments')),
+                    url='%sadmin/assignments/' % url,
+                    level=page.level+1,
+                    tree_id=page.tree_id,
+                    ),
+                PagePretender(
+                    title=capfirst(_('expense reports')),
+                    url='%sadmin/expense_reports/' % url,
+                    level=page.level+1,
+                    tree_id=page.tree_id,
+                    ),
+
+                PagePretender(
+                    title=capfirst(_('scheduling')),
+                    url='%sadmin/scheduling/' % url,
+                    level=page.level+1,
+                    tree_id=page.tree_id,
+                    ),
+                ]
+
+        return []

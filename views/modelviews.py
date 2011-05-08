@@ -21,7 +21,7 @@ from zivinetz.models import Assignment, CompanyHoliday, Drudge,\
 
 class ZivinetzModelView(modelview.ModelView):
     def view_decorator(self, func):
-        return login_required(func)
+        return staff_member_required(func)
 
     def crud_view_decorator(self, func):
         return staff_member_required(func)
