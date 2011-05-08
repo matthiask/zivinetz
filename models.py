@@ -283,6 +283,7 @@ class Assignment(models.Model):
         )
 
     created = models.DateTimeField(_('created'), default=datetime.now)
+    modified = models.DateTimeField(_('modified'), auto_now=True)
 
     specification = models.ForeignKey(Specification,
         verbose_name=_('specification'))
