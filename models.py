@@ -256,7 +256,8 @@ class Drudge(models.Model):
 
 
 class AssignmentManager(SearchManager):
-    search_fields = ('specification__scope_statement__name',)
+    search_fields = ['specification__scope_statement__name'] +\
+        ['drudge__%s' % f for f in DrudgeManager.search_fields]
 
     def for_date(self, day=None):
         day = day if day else date.today()
@@ -287,7 +288,8 @@ class Assignment(models.Model):
 
     specification = models.ForeignKey(Specification,
         verbose_name=_('specification'))
-    drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'))
+    drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'),
+        related_name='assignments')
     regional_office = models.ForeignKey(RegionalOffice,
         verbose_name=('regional office'))
 
