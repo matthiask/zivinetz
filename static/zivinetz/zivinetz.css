@@ -59,10 +59,12 @@
 
 #content form input[type=text],
 #content form input[type=password],
-#content form select {
+#content form select,
+#content form textarea {
     border: 1px solid #cfcfcf;
     padding: 7px 5px 7px 9px;
     min-width: 250px;
+    margin: 0;
 }
 
 #content form select {
@@ -106,6 +108,8 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
+    margin-bottom: 5px;
+    padding: 10px;
 }
 
 
@@ -125,11 +129,12 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 
 #content .searchbox button {
     position: absolute;
-    bottom: 14px;
+    bottom: 9px;
     left: 380px;
     background-color: #a0a0a0;
 }
 
+#content .searchbox table { margin-bottom: 0; }
 #content .searchbox label { width: 100px; }
 #content .searchbox select,
 #content .searchbox input { width: 250px; }
