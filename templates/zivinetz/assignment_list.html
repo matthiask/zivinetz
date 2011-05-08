@@ -9,6 +9,7 @@
             <th>{% trans "date period"|capfirst %}</th>
             <th>{% trans "drudge"|capfirst %}</th>
             <th>{% trans "specification"|capfirst %}</th>
+            <th>{% trans "created"|capfirst %}</th>
             <th>{% trans "status"|capfirst %}</th>
             <th></th>
         </tr>
@@ -21,9 +22,10 @@
                     {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
                 </a>
             </th>
-            {% for name, value in object|model_row:"drudge,specification,status" %}
-                <td>{{ value }}</td>
-            {% endfor %}
+            <td>{{ object.drudge }}</td>
+            <td title="{{ object.specification }}">{{ object.specification.code }}</td>
+            <td>{{ object.created|date:"d.m.Y" }}</td>
+            <td>{{ object.get_status_display }}</td>
             <td>{{ object.admin_pdf_url|safe }}</td>
         </tr>
     {% endfor %}
