@@ -8,8 +8,8 @@ from zivinetz.views.modelviews import assignment_views, drudge_views,\
 urlpatterns = patterns('zivinetz.views',
     url(r'^$', 'home.home'),
 
-    url(r'^dashboard/$', 'home.dashboard', name='drudge_dashboard'),
-    url(r'^profile/$', 'home.profile', name='drudge_profile'),
+    url(r'^dashboard/$', 'drudge.dashboard', name='drudge_dashboard'),
+    url(r'^profile/$', 'drudge.profile', name='drudge_profile'),
 
     #url(r'^assignments/$', 'home.assignments', name='drudge_assignments'),
 
