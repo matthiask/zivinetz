@@ -259,10 +259,26 @@ def expense_report_pdf(request, expense_report_id):
         if report.assignment.drudge.user != request.user:
             return HttpResponseForbidden('<h1>Access forbidden</h1>')
 
+    assignment = report.assignment
+    drudge = assignment.drudge
+
     pdf, response = pdf_response('expense-report-%s' % report.pk)
     pdf.init_report()
 
     pdf.h1('Spesenrapport des Einsatzbetriebes 20995 - Naturnetz, Chlosterstrasse, 8109 Kloster Fahr')
+
+    pdf.table([
+        (u'Pflichtenheft:', u'%s' % report.assignment.specification),
+        (u'Name, Vorname:', u'%s' % drudge.user.get_full_name()),
+        (u'Adresse:', u'%s, %s %s' % (drudge.address, drudge.zip_code, drudge.city)),
+        (u'ZDP:', drudge.zdp_no),
+        (u'Gesamteinsatz:', u'%s - %s' % (
+            assignment.date_from.strftime('%d.%m.%Y'),
+            assignment.date_until.strftime('%d.%m.%Y'))),
+        (u'Meldeperiode:',  u'%s - %s' % (
+            report.date_from.strftime('%d.%m.%Y'),
+            report.date_until.strftime('%d.%m.%Y'))),
+        ], (4*cm, 12.4*cm), pdf.style.tableLLR)
 
     pdf.generate()
     return response
