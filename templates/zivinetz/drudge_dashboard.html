@@ -1,6 +1,6 @@
 {% extends "zivinetz/base.html" %}
 
-{% load i18n towel_form_tags modelview_list %}
+{% load i18n towel_form_tags %}
 
 {% block title %}{{ drudge }} - {{ block.super }}{% endblock %}
 
@@ -59,9 +59,8 @@
                     {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
                 </a>
             </th>
-            {% for name, value in object|model_row:"assignment,total_days" %}
-                <td>{{ value }}</td>
-            {% endfor %}
+            <td>{{ object.assignment }}</td>
+            <td>{{ object.total_days }}</td>
             <td>{{ object.get_status_display }}</td>
         </tr>
     {% empty %}
