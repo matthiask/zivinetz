@@ -7,7 +7,7 @@ from zivinetz.views.modelviews import assignment_views, drudge_views,\
 
 urlpatterns = patterns('zivinetz.views',
     url(r'^$', 'home.home'),
-    url(r'^profile/$', 'home.profile', name='profile_edit'),
+    url(r'^profile/$', 'home.profile', name='drudge_profile'),
 
     url(r'^assignments/pdf/(\d+)/$', 'reporting.assignment_pdf'),
 

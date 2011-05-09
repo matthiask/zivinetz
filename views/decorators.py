@@ -12,7 +12,7 @@ def drudge_required(view_func):
         try:
             kwargs['drudge'] = Drudge.objects.get(user=request.user)
         except Drudge.DoesNotExist:
-            return redirect('profile_edit')
+            return redirect('drudge_profile')
 
         return view_func(request, *args, **kwargs)
     return login_required(_fn)
