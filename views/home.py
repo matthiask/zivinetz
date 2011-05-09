@@ -10,10 +10,16 @@ from zivinetz.models import Drudge
 from zivinetz.views.decorators import drudge_required
 
 
-@drudge_required
-def home(request, drudge):
+@login_required
+def home(request):
+    try:
+        drudge = Drudge.objects.get(user=request.user)
+    except Drudge.DoesNotExist:
+        drudge = None
+
     return render(request, 'zivinetz/home.html', {
         'is_staff': request.user.is_staff,
+        'drudge': drudge,
         })
 
 
