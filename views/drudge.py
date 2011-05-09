@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
 
-from zivinetz.models import Drudge
+from zivinetz.models import Drudge, ExpenseReport
 from zivinetz.views.decorators import drudge_required
 
 
@@ -15,6 +15,9 @@ from zivinetz.views.decorators import drudge_required
 def dashboard(request, drudge):
     return render(request, 'zivinetz/drudge_dashboard.html', {
         'drudge': drudge,
+
+        'assignments': drudge.assignments.order_by('-date_from'),
+        'expense_reports': ExpenseReport.objects.filter(assignment__drudge=drudge).order_by('-date_from'),
         })
 
 
