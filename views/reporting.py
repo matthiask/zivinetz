@@ -2,7 +2,8 @@
 
 import os
 
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 
 from zivinetz.models import Assignment, CompanyHoliday
@@ -229,9 +230,13 @@ class AssignmentPDFStationery(object):
         # TODO automatically draw arrangement marker?
 
 
-@staff_member_required
+@login_required
 def assignment_pdf(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
+
+    if not request.user.is_staff:
+        if assignment.drudge.user != request.user:
+            return HttpResponseForbidden('<h1>Access forbidden</h1>')
 
     pdf, response = pdf_response('assignment-%s' % assignment.pk)
     #pdf.show_boundaries = True
