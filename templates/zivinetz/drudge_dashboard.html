@@ -1,0 +1,40 @@
+{% extends "zivinetz/base.html" %}
+
+{% load i18n towel_form_tags %}
+
+{% block title %}{{ drudge }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h1>{% trans "assignments"|capfirst %}: {{ drudge }}</h1>
+
+<table class="objects">
+    <thead>
+        <tr>
+            <th>{% trans "date period"|capfirst %}</th>
+            <th>{% trans "specification"|capfirst %}</th>
+            <th>{% trans "created"|capfirst %}</th>
+            <th>{% trans "status"|capfirst %}</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for object in drudge.assignments.all %}
+        <tr class="{% cycle 'odd' 'even' %}">
+            <th>
+                <a href="{{ object.get_absolute_url }}">
+                    {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
+                </a>
+            </th>
+            <td title="{{ object.specification }}">{{ object.specification.code }}</td>
+            <td>{{ object.created|date:"d.m.Y" }}</td>
+            <td>{{ object.get_status_display }}</td>
+            <td>{{ object.admin_pdf_url|safe }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="5"><h2>{% trans "No items yet." %}</h2></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

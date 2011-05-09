@@ -7,9 +7,13 @@ from zivinetz.views.modelviews import assignment_views, drudge_views,\
 
 urlpatterns = patterns('zivinetz.views',
     url(r'^$', 'home.home'),
+
+    url(r'^dashboard/$', 'home.dashboard', name='drudge_dashboard'),
     url(r'^profile/$', 'home.profile', name='drudge_profile'),
 
-    url(r'^assignments/pdf/(\d+)/$', 'reporting.assignment_pdf'),
+    #url(r'^assignments/$', 'home.assignments', name='drudge_assignments'),
+
+    url(r'^admin/$', 'home.admin'),
 
     url(r'^admin/regional_offices/', include(regional_office_views.urls)),
     url(r'^admin/scope_statements/', include(scope_statement_views.urls)),
@@ -20,4 +24,6 @@ urlpatterns = patterns('zivinetz.views',
     url(r'^admin/waitlist/', include(waitlist_views.urls)),
 
     url(r'^admin/scheduling/$', 'scheduling.scheduling'),
+
+    url(r'^assignments/pdf/(\d+)/$', 'reporting.assignment_pdf'),
 )

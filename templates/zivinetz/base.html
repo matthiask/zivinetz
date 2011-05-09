@@ -2,6 +2,8 @@
 
 {% load feincms_tags feincms_page_tags i18n navigation_tags %}
 
+{% block title %}Zivinetz - {{ block.super }}{% endblock %}
+
 {% block extra-head %}{{ block.super }}
 
 <script type="text/javascript" src="{{ STATIC_URL }}towel/towel.js"></script>

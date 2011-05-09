@@ -1,9 +1,10 @@
 from django import forms
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
 
 from zivinetz.models import Drudge
@@ -17,9 +18,25 @@ def home(request):
     except Drudge.DoesNotExist:
         drudge = None
 
-    return render(request, 'zivinetz/home.html', {
-        'is_staff': request.user.is_staff,
+    if request.user.is_staff:
+        return HttpResponseRedirect('admin/')
+
+    elif not drudge:
+        return redirect('drudge_profile')
+
+    return redirect('drudge_dashboard')
+
+
+@drudge_required
+def dashboard(request, drudge):
+    return render(request, 'zivinetz/drudge_dashboard.html', {
         'drudge': drudge,
+        })
+
+
+@staff_member_required
+def admin(request):
+    return render(request, 'zivinetz/admin.html', {
         })
 
 
@@ -71,10 +88,9 @@ def profile(request):
 
         print form2
 
-    return render(request, 'zivinetz/profile_form.html', {
+    return render(request, 'zivinetz/drudge_profile.html', {
         'object': drudge,
         'form': form,
         'form2': form2,
         'title': _('Edit profile'),
-        'base_template': 'zivinetz/base.html',
         })

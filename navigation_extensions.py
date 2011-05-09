@@ -23,7 +23,7 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 ]
         else:
             urls = [
-                (_('home'), ''),
+                (_('dashboard'), 'dashboard/'),
                 (_('profile'), 'profile/'),
                 ]
 
