@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 
-from zivinetz.models import Assignment, CompanyHoliday
+from zivinetz.models import Assignment, CompanyHoliday, ExpenseReport
 
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
@@ -232,7 +232,8 @@ class AssignmentPDFStationery(object):
 
 @login_required
 def assignment_pdf(request, assignment_id):
-    assignment = get_object_or_404(Assignment, pk=assignment_id)
+    assignment = get_object_or_404(Assignment.objects.select_related('drudge__user'),
+        pk=assignment_id)
 
     if not request.user.is_staff:
         if assignment.drudge.user != request.user:
@@ -244,6 +245,24 @@ def assignment_pdf(request, assignment_id):
 
     pdf.pagebreak()
     pdf.pagebreak()
+
+    pdf.generate()
+    return response
+
+
+@login_required
+def expense_report_pdf(request, expense_report_id):
+    report = get_object_or_404(ExpenseReport.objects.select_related('assignment__drudge__user'),
+        pk=expense_report_id)
+
+    if not request.user.is_staff:
+        if report.assignment.drudge.user != request.user:
+            return HttpResponseForbidden('<h1>Access forbidden</h1>')
+
+    pdf, response = pdf_response('expense-report-%s' % report.pk)
+    pdf.init_report()
+
+    pdf.h1('Spesenrapport des Einsatzbetriebes 20995 - Naturnetz, Chlosterstrasse, 8109 Kloster Fahr')
 
     pdf.generate()
     return response

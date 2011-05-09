@@ -45,6 +45,7 @@
             <th>{% trans "assignment"|capfirst %}</th>
             <th>{% trans "total days"|capfirst %}</th>
             <th>{% trans "status"|capfirst %}</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -54,10 +55,11 @@
             <td>{{ object.assignment }}</td>
             <td>{{ object.total_days }}</td>
             <td>{{ object.get_status_display }}</td>
+            <td><a href="{{ object.pdf_url }}">PDF</a></td>
         </tr>
     {% empty %}
         <tr>
-            <td colspan="4"><strong>{% trans "No items yet." %}</strong></td>
+            <td colspan="5"><strong>{% trans "No items yet." %}</strong></td>
         </tr>
     {% endfor %}
     </tbody>

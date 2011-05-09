@@ -26,4 +26,5 @@ urlpatterns = patterns('zivinetz.views',
     url(r'^admin/scheduling/$', 'scheduling.scheduling'),
 
     url(r'^assignments/pdf/(\d+)/$', 'reporting.assignment_pdf'),
+    url(r'^expense_report_pdf/(\d+)/$', 'reporting.expense_report_pdf'),
 )

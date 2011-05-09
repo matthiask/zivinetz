@@ -556,6 +556,10 @@ class ExpenseReport(models.Model):
         return self.working_days + self.free_days + self.sick_days + self.holi_days\
             + self.forced_leave_days
 
+    @models.permalink
+    def pdf_url(self):
+        return ('zivinetz.views.reporting.expense_report_pdf', (self.pk,), {})
+
 
 class ExpenseReportPeriod(models.Model):
     expense_report = models.ForeignKey(ExpenseReport, verbose_name=_('expense report'),
