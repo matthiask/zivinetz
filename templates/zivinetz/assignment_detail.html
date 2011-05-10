@@ -22,6 +22,7 @@
         <tr>
             <th>{% trans "object"|capfirst %}</th>
             <th>{% trans "total days"|capfirst %}</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -35,6 +36,7 @@
             {% for name, value in object|model_row:"total_days" %}
                 <td>{{ value }}</td>
             {% endfor %}
+            <td><a href="{{ object.pdf_url }}">PDF</a></td>
         </tr>
     {% endfor %}
     </tbody>
