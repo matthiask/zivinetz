@@ -15,8 +15,10 @@
 </table>
 
 <h3>{% trans "expense reports"|capfirst %}</h3>
+<p>{% trans "Expense reports are automatically created with the correct date ranges when you save the assignment." %}</p>
+
 {{ formsets.expensereports.management_form }}
-<table>
+<table id="expensereports">
     <thead>
         <tr>
             <th>{% trans "date from" %}</th>
@@ -55,4 +57,10 @@
 
 </form>
 
+<style type="text/css">
+#content form #expensereports input[type="text"] {
+    min-width: 150px;
+    width: 150px;
+}
+</style>
 {% endblock %}
