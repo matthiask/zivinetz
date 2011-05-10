@@ -36,5 +36,7 @@
 {% endblock %}
 
 {% block content-after %}
+<hr />
+<a href="{% url auth_logout %}">{% trans "Log out" %}</a>
 </div>
 {% endblock %}
