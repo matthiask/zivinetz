@@ -121,6 +121,14 @@ class DrudgeModelView(ZivinetzModelView):
 drudge_views = DrudgeModelView(Drudge)
 
 
+ExpenseReportFormSet = inlineformset_factory(Assignment,
+    ExpenseReport,
+    extra=0,
+    formfield_callback=towel_forms.stripped_formfield_callback,
+    fields=('date_from', 'date_until', 'report_no', 'status'),
+    )
+
+
 class AssignmentModelView(ZivinetzModelView):
     paginate_by = 50
 
@@ -144,6 +152,30 @@ class AssignmentModelView(ZivinetzModelView):
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Assignment])
+
+    def get_formset_instances(self, request, instance=None, change=None, **kwargs):
+        args = self.extend_args_if_post(request, [])
+        kwargs['instance'] = instance
+
+        return {
+            'expensereports': ExpenseReportFormSet(*args, **kwargs),
+            }
+
+    def post_save(self, request, instance, form, formset, change):
+        if not instance.reports.count():
+            days, monthly_expense_days = instance.assignment_days()
+
+            for month, data in monthly_expense_days:
+                instance.reports.create(
+                    date_from=data['start'],
+                    date_until=data['end'],
+                    working_days=data['working'],
+                    free_days=data['free'],
+                    sick_days=0,
+                    holi_days=0,
+                    forced_leave_days=data['forced'],
+                    )
+
 
 assignment_views = AssignmentModelView(Assignment)
 
