@@ -166,7 +166,7 @@ class AssignmentModelView(ZivinetzModelView):
             days, monthly_expense_days = instance.assignment_days()
 
             for month, data in monthly_expense_days:
-                instance.reports.create(
+                report = instance.reports.create(
                     date_from=data['start'],
                     date_until=data['end'],
                     working_days=data['working'],
@@ -174,6 +174,11 @@ class AssignmentModelView(ZivinetzModelView):
                     sick_days=0,
                     holi_days=0,
                     forced_leave_days=data['forced'],
+                    )
+
+                report.periods.create(
+                    specification=instance.specification,
+                    date_from=report.date_from,
                     )
 
 
