@@ -5,8 +5,12 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext as _
 
-from zivinetz.models import Assignment, CompanyHoliday, ExpenseReport
+from zivinetz.models import (Assignment, CompanyHoliday, ExpenseReport,
+    CompensationSet)
+
+from reportlab.lib import colors
 
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
@@ -265,7 +269,9 @@ def expense_report_pdf(request, expense_report_id):
     pdf, response = pdf_response('expense-report-%s' % report.pk)
     pdf.init_report()
 
-    pdf.h1('Spesenrapport des Einsatzbetriebes 20995 - Naturnetz, Chlosterstrasse, 8109 Kloster Fahr')
+    pdf.h1('Spesenrapport')
+    pdf.h2('Einsatzbetrieb 20995 - Naturnetz, Chlosterstrasse, 8109 Kloster Fahr')
+    pdf.spacer()
 
     pdf.table([
         (u'Pflichtenheft:', u'%s' % report.assignment.specification),
@@ -279,6 +285,36 @@ def expense_report_pdf(request, expense_report_id):
             report.date_from.strftime('%d.%m.%Y'),
             report.date_until.strftime('%d.%m.%Y'))),
         ], (4*cm, 12.4*cm), pdf.style.tableLLR)
+
+    pdf.spacer()
+
+    table, additional, total = report.compensations()
+    pdf.table(table,
+        (4*cm, 2*cm, 2*cm, 2*cm, 2*cm, 2*cm, 2.4*cm),
+        pdf.style.tableHead)
+    pdf.table(additional,
+        (14*cm, 2.4*cm),
+        pdf.style.table)
+    pdf.spacer(1*mm)
+    pdf.table([
+        (_('Total'), total),
+        ], (14*cm, 2.4*cm), pdf.style.tableHead)
+
+    pdf.spacer()
+
+    pdf.table([
+        (_('bank account') + ':', drudge.bank_account),
+        ], (4*cm, 12.4*cm), pdf.style.tableLLR)
+
+    pdf.bottom_table([
+        (_('Place, Date'), '', _('Jobholder'), '', _('Employer')),
+        ], (44*mm, 10*mm, 50*mm, 10*mm, 50*mm), style=pdf.style.table+(
+            ('TOPPADDING', (0, 0), (-1, -1), 1*mm),
+            ('LINEABOVE', (0, 0), (0, 0), 0.2, colors.black),
+            ('LINEABOVE', (2, 0), (2, 0), 0.2, colors.black),
+            ('LINEABOVE', (4, 0), (4, 0), 0.2, colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ))
 
     pdf.generate()
     return response

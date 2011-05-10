@@ -433,6 +433,10 @@ class Assignment(models.Model):
         return days, sorted(monthly_expense_days.items(), key=lambda item: item[0])
 
     def expenses(self):
+        """
+        This calculates an estimate
+        """
+
         assignment_days, monthly_expense_days = self.assignment_days()
         specification = self.specification
 
@@ -559,6 +563,68 @@ class ExpenseReport(models.Model):
     @models.permalink
     def pdf_url(self):
         return ('zivinetz.views.reporting.expense_report_pdf', (self.pk,), {})
+
+    def compensations(self):
+        period = self.periods.get() # TODO handle more than one / non-existing period
+
+        compensation = period.specification.compensation(self.date_from)
+
+        # spending_money, accomodation, breakfast, lunch, supper, total
+
+        def line(title, day_type, days):
+            l = [
+                compensation['spending_money'],
+                compensation['accomodation_%s' % day_type],
+                compensation['breakfast_%s' % day_type],
+                compensation['lunch_%s' % day_type],
+                compensation['supper_%s' % day_type],
+                ]
+
+            return [u'%s %s' % (days, title)] + l + [sum(l) * days]
+
+
+        ret = [[
+            '',
+            ugettext('spending money'),
+            ugettext('accomodation'),
+            ugettext('breakfast'),
+            ugettext('lunch'),
+            ugettext('supper'),
+            ugettext('Total'),
+            ]]
+
+        ret.append(line(
+            ugettext('working days'),
+            'working',
+            self.working_days))
+        ret.append(line(
+            ugettext('free days'),
+            'free',
+            self.free_days))
+        ret.append(line(
+            ugettext('sick days'),
+            'sick',
+            self.sick_days))
+
+        # holiday counts as work
+        ret.append(line(
+            ugettext('holiday days'),
+            'working',
+            self.holi_days))
+
+        # forced leave counts zero
+        ret.append([
+            u'%s %s' % (self.forced_leave_days, ugettext('forced leave days'))
+            ] + [Decimal('0.00')] * 6)
+
+        additional = [
+            (ugettext('transport expenses'), self.transport_expenses),
+            (ugettext('clothing expenses'), self.clothing_expenses),
+            ]
+
+        total = sum(r[6] for r in ret[1:]) + sum(r[1] for r in additional)
+
+        return ret, additional, total
 
 
 class ExpenseReportPeriod(models.Model):
