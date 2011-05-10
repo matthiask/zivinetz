@@ -16,7 +16,7 @@ from towel import forms as towel_forms
 from zivinetz.models import Assignment, CompanyHoliday, Drudge,\
     ExpenseReport,\
     ExpenseReportPeriod, RegionalOffice, ScopeStatement,\
-    Specification, WaitList
+    Specification, WaitList, Assessment
 
 
 class ZivinetzModelView(modelview.ModelView):
@@ -64,6 +64,14 @@ class SpecificationModelView(ZivinetzModelView):
 specification_views = SpecificationModelView(Specification)
 
 
+AssessmentFormSet = inlineformset_factory(Drudge,
+    Assessment,
+    extra=0,
+    exclude=('created',),
+    formfield_callback=towel_forms.stripped_formfield_callback,
+    )
+
+
 class DrudgeModelView(ZivinetzModelView):
     paginate_by = 50
 
@@ -101,6 +109,14 @@ class DrudgeModelView(ZivinetzModelView):
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Drudge])
+
+    def get_formset_instances(self, request, instance=None, change=None, **kwargs):
+        args = self.extend_args_if_post(request, [])
+        kwargs['instance'] = instance
+
+        return {
+            'assessments': AssessmentFormSet(*args, **kwargs),
+            }
 
 drudge_views = DrudgeModelView(Drudge)
 

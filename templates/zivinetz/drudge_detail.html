@@ -44,6 +44,26 @@
     </tbody>
 </table>
 
+<h2>{% trans "assessments" %}</h2>
+<table>
+    <thead>
+        <tr>
+            <th>{% trans "comment" %}</th>
+            <th>{% trans "mark" %}</th>
+            <th>{% trans "created" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for assessment in object.assessments.all %}
+        <tr class="{% cycle 'odd' 'even' %}">
+            <td>{{ assessment.comment|linebreaksbr }}</td>
+            <td>{{ assessment.mark }}</td>
+            <td>{{ assessment.created|date:"d.m.Y" }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 <div class="buttons">
     <a href="delete/" class="button"><span>{% trans "delete"|capfirst %}</span></a>
     <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>

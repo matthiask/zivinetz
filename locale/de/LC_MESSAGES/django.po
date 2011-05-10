@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-10 13:00+0200\n"
+"POT-Creation-Date: 2011-05-10 13:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,7 +68,7 @@ msgid "name"
 msgstr "Name"
 
 #: models.py:20 models.py:63 templates/zivinetz/scopestatement_list.html:11
-#: templates/zivinetz/specification_detail.html:12 views/modelviews.py:117
+#: templates/zivinetz/specification_detail.html:12 views/modelviews.py:133
 msgid "scope statement"
 msgstr "Pflichtenheft"
 
@@ -264,7 +264,7 @@ msgstr "Adresse"
 msgid "Short, unique identifier."
 msgstr "Kurzer, eindeutiger Code."
 
-#: models.py:190 models.py:240 views/modelviews.py:85
+#: models.py:190 models.py:240 views/modelviews.py:93
 msgid "regional office"
 msgstr "Regionalzentrum"
 
@@ -340,10 +340,10 @@ msgstr "Anderes Abo"
 msgid "notes"
 msgstr "Bemerkungen"
 
-#: models.py:245 models.py:291 models.py:678
+#: models.py:245 models.py:291 models.py:678 models.py:703
 #: templates/zivinetz/assignment_list.html:10
-#: templates/zivinetz/waitlist_list.html:9 views/modelviews.py:121
-#: views/modelviews.py:149
+#: templates/zivinetz/waitlist_list.html:9 views/modelviews.py:137
+#: views/modelviews.py:165
 msgid "drudge"
 msgstr "Zivi"
 
@@ -367,9 +367,11 @@ msgstr "aufgeboten"
 msgid "declined"
 msgstr "abgelehnt"
 
-#: models.py:286 models.py:677 templates/zivinetz/assignment_list.html:12
+#: models.py:286 models.py:677 models.py:702
+#: templates/zivinetz/assignment_list.html:12
 #: templates/zivinetz/drudge_dashboard.html:16
 #: templates/zivinetz/drudge_detail.html:25
+#: templates/zivinetz/drudge_detail.html:53
 #: templates/zivinetz/waitlist_list.html:13
 msgid "created"
 msgstr "erstellt"
@@ -401,13 +403,13 @@ msgstr "Teil des langen Einsatzes"
 #: models.py:307 models.py:528 templates/zivinetz/assignment_list.html:13
 #: templates/zivinetz/drudge_dashboard.html:17
 #: templates/zivinetz/drudge_dashboard.html:47
-#: templates/zivinetz/drudge_detail.html:26 views/modelviews.py:123
+#: templates/zivinetz/drudge_detail.html:26 views/modelviews.py:139
 msgid "status"
 msgstr "Status"
 
 #: models.py:312 models.py:522 templates/zivinetz/drudge_dashboard.html:45
 #: templates/zivinetz/expensereport_form.html:16
-#: templates/zivinetz/expensereport_list.html:10 views/modelviews.py:147
+#: templates/zivinetz/expensereport_list.html:10 views/modelviews.py:163
 msgid "assignment"
 msgstr "Einsatz"
 
@@ -526,6 +528,23 @@ msgstr "Dauer in Tagen"
 msgid "waitlist"
 msgstr "Warteliste"
 
+#: models.py:705 templates/zivinetz/drudge_detail.html:52
+msgid "mark"
+msgstr "Note"
+
+#: models.py:707 templates/zivinetz/drudge_detail.html:51
+msgid "comment"
+msgstr "Kommentar"
+
+#: models.py:711
+msgid "assessment"
+msgstr "Beurteilung"
+
+#: models.py:712 templates/zivinetz/drudge_detail.html:47
+#: templates/zivinetz/drudge_form.html:17
+msgid "assessments"
+msgstr "Beurteilungen"
+
 #: navigation_extensions.py:8
 msgid "Zivinetz navigation extension"
 msgstr "Zivinetz-Navigationserweiterung"
@@ -556,13 +575,13 @@ msgid "total days"
 msgstr "Total Tage"
 
 #: templates/zivinetz/assignment_detail.html:44
-#: templates/zivinetz/drudge_detail.html:48
+#: templates/zivinetz/drudge_detail.html:68
 #: templates/zivinetz/specification_detail.html:96
 msgid "delete"
 msgstr "löschen"
 
 #: templates/zivinetz/assignment_detail.html:45
-#: templates/zivinetz/drudge_detail.html:49
+#: templates/zivinetz/drudge_detail.html:69
 #: templates/zivinetz/specification_detail.html:97
 msgid "edit"
 msgstr "bearbeiten"
@@ -582,6 +601,42 @@ msgstr "Abmelden"
 #: templates/zivinetz/drudge_dashboard.html:62
 msgid "No items yet."
 msgstr "Noch keine Elemente."
+
+#: templates/zivinetz/drudge_form.html:22
+msgid "Comment"
+msgstr ""
+
+#: templates/zivinetz/drudge_form.html:23
+msgid "Mark"
+msgstr ""
+
+#: templates/zivinetz/drudge_form.html:24
+#: templates/zivinetz/expensereport_form.html:30
+msgid "Delete"
+msgstr "Löschen"
+
+#: templates/zivinetz/drudge_form.html:41
+#, fuzzy
+msgid "New assessment"
+msgstr "Neues Pflichtenheft"
+
+#: templates/zivinetz/drudge_form.html:47
+#: templates/zivinetz/expensereport_form.html:53
+#: templates/zivinetz/specification_form.html:90
+msgid "Save"
+msgstr "Speichern"
+
+#: templates/zivinetz/drudge_form.html:48
+#: templates/zivinetz/expensereport_form.html:54
+#: templates/zivinetz/specification_form.html:91
+msgid "Save and continue editing"
+msgstr "Speichern und weiter bearbeiten"
+
+#: templates/zivinetz/drudge_form.html:49
+#: templates/zivinetz/expensereport_form.html:55
+#: templates/zivinetz/specification_form.html:92
+msgid "Cancel"
+msgstr "Abbrechen"
 
 #: templates/zivinetz/drudge_list.html:11 views/drudge.py:28
 msgid "first name"
@@ -611,28 +666,9 @@ msgstr "Ausprägung"
 msgid "From"
 msgstr "Von"
 
-#: templates/zivinetz/expensereport_form.html:30
-msgid "Delete"
-msgstr "Löschen"
-
 #: templates/zivinetz/expensereport_form.html:47
 msgid "New period"
 msgstr "Neue Periode"
-
-#: templates/zivinetz/expensereport_form.html:53
-#: templates/zivinetz/specification_form.html:90
-msgid "Save"
-msgstr "Speichern"
-
-#: templates/zivinetz/expensereport_form.html:54
-#: templates/zivinetz/specification_form.html:91
-msgid "Save and continue editing"
-msgstr "Speichern und weiter bearbeiten"
-
-#: templates/zivinetz/expensereport_form.html:55
-#: templates/zivinetz/specification_form.html:92
-msgid "Cancel"
-msgstr "Abbrechen"
 
 #: templates/zivinetz/scheduling.html:19
 msgid "Search"
@@ -655,7 +691,7 @@ msgstr "Erfolgreich Profilinformationen gesichert."
 msgid "Edit profile"
 msgstr "Profil bearbeiten"
 
-#: views/modelviews.py:86
+#: views/modelviews.py:94
 msgid "only active"
 msgstr "nur aktive"
 
@@ -681,6 +717,3 @@ msgstr "Bis"
 
 #~ msgid "New object"
 #~ msgstr "Neues Objekt"
-
-#~ msgid "New scope statement"
-#~ msgstr "Neues Pflichtenheft"

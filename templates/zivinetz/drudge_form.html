@@ -1,0 +1,54 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n towel_form_tags %}
+
+{% block title %}{{ title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<form method="post" action=".">{% csrf_token %}
+{% form_errors form formsets %}
+
+<table>
+    {% for field in form %}{% form_item field %}{% endfor %}
+</table>
+
+<h3>{% trans "assessments"|capfirst %}</h3>
+{{ formsets.assessments.management_form }}
+<table>
+    <thead>
+        <tr>
+            <th>{% trans "Comment" %}</th>
+            <th>{% trans "Mark" %}</th>
+            <th>{% trans "Delete" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% dynamic_formset formsets.assessments "assessments" %}
+        <tr id="{{ form_id }}" {% if empty %}class="empty"{% endif %}>
+            <td>
+                {{ form.id }}
+                {% form_item_plain form.comment %}
+            </td>
+            <td>{% form_item_plain form.mark %}</td>
+            <td>{{ form.DELETE }}</td>
+        </tr>
+    {% enddynamic_formset %}
+    </tbody>
+    <tfoot>
+        <tr><td colspan="3">
+        <button type="button" onclick="towel_add_subform('assessments')">{% trans "New assessment" %}</button>
+        </td></tr>
+    </tfoot>
+</table>
+
+<div class="buttons">
+    <button type="submit">{% trans "Save" %}</button>
+    <button type="submit" name="_continue">{% trans "Save and continue editing" %}</button>
+    <button type="button" onclick="window.location.assign('../')">{% trans "Cancel" %}</button>
+</div>
+
+</form>
+
+{% endblock %}
