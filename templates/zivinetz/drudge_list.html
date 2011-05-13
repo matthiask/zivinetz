@@ -11,6 +11,7 @@
             <th>{% trans "first name"|capfirst %}</th>
             <th>{% trans "last name"|capfirst %}</th>
             <th>{% trans "date of birth"|capfirst %}</th>
+            <th>{% trans "registered" %}</th>
             <!--
             <th>{% trans "object"|capfirst %}</th>
             -->
@@ -24,6 +25,7 @@
             <td>{{ object.user.first_name }}</td>
             <td>{{ object.user.last_name }}</td>
             <td>{{ object.date_of_birth|date:"d.m.Y" }}</td>
+            <td>{{ object.user.date_joined|date:"d.m.Y" }}</td>
         </tr>
     {% endfor %}
     </tbody>

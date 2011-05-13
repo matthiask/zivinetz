@@ -8,6 +8,12 @@
 <h2>{{ object }}</h2>
 
 <table>
+{% for title, value in object.user|model_details %}
+    <tr class="{% cycle "odd" "even" %}">
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value }}</td>
+    </tr>
+{% endfor %}
 {% for title, value in object|model_details %}
     <tr class="{% cycle "odd" "even" %}">
         <th>{{ title|capfirst }}</th>
