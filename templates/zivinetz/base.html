@@ -13,17 +13,10 @@
 <script type="text/javascript" src="{{ STATIC_URL }}zivinetz/zivinetz.js"></script>
 {% endblock %}
 
+{% block body-class %}cms_navigation{% endblock %}
+
 {% block content-before %}{{ block.super }}
-<div class="span-22 prepend-1 append-1 last">
-    {% feincms_navigation of feincms_page as pages level=4 %}
-    <div id="z-navigation">
-        {% mark_current request.path %}
-        {% for page in pages %}
-            <a href="{{ page.get_navigation_url }}"><span>{{ page.title }}</span></a>
-        {% endfor %}
-        {% endmark_current %}
-        <br style="clear:left" />
-    </div>
+<div id="main" class="zivinetz">
 
 {% if messages %}
     <ul class="messages">

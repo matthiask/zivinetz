@@ -1,3 +1,5 @@
+#main.zivinetz { font-size: 90%; }
+
 #content div.buttons {
     border-top: 1px solid #cfcfcf;
     margin: 10px 0;
@@ -159,8 +161,3 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 #content table.objects { width: 97%; }
 #content table.objects th,
 #content table.objects td { padding: 2px 3px 2px 3px; }
-
-#z-navigation { font-size: 150%; }
-#z-navigation a { float: left; text-decoration: none; color: #321a0e; }
-#z-navigation a.mark, #z-navigation a:hover { color: #CA7029; }
-#z-navigation a span { display: block; padding: 3px; margin-right: 10px; }

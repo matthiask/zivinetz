@@ -92,7 +92,7 @@ class DrudgeForm(forms.ModelForm):
 
     class Meta:
         model = Drudge
-        exclude = ('user', 'notes') # Exclude notes?
+        exclude = ('user',)
 
 
 @login_required
