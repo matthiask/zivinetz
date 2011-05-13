@@ -17,7 +17,83 @@
         <td><a href="{{ object.assignment.get_absolute_url }}">{{ object.assignment }}</a></td>
     </tr>
     {% endif %}
-    {% for field in form %}{% form_item field %}{% endfor %}
+    {% form_item form.date_from %}
+    {% form_item form.date_until %}
+    {% form_item form.report_no %}
+    {% form_item form.status %}
+
+    {% with field=form.working_days notes=form.working_days_notes %}
+        <tr class="three">
+            <th>{{ field.label_tag }}</th>
+            <td>
+                {% form_item_plain field %}
+                {% form_item_plain notes %}
+            </td>
+        </tr>
+    {% endwith %}
+    {% with field=form.free_days notes=form.free_days_notes %}
+        <tr class="three">
+            <th>{{ field.label_tag }}</th>
+            <td>
+                {% form_item_plain field %}
+                {% form_item_plain notes %}
+            </td>
+        </tr>
+    {% endwith %}
+    {% with field=form.sick_days notes=form.sick_days_notes %}
+        <tr class="three">
+            <th>{{ field.label_tag }}</th>
+            <td>
+                {% form_item_plain field %}
+                {% form_item_plain notes %}
+            </td>
+        </tr>
+    {% endwith %}
+    {% with field=form.holi_days notes=form.holi_days_notes %}
+        <tr class="three">
+            <th>{{ field.label_tag }}</th>
+            <td>
+                {% form_item_plain field %}
+                {% form_item_plain notes %}
+            </td>
+        </tr>
+    {% endwith %}
+    {% with field=form.forced_leave_days notes=form.forced_leave_days_notes %}
+        <tr class="three">
+            <th>{{ field.label_tag }}</th>
+            <td>
+                {% form_item_plain field %}
+                {% form_item_plain notes %}
+            </td>
+        </tr>
+    {% endwith %}
+    {% with field=form.clothing_expenses notes=form.clothing_expenses_notes %}
+        <tr class="three">
+            <th>{{ field.label_tag }}</th>
+            <td>
+                {% form_item_plain field %}
+                {% form_item_plain notes %}
+            </td>
+        </tr>
+    {% endwith %}
+    {% with field=form.transport_expenses notes=form.transport_expenses_notes %}
+        <tr class="three">
+            <th>{{ field.label_tag }}</th>
+            <td>
+                {% form_item_plain field %}
+                {% form_item_plain notes %}
+            </td>
+        </tr>
+    {% endwith %}
+    {% with field=form.miscellaneous notes=form.miscellaneous_notes %}
+        <tr class="three">
+            <th>{{ field.label_tag }}</th>
+            <td>
+                {% form_item_plain field %}
+                {% form_item_plain notes %}
+            </td>
+        </tr>
+    {% endwith %}
 </table>
 
 <h3>{% trans "Periods" %}</h3>
@@ -96,4 +172,12 @@ $(function() {
     forced_leave_days.keyup(recalculate).change(recalculate);
 });
 </script>
+<style type="text/css">
+tr.three span:first-child input {
+    width: 50px !important;
+    min-width: 0 !important;
+    margin-right: 10px !important;
+    float: left;
+}
+</style>
 {% endblock %}
