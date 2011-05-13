@@ -237,6 +237,11 @@ class Drudge(models.Model):
     other_card = models.CharField(_('other card'), max_length=100,
         blank=True)
 
+    environment_course = models.BooleanField(_('environment course'), default=False,
+        help_text=_('Has taken the environment course already.'))
+    motor_saw_course = models.BooleanField(_('motor saw course'), default=False,
+        help_text=_('Has taken the motor saw course already.'))
+
     regional_office = models.ForeignKey(RegionalOffice, verbose_name=_('regional office'))
     notes = models.TextField(_('notes'), blank=True)
 
@@ -306,6 +311,9 @@ class Assignment(models.Model):
 
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES,
         default=TENTATIVE)
+
+    arranged_on = models.DateField(_('arranged on'), blank=True, null=True)
+    mobilized_on = models.DateField(_('mobilized on'), blank=True, null=True)
 
     class Meta:
         ordering = ['-date_from', '-date_until']
@@ -529,16 +537,27 @@ class ExpenseReport(models.Model):
         default=PENDING)
 
     working_days = models.PositiveIntegerField(_('working days'))
+    working_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
     free_days = models.PositiveIntegerField(_('free days'))
+    free_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
     sick_days = models.PositiveIntegerField(_('sick days'))
+    sick_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
     holi_days = models.PositiveIntegerField(_('holiday days'),
         help_text=_('These days are still countable towards the assignment total days.'))
+    holi_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
     forced_leave_days = models.PositiveIntegerField(_('forced leave days'))
+    forced_leave_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
 
     clothing_expenses = models.DecimalField(_('clothing expenses'),
         max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    clothing_expenses_notes = models.CharField(_('notes'), max_length=100, blank=True)
     transport_expenses = models.DecimalField(_('transport expenses'),
         max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    transport_expenses_notes = models.CharField(_('notes'), max_length=100, blank=True)
+
+    miscellaneous = models.DecimalField(_('miscellaneous'),
+        max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    miscellaneous_notes = models.CharField(_('notes'), max_length=100, blank=True)
 
     class Meta:
         ordering = ['date_from']
@@ -567,7 +586,7 @@ class ExpenseReport(models.Model):
     def compensations(self):
         period = self.periods.get() # TODO handle more than one / non-existing period
 
-        compensation = period.specification.compensation(self.date_from)
+        compensation = period.specification.compensation(self.assignments.mobilized_on) # TODO handle mobilized_on IS NULL case
 
         # spending_money, accomodation, breakfast, lunch, supper, total
 
@@ -708,8 +727,8 @@ class Assessment(models.Model):
 
     class Meta:
         ordering = ['-created']
-        verbose_name = _('assessment')
-        verbose_name_plural = _('assessments')
+        verbose_name = _('internal assessment')
+        verbose_name_plural = _('internal assessments')
 
     def __unicode__(self):
         return 'Mark %s for drudge %s' % (self.mark, self.drudge)
