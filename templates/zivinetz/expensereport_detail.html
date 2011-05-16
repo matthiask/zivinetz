@@ -1,0 +1,82 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n modelview_detail %}
+
+{% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>{{ object }}</h2>
+
+<table>
+    <tr>
+        <th>{% trans "assignment"|capfirst %}</th>
+        <td colspan="2">
+            <a href="{{ object.assignment.get_absolute_url }}">{{ object.assignment }}</a>
+        </td>
+    </tr>
+    <tr>
+        <th>{% trans "specification"|capfirst %}</th>
+        <td colspan="2">{{ object.assignment.specification }}</td>
+    </tr>
+    <tr>
+        <th>Datum</th>
+        <td colspan="2">
+            {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
+        </td>
+    </tr>
+    <tr>
+        <th>Berichts-Nr.</th>
+        <td colspan="2">{{ object.report_no }}</td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td colspan="2">{{ object.get_status_display }}</td>
+    </tr>
+    <tr>
+        <th>Arbeitstage</th>
+        <td>{{ object.working_days }}</td>
+        <td>{{ object.working_days_notes }}</td>
+    </tr>
+    <tr>
+        <th>Freitage</th>
+        <td>{{ object.free_days }}</td>
+        <td>{{ object.free_days_notes }}</td>
+    </tr>
+    <tr>
+        <th>Krankheitstage</th>
+        <td>{{ object.sick_days }}</td>
+        <td>{{ object.sick_days_notes }}</td>
+    </tr>
+    <tr>
+        <th>Ferientage</th>
+        <td>{{ object.holi_days }}</td>
+        <td>{{ object.holi_days_notes }}</td>
+    </tr>
+    <tr>
+        <th>Urlaubstage</th>
+        <td>{{ object.forced_leave_days }}</td>
+        <td>{{ object.forced_leave_days_notes }}</td>
+    </tr>
+    <tr>
+        <th>Kleiderspesen</th>
+        <td>{{ object.clothing_expenses|stringformat:".2f" }}</td>
+        <td>{{ object.clothing_expenses_notes }}</td>
+    </tr>
+    <tr>
+        <th>Transportspesen</th>
+        <td>{{ object.transport_expenses|stringformat:".2f" }}</td>
+        <td>{{ object.transport_expenses_notes }}</td>
+    </tr>
+    <tr>
+        <th>Verschiedenes</th>
+        <td>{{ object.miscellaneous|stringformat:".2f" }}</td>
+        <td>{{ object.miscellaneous_notes }}</td>
+    </tr>
+</table>
+
+<div class="buttons">
+    <a href="delete/" class="button"><span>{% trans "delete"|capfirst %}</span></a>
+    <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>
+</div>
+
+{% endblock %}
