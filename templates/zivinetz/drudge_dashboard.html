@@ -71,7 +71,8 @@
     <thead>
         <tr>
             <th>{% trans "object"|capfirst %}</th>
-            <th>{% trans "assignment"|capfirst %}</th>
+            <th>{% trans "drudge"|capfirst %}</th>
+            <th>{% trans "specification"|capfirst %}</th>
             <th>{% trans "total days"|capfirst %}</th>
             <th>{% trans "status"|capfirst %}</th>
             <th></th>
@@ -81,7 +82,8 @@
     {% for object in expense_reports %}
         <tr class="{% cycle 'odd' 'even' %}">
             <th>{{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}</th>
-            <td>{{ object.assignment }}</td>
+            <td>{{ object.assignment.drudge }}</td>
+            <td>{{ object.assignment.specification.code }}</td>
             <td>{{ object.total_days }}</td>
             <td>{{ object.get_status_display }}</td>
             <td><a href="{{ object.pdf_url }}">PDF</a></td>

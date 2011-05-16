@@ -11,6 +11,7 @@
             <th>{% trans "specification"|capfirst %}</th>
             <th>{% trans "total days"|capfirst %}</th>
             <th>{% trans "status"|capfirst %}</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
             <td>{{ object.assignment.specification.code }}</td>
             <td>{{ object.total_days }}</td>
             <td>{{ object.get_status_display }}</td>
+            <td><a href="{{ object.pdf_url }}">PDF</a></td>
         </tr>
     {% endfor %}
     </tbody>
