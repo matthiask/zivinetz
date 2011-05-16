@@ -296,7 +296,7 @@ class Assignment(models.Model):
     drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'),
         related_name='assignments')
     regional_office = models.ForeignKey(RegionalOffice,
-        verbose_name=('regional office'))
+        verbose_name=_('regional office'))
 
     date_from = models.DateField(_('date from'))
     date_until = models.DateField(_('date until'))
