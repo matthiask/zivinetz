@@ -146,6 +146,19 @@ class AssignmentModelView(ZivinetzModelView):
         status = forms.MultipleChoiceField(
             Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
 
+    def additional_urls(self):
+        return [
+            (r'^autocomplete/$', self.view_decorator(self.autocomplete)),
+        ]
+
+    def autocomplete(self, request):
+        queryset = Assignment.objects.search(request.GET.get('term', ''))
+
+        return HttpResponse(simplejson.dumps([{
+            'label': unicode(d),
+            'value': d.id,
+            } for d in queryset[:20]]), mimetype='application/json')
+
     def get_form(self, request, instance=None, **kwargs):
         return super(AssignmentModelView, self).get_form(request, instance=instance,
             exclude=('created',))
@@ -197,9 +210,15 @@ class ExpenseReportModelView(ZivinetzModelView):
 
     class search_form(towel_forms.SearchForm):
         assignment = forms.ModelChoiceField(
-            Assignment.objects.all(), label=ugettext_lazy('assignment'), required=False)
+            Assignment.objects.all(), label=ugettext_lazy('assignment'),
+            widget=towel_forms.ModelAutocompleteWidget(url=
+                lambda: urlresolvers.reverse('zivinetz_assignment_autocomplete')),
+            required=False)
         assignment__drudge = forms.ModelChoiceField(
-            Drudge.objects.all(), label=ugettext_lazy('drudge'), required=False)
+            Drudge.objects.all(), label=ugettext_lazy('drudge'),
+            widget=towel_forms.ModelAutocompleteWidget(url=
+                lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
+            required=False)
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance,
