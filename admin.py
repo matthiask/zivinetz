@@ -95,3 +95,8 @@ admin.site.register(models.CompanyHoliday,
 admin.site.register(models.WaitList,
     list_display=('created', 'drudge', '__unicode__'),
     )
+
+admin.site.register(models.Codeword,
+    list_display=('key', 'codeword', 'created'),
+    list_filter=('key',),
+    )

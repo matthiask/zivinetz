@@ -5,28 +5,45 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext as _
 
 from towel.forms import stripped_formfield_callback
 
-from zivinetz.models import Drudge, ExpenseReport, Assignment, WaitList
+from zivinetz.models import (Drudge, ExpenseReport, Assignment, WaitList,
+    Codeword)
 from zivinetz.views.decorators import drudge_required
 
 
 class AssignmentForm(forms.ModelForm):
+    codeword = forms.CharField(label=ugettext_lazy('Codeword'))
+
     formfield_callback = stripped_formfield_callback
 
     class Meta:
         model = Assignment
         exclude = ('drudge', 'created', 'status', 'date_until_extension')
 
+    def clean_codeword(self):
+        codeword = self.cleaned_data.get('codeword')
+        if codeword != Codeword.objects.word(key='einsatz'):
+            raise forms.ValidationError(_('Codeword is incorrect.'))
+        return codeword
+
 
 class WaitListForm(forms.ModelForm):
+    codeword = forms.CharField(label=ugettext_lazy('Codeword'))
+
     formfield_callback = stripped_formfield_callback
 
     class Meta:
         model = WaitList
         exclude = ('drudge', 'created')
+
+    def clean_codeword(self):
+        codeword = self.cleaned_data.get('codeword')
+        if codeword != Codeword.objects.word(key='warteliste'):
+            raise forms.ValidationError(_('Codeword is incorrect.'))
+        return codeword
 
 
 @drudge_required

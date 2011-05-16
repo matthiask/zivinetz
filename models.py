@@ -732,3 +732,28 @@ class Assessment(models.Model):
 
     def __unicode__(self):
         return 'Mark %s for drudge %s' % (self.mark, self.drudge)
+
+
+class CodewordManager(models.Manager):
+    def word(self, key):
+        try:
+            return self.filter(key=key).latest().codeword
+        except self.model.DoesNotExist:
+            return u''
+
+
+class Codeword(models.Model):
+    created = models.DateTimeField(_('created'), default=datetime.now)
+    key = models.CharField(_('key'), max_length=10, db_index=True)
+    codeword = models.CharField(_('codeword'), max_length=20)
+
+    class Meta:
+        get_latest_by = 'created'
+        ordering = ['-created']
+        verbose_name = _('codeword')
+        verbose_name_plural = _('codewords')
+
+    objects = CodewordManager()
+
+    def __unicode__(self):
+        return self.codeword
