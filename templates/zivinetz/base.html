@@ -13,23 +13,31 @@
 <script type="text/javascript" src="{{ STATIC_URL }}zivinetz/zivinetz.js"></script>
 {% endblock %}
 
-{% block body-class %}cms_navigation{% endblock %}
+{% block body-class %}cms_standard{% endblock %}
 
 {% block content-before %}{{ block.super }}
 <div id="main" class="zivinetz">
 
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="sub">
+        {% feincms_navigation of feincms_page as sub level=4,extended %}
+        {% for page in sub %}
+            <a {% if page|is_equal_or_parent_of:feincms_page %}class="current"{% endif %} href="{{ page.get_navigation_url }}"><span>{{ page.title }}</span></a>
+            {% if not forloop.last %}|{% endif %}
         {% endfor %}
-    </ul>
-{% endif %}
+    </div>
 
 {% endblock %}
 
 {% block content-after %}
-<hr />
-<a href="{% url auth_logout %}">{% trans "Log out" %}</a>
+    <hr />
+    <a href="{% url auth_logout %}">{% trans "Log out" %}</a>
 </div>
 {% endblock %}
