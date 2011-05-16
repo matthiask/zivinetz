@@ -261,7 +261,7 @@ class Drudge(models.Model):
 
 
 class AssignmentManager(SearchManager):
-    search_fields = ['specification__scope_statement__name'] +\
+    search_fields = ['specification__scope_statement__name', 'specification__code'] +\
         ['drudge__%s' % f for f in DrudgeManager.search_fields]
 
     def for_date(self, day=None):
@@ -323,8 +323,9 @@ class Assignment(models.Model):
     objects = AssignmentManager()
 
     def __unicode__(self):
-        return u'%s (%s - %s)' % (
+        return u'%s on %s (%s - %s)' % (
             self.drudge,
+            self.specification.code,
             self.date_from,
             self.determine_date_until(),
             )
