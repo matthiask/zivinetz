@@ -16,6 +16,11 @@
 {% endfor %}
 </table>
 
+<div class="buttons">
+    <a href="delete/" class="button"><span>{% trans "delete"|capfirst %}</span></a>
+    <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>
+</div>
+
 <h2>{% trans "expense reports" %}</h2>
 <table class="objects">
     <thead>
@@ -42,9 +47,15 @@
     </tbody>
 </table>
 
-<div class="buttons">
-    <a href="delete/" class="button"><span>{% trans "delete"|capfirst %}</span></a>
-    <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>
-</div>
+<h2>{% trans "job references" %}</h2>
+<table>
+{% for reference in object.jobreferences.all %}
+    <tr>
+        <th>{{ reference }}</th>
+        <td><a href="{{ reference.pdf_url }}">PDF</a></td>
+    </tr>
+{% endfor %}
+    <a href="{% url zivinetz_jobreference_from_template 1 object.id %}">Erstellen</a>
+</table>
 
 {% endblock %}

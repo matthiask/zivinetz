@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from datetime import date
 import os
 
 from django.contrib.auth.decorators import login_required
@@ -8,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 
 from zivinetz.models import (Assignment, CompanyHoliday, ExpenseReport,
-    CompensationSet)
+    CompensationSet, JobReference)
 
 from reportlab.lib import colors
 
@@ -315,6 +316,39 @@ def expense_report_pdf(request, expense_report_id):
             ('LINEABOVE', (4, 0), (4, 0), 0.2, colors.black),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ))
+
+    pdf.generate()
+    return response
+
+
+@login_required
+def reference_pdf(request, reference_id):
+    reference = get_object_or_404(JobReference.objects.select_related('assignment__drudge__user'),
+        pk=reference_id)
+
+    if not request.user.is_staff:
+        if reference.assignment.drudge.user != request.user:
+            return HttpResponseForbidden('<h1>Access forbidden</h1>')
+
+    drudge = reference.assignment.drudge
+
+    pdf, response = pdf_response('reference-%s' % reference.pk)
+    pdf.init_letter()
+
+    pdf.p(drudge.user.get_full_name())
+    pdf.p(drudge.address)
+    pdf.p(u'%s %s' % (drudge.zip_code, drudge.city))
+    pdf.next_frame()
+
+    pdf.p('Kloster Fahr, %s' % date.today().strftime('%d.%m.%Y'))
+
+    pdf.h1('ARBEITSZEUGNIS')
+    pdf.spacer()
+
+    pdf.p(reference.text)
+
+    pdf.spacer(10*mm)
+    pdf.p(u'Dr. Marco Sacchi\nGeschäftsführer')
 
     pdf.generate()
     return response

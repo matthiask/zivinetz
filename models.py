@@ -758,3 +758,34 @@ class Codeword(models.Model):
 
     def __unicode__(self):
         return self.codeword
+
+
+class JobReferenceTemplate(models.Model):
+    title = models.CharField(_('title'), max_length=100)
+    text = models.TextField(_('text'))
+
+    class Meta:
+        ordering = ['title']
+        verbose_name = _('job reference template')
+        verbose_name_plural = _('job reference templates')
+
+    def __unicode__(self):
+        return self.title
+
+
+class JobReference(models.Model):
+    assignment = models.ForeignKey(Assignment, verbose_name=_('assignment'),
+        related_name='jobreferences')
+    created = models.DateTimeField(_('created'), default=datetime.now)
+    text = models.TextField(_('text'))
+
+    class Meta:
+        verbose_name = _('job reference')
+        verbose_name_plural = _('job references')
+
+    def __unicode__(self):
+        return 'job reference for %s' % self.assignment
+
+    @models.permalink
+    def pdf_url(self):
+        return ('zivinetz.views.reporting.reference_pdf', (self.pk,), {})

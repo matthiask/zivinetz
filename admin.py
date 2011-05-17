@@ -100,3 +100,9 @@ admin.site.register(models.Codeword,
     list_display=('key', 'codeword', 'created'),
     list_filter=('key',),
     )
+
+admin.site.register(models.JobReferenceTemplate)
+
+admin.site.register(models.JobReference,
+    list_display=('assignment', 'created'),
+    )

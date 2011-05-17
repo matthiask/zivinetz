@@ -1,22 +1,24 @@
 # coding=utf-8
 
 from django import forms
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core import urlresolvers
 from django.forms.models import modelform_factory, inlineformset_factory
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.template import Template, Context
 from django.utils import simplejson
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from towel import modelview
 from towel import forms as towel_forms
 
-from zivinetz.models import Assignment, CompanyHoliday, Drudge,\
-    ExpenseReport,\
-    ExpenseReportPeriod, RegionalOffice, ScopeStatement,\
-    Specification, WaitList, Assessment
+from zivinetz.models import (Assignment, CompanyHoliday, Drudge,
+    ExpenseReport, ExpenseReportPeriod, RegionalOffice, ScopeStatement,
+    Specification, WaitList, Assessment, JobReferenceTemplate,
+    JobReference)
 
 
 class ZivinetzModelView(modelview.ModelView):
@@ -246,3 +248,45 @@ class WaitListModelView(ZivinetzModelView):
         return True
 
 waitlist_views = WaitListModelView(WaitList)
+
+
+class JobReferenceModelView(ZivinetzModelView):
+    paginate_by = 50
+
+    def additional_urls(self):
+        return [
+            (r'^from_template/(\d+)/(\d+)/$', self.crud_view_decorator(self.from_template)),
+        ]
+
+    def from_template(self, request, template_id, assignment_id):
+        template = get_object_or_404(JobReferenceTemplate, pk=template_id)
+        assignment = get_object_or_404(Assignment, pk=assignment_id)
+
+        instance = self.model(assignment=assignment)
+
+        template = Template(template.text)
+        instance.text = template.render(Context({
+            'full_name': assignment.drudge.user.get_full_name(),
+            'last_name': assignment.drudge.user.last_name,
+            'birth_date': assignment.drudge.date_of_birth.strftime('%d.%m.%Y'),
+            'date_from': assignment.date_from.strftime('%d.%m.%Y'),
+            'date_until': assignment.date_until.strftime('%d.%m.%Y'),
+            'place_of_citizenship': u'%s %s' % (
+                assignment.drudge.place_of_citizenship_city,
+                assignment.drudge.place_of_citizenship_state,
+                ),
+            }))
+        instance.save()
+
+        messages.success(request, _('Successfully created job reference.'))
+
+        return HttpResponseRedirect(instance.get_absolute_url() + 'edit/')
+
+    def get_form(self, request, instance=None, **kwargs):
+        return super(JobReferenceModelView, self).get_form(request, instance=instance,
+            exclude=('assignment',))
+
+    def deletion_allowed(self, request, instance):
+        return True
+
+jobreference_views = JobReferenceModelView(JobReference)

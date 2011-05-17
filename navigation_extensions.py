@@ -20,6 +20,7 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 (_('expense reports'), 'admin/expense_reports/'),
                 (_('waitlist'), 'admin/waitlist/'),
                 (_('scheduling'), 'admin/scheduling/'),
+                (_('job references'), 'admin/jobreferences/'),
                 ]
         else:
             urls = [
