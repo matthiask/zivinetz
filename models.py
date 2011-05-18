@@ -168,7 +168,7 @@ class CompensationSet(models.Model):
         help_text=_('Maximal compensation for clothing per assignment.'))
 
     class Meta:
-        ordering = ['valid_from']
+        ordering = ['-valid_from']
         verbose_name = _('compensation set')
         verbose_name_plural = _('compensation sets')
 
@@ -563,7 +563,7 @@ class ExpenseReport(models.Model):
     miscellaneous_notes = models.CharField(_('notes'), max_length=100, blank=True)
 
     class Meta:
-        ordering = ['date_from']
+        ordering = ['-date_from']
         verbose_name = _('expense report')
         verbose_name_plural = _('expense reports')
 
