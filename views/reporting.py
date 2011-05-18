@@ -3,6 +3,7 @@
 from datetime import date
 import os
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
@@ -321,6 +322,28 @@ def expense_report_pdf(request, expense_report_id):
     return response
 
 
+class NaturnetzStationery(object):
+    def __call__(self, canvas, pdfdocument):
+        canvas.saveState()
+
+        """
+        pdfdocument.draw_svg(canvas,
+            os.path.join(settings.APP_BASEDIR, 'naturnetz', 'data', 'NN_Logo.svg'),
+            18*cm,
+            24*cm,
+            xsize=3*cm,
+            )
+        """
+        canvas.drawImage(
+            os.path.join(settings.APP_BASEDIR, 'naturnetz', 'data', 'logo.png'),
+            x=16*cm, y=24*cm,
+            width=177 * 0.5,
+            height=250 * 0.5,
+            )
+
+        canvas.restoreState()
+
+
 @login_required
 def reference_pdf(request, reference_id):
     reference = get_object_or_404(JobReference.objects.select_related('assignment__drudge__user'),
@@ -333,7 +356,7 @@ def reference_pdf(request, reference_id):
     drudge = reference.assignment.drudge
 
     pdf, response = pdf_response('reference-%s' % reference.pk)
-    pdf.init_letter()
+    pdf.init_letter(page_fn=create_stationery_fn(NaturnetzStationery()))
 
     pdf.p(drudge.user.get_full_name())
     pdf.p(drudge.address)
