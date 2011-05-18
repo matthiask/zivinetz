@@ -268,20 +268,29 @@ class JobReferenceModelView(ZivinetzModelView):
         template = get_object_or_404(JobReferenceTemplate, pk=template_id)
         assignment = get_object_or_404(Assignment, pk=assignment_id)
 
-        instance = self.model(assignment=assignment)
+        instance = self.model(
+            assignment=assignment,
+            created=assignment.determine_date_until(),
+            )
 
         template = Template(template.text)
-        instance.text = template.render(Context({
+        ctx = {
             'full_name': assignment.drudge.user.get_full_name(),
             'last_name': assignment.drudge.user.last_name,
-            'birth_date': assignment.drudge.date_of_birth.strftime('%d.%m.%Y'),
             'date_from': assignment.date_from.strftime('%d.%m.%Y'),
-            'date_until': assignment.date_until.strftime('%d.%m.%Y'),
+            'date_until': assignment.determine_date_until().strftime('%d.%m.%Y'),
             'place_of_citizenship': u'%s %s' % (
                 assignment.drudge.place_of_citizenship_city,
                 assignment.drudge.place_of_citizenship_state,
                 ),
-            }))
+            }
+
+        if assignment.drudge.date_of_birth:
+            ctx['birth_date'] = assignment.drudge.date_of_birth.strftime('%d.%m.%Y')
+        else:
+            ctx['birth_date'] = '-' * 10
+
+        instance.text = template.render(Context(ctx))
         instance.save()
 
         messages.success(request, _('Successfully created job reference.'))

@@ -778,7 +778,7 @@ class JobReferenceTemplate(models.Model):
 class JobReference(models.Model):
     assignment = models.ForeignKey(Assignment, verbose_name=_('assignment'),
         related_name='jobreferences')
-    created = models.DateTimeField(_('created'), default=datetime.now)
+    created = models.DateField(_('created'))
     text = models.TextField(_('text'))
 
     class Meta:

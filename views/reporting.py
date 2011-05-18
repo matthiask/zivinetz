@@ -340,7 +340,7 @@ def reference_pdf(request, reference_id):
     pdf.p(u'%s %s' % (drudge.zip_code, drudge.city))
     pdf.next_frame()
 
-    pdf.p('Kloster Fahr, %s' % date.today().strftime('%d.%m.%Y'))
+    pdf.p('Kloster Fahr, %s' % reference.created.strftime('%d.%m.%Y'))
 
     pdf.h1('ARBEITSZEUGNIS')
     pdf.spacer()
