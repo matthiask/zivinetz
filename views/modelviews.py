@@ -221,6 +221,12 @@ class ExpenseReportModelView(ZivinetzModelView):
             widget=towel_forms.ModelAutocompleteWidget(url=
                 lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
             required=False)
+        status = forms.MultipleChoiceField(
+            ExpenseReport.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
+        date_from__gte = forms.DateField(label=ugettext_lazy('date from'), required=False,
+            widget=forms.DateInput(attrs={'class': 'dateinput'}))
+        date_until__lte = forms.DateField(label=ugettext_lazy('date until'), required=False,
+            widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance,
