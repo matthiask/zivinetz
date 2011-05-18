@@ -239,8 +239,10 @@ class Drudge(models.Model):
 
     environment_course = models.BooleanField(_('environment course'), default=False,
         help_text=_('Has taken the environment course already.'))
-    motor_saw_course = models.BooleanField(_('motor saw course'), default=False,
-        help_text=_('Has taken the motor saw course already.'))
+    motor_saw_course = models.CharField(_('motor saw course'), max_length=10, choices=(
+        ('2-day', _('2 day course')),
+        ('5-day', _('5 day course')),
+        ), blank=True, null=True, help_text=_('Has taken the motor saw course already.'))
 
     regional_office = models.ForeignKey(RegionalOffice, verbose_name=_('regional office'))
     notes = models.TextField(_('notes'), blank=True)
