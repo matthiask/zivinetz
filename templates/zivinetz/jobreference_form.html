@@ -1,0 +1,31 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n towel_form_tags %}
+
+{% block title %}{{ title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<form method="post" action=".">{% csrf_token %}
+{% form_errors form formsets %}
+
+<table>
+    {% for field in form %}{% form_item field %}{% endfor %}
+</table>
+
+<div class="buttons">
+    <button type="submit">{% trans "Save" %}</button>
+    <button type="submit" name="_continue">{% trans "Save and continue editing" %}</button>
+    <button type="button" onclick="window.location.assign('../')">{% trans "Cancel" %}</button>
+</div>
+
+</form>
+
+<style type="text/css">
+#id_text {
+    height: 800px !important;
+    width: 700px;
+}
+</style>
+{% endblock %}
