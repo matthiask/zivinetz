@@ -562,6 +562,9 @@ class ExpenseReport(models.Model):
         max_digits=10, decimal_places=2, default=Decimal('0.00'))
     miscellaneous_notes = models.CharField(_('notes'), max_length=100, blank=True)
 
+    total = models.DecimalField(_('total'), max_digits=10, decimal_places=2,
+        default=0)
+
     class Meta:
         ordering = ['-date_from']
         verbose_name = _('expense report')
@@ -585,6 +588,11 @@ class ExpenseReport(models.Model):
     @models.permalink
     def pdf_url(self):
         return ('zivinetz.views.reporting.expense_report_pdf', (self.pk,), {})
+
+    def recalculate_total(self, save=True):
+        _n1, _n2, self.total = self.compensations()
+        if save:
+            self.save()
 
     def compensations(self):
         period = self.periods.get() # TODO handle more than one / non-existing period

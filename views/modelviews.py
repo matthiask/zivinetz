@@ -234,7 +234,7 @@ class ExpenseReportModelView(ZivinetzModelView):
 
     def get_form(self, request, instance=None, **kwargs):
         return super(ExpenseReportModelView, self).get_form(request, instance=instance,
-            exclude=('assignment',))
+            exclude=('assignment', 'total'))
 
     def get_formset_instances(self, request, instance=None, change=None, **kwargs):
         args = self.extend_args_if_post(request, [])
@@ -243,6 +243,9 @@ class ExpenseReportModelView(ZivinetzModelView):
         return {
             'periods': ExpenseReportPeriodFormSet(*args, **kwargs),
             }
+
+    def post_save(self, request, instance, form, formset, change):
+        instance.recalculate_total()
 
 expense_report_views = ExpenseReportModelView(ExpenseReport)
 
