@@ -640,7 +640,7 @@ class ExpenseReport(models.Model):
         # holiday counts as work
         ret.append(line(
             ugettext('holiday days'),
-            'working',
+            'free',
             self.holi_days))
 
         # forced leave counts zero
