@@ -589,7 +589,8 @@ class ExpenseReport(models.Model):
     def compensations(self):
         period = self.periods.get() # TODO handle more than one / non-existing period
 
-        compensation = period.specification.compensation(self.assignment.mobilized_on) # TODO handle mobilized_on IS NULL case
+        compensation = period.specification.compensation(
+            self.assignment.mobilized_on or self.assignment.date_from) # TODO handle mobilized_on IS NULL case
 
         # spending_money, accomodation, breakfast, lunch, supper, total
 
