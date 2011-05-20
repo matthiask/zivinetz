@@ -1,0 +1,19 @@
+{% extends "zivinetz/base.html" %}
+
+{% block content %}
+<h1>Spesenstatistik</h1>
+
+<table>
+{% for month, total in stats %}
+    <tr>
+        <th>{{ month.0 }}.{{ month.1|stringformat:"02d" }}</th>
+        <td>{{ total|floatformat:2 }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+<style type="text/css">
+td { text-align: right; padding-left: 20px; }
+</style>
+
+{% endblock %}

@@ -72,6 +72,11 @@
         <td>{{ object.miscellaneous|stringformat:".2f" }}</td>
         <td>{{ object.miscellaneous_notes }}</td>
     </tr>
+
+    <tr>
+        <th><strong>Total</strong></th>
+        <td colspan="2"><strong>{{ object.total|floatformat:2 }}</strong></td>
+    </tr>
 </table>
 
 <div class="buttons">
