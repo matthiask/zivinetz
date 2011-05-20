@@ -1,6 +1,6 @@
 {% extends "modelview/object_list.html" %}
 
-{% load i18n modelview_list %}
+{% load i18n modelview_list zivinetz_tags %}
 
 {% block objects %}
 <table class="objects">
@@ -31,4 +31,7 @@
     {% endfor %}
     </tbody>
 </table>
+
+{% stats_expenses full_object_list %}
+
 {% endblock %}
