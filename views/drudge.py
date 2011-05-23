@@ -21,7 +21,8 @@ class AssignmentForm(forms.ModelForm):
 
     class Meta:
         model = Assignment
-        exclude = ('drudge', 'created', 'status', 'date_until_extension')
+        fields = ('specification', 'regional_office', 'date_from',
+            'date_until', 'part_of_long_assignment')
 
     def clean_codeword(self):
         codeword = self.cleaned_data.get('codeword')
