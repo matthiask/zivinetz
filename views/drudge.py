@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -30,6 +32,15 @@ class AssignmentForm(forms.ModelForm):
             raise forms.ValidationError(_('Codeword is incorrect.'))
         return codeword
 
+    def clean(self):
+        data = super(AssignmentForm, self).clean()
+
+        if data.get('date_from') and data.get('date_until'):
+            if data['date_from'] >= data['date_until'] or data['date_from'] < date.today():
+                raise forms.ValidationError(_('Date period is invalid.'))
+
+        return data
+
 
 class WaitListForm(forms.ModelForm):
     codeword = forms.CharField(label=ugettext_lazy('Codeword'))
@@ -45,6 +56,15 @@ class WaitListForm(forms.ModelForm):
         if codeword != Codeword.objects.word(key='warteliste'):
             raise forms.ValidationError(_('Codeword is incorrect.'))
         return codeword
+
+    def clean(self):
+        data = super(WaitListForm, self).clean()
+
+        if data.get('assignment_date_from') and data.get('assignment_date_until'):
+            if data['assignment_date_from'] >= data['assignment_date_until'] or data['assignment_date_from'] < date.today():
+                raise forms.ValidationError(_('Date period is invalid.'))
+
+        return data
 
 
 @drudge_required
