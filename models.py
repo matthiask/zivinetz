@@ -733,8 +733,7 @@ class Assessment(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'),
         related_name='assessments')
-    mark = models.IntegerField(_('mark'), choices=zip(range(1, 7), range(1, 7)),
-        default=5)
+    mark = models.IntegerField(_('mark'), choices=zip(range(1, 7), range(1, 7)))
     comment = models.TextField(_('comment'), blank=True)
 
     class Meta:
