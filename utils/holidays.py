@@ -163,6 +163,7 @@ def get_public_holidays(year):
         easter: u'Ostersonntag',
         easter + datetime.timedelta(days=1): u'Ostermontag',
         datetime.date(year, 5, 1): u'Tag der Arbeit',
+        easter + datetime.timedelta(days=39): u'Auffahrt',
         easter + datetime.timedelta(days=49): u'Pfingstsonntag',
         easter + datetime.timedelta(days=50): u'Pfingstmontag',
         datetime.date(year, 8, 1): u'Nationalfeiertag',
