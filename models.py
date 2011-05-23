@@ -710,8 +710,8 @@ class WaitList(models.Model):
 
     specification = models.ForeignKey(Specification,
         verbose_name=_('specification'))
-    assignment_date_from = models.DateField(_('date from'))
-    assignment_date_until = models.DateField(_('date until'))
+    assignment_date_from = models.DateField(_('available from'))
+    assignment_date_until = models.DateField(_('available until'))
     assignment_duration = models.PositiveIntegerField(_('duration in days'))
 
     notes = models.TextField(_('notes'), blank=True)
