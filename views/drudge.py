@@ -105,7 +105,10 @@ def dashboard(request, drudge):
         'waitlist_form': wform,
 
         'assignments': drudge.assignments.order_by('-date_from'),
-        'expense_reports': ExpenseReport.objects.filter(assignment__drudge=drudge).order_by('-date_from'),
+        'expense_reports': ExpenseReport.objects.filter(
+            assignment__drudge=drudge,
+            status__in=(ExpenseReport.FILLED, ExpenseReport.PAID),
+            ).order_by('-date_from'),
         'waitlist': WaitList.objects.filter(drudge=drudge),
         })
 
