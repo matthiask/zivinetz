@@ -515,8 +515,11 @@ class Assignment(models.Model):
 
 
 class ExpenseReportManager(SearchManager):
-    search_fields = ['report_no'] + \
-        ['assignment__%s' % f for f in AssignmentManager.search_fields]
+    search_fields = ['report_no', 'working_days_notes', 'free_days_notes',
+        'sick_days_notes', 'holi_days_notes', 'forced_leave_days_notes',
+        'clothing_expenses_notes', 'transport_expenses_notes',
+        'miscellaneous_notes',
+        ] + ['assignment__%s' % f for f in AssignmentManager.search_fields]
 
 
 class ExpenseReport(models.Model):
@@ -628,32 +631,38 @@ class ExpenseReport(models.Model):
             ugettext('working days'),
             'working',
             self.working_days))
+        ret.append([self.working_days_notes, '', '', '', '', '', ''])
         ret.append(line(
             ugettext('free days'),
             'free',
             self.free_days))
+        ret.append([self.free_days_notes, '', '', '', '', '', ''])
         ret.append(line(
             ugettext('sick days'),
             'sick',
             self.sick_days))
+        ret.append([self.sick_days_notes, '', '', '', '', '', ''])
 
         # holiday counts as work
         ret.append(line(
             ugettext('holiday days'),
             'free',
             self.holi_days))
+        ret.append([self.holi_days_notes, '', '', '', '', '', ''])
 
         # forced leave counts zero
         ret.append([
             u'%s %s' % (self.forced_leave_days, ugettext('forced leave days'))
             ] + [Decimal('0.00')] * 6)
+        ret.append([self.forced_leave_days, '', '', '', '', '', ''])
 
         additional = [
-            (ugettext('transport expenses'), self.transport_expenses),
-            (ugettext('clothing expenses'), self.clothing_expenses),
+            (ugettext('transport expenses'), self.transport_expenses, self.transport_expenses_notes),
+            (ugettext('clothing expenses'), self.clothing_expenses, self.clothing_expenses_notes),
+            (ugettext('miscellaneous'), self.miscellaneous, self.miscellaneous_notes),
             ]
 
-        total = sum(r[6] for r in ret[1:]) + sum(r[1] for r in additional)
+        total = sum(r[6] for r in ret[1::2] if r) + sum(r[1] for r in additional)
 
         return ret, additional, total
 
