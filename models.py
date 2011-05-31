@@ -654,15 +654,18 @@ class ExpenseReport(models.Model):
         ret.append([
             u'%s %s' % (self.forced_leave_days, ugettext('forced leave days'))
             ] + [Decimal('0.00')] * 6)
-        ret.append([self.forced_leave_days, '', '', '', '', '', ''])
+        ret.append([self.forced_leave_days_notes, '', '', '', '', '', ''])
 
         additional = [
-            (ugettext('transport expenses'), self.transport_expenses, self.transport_expenses_notes),
-            (ugettext('clothing expenses'), self.clothing_expenses, self.clothing_expenses_notes),
-            (ugettext('miscellaneous'), self.miscellaneous, self.miscellaneous_notes),
+            (ugettext('transport expenses'), self.transport_expenses),
+            (self.transport_expenses_notes, ''),
+            (ugettext('clothing expenses'), self.clothing_expenses),
+            (self.clothing_expenses_notes, ''),
+            (ugettext('miscellaneous'), self.miscellaneous),
+            (self.miscellaneous_notes, ''),
             ]
 
-        total = sum(r[6] for r in ret[1::2] if r) + sum(r[1] for r in additional)
+        total = sum(r[6] for r in ret[1::2] if r) + sum(r[1] for r in additional[::2])
 
         return ret, additional, total
 

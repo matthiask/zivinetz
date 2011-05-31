@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from datetime import date
+import operator
 import os
 
 from django.conf import settings
@@ -290,13 +291,19 @@ def expense_report_pdf(request, expense_report_id):
 
     pdf.spacer()
 
+    def notes(from_):
+        return (
+            ('FONT', (0, from_), (-1, from_), 'Helvetica-Oblique', 8),
+            #('LEFTPADDING', (0, from_), (-1, from_), 3*mm),
+            )
+
     table, additional, total = report.compensations()
     pdf.table(table,
         (4*cm, 2*cm, 2*cm, 2*cm, 2*cm, 2*cm, 2.4*cm),
-        pdf.style.tableHead)
+        pdf.style.tableHead + tuple(reduce(operator.add, (notes(i) for i in range(2, 12, 2)))))
     pdf.table(additional,
         (14*cm, 2.4*cm),
-        pdf.style.table)
+        pdf.style.table + notes(1) + notes(3) + notes(5))
     pdf.spacer(1*mm)
     pdf.table([
         (_('Total'), total),
