@@ -131,10 +131,13 @@ class SchedulingSearchForm(SearchForm):
     default = {
         'date_until__gte': lambda request: _monday(date.today()),
         'date_from__lte': lambda request: _monday(date.today()) + timedelta(days=26 * 7 + 4),
+        'status': (Assignment.TENTATIVE, Assignment.ARRANGED, Assignment.MOBILIZED),
         }
 
     specification = forms.ModelMultipleChoiceField(Specification.objects.all(),
         label=ugettext_lazy('specification'), required=False)
+    status = forms.MultipleChoiceField(choices=Assignment.STATUS_CHOICES,
+        label=ugettext_lazy('status'), required=False)
     date_until__gte = forms.DateField(label=ugettext_lazy('Start date'),
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
     date_from__lte = forms.DateField(label=ugettext_lazy('End date'),
