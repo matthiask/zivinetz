@@ -55,7 +55,11 @@
         <td><a href="{{ reference.pdf_url }}">PDF</a></td>
     </tr>
 {% endfor %}
-    <a href="{% url zivinetz_jobreference_from_template 1 object.id %}">Erstellen</a>
 </table>
+
+<div class="buttons">
+    <a href="{% url zivinetz_jobreference_from_template 1 object.id %}" class="button">
+        <span>Erstellen</span></a>
+</div>
 
 {% endblock %}
