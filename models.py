@@ -716,6 +716,12 @@ class CompanyHoliday(models.Model):
         return self.date_from <= day <= self.date_until
 
 
+class WaitListManager(SearchManager):
+    search_fields = ['specification__scope_statement__name', 'specification__code',
+        'notes',
+        ] + ['drudge__%s' % f for f in DrudgeManager.search_fields]
+
+
 class WaitList(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'))
@@ -732,6 +738,8 @@ class WaitList(models.Model):
         ordering = ['created']
         verbose_name = _('waitlist')
         verbose_name_plural = _('waitlist')
+
+    objects = WaitListManager()
 
     def __unicode__(self):
         return u'%s - %s, %s days' % (

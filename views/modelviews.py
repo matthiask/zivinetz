@@ -256,6 +256,20 @@ expense_report_views = ExpenseReportModelView(ExpenseReport)
 class WaitListModelView(ZivinetzModelView):
     paginate_by = 50
 
+    class search_form(towel_forms.SearchForm):
+        specification__scope_statement = forms.ModelMultipleChoiceField(
+            queryset=ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'),
+            required=False)
+        drudge = forms.ModelChoiceField(
+            Drudge.objects.all(), label=ugettext_lazy('drudge'),
+            widget=towel_forms.ModelAutocompleteWidget(url=
+                lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
+            required=False)
+        assignment_date_from__gte = forms.DateField(label=ugettext_lazy('date from'), required=False,
+            widget=forms.DateInput(attrs={'class': 'dateinput'}))
+        assignment_date_until__lte = forms.DateField(label=ugettext_lazy('date until'), required=False,
+            widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
     def deletion_allowed(self, request, instance):
         return True
 
