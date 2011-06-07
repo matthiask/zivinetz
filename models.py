@@ -795,6 +795,11 @@ class JobReferenceTemplate(models.Model):
         return self.title
 
 
+class JobReferenceManager(SearchManager):
+    search_fields = ['text',
+        ] + ['assignment__%s' % f for f in AssignmentManager.search_fields]
+
+
 class JobReference(models.Model):
     assignment = models.ForeignKey(Assignment, verbose_name=_('assignment'),
         related_name='jobreferences')
@@ -804,6 +809,8 @@ class JobReference(models.Model):
     class Meta:
         verbose_name = _('job reference')
         verbose_name_plural = _('job references')
+
+    objects = JobReferenceManager()
 
     def __unicode__(self):
         return 'job reference for %s' % self.assignment

@@ -265,6 +265,25 @@ waitlist_views = WaitListModelView(WaitList)
 class JobReferenceModelView(ZivinetzModelView):
     paginate_by = 50
 
+    class search_form(towel_forms.SearchForm):
+        assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
+            queryset=ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'),
+            required=False)
+        assignment = forms.ModelChoiceField(
+            Assignment.objects.all(), label=ugettext_lazy('assignment'),
+            widget=towel_forms.ModelAutocompleteWidget(url=
+                lambda: urlresolvers.reverse('zivinetz_assignment_autocomplete')),
+            required=False)
+        assignment__drudge = forms.ModelChoiceField(
+            Drudge.objects.all(), label=ugettext_lazy('drudge'),
+            widget=towel_forms.ModelAutocompleteWidget(url=
+                lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
+            required=False)
+        created__gte = forms.DateField(label=ugettext_lazy('date from'), required=False,
+            widget=forms.DateInput(attrs={'class': 'dateinput'}))
+        created__lte = forms.DateField(label=ugettext_lazy('date until'), required=False,
+            widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
     def additional_urls(self):
         return [
             (r'^from_template/(\d+)/(\d+)/$', self.crud_view_decorator(self.from_template)),
@@ -306,6 +325,9 @@ class JobReferenceModelView(ZivinetzModelView):
     def get_form(self, request, instance=None, **kwargs):
         return super(JobReferenceModelView, self).get_form(request, instance=instance,
             exclude=('assignment',))
+
+    def adding_allowed(self, request):
+        return False
 
     def deletion_allowed(self, request, instance):
         return True
