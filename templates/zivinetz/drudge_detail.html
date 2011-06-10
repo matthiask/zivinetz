@@ -7,19 +7,69 @@
 {% block content %}
 <h2>{{ object }}</h2>
 
+<table style="width:100%"><tr><td style="width:50%">
+
 <table>
-{% for title, value in object.user|model_details %}
-    <tr class="{% cycle "odd" "even" %}">
-        <th>{{ title|capfirst }}</th>
-        <td>{{ value }}</td>
+    <tr class="odd">
+        <th>{% trans "ZDP No." %}</th>
+        <td>{{ object.zdp_no }}</td>
     </tr>
-{% endfor %}
-{% for title, value in object|model_details %}
-    <tr class="{% cycle "odd" "even" %}">
-        <th>{{ title|capfirst }}</th>
-        <td>{{ value }}</td>
+    <tr class="even">
+        <th>Adresse</th>
+        <td>
+            {{ object.user.first_name }} {{ object.user.last_name }}<br />
+            {{ object.address|linebreaksbr }}<br />
+            {{ object.zip_code }} {{ object.city }}<br />
+        </td>
     </tr>
-{% endfor %}
+    {% for title, value in object.user|model_details:"email,is_active,last_login,date_joined" %}
+        <tr class="{% cycle "odd" "even" %}">
+            <th>{{ title|capfirst }}</th>
+            <td>{{ value }}</td>
+        </tr>
+    {% endfor %}
+    {% for title, value in object|model_details:"date_of_birth,phone_home,phone_office,mobile,regional_office" %}
+        <tr class="{% cycle "odd" "even" %}">
+            <th>{{ title|capfirst }}</th>
+            <td>{{ value }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+</td><td style="width:50%">
+
+<table>
+    {% for title, value in object|model_details:"bank_account,health_insurance_company,health_insurance_account" %}
+        <tr class="{% cycle "odd" "even" %}">
+            <th>{{ title|capfirst }}</th>
+            <td>{{ value }}</td>
+        </tr>
+    {% endfor %}
+    <tr class="even">
+        <th>{% trans "place of citizenship" %}</th>
+        <td>{{ object.place_of_citizenship_city }} {{ object.place_of_citizenship_state }}</td>
+    </tr>
+    {% for title, value in object|model_details:"driving_license,general_abonnement,half_fare_card,other_card,environment_course,motor_saw_course" %}
+        <tr class="{% cycle "odd" "even" %}">
+            <th>{{ title|capfirst }}</th>
+            <td>{{ value }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+</td></tr>
+
+<tr class="even">
+    <th>{% trans "education / occupation" %}</th>
+    <td>{{ object.education_occupation }}
+</tr>
+
+<tr class="odd">
+    <th>{% trans "notes" %}</th>
+    <td>{{ object.notes }}
+</tr>
+
 </table>
 
 <div class="buttons">
