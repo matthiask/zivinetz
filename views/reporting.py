@@ -7,8 +7,8 @@ import os
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 
 from zivinetz.models import (Assignment, CompanyHoliday, ExpenseReport,
@@ -271,7 +271,7 @@ def expense_report_pdf(request, expense_report_id):
 
     if not (table and additional and total):
         messages.error(request, _('Mobilization date is not set yet.'))
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/zivildienst/zivinetz/'))
+        return redirect(report.assignment)
 
     assignment = report.assignment
     drudge = assignment.drudge
