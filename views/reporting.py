@@ -52,10 +52,11 @@ class AssignmentPDFStationery(object):
         #'working_time_flexible': (112, 55),
         #'working_time_weekend': (151, 55),
 
-        'accomodation_offered': (85, 248),
-        'accomodation_at_home': (56, 248),
-        'accomodation_free_offered': (143, 248),
-        'accomodation_free_at_home': (113.5, 248),
+        'accomodation_working_compensated': (56, 248),
+        'accomodation_working_provided': (85, 248),
+        'accomodation_free_compensated': (113.5, 248),
+        'accomodation_free_provided': (143, 248),
+
         #'accomodation_used': (75, 251),
         #'accomodation_notused': (113.5, 251),
 
@@ -219,15 +220,11 @@ class AssignmentPDFStationery(object):
         spec = self.assignment.specification
 
         if spec.with_accomodation:
-            self.draw_marker(canvas, 'accomodation_offered')
-            self.draw_marker(canvas, 'accomodation_free_offered')
             self.draw_marker(canvas, 'special_tickets')
         else:
-            self.draw_marker(canvas, 'accomodation_at_home')
-            self.draw_marker(canvas, 'accomodation_free_at_home')
             self.draw_marker(canvas, 'public_transports')
 
-        for meal in ('breakfast', 'lunch', 'supper'):
+        for meal in ('accomodation', 'breakfast', 'lunch', 'supper'):
             for day_type in ('working', 'free'):
                 marker = '%s_%s_%s' % (
                     meal,
