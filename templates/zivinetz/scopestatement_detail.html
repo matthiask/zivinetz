@@ -1,0 +1,43 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n modelview_detail modelview_list %}
+
+{% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>{{ object }}</h2>
+
+<table>
+{% for title, value in object|model_details %}
+    <tr class="{% cycle "odd" "even" %}">
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+<div class="buttons">
+    <a href="delete/" class="button"><span>{% trans "delete"|capfirst %}</span></a>
+    <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>
+</div>
+
+<h2>{% trans "specifications" %}</h2>
+<table class="objects">
+    <thead>
+        <tr>
+            <th>{% trans "object"|capfirst %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for object in object.specifications.all %}
+        <tr class="{% cycle 'odd' 'even' %}">
+            <th>
+                <a href="{{ object.get_absolute_url }}">{{ object }}</a>
+            </th>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
