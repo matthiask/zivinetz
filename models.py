@@ -601,10 +601,13 @@ class ExpenseReport(models.Model):
             self.save()
 
     def compensations(self):
+        if not self.assignment.mobilized_on:
+            # Make recalculate_total not fall flat on its face
+            return None, None, 0
+
         period = self.periods.get() # TODO handle more than one / non-existing period
 
-        compensation = period.specification.compensation(
-            self.assignment.mobilized_on or self.assignment.date_from) # TODO handle mobilized_on IS NULL case
+        compensation = period.specification.compensation(self.assignment.mobilized_on)
 
         # spending_money, accomodation, breakfast, lunch, supper, total
 

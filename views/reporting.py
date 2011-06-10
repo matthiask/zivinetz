@@ -5,8 +5,9 @@ import operator
 import os
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 
@@ -266,6 +267,12 @@ def expense_report_pdf(request, expense_report_id):
         if report.assignment.drudge.user != request.user:
             return HttpResponseForbidden('<h1>Access forbidden</h1>')
 
+    table, additional, total = report.compensations()
+
+    if not (table and additional and total):
+        messages.error(request, _('Mobilization date is not set yet.'))
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/zivildienst/zivinetz/'))
+
     assignment = report.assignment
     drudge = assignment.drudge
 
@@ -297,7 +304,6 @@ def expense_report_pdf(request, expense_report_id):
             #('LEFTPADDING', (0, from_), (-1, from_), 3*mm),
             )
 
-    table, additional, total = report.compensations()
     pdf.table(table,
         (4*cm, 2*cm, 2*cm, 2*cm, 2*cm, 2*cm, 2.4*cm),
         pdf.style.tableHead + tuple(reduce(operator.add, (notes(i) for i in range(2, 12, 2)))))
