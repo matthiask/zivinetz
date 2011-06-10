@@ -10,7 +10,7 @@
 <table>
     <tr>
         <th>{% trans "scope statement"|capfirst %}</th>
-        <td><a href="{{ object.scope_statement }}">{{ object.scope_statement }}</a></td>
+        <td><a href="{{ object.scope_statement.get_absolute_url }}">{{ object.scope_statement }}</a></td>
     </tr>
     <tr>
         <th>{% trans "with accomodation"|capfirst %}</th>
