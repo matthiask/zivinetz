@@ -3,11 +3,13 @@
 from datetime import date
 import operator
 import os
+import subprocess
+import tempfile
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 
@@ -41,49 +43,50 @@ class AssignmentPDFStationery(object):
             0, 0, 21*cm, 29.4*cm)
 
     markers = {
-        'trial': (75, 71),
-        'long_assignment': (112, 71),
+        'standard': (31, 101),
+        'trial': (75, 101),
+        'long_assignment': (112, 101),
 
-        'working_time_fixed': (112, 60),
-        'working_time_nightshift': (151, 59),
-        'working_time_flexible': (112, 55),
-        'working_time_weekend': (151, 55),
+        #'working_time_fixed': (112, 60),
+        #'working_time_nightshift': (151, 59),
+        #'working_time_flexible': (112, 55),
+        #'working_time_weekend': (151, 55),
 
-        'accomodation_offered': (69.5, 256),
-        'accomodation_used': (75, 251),
-        'accomodation_notused': (113.5, 251),
-        'accomodation_at_home': (69.5, 247),
+        'accomodation_offered': (85, 248),
+        'accomodation_at_home': (56, 248),
+        #'accomodation_used': (75, 251),
+        #'accomodation_notused': (113.5, 251),
 
-        'breakfast_working_at_company': (69.5, 236),
-        'breakfast_working_at_home': (69.5, 231.5),
-        'breakfast_working_external': (69.5, 227),
+        'breakfast_working_at_company': (85, 242.5),
+        'breakfast_working_at_home': (56, 242.5),
+        'breakfast_working_external': (56, 242.5),
 
-        'breakfast_free_at_company': (113.5, 236),
-        'breakfast_free_at_home': (113.5, 231.5),
+        'breakfast_free_at_company': (143, 242.5),
+        'breakfast_free_at_home': (113.5, 242.5),
 
-        'lunch_working_at_company': (69.5, 223),
-        'lunch_working_at_home': (69.5, 218.5),
-        'lunch_working_external': (69.5, 214),
+        'lunch_working_at_company': (85, 237),
+        'lunch_working_at_home': (56, 237),
+        'lunch_working_external': (56, 237),
 
-        'lunch_free_at_company': (113.5, 223),
-        'lunch_free_at_home': (113.5, 218.5),
+        'lunch_free_at_company': (143, 237),
+        'lunch_free_at_home': (113.5, 237),
 
-        'supper_working_at_company': (69.5, 210),
-        'supper_working_at_home': (69.5, 205.5),
-        'supper_working_external': (69.5, 201),
+        'supper_working_at_company': (85, 231.5),
+        'supper_working_at_home': (56, 231.5),
+        'supper_working_external': (56, 231.5),
 
-        'supper_free_at_company': (113.5, 210),
-        'supper_free_at_home': (113.5, 205.5),
+        'supper_free_at_company': (143, 231.5),
+        'supper_free_at_home': (113.5, 231.5),
 
-        'public_transports': (31, 159),
-        'private_transport': (113.5, 159),
-        'special_tickets': (31, 152),
+        'public_transports': (31, 149),
+        'private_transport': (113.5, 149),
+        'special_tickets': (31, 142.5),
 
-        'clothing_provided': (31, 124),
-        'clothing_compensated': (113.5, 124),
+        'clothing_provided': (31, 117),
+        'clothing_compensated': (113.5, 117),
 
-        'arrangement_timely': (31, 89),
-        'arrangement_late': (31, 80),
+        'arrangement_timely': (31, 87),
+        'arrangement_late': (31, 78),
         }
 
     def draw_marker(self, canvas, key):
@@ -93,10 +96,11 @@ class AssignmentPDFStationery(object):
     def _draw_all_markers(self, canvas):
         canvas.setFillColorRGB(1, 0, 0)
         for key, pos in self.markers.items():
-            canvas.drawString(pos[0]*mm, pos[1]*mm, u'x %s' % key)
+            #canvas.drawString(pos[0]*mm, pos[1]*mm, u'x %s' % key)
+            canvas.drawString(pos[0]*mm, pos[1]*mm, u'x')
 
     def page_1(self, canvas, pdfdocument):
-        self.background(canvas, '3-0.jpg')
+        #self.background(canvas, '3-0.jpg')
 
         drudge = self.assignment.drudge
 
@@ -118,66 +122,62 @@ class AssignmentPDFStationery(object):
             ]
 
         frame_3 = [
-            drudge.bank_account,
             drudge.health_insurance_company,
+            '', #drudge.bank_account,
             ]
 
         frame_4 = [
-            drudge.bank_account,
             drudge.health_insurance_account,
+            '', #drudge.bank_account,
             ]
 
         frame_5 = [
             'Verein Naturnetz',
             'Chlosterstrasse',
-            'Marco Sacchi',
             '044 533 11 44',
             ]
 
         frame_6 = [
             '123456',
-            '',
-            '8109 Kloster Fahr',
-            u'Geschäftsleiter',
-            'ms@verein-naturnetz.ch',
-            ]
-
-        frame_7 = [
             'Marco Sacchi',
-            ]
-
-        frame_8 = [
+            '8109 Kloster Fahr',
+            'ms@verein-naturnetz.ch',
             u'Geschäftsleiter',
             '044 533 11 44',
             ]
 
-        frame_9 = [
-            self.assignment.date_from.strftime('%d.%m.%Y'),
-            self.assignment.date_until.strftime('%d.%m.%Y'),
+        frame_7 = [
             ]
 
-        frame_10 = [
+        frame_8 = [
+            self.assignment.date_from.strftime('%d.%m.%Y'),
+            self.assignment.date_until.strftime('%d.%m.%Y'),
+            'Kloster Fahr',
+            ]
+
+        frame_9 = [
             u'%s %s' % (
                 self.assignment.specification.scope_statement.eis_no,
                 self.assignment.specification.scope_statement.name,
                 ),
             ]
 
+        frame_10 = [
+            ]
+
         frame_11 = [
-            '42',
-            'Kloster Fahr',
             ]
 
         frames = [
-            (frame_1, 55*mm, 192*mm, 7.3*mm),
-            (frame_2, 140*mm, 192*mm, 7.3*mm),
-            (frame_3, 55*mm, 166*mm, 11*mm),
-            (frame_4, 140*mm, 166*mm, 11*mm),
-            (frame_5, 55*mm, 125*mm, 7.5*mm),
-            (frame_6, 140*mm, 125*mm, 7.5*mm),
-            (frame_7, 55*mm, 106.5*mm, 0),
-            (frame_8, 140*mm, 106.5*mm, 8.4*mm),
-            (frame_9, 140*mm, 89*mm, 7.4*mm),
+            (frame_1, 55*mm, 190*mm, 6.9*mm),
+            (frame_2, 140*mm, 190*mm, 6.9*mm),
+            (frame_3, 55*mm, 167*mm, 11*mm),
+            (frame_4, 140*mm, 167*mm, 11*mm),
+            (frame_5, 55*mm, 149*mm, 7.2*mm),
+            (frame_6, 140*mm, 133*mm, 7.5*mm),
+            (frame_7, 55*mm, 108.5*mm, 0),
+            (frame_8, 140*mm, 109*mm, 7.2*mm),
+            (frame_9, 90*mm, 87.5*mm, 7.4*mm),
             (frame_10, 90*mm, 81*mm, 0),
             (frame_11, 55*mm, 55*mm, 8.5*mm),
             ]
@@ -197,23 +197,23 @@ class AssignmentPDFStationery(object):
             company_holiday = None
 
         if company_holiday:
-            canvas.drawString(125*mm, 47*mm, company_holiday.date_from.strftime('%d.%m.%Y'))
-            canvas.drawString(160*mm, 47*mm, company_holiday.date_until.strftime('%d.%m.%Y'))
+            canvas.drawString(125*mm, 76*mm, company_holiday.date_from.strftime('%d.%m.%Y'))
+            canvas.drawString(160*mm, 76*mm, company_holiday.date_until.strftime('%d.%m.%Y'))
 
 
         if self.assignment.part_of_long_assignment:
             self.draw_marker(canvas, 'long_assignment')
 
-        self.draw_marker(canvas, 'working_time_fixed')
+        #self.draw_marker(canvas, 'working_time_fixed')
 
     def page_2(self, canvas, pdfdocument):
-        self.background(canvas, '3-1.jpg')
+        #self.background(canvas, '3-1.jpg')
 
         spec = self.assignment.specification
 
         if spec.with_accomodation:
             self.draw_marker(canvas, 'accomodation_offered')
-            self.draw_marker(canvas, 'accomodation_used')
+            #self.draw_marker(canvas, 'accomodation_used')
         else:
             self.draw_marker(canvas, 'accomodation_at_home')
 
@@ -247,14 +247,33 @@ def assignment_pdf(request, assignment_id):
         if assignment.drudge.user != request.user:
             return HttpResponseForbidden('<h1>Access forbidden</h1>')
 
-    pdf, response = pdf_response('assignment-%s' % assignment.pk)
-    #pdf.show_boundaries = True
-    pdf.init_report(page_fn=create_stationery_fn(AssignmentPDFStationery(assignment)))
+    with tempfile.NamedTemporaryFile(delete=False) as overlay:
+        pdf = PDFDocument(overlay)
 
-    pdf.pagebreak()
-    pdf.pagebreak()
+        #pdf.show_boundaries = True
+        pdf.init_report(page_fn=create_stationery_fn(AssignmentPDFStationery(assignment)))
 
-    pdf.generate()
+        pdf.pagebreak()
+        pdf.pagebreak()
+
+        pdf.generate()
+        overlay.close()
+
+        p = subprocess.Popen(['/usr/bin/pdftk', '-', 'multistamp', overlay.name,
+                'output', '-'],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        source = open(os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            'data',
+            'Einsatzvereinbarung.pdf',
+            ), 'rb')
+
+        result, error = p.communicate(source.read())
+        os.unlink(overlay.name)
+
+    response = HttpResponse(result, mimetype='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=eiv.pdf'
     return response
 
 
