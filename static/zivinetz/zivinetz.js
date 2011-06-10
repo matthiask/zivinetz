@@ -3,7 +3,8 @@ $(function() {
         changeYear: true,
         changeMonth: true,
         dateFormat: 'dd.mm.yy',
-        firstDay: 1
+        firstDay: 1,
+        yearRange: 'c-40:c+40'
     });
 
     $('input.dateinput').datepicker();
