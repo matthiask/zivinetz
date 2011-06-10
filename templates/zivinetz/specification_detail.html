@@ -24,6 +24,14 @@
         <th>{% trans "clothing"|capfirst %}</th>
         <td>{{ object.get_clothing_display }}</td>
     </tr>
+    <tr>
+        <th>{% trans "accomodation throughout"|capfirst %}</th>
+        <td>{{ object.accomodation_throughout|yesno:_("Yes,No") }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "food throughout"|capfirst %}</th>
+        <td>{{ object.food_throughout|yesno:_("Yes,No") }}</td>
+    </tr>
 </table>
 
 <table>

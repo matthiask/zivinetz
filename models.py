@@ -83,6 +83,11 @@ class Specification(models.Model):
 
     clothing = models.CharField(_('clothing'), **CLOTHING.kwargs)
 
+    accomodation_throughout = models.BooleanField(_('accomodation throughout'),
+        help_text=_('Accomodation is offered throughout.'))
+    food_throughout = models.BooleanField(_('food throughout'),
+        help_text=_('Food is offered throughout.'))
+
     class Meta:
         ordering = ['scope_statement', 'with_accomodation']
         unique_together = (('scope_statement', 'with_accomodation'),)

@@ -16,6 +16,8 @@
     {% form_item form.with_accomodation %}
     {% form_item form.code %}
     {% form_item form.clothing %}
+    {% form_item form.accomodation_throughout %}
+    {% form_item form.food_throughout %}
 
     {% for key, formset in formsets.items %}
         {{ formset }}

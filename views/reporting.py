@@ -80,6 +80,9 @@ class AssignmentPDFStationery(object):
         'supper_free_at_company': (143, 231.5),
         'supper_free_at_home': (113.5, 231.5),
 
+        'accomodation_throughout': (31, 193),
+        'food_throughout': (31, 186),
+
         'public_transports': (31, 149),
         'private_transport': (113.5, 149),
         'special_tickets': (31, 142.5),
@@ -242,6 +245,11 @@ class AssignmentPDFStationery(object):
 
         self.draw_marker(canvas, 'clothing_%s' % spec.clothing)
         # TODO automatically draw arrangement marker?
+
+        if spec.accomodation_throughout:
+            self.draw_marker(canvas, 'accomodation_throughout')
+        if spec.food_throughout:
+            self.draw_marker(canvas, 'food_throughout')
 
 
 @login_required
