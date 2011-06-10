@@ -221,10 +221,11 @@ class AssignmentPDFStationery(object):
         if spec.with_accomodation:
             self.draw_marker(canvas, 'accomodation_offered')
             self.draw_marker(canvas, 'accomodation_free_offered')
-            #self.draw_marker(canvas, 'accomodation_used')
+            self.draw_marker(canvas, 'special_tickets')
         else:
             self.draw_marker(canvas, 'accomodation_at_home')
             self.draw_marker(canvas, 'accomodation_free_at_home')
+            self.draw_marker(canvas, 'public_transports')
 
         for meal in ('breakfast', 'lunch', 'supper'):
             for day_type in ('working', 'free'):
