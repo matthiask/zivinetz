@@ -205,6 +205,8 @@ class AssignmentPDFStationery(object):
 
         if self.assignment.part_of_long_assignment:
             self.draw_marker(canvas, 'long_assignment')
+        else:
+            self.draw_marker(canvas, 'standard')
 
         #self.draw_marker(canvas, 'working_time_fixed')
 
