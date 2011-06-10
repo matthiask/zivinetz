@@ -202,6 +202,9 @@ class DrudgeManager(SearchManager):
 
 
 class Drudge(models.Model):
+    STATES = [state[0] for state in ch_states.STATE_CHOICES]
+    STATE_CHOICES = zip(STATES, STATES)
+
     user = models.OneToOneField(User)
 
     zdp_no = models.CharField(_('ZDP No.'), unique=True, max_length=10)
@@ -213,8 +216,8 @@ class Drudge(models.Model):
     date_of_birth = models.DateField(_('date of birth'))
 
     place_of_citizenship_city = models.CharField(_('place of citizenship'), max_length=100)
-    place_of_citizenship_state = models.CharField(_('place of citizenship'), max_length=2,
-        choices=ch_states.STATE_CHOICES)
+    place_of_citizenship_state = models.CharField(_('place of citizenship (canton)'), max_length=2,
+        choices=STATE_CHOICES)
 
     phone_home = models.CharField(_('phone (home)'), max_length=20, blank=True)
     phone_office = models.CharField(_('phone (office)'), max_length=20, blank=True)

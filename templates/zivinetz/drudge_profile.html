@@ -15,7 +15,33 @@
 
 <table>
     {% for field in form2 %}{% form_item field %}{% endfor %}
-    {% for field in form %}{% form_item field %}{% endfor %}
+
+    {% form_item form.zdp_no %}
+    {% form_item form.zip_code %}
+    {% form_item form.city %}
+    {% form_item form.date_of_birth %}
+    <tr class="required">
+        <th>{{ form.place_of_citizenship_city.label_tag }}</th>
+        <td>
+            {% form_item_plain form.place_of_citizenship_city %}
+            {% form_item_plain form.place_of_citizenship_state %}
+        </td>
+    </tr>
+    {% form_item form.phone_home %}
+    {% form_item form.phone_office %}
+    {% form_item form.mobile %}
+    {% form_item form.bank_account %}
+    {% form_item form.health_insurance_company %}
+    {% form_item form.health_insurance_account %}
+    {% form_item form.education_occupation %}
+    {% form_item form.driving_license %}
+    {% form_item form.general_abonnement %}
+    {% form_item form.half_fare_card %}
+    {% form_item form.other_card %}
+    {% form_item form.environment_course %}
+    {% form_item form.motor_saw_course %}
+    {% form_item form.regional_office %}
+    {% form_item form.notes %}
 
     {% for key, formset in formsets.items %}
         {% for form in formset.forms %}
