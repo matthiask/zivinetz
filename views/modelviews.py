@@ -1,5 +1,8 @@
 # coding=utf-8
 
+from StringIO import StringIO
+import xlwt
+
 from django import forms
 from django.db.models import Q
 from django.contrib import messages
@@ -178,6 +181,32 @@ class AssignmentModelView(ZivinetzModelView):
             'label': unicode(d),
             'value': d.id,
             } for d in queryset[:20]]), mimetype='application/json')
+
+
+    def handle_search_form(self, request, *args, **kwargs):
+        queryset, response = super(AssignmentModelView, self).handle_search_form(request, *args, **kwargs)
+
+        if request.GET.get('s') == 'xls':
+
+            workbook = xlwt.Workbook()
+            ws = workbook.add_sheet('phones')
+
+            for row, assignment in enumerate(queryset):
+                drudge = assignment.drudge
+
+                ws.write(row, 0, unicode(drudge))
+                ws.write(row, 1, drudge.user.email)
+                ws.write(row, 2, drudge.phone_home)
+                ws.write(row, 3, drudge.phone_office)
+                ws.write(row, 4, drudge.mobile)
+
+            output = StringIO()
+            workbook.save(output)
+            response = HttpResponse(output.getvalue(), mimetype='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'inline; filename=phones.xls'
+            return queryset, response
+
+        return queryset, response
 
     def get_form(self, request, instance=None, **kwargs):
         return super(AssignmentModelView, self).get_form(request, instance=instance,

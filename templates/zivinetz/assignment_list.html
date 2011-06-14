@@ -30,5 +30,21 @@
         </tr>
     {% endfor %}
     </tbody>
+    <tfoot>
+        <tr><td colspan="6">
+            <button id="exportxls" type="button">{% trans "Phone list" %}</button>
+        </td></tr>
+    </tfoot>
 </table>
+<style type="text/css">#exportxls { float: right !important; margin: 15px 0 0 0 !important; }</style>
+<script type="text/javascript">
+$(function() {
+    $('#exportxls').bind('click', function() {
+        var $f = $('#filterform'),
+            $s = $f.find('input[name=s]');
+        $s.val('xls');
+        $f.submit();
+    });
+});
+</script>
 {% endblock %}
