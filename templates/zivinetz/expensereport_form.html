@@ -142,7 +142,7 @@ $(function() {
     var sick_days = $('#{{ form.sick_days.auto_id }}');
     var forced_leave_days = $('#{{ form.forced_leave_days.auto_id }}');
 
-    working_days.attr('readonly', 'readonly');
+    //working_days.attr('readonly', 'readonly');
 
     function tryint($f) {
         var val = parseInt($f.val(), 10);
@@ -166,10 +166,10 @@ $(function() {
         working_days.val(total - minus);
     }
 
-    free_days.keyup(recalculate).change(recalculate);
-    holi_days.keyup(recalculate).change(recalculate);
-    sick_days.keyup(recalculate).change(recalculate);
-    forced_leave_days.keyup(recalculate).change(recalculate);
+    //free_days.keyup(recalculate).change(recalculate);
+    //holi_days.keyup(recalculate).change(recalculate);
+    //sick_days.keyup(recalculate).change(recalculate);
+    //forced_leave_days.keyup(recalculate).change(recalculate);
 });
 </script>
 <style type="text/css">
