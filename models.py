@@ -832,7 +832,7 @@ class JobReference(models.Model):
     objects = JobReferenceManager()
 
     def __unicode__(self):
-        return 'job reference for %s' % self.assignment
+        return u'job reference for %s' % self.assignment
 
     @models.permalink
     def pdf_url(self):
