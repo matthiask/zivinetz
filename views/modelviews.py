@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from django import forms
+from django.db.models import Q
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -145,8 +146,25 @@ class AssignmentModelView(ZivinetzModelView):
             widget=towel_forms.ModelAutocompleteWidget(url=
                 lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
             label=ugettext_lazy('drudge'), required=False)
+        active_on = forms.DateField(label=ugettext_lazy('active on'), required=False,
+            widget=forms.DateInput(attrs={'class': 'dateinput'}))
         status = forms.MultipleChoiceField(
             Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
+
+        def queryset(self, model):
+            data = self.safe_cleaned_data
+            queryset = model.objects.search(data.get('query'))
+            queryset = self.apply_filters(queryset, data, exclude=('active_on',))
+
+            if data.get('active_on'):
+                active_on = data.get('active_on')
+
+                queryset = queryset.filter(Q(date_from__lte=active_on) & (
+                    (Q(date_until_extension__isnull=True) & Q(date_until__gte=active_on)) |
+                    Q(date_until_extension__isnull=False, date_until_extension__gte=active_on)
+                    ))
+
+            return queryset
 
     def additional_urls(self):
         return [
