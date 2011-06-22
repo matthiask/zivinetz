@@ -160,4 +160,4 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 
 #content table.objects { width: 97%; }
 #content table.objects th,
-#content table.objects td { padding: 2px 3px 2px 3px; }
+#content table.objects td { padding: 4px 3px 4px 3px; font-size: 90%; }
