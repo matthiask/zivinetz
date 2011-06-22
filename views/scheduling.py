@@ -1,5 +1,6 @@
 import calendar
 from datetime import datetime, date, timedelta
+import itertools
 import operator
 
 from django import forms
@@ -7,6 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Max, Min
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy
 
 from towel.forms import SearchForm, stripped_formfield_callback
@@ -108,11 +110,20 @@ class Scheduler(object):
         return weeks[self.date_slice]
 
     def assignments(self):
-        assignments = [(
-            assignment,
-            self._schedule_assignment(assignment.date_from, assignment.determine_date_until()),
-            ) for assignment in self.queryset.select_related('specification__scope_statement',
-                'drudge').order_by('date_from', 'date_until')]
+        assignments = SortedDict()
+        for assignment in self.queryset.select_related('specification__scope_statement',
+                'drudge').order_by('date_from', 'date_until'):
+
+            if assignment.drudge not in assignments:
+                assignments[assignment.drudge] = []
+
+            assignments[assignment.drudge].append((
+                assignment,
+                self._schedule_assignment(assignment.date_from, assignment.determine_date_until()),
+                ))
+
+        # linearize assignments, but still give precedence to drudge
+        assignments = list(itertools.chain(*assignments.values()))
 
         data = [[a for a, b in d] for a, d in assignments]
 
