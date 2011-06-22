@@ -54,9 +54,9 @@
             {% endfor %}
         </tr>
         <tr>
-            <th colspan="4"></th>
+            <th colspan="4">{% trans "week"|capfirst %}</th>
             {% for monday, year, week, current in scheduler.weeks %}
-                <th {% if current %}class="current"{% endif %}>W{{ week|stringformat:"02d" }}&nbsp;</th>
+                <th {% if current %}class="current"{% endif %}>{{ week|stringformat:"02d" }}&nbsp;</th>
             {% endfor %}
         </tr>
     </thead>
