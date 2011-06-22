@@ -16,7 +16,6 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 (_('waitlist'), 'admin/waitlist/'),
                 (_('drudges'), 'admin/drudges/'),
                 (_('assignments'), 'admin/assignments/'),
-                (_('job references'), 'admin/jobreferences/'),
                 (_('expense reports'), 'admin/expense_reports/'),
                 (_('regional offices'), 'admin/regional_offices/'),
                 (_('scope statements'), 'admin/scope_statements/'),
