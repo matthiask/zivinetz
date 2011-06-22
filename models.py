@@ -610,7 +610,7 @@ class ExpenseReport(models.Model):
             # Make recalculate_total not fall flat on its face
             return None, None, 0
 
-        period = self.periods.get() # TODO handle more than one / non-existing period
+        period = self.periods.order_by('date_from')[0] # TODO handle more than one / non-existing period
 
         compensation = period.specification.compensation(self.assignment.mobilized_on)
 
