@@ -40,10 +40,7 @@
 <script type="text/javascript">
 $(function() {
     $('#exportxls').bind('click', function() {
-        var $f = $('#filterform'),
-            $s = $f.find('input[name=s]');
-        $s.val('xls');
-        $f.submit();
+        window.open('?' + $('#filterform').serialize() + '&s=xls');
     });
 });
 </script>
