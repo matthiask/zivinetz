@@ -29,18 +29,20 @@
 
 
 <style type="text/css">
-#scheduler { background: #eee; border-collapse: collapse; font-size: 80%; }
-#scheduler td, #scheduler th { padding: 0; }
-#scheduler td { border: 1px solid #444; text-align: center; }
+#scheduler { background: #eee; border-collapse: collapse; font-size: 80%;
+    font-family: Verdana, Arial, sans-serif; }
+#scheduler thead { font-size: 80%; }
+#scheduler td, #scheduler th { padding: 1px; vertical-align: middle; }
+#scheduler td { border: 1px solid #666; text-align: center; line-height: 1em; font-size: 80%; }
 #scheduler th:first-child, #scheduler th:nth-child(2) { white-space: nowrap; }
 
-#scheduler tr.status10 td.a { background-color: orange; }
-#scheduler tr.status20 td.a { background-color: blue; }
-#scheduler tr.status30 td.a { background-color: green; }
-#scheduler tr.status40 td.a { background-color: grey; }
+#scheduler tr.status10 td.a { background-color: #ffcc6e; }
+#scheduler tr.status20 td.a { background-color: #b0beed; }
+#scheduler tr.status30 td.a { background-color: #76bf76; }
+#scheduler tr.status40 td.a { background-color: #a0a0a0; }
 
 #scheduler tr:nth-child(10n),
-#scheduler td:nth-child(10n+4) { background-color: #ccc; }
+#scheduler td:nth-child(10n+4) { background-color: #d0d0d0; }
 
 #scheduler th.current { color: red; }
 </style>
