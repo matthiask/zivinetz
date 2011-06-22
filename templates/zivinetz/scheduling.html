@@ -33,7 +33,7 @@
 #scheduler tr.status40 td.a { background-color: grey; }
 
 #scheduler tr:nth-child(10n),
-#scheduler td:nth-child(10n+2) { background-color: #ccc; }
+#scheduler td:nth-child(10n+4) { background-color: #ccc; }
 
 #scheduler th.current { color: red; }
 </style>
@@ -41,13 +41,13 @@
 {% spaceless %}<table id="scheduler">
     <thead>
         <tr>
-            <th colspan="2"></th>
+            <th colspan="4"></th>
             {% for monday, year, week, current in scheduler.weeks %}
                 <th>{% ifchanged year %}{{ year }}{% endifchanged %}</th>
             {% endfor %}
         </tr>
         <tr>
-            <th colspan="2"></th>
+            <th colspan="4"></th>
             {% for monday, year, week, current in scheduler.weeks %}
                 <th {% if current %}class="current"{% endif %}>W{{ week|stringformat:"02d" }}&nbsp;</th>
             {% endfor %}
@@ -55,8 +55,10 @@
     </thead>
 {% for assignment, scheduled in scheduler.assignments %}
     <tr class="status{{ assignment.status }} {% cycle "odd" "even" %}">
-        <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge }}</a></th>
-        <th>{{ assignment.specification.code }}</th>
+        <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.first_name }}&nbsp; </a></th>
+        <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.last_name }}&nbsp; </a></th>
+        <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.zdp_no }}&nbsp; </a></th>
+        <th>{{ assignment.specification.code }}&nbsp; </th>
         {% for week, text in scheduled %}
             <td{% if week %} class="a"{% endif %}>{{ text }}</td>
         {% endfor %}

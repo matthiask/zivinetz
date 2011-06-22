@@ -7,7 +7,9 @@
     <thead>
         <tr>
             <th>{% trans "object"|capfirst %}</th>
-            <th>{% trans "drudge"|capfirst %}</th>
+            <th>{% trans "first name"|capfirst %}</th>
+            <th>{% trans "last name"|capfirst %}</th>
+            <th>{% trans "ZDP No."|capfirst %}</th>
             <th>{% trans "specification"|capfirst %}</th>
             <th>{% trans "total days"|capfirst %}</th>
             <th>{% trans "status"|capfirst %}</th>
@@ -22,7 +24,9 @@
                     {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
                 </a>
             </th>
-            <td>{{ object.assignment.drudge }}</td>
+            <td>{{ object.assignment.drudge.user.first_name }}</td>
+            <td>{{ object.assignment.drudge.user.last_name }}</td>
+            <td>{{ object.assignment.drudge.zdp_no }}</td>
             <td>{{ object.assignment.specification.code }}</td>
             <td>{{ object.total_days }}</td>
             <td>{{ object.get_status_display }}</td>
