@@ -3,7 +3,14 @@
 {% load i18n towel_form_tags %}
 
 {% block content %}
-<h1>{% trans "scheduling"|capfirst %}</h1>
+<h1>{% trans "scheduling"|capfirst %}
+    <small style="font-size:70%">(
+        <a href="?s=1&date_until__gte=01.01.2010&date_from__lte=31.12.2010">2010</a> /
+        <a href="?s=1&date_until__gte=01.01.2011&date_from__lte=31.12.2011">2011</a> /
+        <a href="?s=1&date_until__gte=01.01.2012&date_from__lte=31.12.2012">2012</a> /
+        <a href="?s=1&date_until__gte=01.01.2013&date_from__lte=31.12.2013">2013</a>
+    )</small>
+</h1>
 
 <div class="box searchbox {{ search_form.searching }}">
     <a href="?clear=1" class="searching">clear</a>
