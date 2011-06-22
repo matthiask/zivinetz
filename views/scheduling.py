@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy
 
 from towel.forms import SearchForm, stripped_formfield_callback
 
-from zivinetz.models import Assignment, Specification
+from zivinetz.models import Assignment, Specification, WaitList
 
 
 # Calendar week calculation according to ISO 8601
@@ -60,6 +60,7 @@ class Scheduler(object):
     def __init__(self, assignments, date_range):
         self.queryset = assignments
         self.date_range = date_range
+        self.waitlist = None
 
         max_min = self.queryset.aggregate(min=Min('date_from'), max=Max('date_until'))
         max_ext = self.queryset.filter(date_until_extension__isnull=False).aggregate(
@@ -77,6 +78,9 @@ class Scheduler(object):
             self.date_slice = slice(
                 (self.date_range[0] - self.date_from).days // 7,
                 (self.date_range[1] - self.date_from).days // 7 + 2)
+
+    def add_waitlist(self, queryset):
+        self.waitlist = queryset
 
     def weeks(self):
         ret = []
@@ -110,26 +114,44 @@ class Scheduler(object):
         return weeks[self.date_slice]
 
     def assignments(self):
-        assignments = SortedDict()
+        assignments_dict = SortedDict()
         for assignment in self.queryset.select_related('specification__scope_statement',
-                'drudge').order_by('date_from', 'date_until'):
+                'drudge__user').order_by('date_from', 'date_until'):
 
-            if assignment.drudge not in assignments:
-                assignments[assignment.drudge] = []
+            if assignment.drudge not in assignments_dict:
+                assignments_dict[assignment.drudge] = []
 
-            assignments[assignment.drudge].append((
+            assignments_dict[assignment.drudge].append((
                 assignment,
                 self._schedule_assignment(assignment.date_from, assignment.determine_date_until()),
                 ))
 
         # linearize assignments, but still give precedence to drudge
-        assignments = list(itertools.chain(*assignments.values()))
-
+        assignments = list(itertools.chain(*assignments_dict.values()))
         data = [[a for a, b in d] for a, d in assignments]
+
+        waitlist = []
+        if self.waitlist is not None:
+            for entry in self.waitlist.select_related('specification__scope_statement',
+                    'drudge__user').order_by('assignment_date_from'):
+                entry.status = 'wl' # special waitlist entry status
+                item = (
+                    entry,
+                    self._schedule_assignment(entry.assignment_date_from,
+                        entry.assignment_date_until),
+                    )
+
+                if entry.drudge in assignments_dict:
+                    assignments_dict[entry.drudge].append(item)
+                else:
+                    waitlist.append(item)
+
+            # linearize assignments with waitlist entries intermingled
+            assignments = list(itertools.chain(*assignments_dict.values()))
 
         return [[
             None, [(sum(week), sum(week)) for week in zip(*data)]
-            ]] + assignments
+            ]] + waitlist + assignments
 
         return assignments
 
@@ -153,12 +175,21 @@ class SchedulingSearchForm(SearchForm):
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
     date_from__lte = forms.DateField(label=ugettext_lazy('End date'),
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
+    include_waitlist = forms.BooleanField(label=ugettext_lazy('Include waitlist'),
+        required=False)
 
     def queryset(self):
         data = self.safe_cleaned_data
         queryset = self.apply_filters(Assignment.objects.search(data.get('query')),
-            data, exclude=())
+            data, exclude=('include_waitlist',))
         return queryset
+
+    def waitlist_queryset(self):
+        data = self.safe_cleaned_data
+        return self.apply_filters(WaitList.objects.search(data.get('query')), {
+            'assignment_date_until__gte': data.get('date_until__gte'),
+            'assignment_date_from__lte': data.get('date_from__lte'),
+            })
 
 
 @staff_member_required
@@ -172,6 +203,9 @@ def scheduling(request):
         return HttpResponseRedirect('?clear=1')
 
     scheduler = Scheduler(search_form.queryset(), date_range)
+
+    if search_form.safe_cleaned_data.get('include_waitlist'):
+        scheduler.add_waitlist(search_form.waitlist_queryset())
 
     return render(request, 'zivinetz/scheduling.html', {
         'scheduler': scheduler,

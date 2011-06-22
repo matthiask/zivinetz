@@ -94,6 +94,7 @@ admin.site.register(models.CompanyHoliday,
 
 admin.site.register(models.WaitList,
     list_display=('created', 'drudge', '__unicode__'),
+    raw_id_fields=('drudge',),
     )
 
 admin.site.register(models.Codeword,
