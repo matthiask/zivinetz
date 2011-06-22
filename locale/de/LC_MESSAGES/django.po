@@ -71,11 +71,11 @@ msgstr "Name"
 #: templates/zivinetz/specification_detail.html:12 views/modelviews.py:143
 #: views/modelviews.py:215 views/modelviews.py:261 views/modelviews.py:284
 msgid "scope statement"
-msgstr "Pflichtenheft"
+msgstr "Pflichtenheft-Gruppe"
 
 #: models.py:21 navigation_extensions.py:22
 msgid "scope statements"
-msgstr "Pflichtenhefte"
+msgstr "Pflichtenheft-Gruppen"
 
 #: models.py:47 models.py:58
 msgid "provided"
@@ -109,7 +109,7 @@ msgstr "Code"
 #: models.py:67
 msgid "Short, unique code identifying this specification."
 msgstr ""
-"Kurzer, eindeutiger Code um diese Ausprägung eindeutig zu identifizieren."
+"Kurzer, eindeutiger Code um diese Pflichtenheft eindeutig zu identifizieren."
 
 #: models.py:69
 msgid "accomodation on working days"
@@ -186,11 +186,11 @@ msgstr "Mahlzeiten werden vollständig angeboten (Morgen-, Mittag- und Abendesse
 #: templates/zivinetz/specification_list.html:9
 #: templates/zivinetz/waitlist_list.html:11 views/scheduling.py:138
 msgid "specification"
-msgstr "Ausprägung"
+msgstr "Pflichtenheft"
 
 #: models.py:95 navigation_extensions.py:23
 msgid "specifications"
-msgstr "Ausprägungen"
+msgstr "Pflichtenhefte"
 
 #: models.py:100
 msgid "without accomodation"
@@ -822,7 +822,7 @@ msgstr "Perioden"
 
 #: templates/zivinetz/expensereport_form.html:104
 msgid "Specification"
-msgstr "Ausprägung"
+msgstr "Pflichtenheft"
 
 #: templates/zivinetz/expensereport_form.html:105
 msgid "From"
