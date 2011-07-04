@@ -191,14 +191,30 @@ class AssignmentModelView(ZivinetzModelView):
             workbook = xlwt.Workbook()
             ws = workbook.add_sheet('phones')
 
-            for row, assignment in enumerate(queryset):
+            ws.col(0).width = 8000
+            ws.col(1).width = 8000
+            ws.col(2).width = 4000
+            ws.col(3).width = 4000
+            ws.col(4).width = 4000
+
+            specification = None
+            row = 0
+            for assignment in queryset.order_by('specification', 'drudge'):
                 drudge = assignment.drudge
+
+                if specification != assignment.specification:
+                    row += 1
+                    ws.write(row, 0, unicode(assignment.specification))
+                    specification = assignment.specification
+                    row += 1
 
                 ws.write(row, 0, unicode(drudge))
                 ws.write(row, 1, drudge.user.email)
                 ws.write(row, 2, drudge.phone_home)
                 ws.write(row, 3, drudge.phone_office)
                 ws.write(row, 4, drudge.mobile)
+
+                row += 1
 
             output = StringIO()
             workbook.save(output)
