@@ -199,6 +199,9 @@ class AssignmentModelView(ZivinetzModelView):
 
             specification = None
             row = 0
+            ws.write(row, 0, 'Telefonliste fuer %s' % (request.GET.get('active_on'),))
+            row += 1
+
             for assignment in queryset.order_by('specification', 'drudge'):
                 drudge = assignment.drudge
 
