@@ -165,7 +165,6 @@ class SchedulingSearchForm(SearchForm):
         'date_until__gte': lambda request: _monday(date.today()),
         'date_from__lte': lambda request: _monday(date.today()) + timedelta(days=35 * 7 + 4),
         'status': (Assignment.TENTATIVE, Assignment.ARRANGED, Assignment.MOBILIZED),
-        'include_waitlist': True,
         }
 
     specification = forms.ModelMultipleChoiceField(Specification.objects.all(),
