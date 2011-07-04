@@ -2,6 +2,8 @@
 
 {% load feincms_tags feincms_page_tags i18n navigation_tags %}
 
+{% block moodboard %}{% endblock %}
+
 {% block title %}Zivinetz - {{ block.super }}{% endblock %}
 
 {% block extra-head %}{{ block.super }}
@@ -11,6 +13,11 @@
 
 <link rel="stylesheet" href="{{ STATIC_URL }}zivinetz/zivinetz.css" type="text/css" media="screen, projection, print" />
 <script type="text/javascript" src="{{ STATIC_URL }}zivinetz/zivinetz.js"></script>
+
+<style type="text/css">
+/* theme overrides */
+#maincontent { width: 960px !important; }
+</style>
 {% endblock %}
 
 {% block body-class %}cms_standard{% endblock %}
