@@ -1,7 +1,6 @@
 # coding=utf-8
 
 from StringIO import StringIO
-import xlwt
 
 from django import forms
 from django.db.models import Q
@@ -18,6 +17,9 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 
 from towel import modelview
 from towel import forms as towel_forms
+
+from pdfdocument.document import PDFDocument, cm, mm
+from pdfdocument.utils import pdf_response
 
 from zivinetz.models import (Assignment, CompanyHoliday, Drudge,
     ExpenseReport, ExpenseReportPeriod, RegionalOffice, ScopeStatement,
@@ -187,42 +189,27 @@ class AssignmentModelView(ZivinetzModelView):
         queryset, response = super(AssignmentModelView, self).handle_search_form(request, *args, **kwargs)
 
         if request.GET.get('s') == 'xls':
-
-            workbook = xlwt.Workbook()
-            ws = workbook.add_sheet('phones')
-
-            ws.col(0).width = 8000
-            ws.col(1).width = 8000
-            ws.col(2).width = 4000
-            ws.col(3).width = 4000
-            ws.col(4).width = 4000
+            pdf, response = pdf_response('phones')
+            pdf.init_report()
 
             specification = None
-            row = 0
-            ws.write(row, 0, 'Telefonliste fuer %s' % (request.GET.get('active_on'),))
-            row += 1
-
             for assignment in queryset.order_by('specification', 'drudge'):
                 drudge = assignment.drudge
 
                 if specification != assignment.specification:
-                    row += 1
-                    ws.write(row, 0, unicode(assignment.specification))
+                    pdf.h2(unicode(assignment.specification))
                     specification = assignment.specification
-                    row += 1
 
-                ws.write(row, 0, unicode(drudge))
-                ws.write(row, 1, drudge.user.email)
-                ws.write(row, 2, drudge.phone_home)
-                ws.write(row, 3, drudge.phone_office)
-                ws.write(row, 4, drudge.mobile)
+                pdf.table([
+                    (unicode(drudge), drudge.user.email, u'%s - %s' % (
+                        assignment.date_from.strftime('%d.%m.%y'),
+                        assignment.determine_date_until().strftime('%d.%m.%y'),
+                        )),
+                    (drudge.phone_home, drudge.phone_office, drudge.mobile),
+                    ], (6.4*cm, 5*cm, 5*cm))
+                pdf.hr_mini()
 
-                row += 1
-
-            output = StringIO()
-            workbook.save(output)
-            response = HttpResponse(output.getvalue(), mimetype='application/vnd.ms-excel')
-            response['Content-Disposition'] = 'inline; filename=phones.xls'
+            pdf.generate()
             return queryset, response
 
         return queryset, response
