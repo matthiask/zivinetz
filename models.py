@@ -489,7 +489,7 @@ class Assignment(models.Model):
                 expenses[month]['clothing'] += clothing_total
                 clothing_total = 0
 
-        return expenses
+        return assignment_days, monthly_expense_days, expenses
 
     @models.permalink
     def pdf_url(self):

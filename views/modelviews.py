@@ -244,9 +244,14 @@ class AssignmentModelView(ZivinetzModelView):
 
     def post_save(self, request, instance, form, formset, change):
         if not instance.reports.count():
-            days, monthly_expense_days = instance.assignment_days()
+            days, monthly_expense_days, expenses = instance.expenses()
 
             for month, data in monthly_expense_days:
+                try:
+                    clothing_expenses = expenses[month]['clothing']
+                except KeyError:
+                    clothing_expenses = 0
+
                 report = instance.reports.create(
                     date_from=data['start'],
                     date_until=data['end'],
@@ -255,6 +260,7 @@ class AssignmentModelView(ZivinetzModelView):
                     sick_days=0,
                     holi_days=0,
                     forced_leave_days=data['forced'],
+                    clothing_expenses=clothing_expenses,
                     )
 
                 report.periods.create(
