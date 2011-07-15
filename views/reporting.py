@@ -172,6 +172,7 @@ class AssignmentPDFStationery(object):
             ]
 
         frame_10 = [
+            self.assignment.regional_office.city,
             ]
 
         frame_11 = [
@@ -187,7 +188,7 @@ class AssignmentPDFStationery(object):
             (frame_7, 55*mm, 108.5*mm, 0),
             (frame_8, 140*mm, 109*mm, 7.2*mm),
             (frame_9, 90*mm, 87.5*mm, 7.4*mm),
-            (frame_10, 90*mm, 81*mm, 0),
+            (frame_10, 127*mm, 272*mm, 0),
             (frame_11, 55*mm, 55*mm, 8.5*mm),
             ]
 
