@@ -226,8 +226,8 @@ class AssignmentModelView(ZivinetzModelView):
 
     def remove_expensereports(self, request, *args, **kwargs):
         instance = self.get_object_or_404(request, *args, **kwargs)
-        instance.reports.all().delete()
-        messages.success(request, _('Successfully removed all expense reports.'))
+        instance.reports.filter(status=ExpenseReport.PENDING).delete()
+        messages.success(request, _('Successfully removed pending expense reports.'))
         return redirect(instance)
 
     def handle_search_form(self, request, *args, **kwargs):
