@@ -76,7 +76,7 @@ class Scheduler(object):
             self.week_count = (self.date_until - self.date_from).days // 7 + 1
 
             self.date_slice = slice(
-                (self.date_range[0] - self.date_from).days // 7,
+                max(0, (self.date_range[0] - self.date_from).days // 7),
                 (self.date_range[1] - self.date_from).days // 7 + 2)
 
     def add_waitlist(self, queryset):
