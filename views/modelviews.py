@@ -217,6 +217,8 @@ class AssignmentModelView(ZivinetzModelView):
                     specification=instance.specification,
                     date_from=report.date_from,
                     )
+
+                report.recalculate_total()
             messages.success(request, _('Successfully created %s expense reports.') % (
                 len(monthly_expense_days),
                 ))
@@ -276,6 +278,10 @@ class AssignmentModelView(ZivinetzModelView):
         return {
             'expensereports': ExpenseReportFormSet(*args, **kwargs),
             }
+
+    def post_save(self, request, instance, form, formset, change):
+        for report in instance.reports.all():
+            report.recalculate_total()
 
 
 assignment_views = AssignmentModelView(Assignment)
