@@ -82,6 +82,19 @@ class Scheduler(object):
     def add_waitlist(self, queryset):
         self.waitlist = queryset
 
+        if not self.queryset:
+            max_min = self.waitlist.aggregate(min=Min('assignment_date_from'), max=Max('assignment_date_until'))
+
+            self.date_from = max_min['min']
+            self.date_until = max_min['max']
+
+            if self.date_from: # Is None if no assignments in queryset
+                self.week_count = (self.date_until - self.date_from).days // 7 + 1
+
+                self.date_slice = slice(
+                    max(0, (self.date_range[0] - self.date_from).days // 7),
+                    (self.date_range[1] - self.date_from).days // 7 + 2)
+
     def weeks(self):
         ret = []
 
@@ -165,6 +178,7 @@ class SchedulingSearchForm(SearchForm):
         'date_until__gte': lambda request: _monday(date.today()),
         'date_from__lte': lambda request: _monday(date.today()) + timedelta(days=35 * 7 + 4),
         'status': (Assignment.TENTATIVE, Assignment.ARRANGED, Assignment.MOBILIZED),
+        'mode': 'both',
         }
 
     specification = forms.ModelMultipleChoiceField(Specification.objects.all(),
@@ -175,13 +189,17 @@ class SchedulingSearchForm(SearchForm):
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
     date_from__lte = forms.DateField(label=ugettext_lazy('End date'),
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
-    include_waitlist = forms.BooleanField(label=ugettext_lazy('Include waitlist'),
-        required=False)
+
+    mode = forms.ChoiceField(label=ugettext_lazy('Mode'), choices=(
+        ('both', ugettext_lazy('both')),
+        ('assignments', ugettext_lazy('only assignments')),
+        ('waitlist', ugettext_lazy('only waitlist entries')),
+        ), required=False)
 
     def queryset(self):
         data = self.safe_cleaned_data
         queryset = self.apply_filters(Assignment.objects.search(data.get('query')),
-            data, exclude=('include_waitlist',))
+            data, exclude=('mode',))
         return queryset
 
     def waitlist_queryset(self):
@@ -202,9 +220,14 @@ def scheduling(request):
     if not all(date_range):
         return HttpResponseRedirect('?clear=1')
 
-    scheduler = Scheduler(search_form.queryset(), date_range)
+    mode = search_form.safe_cleaned_data.get('mode')
 
-    if search_form.safe_cleaned_data.get('include_waitlist'):
+    if mode != 'waitlist':
+        scheduler = Scheduler(search_form.queryset(), date_range)
+    else:
+        scheduler = Scheduler(search_form.queryset().none(), date_range)
+
+    if mode != 'assignments':
         scheduler.add_waitlist(search_form.waitlist_queryset())
 
     return render(request, 'zivinetz/scheduling.html', {
