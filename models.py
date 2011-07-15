@@ -88,6 +88,9 @@ class Specification(models.Model):
     food_throughout = models.BooleanField(_('food throughout'),
         help_text=_('Food is offered throughout.'))
 
+    conditions = models.FileField(_('conditions'), upload_to='conditions',
+        blank=True)
+
     class Meta:
         ordering = ['scope_statement', 'with_accomodation']
         unique_together = (('scope_statement', 'with_accomodation'),)

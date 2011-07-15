@@ -32,6 +32,10 @@
         <th>{% trans "food throughout"|capfirst %}</th>
         <td>{{ object.food_throughout|yesno:_("Yes,No") }}</td>
     </tr>
+    <tr>
+        <th>{% trans "conditions" %}</th>
+        <td>{{ object.conditions.name }}</td>
+    </tr>
 </table>
 
 <table>

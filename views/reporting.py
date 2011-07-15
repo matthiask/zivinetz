@@ -284,6 +284,13 @@ def assignment_pdf(request, assignment_id):
         result, error = p.communicate(source.read())
         os.unlink(overlay.name)
 
+        if assignment.specification.conditions:
+            p = subprocess.Popen(['/usr/bin/pdftk', '-',
+                assignment.specification.conditions.path,
+                'cat', 'output', '-'],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+            result, error = p.communicate(result)
+
     response = HttpResponse(result, mimetype='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=eiv.pdf'
     return response
