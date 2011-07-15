@@ -249,6 +249,7 @@ class Drudge(models.Model):
     half_fare_card = models.BooleanField(_('half-fare card'), default=False)
     other_card = models.CharField(_('other card'), max_length=100,
         blank=True)
+    vegetarianism = models.BooleanField(_('vegetarianism'), default=False)
 
     environment_course = models.BooleanField(_('environment course'), default=False,
         help_text=_('I have taken the environment course already.'))
@@ -258,7 +259,8 @@ class Drudge(models.Model):
         ), blank=True, null=True, help_text=_('I have taken the denoted motor saw course already.'))
 
     regional_office = models.ForeignKey(RegionalOffice, verbose_name=_('regional office'))
-    notes = models.TextField(_('notes'), blank=True)
+    notes = models.TextField(_('notes'), blank=True,
+        help_text=_('Allergies, vegetarianism, anything else we should be aware of?'))
 
     class Meta:
         ordering = ['user__last_name', 'user__first_name', 'zdp_no']
