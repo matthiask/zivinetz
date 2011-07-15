@@ -53,6 +53,7 @@
 </style>
 
 {% spaceless %}<table id="scheduler">
+{% with scheduler.assignments as assignments %}
     <thead>
         <tr>
             <th colspan="4"></th>
@@ -61,13 +62,14 @@
             {% endfor %}
         </tr>
         <tr>
-            <th colspan="4">{% trans "week"|capfirst %}</th>
+            <th colspan="1">{% trans "week"|capfirst %}</th>
+            <th colspan="3">{% trans "Average" %}: {{ scheduler.average|floatformat:1 }}</th>
             {% for monday, year, week, current in scheduler.weeks %}
                 <th {% if current %}class="current"{% endif %}>{{ week|stringformat:"02d" }}&nbsp;</th>
             {% endfor %}
         </tr>
     </thead>
-{% for assignment, scheduled in scheduler.assignments %}
+{% for assignment, scheduled in assignments %}
     <tr class="status{{ assignment.status }} {% cycle "odd" "even" %}">
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.first_name }}&nbsp; </a></th>
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.last_name }}&nbsp; </a></th>
@@ -78,6 +80,6 @@
         {% endfor %}
     </tr>
 {% endfor %}
-</table>{% endspaceless %}
+</table>{% endwith %}{% endspaceless %}
 
 {% endblock %}

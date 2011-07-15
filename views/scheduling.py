@@ -73,11 +73,11 @@ class Scheduler(object):
             self.date_until = max(self.date_until, max_ext['max'])
 
         if self.date_from: # Is None if no assignments in queryset
-            self.week_count = (self.date_until - self.date_from).days // 7 + 1
+            self.week_count = (self.date_until - self.date_from).days // 7
 
             self.date_slice = slice(
-                max(0, (self.date_range[0] - self.date_from).days // 7),
-                (self.date_range[1] - self.date_from).days // 7 + 2)
+                max(0, (self.date_range[0] - self.date_from).days // 7 + 1),
+                (self.date_range[1] - self.date_from).days // 7 + 1)
 
     def add_waitlist(self, queryset):
         self.waitlist = queryset
@@ -162,11 +162,10 @@ class Scheduler(object):
             # linearize assignments with waitlist entries intermingled
             assignments = list(itertools.chain(*assignments_dict.values()))
 
-        return [[
-            None, [(sum(week), sum(week)) for week in zip(*data)]
-            ]] + waitlist + assignments
-
-        return assignments
+        sums = [(sum(week), sum(week)) for week in zip(*data)]
+        weeks = [sum(week) for week in zip(*data)]
+        self.average = 1.0 * sum(weeks) / len(weeks)
+        return [[None, sums]] + waitlist + assignments
 
 
 def _monday(day):
