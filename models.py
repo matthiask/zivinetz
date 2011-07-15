@@ -192,6 +192,8 @@ class RegionalOffice(models.Model):
     address = models.TextField(_('address'), blank=True)
     code = models.CharField(_('code'), max_length=10,
         help_text=_('Short, unique identifier.'))
+    phone = models.CharField(_('phone'), max_length=20, blank=True)
+    fax = models.CharField(_('fax'), max_length=20, blank=True)
 
     class Meta:
         ordering = ['name']
