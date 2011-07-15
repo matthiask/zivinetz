@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.core import urlresolvers
 from django.forms.models import modelform_factory, inlineformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template import Template, Context
 from django.utils import simplejson
 from django.utils.translation import ugettext as _, ugettext_lazy
@@ -174,6 +174,8 @@ class AssignmentModelView(ZivinetzModelView):
     def additional_urls(self):
         return [
             (r'^autocomplete/$', self.view_decorator(self.autocomplete)),
+            (r'^%(detail)s/create_expensereports/$', self.crud_view_decorator(self.create_expensereports)),
+            (r'^%(detail)s/remove_expensereports/$', self.crud_view_decorator(self.remove_expensereports)),
         ]
 
     def autocomplete(self, request):
@@ -184,6 +186,47 @@ class AssignmentModelView(ZivinetzModelView):
             'value': d.id,
             } for d in queryset[:20]]), mimetype='application/json')
 
+    def create_expensereports(self, request, *args, **kwargs):
+        instance = self.get_object_or_404(request, *args, **kwargs)
+
+        if instance.reports.count():
+            messages.error(request, _('Refusing to create expense reports, %s exist already.') % (
+                instance.reports.count(),
+                ))
+        else:
+            days, monthly_expense_days, expenses = instance.expenses()
+
+            for month, data in monthly_expense_days:
+                try:
+                    clothing_expenses = expenses[month]['clothing']
+                except KeyError:
+                    clothing_expenses = 0
+
+                report = instance.reports.create(
+                    date_from=data['start'],
+                    date_until=data['end'],
+                    working_days=data['working'],
+                    free_days=data['free'],
+                    sick_days=0,
+                    holi_days=0,
+                    forced_leave_days=data['forced'],
+                    clothing_expenses=clothing_expenses,
+                    )
+
+                report.periods.create(
+                    specification=instance.specification,
+                    date_from=report.date_from,
+                    )
+            messages.success(request, _('Successfully created %s expense reports.') % (
+                len(monthly_expense_days),
+                ))
+        return redirect(instance)
+
+    def remove_expensereports(self, request, *args, **kwargs):
+        instance = self.get_object_or_404(request, *args, **kwargs)
+        instance.reports.all().delete()
+        messages.success(request, _('Successfully removed all expense reports.'))
+        return redirect(instance)
 
     def handle_search_form(self, request, *args, **kwargs):
         queryset, response = super(AssignmentModelView, self).handle_search_form(request, *args, **kwargs)
@@ -228,32 +271,6 @@ class AssignmentModelView(ZivinetzModelView):
         return {
             'expensereports': ExpenseReportFormSet(*args, **kwargs),
             }
-
-    def post_save(self, request, instance, form, formset, change):
-        if not instance.reports.count():
-            days, monthly_expense_days, expenses = instance.expenses()
-
-            for month, data in monthly_expense_days:
-                try:
-                    clothing_expenses = expenses[month]['clothing']
-                except KeyError:
-                    clothing_expenses = 0
-
-                report = instance.reports.create(
-                    date_from=data['start'],
-                    date_until=data['end'],
-                    working_days=data['working'],
-                    free_days=data['free'],
-                    sick_days=0,
-                    holi_days=0,
-                    forced_leave_days=data['forced'],
-                    clothing_expenses=clothing_expenses,
-                    )
-
-                report.periods.create(
-                    specification=instance.specification,
-                    date_from=report.date_from,
-                    )
 
 
 assignment_views = AssignmentModelView(Assignment)
