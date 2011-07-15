@@ -52,6 +52,9 @@ class AssignmentPDFStationery(object):
         #'working_time_flexible': (112, 55),
         #'working_time_weekend': (151, 55),
 
+        'vegetarianism': (113.5, 40),
+        'no_vegetarianism': (155, 40),
+
         'accomodation_working_compensated': (56, 248),
         'accomodation_working_provided': (85, 248),
         'accomodation_free_compensated': (113.5, 248),
@@ -213,6 +216,11 @@ class AssignmentPDFStationery(object):
             self.draw_marker(canvas, 'standard')
 
         #self.draw_marker(canvas, 'working_time_fixed')
+
+        if drudge.vegetarianism:
+            self.draw_marker(canvas, 'vegetarianism')
+        else:
+            self.draw_marker(canvas, 'no_vegetarianism')
 
     def page_2(self, canvas, pdfdocument):
         #self.background(canvas, '3-1.jpg')
