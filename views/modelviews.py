@@ -249,6 +249,11 @@ class AssignmentModelView(ZivinetzModelView):
                         assignment.determine_date_until().strftime('%d.%m.%y'),
                         )),
                     (drudge.phone_home, drudge.phone_office, drudge.mobile),
+                    (u'%s, %s %s' % (
+                        drudge.address,
+                        drudge.zip_code,
+                        drudge.city,
+                        ), '', ''),
                     ], (6.4*cm, 5*cm, 5*cm))
                 pdf.hr_mini()
 
