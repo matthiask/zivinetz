@@ -164,7 +164,8 @@ class Scheduler(object):
 
         sums = [(sum(week), sum(week)) for week in zip(*data)]
         weeks = [sum(week) for week in zip(*data)]
-        self.average = 1.0 * sum(weeks) / len(weeks)
+        if len(weeks):
+            self.average = 1.0 * sum(weeks) / len(weeks)
         return [[None, sums]] + waitlist + assignments
 
 
