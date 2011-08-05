@@ -27,6 +27,7 @@
         <tr>
             <th>{% trans "object"|capfirst %}</th>
             <th>{% trans "total days"|capfirst %}</th>
+            <th>{% trans "status"|capfirst %}</th>
             <th></th>
         </tr>
     </thead>
@@ -38,7 +39,7 @@
                     {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
                 </a>
             </th>
-            {% for name, value in object|model_row:"total_days" %}
+            {% for name, value in object|model_row:"total_days,status" %}
                 <td>{{ value }}</td>
             {% endfor %}
             <td><a href="{{ object.pdf_url }}">PDF</a></td>
