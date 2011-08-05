@@ -86,7 +86,7 @@
 #content form th,
 #content form td { padding: 2px 5px 2px 0; vertical-align: top; }
 
-#content form p.help { font-size: 90%; margin: 1px 0 0 2px; }
+#content form .help { font-size: 90%; }
 
 
 ul.messages {
@@ -172,3 +172,7 @@ strong.warning {
     -moz-border-radius: 20px;
 }
 
+
+form p {
+    margin-bottom: 5px;
+}
