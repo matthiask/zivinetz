@@ -15,14 +15,14 @@ $(function() {
     if(searchbox.hasClass('searching')) {
         query_input.focus();
     } else {
-        searchbox.find('table').hide();
+        searchbox.find('p').hide();
         query_input.focus(function(){
-            searchbox.find('table').slideDown();
+            searchbox.find('p').show();
         }).click(function(){
-            searchbox.find('table').slideDown();
+            searchbox.find('p').show();
         }).keyup(function(event){
             if(event.keyCode==27)
-                searchbox.find('table').slideUp();
+                searchbox.find('p').hide();
         });
     }
 
