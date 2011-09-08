@@ -66,10 +66,8 @@ class Scheduler(object):
         max_ext = self.queryset.filter(date_until_extension__isnull=False).aggregate(
             max=Max('date_until_extension'))
 
-        self.date_from, self.date_until = date_range
-
-        if max_ext['max']:
-            self.date_until = max(self.date_until, max_ext['max'])
+        self.date_from = _monday(date_range[0])
+        self.date_until = date_range[1]
 
         if self.date_from: # Is None if no assignments in queryset
             self.week_count = (self.date_until - self.date_from).days // 7
@@ -113,7 +111,7 @@ class Scheduler(object):
         return ret
 
     def _schedule_assignment(self, date_from, date_until):
-        week_from = (date_from - self.date_from).days // 7
+        week_from = max(0, (date_from - self.date_from).days // 7)
         week_until = (date_until - self.date_from).days // 7
 
         weeks = [[0, '']] * week_from
