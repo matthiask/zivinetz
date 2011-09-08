@@ -302,9 +302,15 @@ class ExpenseReportModelView(ZivinetzModelView):
     paginate_by = 50
 
     class search_form(towel_forms.SearchForm):
+        default = {
+            'assignment__status': (Assignment.ARRANGED, Assignment.MOBILIZED),
+            }
+
         assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
             queryset=ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'),
             required=False)
+        assignment__status = forms.MultipleChoiceField(Assignment.STATUS_CHOICES,
+            label=ugettext_lazy('assignment status'), required=False)
         assignment = forms.ModelChoiceField(
             Assignment.objects.all(), label=ugettext_lazy('assignment'),
             widget=towel_forms.ModelAutocompleteWidget(url=
