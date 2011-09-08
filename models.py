@@ -508,25 +508,41 @@ class Assignment(models.Model):
     admin_pdf_url.short_description = 'PDF'
 
     def generate_expensereports(self):
-        self.reports.all().delete()
+        occupied_months = [(d.year, d.month) for d in self.reports.values_list('date_from', flat=True)]
 
-        assignment_days, monthly_expense_days = self.assignment_days()
+        days, monthly_expense_days, expenses = self.expenses()
 
-        for ym, days in monthly_expense_days:
+        created = 0
+        for month, data in monthly_expense_days:
+            if month in occupied_months:
+                continue
+
+            try:
+                clothing_expenses = expenses[month]['clothing']
+            except KeyError:
+                clothing_expenses = 0
+
             report = self.reports.create(
-                date_from=days['start'],
-                date_until=days['end'],
-                working_days=days['working'],
-                free_days=days['free'],
+                date_from=data['start'],
+                date_until=data['end'],
+                working_days=data['working'],
+                free_days=data['free'],
                 sick_days=0,
                 holi_days=0,
-                forced_leave_days=days['forced'],
+                forced_leave_days=data['forced'],
+                clothing_expenses=clothing_expenses,
                 )
 
             report.periods.create(
                 specification=self.specification,
-                date_from=days['start'],
+                date_from=report.date_from,
                 )
+
+            report.recalculate_total()
+
+            created += 1
+
+        return created
 
 
 class ExpenseReportManager(SearchManager):

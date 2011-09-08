@@ -188,39 +188,7 @@ class AssignmentModelView(ZivinetzModelView):
 
     def create_expensereports(self, request, *args, **kwargs):
         instance = self.get_object_or_404(request, *args, **kwargs)
-        occupied_months = [(d.year, d.month) for d in instance.reports.values_list('date_from', flat=True)]
-
-        days, monthly_expense_days, expenses = instance.expenses()
-
-        created = 0
-        for month, data in monthly_expense_days:
-            if month in occupied_months:
-                continue
-
-            try:
-                clothing_expenses = expenses[month]['clothing']
-            except KeyError:
-                clothing_expenses = 0
-
-            report = instance.reports.create(
-                date_from=data['start'],
-                date_until=data['end'],
-                working_days=data['working'],
-                free_days=data['free'],
-                sick_days=0,
-                holi_days=0,
-                forced_leave_days=data['forced'],
-                clothing_expenses=clothing_expenses,
-                )
-
-            report.periods.create(
-                specification=instance.specification,
-                date_from=report.date_from,
-                )
-
-            report.recalculate_total()
-
-            created += 1
+        created = instance.generate_expensereports()
 
         if created:
             messages.success(request, _('Successfully created %s expense reports.') % created)
