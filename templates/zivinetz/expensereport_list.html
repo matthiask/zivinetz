@@ -1,6 +1,6 @@
 {% extends "modelview/object_list.html" %}
 
-{% load i18n modelview_list zivinetz_tags %}
+{% load i18n modelview_list %}
 
 {% block objects %}
 <table class="objects">
@@ -48,7 +48,4 @@ $(function() {
     });
 });
 </script>
-
-{% stats_expenses full_object_list %}
-
 {% endblock %}
