@@ -34,7 +34,20 @@
         </tr>
     {% endfor %}
     </tbody>
+    <tfoot>
+        <tr><td colspan="6">
+            <button id="export-stats" type="button">{% trans "Statistics" %}</button>
+        </td></tr>
+    </tfoot>
 </table>
+<style type="text/css">#export-stats { float: right !important; margin: 15px 0 0 0 !important; }</style>
+<script type="text/javascript">
+$(function() {
+    $('#export-stats').bind('click', function() {
+        window.open('?' + $('#filterform').serialize() + '&s=pdf');
+    });
+});
+</script>
 
 {% stats_expenses full_object_list %}
 

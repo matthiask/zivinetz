@@ -13,6 +13,18 @@ from pdfdocument.utils import pdf_response
 
 @staff_member_required
 def expense_statistics_pdf(request):
+    return generate_expense_statistics_pdf(ExpenseReport.objects.filter(
+            date_from__year=2011,
+            ).order_by(
+            'date_from',
+            'assignment__drudge',
+            ).select_related(
+            'assignment__specification__scope_statement',
+            'assignment__drudge__user',
+            ))
+
+
+def generate_expense_statistics_pdf(reports):
     pdf, response = pdf_response('expense-statistics')
 
     pdf.doc.addPageTemplates([
@@ -68,16 +80,7 @@ def expense_statistics_pdf(request):
 
     data = SortedDict()
 
-    for report in ExpenseReport.objects.filter(
-            date_from__year=2011,
-            ).order_by(
-            'date_from',
-            'assignment__drudge',
-            ).select_related(
-            'assignment__specification__scope_statement',
-            'assignment__drudge__user',
-            ):
-
+    for report in reports:
         compensation = report.compensation_data()
         if not compensation:
             continue

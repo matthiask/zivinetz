@@ -296,6 +296,15 @@ class ExpenseReportModelView(ZivinetzModelView):
         date_until__lte = forms.DateField(label=ugettext_lazy('date until'), required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
+    def handle_search_form(self, request, *args, **kwargs):
+        queryset, response = super(ExpenseReportModelView, self).handle_search_form(request, *args, **kwargs)
+
+        if request.GET.get('s') == 'pdf':
+            from zivinetz.views import expenses
+            return queryset, expenses.generate_expense_statistics_pdf(queryset)
+
+        return queryset, response
+
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance,
             [ExpenseReport, ExpenseReportPeriod])
