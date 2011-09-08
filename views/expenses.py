@@ -15,12 +15,6 @@ from pdfdocument.utils import pdf_response
 def expense_statistics_pdf(request):
     return generate_expense_statistics_pdf(ExpenseReport.objects.filter(
             date_from__year=2011,
-            ).order_by(
-            'date_from',
-            'assignment__drudge',
-            ).select_related(
-            'assignment__specification__scope_statement',
-            'assignment__drudge__user',
             ))
 
 
@@ -80,7 +74,13 @@ def generate_expense_statistics_pdf(reports):
 
     data = SortedDict()
 
-    for report in reports:
+    for report in reports.order_by(
+            'date_from',
+            'assignment__drudge',
+            ).select_related(
+            'assignment__specification__scope_statement',
+            'assignment__drudge__user',
+            ):
         compensation = report.compensation_data()
         if not compensation:
             continue
