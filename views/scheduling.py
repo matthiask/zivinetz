@@ -66,8 +66,7 @@ class Scheduler(object):
         max_ext = self.queryset.filter(date_until_extension__isnull=False).aggregate(
             max=Max('date_until_extension'))
 
-        self.date_from = max_min['min']
-        self.date_until = max_min['max']
+        self.date_from, self.date_until = date_range
 
         if max_ext['max']:
             self.date_until = max(self.date_until, max_ext['max'])
