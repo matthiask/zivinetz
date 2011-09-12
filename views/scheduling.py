@@ -84,6 +84,7 @@ class Scheduler(object):
                 (self.date_range[1] - self.date_from).days // 7 + 1)
 
         self.data_weeks = SortedDict()
+        self.date_list = list(daterange(self.date_from, self.date_until))
 
     def add_waitlist(self, queryset):
         self.waitlist = queryset
@@ -120,19 +121,32 @@ class Scheduler(object):
         return ret
 
     def _schedule_assignment(self, date_from, date_until):
-        week_from = max(0, (date_from - self.date_from).days // 7)
-        week_until = (date_until - self.date_from).days // 7
+        weeks = []
+        cw = None
+        inside = False
 
-        weeks = [[0, '']] * week_from
-        weeks.append([1, date_from.day])
+        for day in self.date_list:
+            new_cw = calendar_week(day)
+            if new_cw == cw:
+                continue
+            else:
+                cw = new_cw
 
-        if calendar_week(date_from) != calendar_week(date_until):
-            weeks.extend([[1, '']] * (week_until - week_from - 1))
-            weeks.append([1, date_until.day])
-
-        weeks.extend([[0, '']] * (self.week_count - week_until - 1))
-
-        return weeks[self.date_slice]
+            if date_from <= day <= date_until:
+                if inside:
+                    weeks.append([1, ''])
+                else:
+                    inside = True
+                    if calendar_week(day) == calendar_week(date_from):
+                        weeks.append([1, date_from.day])
+                    else:
+                        weeks.append([1, '']) # assignment has not started this week
+            else:
+                if inside:
+                    inside = False
+                    weeks[-1][1] = date_until.day
+                weeks.append([0, ''])
+        return weeks
 
     def assignments(self):
         assignments_dict = SortedDict()
