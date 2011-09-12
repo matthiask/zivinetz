@@ -628,12 +628,13 @@ class ExpenseReport(models.Model):
         if save:
             self.save()
 
-    def compensation_data(self):
+    def compensation_data(self, mobilized_on=None):
         if not self.assignment.mobilized_on:
-            return None
+            if not mobilized_on:
+                return None
 
         period = self.periods.order_by('date_from')[0] # TODO handle more than one / non-existing period
-        return period.specification.compensation(self.assignment.mobilized_on)
+        return period.specification.compensation(mobilized_on or self.assignment.mobilized_on)
 
     def compensations(self):
         if not self.assignment.mobilized_on:

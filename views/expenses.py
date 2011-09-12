@@ -83,7 +83,10 @@ def generate_expense_statistics_pdf(reports):
             ):
         compensation = report.compensation_data()
         if not compensation:
-            continue
+            # Attention! Using current date instead of real mobilization date
+            compensation = report.compensation_data(mobilized_on=date.today())
+            if not compensation:
+                continue
 
         def add(keys):
             return sum(compensation[k] for k in keys.split())
