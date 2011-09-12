@@ -237,8 +237,20 @@ class AssignmentModelView(ZivinetzModelView):
         return queryset, response
 
     def get_form(self, request, instance=None, **kwargs):
-        return super(AssignmentModelView, self).get_form(request, instance=instance,
-            exclude=('created',))
+        base_form = super(AssignmentModelView, self).get_form(request, instance=instance,
+                exclude=('created',))
+
+        class AssignmentForm(base_form):
+            def clean(self):
+                data = super(AssignmentForm, self).clean()
+
+                if data['status'] == Assignment.MOBILIZED:
+                    if not data.get('mobilized_on'):
+                        raise forms.ValidationError(
+                            _('Mobilized on date must be set when status is mobilized.'))
+                return data
+
+        return AssignmentForm
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Assignment])
