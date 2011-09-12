@@ -44,7 +44,6 @@
 #scheduler tr.statuswl { opacity: 0.5; }
 #scheduler tr.statuswl td.a { background-color: #c495d0; }
 
-#scheduler tr:nth-child(10n),
 #scheduler td:nth-child(10n+4) { background-color: #d0d0d0; }
 
 #scheduler th.current { color: red; }
@@ -70,6 +69,14 @@
         </tr>
     </thead>
 {% for assignment, scheduled in assignments %}
+    {% if forloop.counter|divisibleby:20 %}
+        <tr>
+            <th colspan="4"></th>
+            {% for monday, year, week, current in scheduler.weeks %}
+                <th {% if current %}class="current"{% endif %}>{{ week|stringformat:"02d" }}&nbsp;</th>
+            {% endfor %}
+        </tr>
+    {% endif %}
     <tr class="status{{ assignment.status }} {% cycle "odd" "even" %}" title="{{ assignment }}">
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.first_name }}&nbsp; </a></th>
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.last_name }}&nbsp; </a></th>
