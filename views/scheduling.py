@@ -83,8 +83,10 @@ class Scheduler(object):
                 max(0, (self.date_range[0] - self.date_from).days // 7),
                 (self.date_range[1] - self.date_from).days // 7 + 1)
 
-        self.data_weeks = SortedDict()
         self.date_list = list(daterange(self.date_from, self.date_until))
+        self.data_weeks = SortedDict()
+        for day in self.date_list:
+            self.data_weeks.setdefault(calendar_week(day), (day, defaultdict(lambda: 0)))
 
     def add_waitlist(self, queryset):
         self.waitlist = queryset
@@ -199,7 +201,7 @@ class Scheduler(object):
             u'%.1f' % (sum(week.values()) / 7.0),
             ) for day, week in filtered_data_weeks]
 
-        self.average = sum(sum(week.values()) for day, week in filtered_data_weeks) / (self.date_until - self.date_from).days
+        self.average = sum((sum(week.values(), 0.0) for day, week in filtered_data_weeks), 0.0) / (self.date_until - self.date_from).days
 
         return [[None, sums]] + waitlist + assignments
 
