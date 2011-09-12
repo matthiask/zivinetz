@@ -126,9 +126,7 @@ class Scheduler(object):
         weeks = [[0, '']] * week_from
         weeks.append([1, date_from.day])
 
-        if calendar_week(date_from) == calendar_week(date_until):
-            weeks.append([0, ''])
-        else:
+        if calendar_week(date_from) != calendar_week(date_until):
             weeks.extend([[1, '']] * (week_until - week_from - 1))
             weeks.append([1, date_until.day])
 
