@@ -1,4 +1,5 @@
 import calendar
+from collections import defaultdict
 from datetime import datetime, date, timedelta
 import itertools
 import operator
@@ -56,6 +57,12 @@ def calendar_week(day):
         return (day.year, _has_53_weeks(day.year) and 53 or 1)
 
 
+def daterange(start_date, end_date):
+    """Iterate over a range of dates (includes the end_date)"""
+    for nr in range((end_date - start_date).days + 1):
+        yield start_date + timedelta(days=nr)
+
+
 class Scheduler(object):
     def __init__(self, assignments, date_range):
         self.queryset = assignments
@@ -75,6 +82,8 @@ class Scheduler(object):
             self.date_slice = slice(
                 max(0, (self.date_range[0] - self.date_from).days // 7 + 1),
                 (self.date_range[1] - self.date_from).days // 7 + 1)
+
+        self.data_weeks = SortedDict()
 
     def add_waitlist(self, queryset):
         self.waitlist = queryset
@@ -116,17 +125,27 @@ class Scheduler(object):
 
         weeks = [[0, '']] * week_from
         weeks.append([1, date_from.day])
-        # TODO handle single-week assignments
-        weeks.extend([[1, '']] * (week_until - week_from - 1))
-        weeks.append([1, date_until.day])
+
+        if calendar_week(date_from) == calendar_week(date_until):
+            weeks.append([0, ''])
+        else:
+            weeks.extend([[1, '']] * (week_until - week_from - 1))
+            weeks.append([1, date_until.day])
+
         weeks.extend([[0, '']] * (self.week_count - week_until - 1))
 
         return weeks[self.date_slice]
 
     def assignments(self):
         assignments_dict = SortedDict()
-        for assignment in self.queryset.select_related('specification__scope_statement',
-                'drudge__user').order_by('date_from', 'date_until'):
+
+        assignments = self.queryset.select_related('specification__scope_statement',
+                'drudge__user').order_by('date_from', 'date_until')
+
+        for assignment in assignments:
+            for day in daterange(assignment.date_from, assignment.determine_date_until()):
+                self.data_weeks.setdefault(
+                    calendar_week(day), (day, defaultdict(lambda: 0)))[1][assignment.drudge_id] += 1
 
             if assignment.drudge not in assignments_dict:
                 assignments_dict[assignment.drudge] = []
@@ -159,10 +178,17 @@ class Scheduler(object):
             # linearize assignments with waitlist entries intermingled
             assignments = list(itertools.chain(*assignments_dict.values()))
 
-        sums = [(sum(week), sum(week)) for week in zip(*data)]
-        weeks = [sum(week) for week in zip(*data)]
-        if len(weeks):
-            self.average = 1.0 * sum(weeks) / len(weeks)
+
+        filtered_data_weeks = [(day, week) for day, week in self.data_weeks.values()\
+            if self.date_from <= _monday(day) <= self.date_until]
+
+        sums = [(
+            sum(week.values()) / 7.0,
+            u'%.1f' % (sum(week.values()) / 7.0),
+            ) for day, week in filtered_data_weeks]
+
+        self.average = sum(sum(week.values()) for day, week in filtered_data_weeks) / (self.date_until - self.date_from).days
+
         return [[None, sums]] + waitlist + assignments
 
 
