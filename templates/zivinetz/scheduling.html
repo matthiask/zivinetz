@@ -70,7 +70,7 @@
         </tr>
     </thead>
 {% for assignment, scheduled in assignments %}
-    <tr class="status{{ assignment.status }} {% cycle "odd" "even" %}">
+    <tr class="status{{ assignment.status }} {% cycle "odd" "even" %}" title="{{ assignment }}">
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.first_name }}&nbsp; </a></th>
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.last_name }}&nbsp; </a></th>
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.zdp_no }}&nbsp; </a></th>
