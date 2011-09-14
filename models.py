@@ -600,7 +600,7 @@ class ExpenseReport(models.Model):
         default=0)
 
     class Meta:
-        ordering = ['-date_from']
+        ordering = ['assignment__drudge', 'date_from']
         verbose_name = _('expense report')
         verbose_name_plural = _('expense reports')
 
