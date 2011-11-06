@@ -21,6 +21,7 @@
         <td><a href="{{ object.assignment.get_absolute_url }}">{{ object.assignment }}</a></td>
     </tr>
     {% endif %}
+    {% if form.assignment %}{% form_item form.assignment %}{% endif %}
     {% form_item form.date_from %}
     {% form_item form.date_until %}
     {% form_item form.report_no %}

@@ -322,8 +322,23 @@ class ExpenseReportModelView(ZivinetzModelView):
             [ExpenseReport, ExpenseReportPeriod])
 
     def get_form(self, request, instance=None, **kwargs):
-        return super(ExpenseReportModelView, self).get_form(request, instance=instance,
-            exclude=('assignment', 'total'))
+        if instance and instance.pk:
+            return super(ExpenseReportModelView, self).get_form(request, instance=instance,
+                exclude=('assignment', 'total'))
+        else:
+            class ModelForm(forms.ModelForm):
+                assignment = forms.ModelChoiceField(
+                    Assignment.objects.all(), label=ugettext_lazy('assignment'),
+                    widget=towel_forms.ModelAutocompleteWidget(url=
+                        lambda: urlresolvers.reverse('zivinetz_assignment_autocomplete')))
+
+                class Meta:
+                    model = self.model
+                    exclude = ('total',)
+
+                formfield_callback = towel_forms.stripped_formfield_callback
+
+            return ModelForm
 
     def get_formset_instances(self, request, instance=None, change=None, **kwargs):
         args = self.extend_args_if_post(request, [])
@@ -334,6 +349,10 @@ class ExpenseReportModelView(ZivinetzModelView):
             }
 
     def post_save(self, request, instance, form, formset, change):
+        if not change and not instance.periods.count():
+            instance.periods.create(
+                specification=instance.assignment.specification,
+                date_from=instance.date_from)
         instance.recalculate_total()
 
 expense_report_views = ExpenseReportModelView(ExpenseReport)
