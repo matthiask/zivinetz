@@ -36,7 +36,7 @@ class AssignmentForm(forms.ModelForm):
         data = super(AssignmentForm, self).clean()
 
         if data.get('date_from') and data.get('date_until'):
-            if data['date_from'] >= data['date_until'] or data['date_from'] < date.today():
+            if data['date_from'] > data['date_until'] or data['date_from'] < date.today():
                 raise forms.ValidationError(_('Date period is invalid.'))
 
         return data
