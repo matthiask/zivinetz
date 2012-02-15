@@ -147,7 +147,7 @@ class AssignmentPDFStationery(object):
             ]
 
         frame_6 = [
-            '123456',
+            '20995',
             'Marco Sacchi',
             '8109 Kloster Fahr',
             'ms@verein-naturnetz.ch',
