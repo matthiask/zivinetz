@@ -14,7 +14,7 @@ from pdfdocument.utils import pdf_response
 @staff_member_required
 def expense_statistics_pdf(request):
     return generate_expense_statistics_pdf(ExpenseReport.objects.filter(
-            date_from__year=2011,
+            date_from__year=2012,
             ))
 
 
