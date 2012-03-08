@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from datetime import date
 from StringIO import StringIO
 
 from django import forms
@@ -97,23 +98,25 @@ class DrudgeModelView(ZivinetzModelView):
             } for d in queryset[:20]]), mimetype='application/json')
 
     class search_form(towel_forms.SearchForm):
+        orderings = {
+            'date_joined': 'user__date_joined',
+            }
         regional_office = forms.ModelChoiceField(RegionalOffice.objects.all(),
             label=ugettext_lazy('regional office'), required=False)
         only_active = forms.BooleanField(label=ugettext_lazy('only active'),
             required=False)
 
         def queryset(self, model):
-            data = self.safe_cleaned_data
-            queryset = self.apply_filters(model.objects.search(data.get('query')),
+            query, data = self.query_data()
+            queryset = self.apply_filters(model.objects.search(query),
                 data, exclude=('only_active',))
 
-            from datetime import date
             if data.get('only_active'):
                 queryset = queryset.filter(
                     id__in=Assignment.objects.for_date().filter(status__in=(
                         Assignment.ARRANGED, Assignment.MOBILIZED)).values('drudge'))
 
-            return queryset
+            return self.apply_ordering(queryset, data.get('o'))
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Drudge])
@@ -157,8 +160,8 @@ class AssignmentModelView(ZivinetzModelView):
             Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
 
         def queryset(self, model):
-            data = self.safe_cleaned_data
-            queryset = model.objects.search(data.get('query'))
+            query, data = self.query_data()
+            queryset = model.objects.search(query)
             queryset = self.apply_filters(queryset, data, exclude=('active_on',))
 
             if data.get('active_on'):
@@ -169,7 +172,7 @@ class AssignmentModelView(ZivinetzModelView):
                     Q(date_until_extension__isnull=False, date_until_extension__gte=active_on)
                     ))
 
-            return queryset
+            return self.apply_ordering(queryset, data.get('o'))
 
     def additional_urls(self):
         return [
