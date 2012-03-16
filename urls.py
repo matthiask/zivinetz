@@ -4,6 +4,8 @@ from zivinetz.views.modelviews import (assignment_views, drudge_views,
     expense_report_views, regional_office_views, scope_statement_views,
     specification_views, waitlist_views, jobreference_views)
 
+from zivinetz.views import photos
+
 
 urlpatterns = patterns('zivinetz.views',
     url(r'^$', 'home.home'),
@@ -31,4 +33,7 @@ urlpatterns = patterns('zivinetz.views',
     url(r'^references/pdf/(\d+)/$', 'reporting.reference_pdf'),
 
     url(r'^expense_statistics_pdf/$', 'expenses.expense_statistics_pdf'),
+
+    url(r'^photos/', include(photos.album_views.urls)),
+    url(r'^photos/(?P<album_id>\d+)/p/', include(photos.photo_views.urls)),
 )

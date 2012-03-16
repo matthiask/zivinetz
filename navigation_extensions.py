@@ -21,11 +21,13 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 (_('scope statements'), 'admin/scope_statements/'),
                 (_('specifications'), 'admin/specifications/'),
                 (_('yearly expense stats'), 'expense_statistics_pdf/'),
+                (_('photos'), 'photos/'),
                 ]
         else:
             urls = [
                 (_('dashboard'), 'dashboard/'),
                 (_('profile'), 'profile/'),
+                (_('photos'), 'photos/'),
                 ]
 
         return [PagePretender(
