@@ -13,7 +13,7 @@ album_views = AlbumModelView(Album,
     base_template='zivinetz/base.html',
     paginate_by=20,
     )
-photo_views = AlbumModelView(Album,
+photo_views = PhotoModelView(Photo,
     view_decorator=login_required,
     base_template='zivinetz/base.html',
     paginate_by=20,
