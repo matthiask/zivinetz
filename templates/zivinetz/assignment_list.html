@@ -1,11 +1,14 @@
 {% extends "modelview/object_list.html" %}
 
-{% load i18n modelview_list %}
+{% load i18n modelview_list towel_batch_tags %}
 
 {% block objects %}
 <table class="objects">
     <thead>
         <tr>
+            {% if batch_form %}<td>
+                <input type="checkbox">
+            </td>{% endif %}
             <th>{% trans "date period"|capfirst %}</th>
             <th>{% trans "drudge"|capfirst %}</th>
             <th>{% trans "specification"|capfirst %}</th>
@@ -17,6 +20,7 @@
     <tbody>
     {% for object in object_list %}
         <tr class="{% cycle 'odd' 'even' %}">
+            {% if batch_form %}<td>{% batch_checkbox batch_form object.id %}</td>{% endif %}
             <th>
                 <a href="{{ object.get_absolute_url }}">
                     {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}

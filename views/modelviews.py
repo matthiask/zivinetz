@@ -120,20 +120,27 @@ class DrudgeModelView(ZivinetzModelView):
             return self.apply_ordering(queryset, data.get('o'))
 
     class batch_form(towel_forms.BatchForm):
-        mail_subject = forms.CharField(_('subject'))
-        mail_body = forms.CharField(_('body'), widget=forms.Textarea)
+        mail_subject = forms.CharField(label=_('subject'))
+        mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
+        mail_attachment = forms.FileField(label=_('attachment'), required=False)
 
         def _context(self, batch_queryset):
             mails = 0
             for drudge in batch_queryset.select_related('user'):
-                EmailMessage(
+                message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
                     body=self.cleaned_data['mail_body'],
                     to=[drudge.user.email],
                     from_email='info@naturnetz.ch',
                     headers={
                         'Reply-To': self.request.user.email,
-                    }).send()
+                    })
+                if self.cleaned_data['mail_attachment']:
+                    message.attach(
+                        self.cleaned_data['mail_attachment'].name,
+                        self.cleaned_data['mail_attachment'].read(),
+                        )
+                message.send()
                 mails += 1
 
             if mails:
@@ -200,6 +207,39 @@ class AssignmentModelView(ZivinetzModelView):
                     ))
 
             return self.apply_ordering(queryset, data.get('o'))
+
+    class batch_form(towel_forms.BatchForm):
+        mail_subject = forms.CharField(label=_('subject'))
+        mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
+        mail_attachment = forms.FileField(label=_('attachment'), required=False)
+
+        def _context(self, batch_queryset):
+            mails = 0
+            for assignment in batch_queryset.select_related('drudge__user'):
+                message = EmailMessage(
+                    subject=self.cleaned_data['mail_subject'],
+                    body=self.cleaned_data['mail_body'],
+                    to=[assignment.drudge.user.email],
+                    from_email='info@naturnetz.ch',
+                    headers={
+                        'Reply-To': self.request.user.email,
+                    })
+                if self.cleaned_data['mail_attachment']:
+                    message.attach(
+                        self.cleaned_data['mail_attachment'].name,
+                        self.cleaned_data['mail_attachment'].read(),
+                        )
+                message.send()
+                mails += 1
+
+            if mails:
+                messages.success(self.request, _('Successfully sent mails to %s people.') % mails)
+            else:
+                messages.error(self.request, _('Did not send any mails. Did you select people?'))
+
+            return {
+                'batch_items': batch_queryset,
+                }
 
     def additional_urls(self):
         return [
