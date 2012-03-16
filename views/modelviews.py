@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core import urlresolvers
+from django.core.mail import EmailMessage
 from django.forms.models import modelform_factory, inlineformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
@@ -117,6 +118,32 @@ class DrudgeModelView(ZivinetzModelView):
                         Assignment.ARRANGED, Assignment.MOBILIZED)).values('drudge'))
 
             return self.apply_ordering(queryset, data.get('o'))
+
+    class batch_form(towel_forms.BatchForm):
+        mail_subject = forms.CharField(_('subject'))
+        mail_body = forms.CharField(_('body'), widget=forms.Textarea)
+
+        def _context(self, batch_queryset):
+            mails = 0
+            for drudge in batch_queryset.select_related('user'):
+                EmailMessage(
+                    subject=self.cleaned_data['mail_subject'],
+                    body=self.cleaned_data['mail_body'],
+                    to=[drudge.user.email],
+                    from_email='info@naturnetz.ch',
+                    headers={
+                        'Reply-To': self.request.user.email,
+                    }).send()
+                mails += 1
+
+            if mails:
+                messages.success(self.request, _('Successfully sent mails to %s people.') % mails)
+            else:
+                messages.error(self.request, _('Did not send any mails. Did you select people?'))
+
+            return {
+                'batch_items': batch_queryset,
+                }
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Drudge])

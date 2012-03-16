@@ -6,7 +6,9 @@
 <table class="objects">
     <thead>
         <tr>
-            {% if batch_form %}<td></td>{% endif %}
+            {% if batch_form %}<td>
+                <input type="checkbox">
+            </td>{% endif %}
             <th>{% trans "ZDP No."|capfirst %}</th>
             <th>{% trans "first name"|capfirst %}</th>
             <th>{% trans "last name"|capfirst %}</th>

@@ -26,4 +26,13 @@ $(function() {
         });
     }
 
+
+    $('.objects thead input[type=checkbox]').bind('change', function() {
+        var cbs = $('.objects tbody input[type=checkbox]');
+        if (this.checked) {
+            cbs.attr('checked', 'checked');
+        } else {
+            cbs.removeAttr('checked');
+        }
+    });
 });
