@@ -27,6 +27,11 @@
         <tr>
             <th>{% trans "object"|capfirst %}</th>
             <th>{% trans "total days"|capfirst %}</th>
+            <th>{% trans "working"|capfirst %}</th>
+            <th>{% trans "free"|capfirst %}</th>
+            <th>{% trans "sick"|capfirst %}</th>
+            <th>{% trans "holidays"|capfirst %}</th>
+            <th>{% trans "vacation"|capfirst %}</th>
             <th>{% trans "status"|capfirst %}</th>
             <th></th>
         </tr>
@@ -39,7 +44,7 @@
                     {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
                 </a>
             </th>
-            {% for name, value in object|model_row:"total_days,status" %}
+            {% for name, value in object|model_row:"total_days,working_days,free_days,sick_days,holi_days,forced_leave_days,status" %}
                 <td>{{ value }}</td>
             {% endfor %}
             <td><a href="{{ object.pdf_url }}">PDF</a></td>

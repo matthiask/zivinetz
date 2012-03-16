@@ -80,6 +80,7 @@ admin.site.register(models.ExpenseReport,
     list_filter=('status',),
     inlines=[ExpenseReportPeriodInline],
     raw_id_fields=('assignment',),
+    search_fields=models.ExpenseReport.objects.search_fields,
     )
 
 admin.site.register(models.PublicHoliday,

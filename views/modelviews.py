@@ -320,6 +320,11 @@ class ExpenseReportModelView(ZivinetzModelView):
 
         return queryset, response
 
+    def editing_allowed(self, request, instance):
+        if instance and instance.pk:
+            return instance.status < instance.PAID
+        return True
+
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance,
             [ExpenseReport, ExpenseReportPeriod])

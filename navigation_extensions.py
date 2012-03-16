@@ -20,7 +20,7 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 (_('regional offices'), 'admin/regional_offices/'),
                 (_('scope statements'), 'admin/scope_statements/'),
                 (_('specifications'), 'admin/specifications/'),
-                (_('expense report statistics'), 'expense_statistics_pdf/'),
+                (_('yearly expense stats'), 'expense_statistics_pdf/'),
                 ]
         else:
             urls = [

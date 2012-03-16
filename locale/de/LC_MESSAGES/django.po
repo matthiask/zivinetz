@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-09 13:55+0100\n"
+"POT-Creation-Date: 2012-03-09 13:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -484,7 +484,7 @@ msgstr "Nur ausfüllen falls Einsatz verlängert wurde."
 msgid "part of long assignment"
 msgstr "Teil des langen Einsatzes"
 
-#: models.py:329 models.py:573 templates/zivinetz/assignment_detail.html:30
+#: models.py:329 models.py:573 templates/zivinetz/assignment_detail.html:35
 #: templates/zivinetz/assignment_form.html:27
 #: templates/zivinetz/assignment_list.html:13
 #: templates/zivinetz/drudge_dashboard.html:17
@@ -693,7 +693,7 @@ msgstr "Arbeitszeugnis-Vorlagen"
 msgid "job reference"
 msgstr "Arbeitszeugnis"
 
-#: models.py:860 templates/zivinetz/assignment_detail.html:57
+#: models.py:860 templates/zivinetz/assignment_detail.html:62
 msgid "job references"
 msgstr "Arbeitszeugnisse"
 
@@ -747,11 +747,31 @@ msgstr "Objekt"
 msgid "total days"
 msgstr "Total Tage"
 
-#: templates/zivinetz/assignment_detail.html:52
+#: templates/zivinetz/assignment_detail.html:30
+msgid "working"
+msgstr "Arbeit"
+
+#: templates/zivinetz/assignment_detail.html:31
+msgid "free"
+msgstr "Frei"
+
+#: templates/zivinetz/assignment_detail.html:32
+msgid "sick"
+msgstr "Krank"
+
+#: templates/zivinetz/assignment_detail.html:33
+msgid "holidays"
+msgstr "Ferien"
+
+#: templates/zivinetz/assignment_detail.html:34
+msgid "vacation"
+msgstr "Urlaub"
+
+#: templates/zivinetz/assignment_detail.html:57
 msgid "Create reports"
 msgstr "Rapporte erstellen"
 
-#: templates/zivinetz/assignment_detail.html:54
+#: templates/zivinetz/assignment_detail.html:59
 msgid "Remove pending reports"
 msgstr "Rapporte in Vorbereitung löschen"
 
