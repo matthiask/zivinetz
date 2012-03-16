@@ -188,15 +188,26 @@ class AssignmentModelView(ZivinetzModelView):
             widget=towel_forms.ModelAutocompleteWidget(url=
                 lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
             label=ugettext_lazy('drudge'), required=False)
+
         active_on = forms.DateField(label=ugettext_lazy('active on'), required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+        service_between = forms.DateField(label=ugettext_lazy('service between'),
+            required=False,
+            widget=forms.DateInput(attrs={'class': 'dateinput'}),
+            help_text=ugettext_lazy('Drudges in service any time between the following two dates.'))
+        service_and = forms.DateField(label=ugettext_lazy('and'),
+            required=False,
+            widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
         status = forms.MultipleChoiceField(
             Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
 
         def queryset(self, model):
             query, data = self.query_data()
             queryset = model.objects.search(query)
-            queryset = self.apply_filters(queryset, data, exclude=('active_on',))
+            queryset = self.apply_filters(queryset, data,
+                exclude=('active_on', 'service_between', 'service_and'))
 
             if data.get('active_on'):
                 active_on = data.get('active_on')
@@ -205,6 +216,11 @@ class AssignmentModelView(ZivinetzModelView):
                     (Q(date_until_extension__isnull=True) & Q(date_until__gte=active_on)) |
                     Q(date_until_extension__isnull=False, date_until_extension__gte=active_on)
                     ))
+
+            if data.get('service_between') and data.get('service_and'):
+                queryset = queryset.filter(
+                    Q(date_from__lte=data.get('service_and'))
+                    & Q(date_until__gte=data.get('service_between')))
 
             return self.apply_ordering(queryset, data.get('o'))
 
