@@ -41,7 +41,7 @@ class ZivinetzModelView(modelview.ModelView):
         ctx['base_template'] = 'zivinetz/base.html'
         return ctx
 
-    def get_form(self, request, instance=None, **kwargs):
+    def get_form(self, request, instance=None, change=None, **kwargs):
         return modelform_factory(self.model,
             formfield_callback=towel_forms.stripped_formfield_callback, **kwargs)
 
@@ -322,7 +322,7 @@ class AssignmentModelView(ZivinetzModelView):
 
         return queryset, response
 
-    def get_form(self, request, instance=None, **kwargs):
+    def get_form(self, request, instance=None, change=None, **kwargs):
         base_form = super(AssignmentModelView, self).get_form(request, instance=instance,
                 exclude=('created',))
 
@@ -412,7 +412,7 @@ class ExpenseReportModelView(ZivinetzModelView):
         return self.deletion_allowed_if_only(request, instance,
             [ExpenseReport, ExpenseReportPeriod])
 
-    def get_form(self, request, instance=None, **kwargs):
+    def get_form(self, request, instance=None, change=None, **kwargs):
         if instance and instance.pk:
             return super(ExpenseReportModelView, self).get_form(request, instance=instance,
                 exclude=('assignment', 'total'))
@@ -532,7 +532,7 @@ class JobReferenceModelView(ZivinetzModelView):
 
         return HttpResponseRedirect(instance.get_absolute_url() + 'edit/')
 
-    def get_form(self, request, instance=None, **kwargs):
+    def get_form(self, request, instance=None, change=None, **kwargs):
         return super(JobReferenceModelView, self).get_form(request, instance=instance,
             exclude=('assignment',))
 
