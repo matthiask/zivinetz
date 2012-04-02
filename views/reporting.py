@@ -36,12 +36,6 @@ class AssignmentPDFStationery(object):
         elif pdfdocument.doc.page == 2:
             self.page_2(canvas, pdfdocument)
 
-    def background(self, canvas, image):
-        canvas.drawImage(
-            os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                'data', image),
-            0, 0, 21*cm, 29.4*cm)
-
     markers = {
         'standard': (31, 101),
         'trial': (75, 101),
@@ -109,8 +103,6 @@ class AssignmentPDFStationery(object):
             canvas.drawString(pos[0]*mm, pos[1]*mm, u'x')
 
     def page_1(self, canvas, pdfdocument):
-        #self.background(canvas, '3-0.jpg')
-
         drudge = self.assignment.drudge
 
         frame_1 = [
@@ -224,8 +216,6 @@ class AssignmentPDFStationery(object):
             self.draw_marker(canvas, 'no_vegetarianism')
 
     def page_2(self, canvas, pdfdocument):
-        #self.background(canvas, '3-1.jpg')
-
         spec = self.assignment.specification
 
         if spec.with_accomodation:
