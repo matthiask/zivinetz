@@ -9,6 +9,12 @@
 
 <table>
     <tr>
+        <th>{% trans "drudge"|capfirst %}</th>
+        <td colspan="2">
+            <a href="{{ object.assignment.drudge.get_absolute_url }}">{{ object.assignment.drudge }}</a>
+        </td>
+    </tr>
+    <tr>
         <th>{% trans "assignment"|capfirst %}</th>
         <td colspan="2">
             <a href="{{ object.assignment.get_absolute_url }}">{{ object.assignment }}</a>
