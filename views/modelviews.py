@@ -182,8 +182,8 @@ class AssignmentModelView(ZivinetzModelView):
         #    'status': (Assignment.TENTATIVE, Assignment.ARRANGED),
         #    }
 
-        specification__scope_statement = forms.ModelChoiceField(
-            ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'), required=False)
+        specification__scope_statement = forms.ModelMultipleChoiceField(
+            ScopeStatement.objects.all(), label=ugettext_lazy('scope statements'), required=False)
         drudge = forms.ModelChoiceField(Drudge.objects.all(),
             widget=towel_forms.ModelAutocompleteWidget(url=
                 lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
