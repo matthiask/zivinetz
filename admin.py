@@ -108,3 +108,8 @@ admin.site.register(models.JobReferenceTemplate)
 admin.site.register(models.JobReference,
     list_display=('assignment', 'created'),
     )
+
+admin.site.register(models.Assessment,
+    list_display=('drudge', 'mark', 'comment'),
+    raw_id_fields=('drudge',),
+    )
