@@ -141,7 +141,7 @@ ul.messages li.error { background: #ff8888 url(error.png) 5px 3px no-repeat; }
 }
 
 #content .searchbox table { margin-bottom: 0; }
-#content .searchbox label { width: 100px; }
+#content .searchbox label { width: 200px; }
 #content .searchbox select,
 #content .searchbox input { width: 250px; }
 #content .searchbox #id_query { width: 339px; }
