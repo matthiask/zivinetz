@@ -306,7 +306,7 @@ def expense_report_pdf(request, expense_report_id):
 
     table, additional, total = report.compensations()
 
-    if not (table and additional and total):
+    if not all((t is not None) for t in (table, additional, total)):
         messages.error(request, _('No expense data, cannot generate report.'))
         return redirect(report.assignment)
 
