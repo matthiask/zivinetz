@@ -49,6 +49,8 @@ class AssignmentPDFStationery(object):
         'vegetarianism': (113.5, 40),
         'no_vegetarianism': (155, 40),
 
+        'pocket_money': (58, 265),
+
         'accomodation_working_compensated': (56, 248),
         'accomodation_working_provided': (85, 248),
         'accomodation_free_compensated': (113.5, 248),
@@ -217,6 +219,8 @@ class AssignmentPDFStationery(object):
 
     def page_2(self, canvas, pdfdocument):
         spec = self.assignment.specification
+
+        self.draw_marker(canvas, 'pocket_money')
 
         if spec.with_accomodation:
             self.draw_marker(canvas, 'special_tickets')
