@@ -1,6 +1,7 @@
 {% extends base_template|default:"base.html" %}
 
 {% load i18n modelview_detail modelview_list %}
+{% load feincms_thumbnail %}
 
 {% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
 
@@ -71,6 +72,10 @@
 </tr>
 
 </table>
+
+{% if object.profile_image %}
+    <img src="{{ object.profile_image|thumbnail:"300x500" }}" alt="">
+{% endif %}
 
 <div class="buttons">
     <a href="delete/" class="button"><span>{% trans "delete"|capfirst %}</span></a>
