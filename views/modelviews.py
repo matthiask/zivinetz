@@ -82,6 +82,21 @@ AssessmentFormSet = inlineformset_factory(Drudge,
     )
 
 
+def add_last_assignment(queryset):
+    drudges = dict((d.id, d) for d in queryset)
+
+    for assignment in Assignment.objects.select_related(
+            'specification__scope_statement').order_by('-date_from').iterator():
+
+        if assignment.drudge_id in drudges:
+            drudges[assignment.drudge_id].last_assignment = assignment
+            del drudges[assignment.drudge_id]
+
+        if not drudges:
+            # All drudges have a last assignment now
+            break
+
+
 class DrudgeModelView(ZivinetzModelView):
     paginate_by = 50
 
@@ -117,7 +132,8 @@ class DrudgeModelView(ZivinetzModelView):
                     id__in=Assignment.objects.for_date().filter(status__in=(
                         Assignment.ARRANGED, Assignment.MOBILIZED)).values('drudge'))
 
-            return self.apply_ordering(queryset, data.get('o'))
+            return self.apply_ordering(queryset, data.get('o')).transform(
+                add_last_assignment)
 
     class batch_form(towel_forms.BatchForm):
         mail_subject = forms.CharField(label=_('subject'))

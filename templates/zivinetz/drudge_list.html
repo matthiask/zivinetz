@@ -14,6 +14,7 @@
             <th>{% trans "last name"|capfirst %}</th>
             <th>{% trans "date of birth"|capfirst %}</th>
             <th>{% trans "registered" %}</th>
+            <th>{% trans "last assignment" %}</th>
             <!--
             <th>{% trans "object"|capfirst %}</th>
             -->
@@ -28,6 +29,15 @@
             <td>{{ object.user.last_name }}</td>
             <td>{{ object.date_of_birth|date:"d.m.Y" }}</td>
             <td>{{ object.user.date_joined|date:"d.m.Y" }}</td>
+            <td>{% if object.last_assignment %}
+                <a href="{{ object.last_assignment.get_absolute_url }}">
+                    {{ object.last_assignment.specification.code }}
+                    ({{ object.last_assignment.date_from|date:"d.m.Y" }} -
+                    {{ object.last_assignment.determine_date_until|date:"d.m.Y" }}),
+                    {{ object.last_assignment.get_status_display }}
+                </a>
+                {% else %}&ndash;{% endif %}
+            </td>
         </tr>
     {% endfor %}
     </tbody>
