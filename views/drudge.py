@@ -144,8 +144,8 @@ def profile(request):
         drudge = None
 
     if request.method == 'POST':
-        form = DrudgeForm(request.POST, instance=drudge)
-        form2 = UserForm(request.POST, instance=request.user)
+        form = DrudgeForm(request.POST, request.FILES, instance=drudge)
+        form2 = UserForm(request.POST, request.FILES, instance=request.user)
 
         if form.is_valid() and form2.is_valid():
             drudge = form.save(commit=False)

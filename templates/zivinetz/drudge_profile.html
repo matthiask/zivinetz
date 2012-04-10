@@ -7,7 +7,7 @@
 {% block content %}
 <h2>{{ title }}</h2>
 
-<form method="post" action=".">{% csrf_token %}
+<form method="post" action="." enctype="multipart/form-data">{% csrf_token %}
 
 {% for formset in formsets.values %}{{ formset.management_form }}{% endfor %}
 
@@ -20,6 +20,7 @@
     {% form_item form.address %}
     {% form_item form.zip_code %}
     {% form_item form.city %}
+    {% form_item form.profile_image %}
     {% form_item form.date_of_birth %}
     <tr class="required">
         <th>{{ form.place_of_citizenship_city.label_tag }}</th>

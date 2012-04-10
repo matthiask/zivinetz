@@ -262,6 +262,9 @@ class Drudge(models.Model):
     notes = models.TextField(_('notes'), blank=True,
         help_text=_('Allergies, vegetarianism, anything else we should be aware of?'))
 
+    profile_image = models.ImageField(_('profile image'), blank=True, null=True,
+        upload_to='profile_images/')
+
     class Meta:
         ordering = ['user__last_name', 'user__first_name', 'zdp_no']
         verbose_name = _('drudge')
