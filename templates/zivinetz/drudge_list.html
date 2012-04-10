@@ -15,6 +15,7 @@
             <th>{% trans "date of birth"|capfirst %}</th>
             <th>{% trans "registered" %}</th>
             <th>{% trans "last assignment" %}</th>
+            <th>{% trans "average mark" %}</th>
             <!--
             <th>{% trans "object"|capfirst %}</th>
             -->
@@ -38,6 +39,7 @@
                 </a>
                 {% else %}&ndash;{% endif %}
             </td>
+            <td>{{ object.average_mark|default:"&ndash;" }}</td>
         </tr>
     {% endfor %}
     </tbody>

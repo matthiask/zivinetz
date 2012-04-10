@@ -10,6 +10,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core import urlresolvers
 from django.core.mail import EmailMessage
+from django.db.models import Avg
 from django.forms.models import modelform_factory, inlineformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
@@ -82,8 +83,13 @@ AssessmentFormSet = inlineformset_factory(Drudge,
     )
 
 
-def add_last_assignment(queryset):
+def add_last_assignment_and_mark(queryset):
     drudges = dict((d.id, d) for d in queryset)
+    marks = Assessment.objects.filter(drudge__in=drudges.keys()).order_by().values(
+        'drudge').annotate(Avg('mark'))
+
+    for mark in marks:
+        drudges[mark['drudge']].average_mark = mark['mark__avg']
 
     for assignment in Assignment.objects.select_related(
             'specification__scope_statement').order_by('-date_from').iterator():
@@ -133,7 +139,7 @@ class DrudgeModelView(ZivinetzModelView):
                         Assignment.ARRANGED, Assignment.MOBILIZED)).values('drudge'))
 
             return self.apply_ordering(queryset, data.get('o')).transform(
-                add_last_assignment)
+                add_last_assignment_and_mark)
 
     class batch_form(towel_forms.BatchForm):
         mail_subject = forms.CharField(label=_('subject'))
