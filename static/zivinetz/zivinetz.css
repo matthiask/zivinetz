@@ -176,3 +176,6 @@ strong.warning {
 form p {
     margin-bottom: 5px;
 }
+
+.box.error { background: #ea9e8f; }
+.box.warning { background: #ecd488; }

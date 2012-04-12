@@ -533,6 +533,7 @@ class Assignment(models.Model):
                 sick_days=0,
                 holi_days=0,
                 forced_leave_days=data['forced'],
+                calculated_total_days=data['working'] + data['free'] + data['forced'],
                 clothing_expenses=clothing_expenses,
                 )
 
@@ -587,6 +588,10 @@ class ExpenseReport(models.Model):
     holi_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
     forced_leave_days = models.PositiveIntegerField(_('forced leave days'))
     forced_leave_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
+
+    calculated_total_days = models.PositiveIntegerField(_('calculated total days'),
+        help_text=_('This field is filled in automatically by the system and should not be changed.'),
+        default=0)
 
     clothing_expenses = models.DecimalField(_('clothing expenses'),
         max_digits=10, decimal_places=2, default=Decimal('0.00'))

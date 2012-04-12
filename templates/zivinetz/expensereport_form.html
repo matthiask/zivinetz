@@ -14,6 +14,18 @@
 <form method="post" action=".">{% csrf_token %}
 {% form_errors form formsets %}
 
+{% if form.warnings %}
+<div class="box warning cf">
+    {% for warning in form.warnings %}
+        {{ warning }}
+    {% endfor %}
+    <label for="{{ form.ignore_warnings.auto_id }}">
+        {{ form.ignore_warnings }}
+        {{ form.ignore_warnings.label }}
+    </label>
+</div>
+{% endif %}
+
 <table>
     {% if object %}
     <tr>

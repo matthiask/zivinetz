@@ -386,6 +386,30 @@ ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
     )
 
 
+class EditExpenseReportForm(forms.ModelForm, towel_forms.WarningsForm):
+    class Meta:
+        model = ExpenseReport
+        exclude = ('assignment', 'total', 'calculated_total_days')
+
+    def clean(self):
+        data = super(EditExpenseReportForm, self).clean()
+
+        try:
+            total_days = (data['working_days'] + data['free_days'] + data['sick_days']
+                + data['holi_days'] + data['forced_leave_days'])
+        except (ValueError, TypeError):
+            return data
+
+        if total_days != self.instance.calculated_total_days:
+            self.add_warning(
+                _('The number of days in this form (%(total)s) differs from the calculated number of days for this period (%(calculated)s).') % {
+                    'total': total_days,
+                    'calculated': self.instance.calculated_total_days,
+                    })
+
+        return data
+
+
 class ExpenseReportModelView(ZivinetzModelView):
     paginate_by = 50
 
@@ -436,8 +460,7 @@ class ExpenseReportModelView(ZivinetzModelView):
 
     def get_form(self, request, instance=None, change=None, **kwargs):
         if instance and instance.pk:
-            return super(ExpenseReportModelView, self).get_form(request, instance=instance,
-                exclude=('assignment', 'total'))
+            return EditExpenseReportForm
         else:
             class ModelForm(forms.ModelForm):
                 assignment = forms.ModelChoiceField(
@@ -447,7 +470,7 @@ class ExpenseReportModelView(ZivinetzModelView):
 
                 class Meta:
                     model = self.model
-                    exclude = ('total',)
+                    exclude = ('total', 'calculated_total_days')
 
                 formfield_callback = towel_forms.stripped_formfield_callback
 
