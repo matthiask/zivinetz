@@ -287,6 +287,57 @@ def assignment_pdf(request, assignment_id):
         result, error = p.communicate(source.read())
         os.unlink(overlay.name)
 
+    with tempfile.NamedTemporaryFile(delete=False) as first_page:
+        pdf = PDFDocument(first_page)
+
+        pdf.init_report()
+        pdf.generate_style(font_size=10)
+
+        address = [
+            u'Verein Naturnetz',
+            u'Chlosterstrasse',
+            u'8109 Kloster Fahr',
+            ]
+
+        pdf.spacer(25*mm)
+        pdf.table(zip(address, address), (8.2*cm, 8.2*cm), pdf.style.tableBase)
+        pdf.spacer(40*mm)
+
+        pdf.p_markup('''
+Lieber Zivi<br /><br />
+
+Vielen Dank fürs Ausfüllen der Einsatzvereinbarung im Zivinetz! Du findest hier
+nun deine Einsatzvereinbarung sowie einige Hinweise zu deinem
+Zivildiensteinsatz beim Naturnetz. Bitte lies alles nochmals genau durch und
+überprüfe deine Daten auf Fehler. Wenn alles korrekt ist, unterschreibe die
+Einsatzvereinbarung und schicke diese ans Naturnetz. Die Naturnetz-Adresse
+ist oben aufgedruckt (passend für ein Fenstercouvert). Die Blätter mit den
+Hinweisen solltest du bei dir behalten und für deinen Zivildiensteinsatz
+aufbewahren. Die Adresse unten wird von uns benutzt, um die
+Einsatzvereinbarung an das Regionalzentrum weiterzuleiten.<br /><br />
+
+Wir freuen uns auf deinen Einsatz!
+''')
+        pdf.spacer(50*mm)
+
+        address = u'\n'.join([
+            assignment.regional_office.name,
+            assignment.regional_office.address,
+            ]).replace('\r', '')
+
+        pdf.table([(address, address)], (8.2*cm, 8.2*cm), pdf.style.tableBase)
+
+        pdf.generate()
+        first_page.close()
+
+        p = subprocess.Popen(['/usr/bin/pdftk',
+            first_page.name,
+            '-',
+            'cat', 'output', '-'],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        result, error = p.communicate(result)
+        os.unlink(first_page.name)
+
         if assignment.specification.conditions:
             p = subprocess.Popen(['/usr/bin/pdftk', '-',
                 assignment.specification.conditions.path,
