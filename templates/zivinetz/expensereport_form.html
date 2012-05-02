@@ -99,6 +99,11 @@
             <td>
                 {% form_item_plain field %}
                 {% form_item_plain notes %}
+                <br>
+                <label>
+                    <input type="checkbox" name="transport_expenses_copy">
+                    {% trans "Adopt for all following expense reports" %}
+                </label>
             </td>
         </tr>
     {% endwith %}

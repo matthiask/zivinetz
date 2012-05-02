@@ -491,6 +491,12 @@ class ExpenseReportModelView(ZivinetzModelView):
                 date_from=instance.date_from)
         instance.recalculate_total()
 
+        if request.POST.get('transport_expenses_copy'):
+            for report in instance.assignment.reports.filter(date_from__gt=instance.date_from):
+                report.transport_expenses = instance.transport_expenses
+                report.transport_expenses_notes = instance.transport_expenses_notes
+                report.recalculate_total()
+
 expense_report_views = ExpenseReportModelView(ExpenseReport)
 
 
