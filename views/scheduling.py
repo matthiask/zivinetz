@@ -227,6 +227,12 @@ class SchedulingSearchForm(SearchForm):
     date_from__lte = forms.DateField(label=ugettext_lazy('End date'),
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
+    drudge__motor_saw_course = forms.MultipleChoiceField(
+        label=ugettext_lazy('motor saw course'), required=False, choices=(
+            ('2-day', ugettext_lazy('2 day course')),
+            ('5-day', ugettext_lazy('5 day course')),
+            ))
+
     mode = forms.ChoiceField(label=ugettext_lazy('Mode'), choices=(
         ('both', ugettext_lazy('both')),
         ('assignments', ugettext_lazy('only assignments')),
