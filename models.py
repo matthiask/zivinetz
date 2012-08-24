@@ -205,9 +205,10 @@ class RegionalOffice(models.Model):
 
 
 class DrudgeManager(SearchManager):
-    search_fields = ('user__first_name', 'user__last_name', 'zdp_no', 'address',
-        'zip_code', 'city', 'place_of_citizenship_city', 'place_of_citizenship_state',
-        'phone_home', 'phone_office', 'mobile', 'bank_account', 'health_insurance_account',
+    search_fields = ('user__first_name', 'user__last_name', 'zdp_no',
+        'address', 'zip_code', 'city', 'place_of_citizenship_city',
+        'place_of_citizenship_state', 'phone_home', 'phone_office',
+        'mobile', 'bank_account', 'health_insurance_account',
         'health_insurance_company', 'education_occupation')
 
 
@@ -225,8 +226,10 @@ class Drudge(models.Model):
 
     date_of_birth = models.DateField(_('date of birth'))
 
-    place_of_citizenship_city = models.CharField(_('place of citizenship'), max_length=100)
-    place_of_citizenship_state = models.CharField(_('place of citizenship (canton)'), max_length=2,
+    place_of_citizenship_city = models.CharField(_('place of citizenship'),
+        max_length=100)
+    place_of_citizenship_state = models.CharField(
+        _('place of citizenship (canton)'), max_length=2,
         choices=STATE_CHOICES)
 
     phone_home = models.CharField(_('phone (home)'), max_length=20, blank=True)
@@ -253,12 +256,15 @@ class Drudge(models.Model):
 
     environment_course = models.BooleanField(_('environment course'), default=False,
         help_text=_('I have taken the environment course already.'))
-    motor_saw_course = models.CharField(_('motor saw course'), max_length=10, choices=(
+    motor_saw_course = models.CharField(_('motor saw course'), max_length=10,
+        choices=(
         ('2-day', _('2 day course')),
         ('5-day', _('5 day course')),
-        ), blank=True, null=True, help_text=_('I have taken the denoted motor saw course already.'))
+        ), blank=True, null=True,
+        help_text=_('I have taken the denoted motor saw course already.'))
 
-    regional_office = models.ForeignKey(RegionalOffice, verbose_name=_('regional office'))
+    regional_office = models.ForeignKey(RegionalOffice,
+        verbose_name=_('regional office'))
     notes = models.TextField(_('notes'), blank=True,
         help_text=_('Allergies, vegetarianism, anything else we should be aware of?'))
 
