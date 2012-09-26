@@ -45,7 +45,7 @@
 
 {% block content-after %}
     <hr />
-    <a href="{% url auth_logout %}">{% trans "Log out" %}</a> /
+    <a href="{% url "auth_logout" %}">{% trans "Log out" %}</a> /
     <a href="/accounts/password/change/">{% trans "Change password" %}</a>
 </div>
 {% endblock %}
