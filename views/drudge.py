@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.utils.translation import ugettext_lazy, ugettext as _
 
-from towel.forms import stripped_formfield_callback
+from towel.forms import towel_formfield_callback
 
 from zivinetz.models import (Drudge, ExpenseReport, Assignment, WaitList,
     Codeword)
@@ -19,7 +19,7 @@ from zivinetz.views.decorators import drudge_required
 class AssignmentForm(forms.ModelForm):
     codeword = forms.CharField(label=ugettext_lazy('Codeword'))
 
-    formfield_callback = stripped_formfield_callback
+    formfield_callback = towel_formfield_callback
 
     class Meta:
         model = Assignment
@@ -45,7 +45,7 @@ class AssignmentForm(forms.ModelForm):
 class WaitListForm(forms.ModelForm):
     codeword = forms.CharField(label=ugettext_lazy('Codeword'))
 
-    formfield_callback = stripped_formfield_callback
+    formfield_callback = towel_formfield_callback
 
     class Meta:
         model = WaitList
@@ -114,7 +114,7 @@ def dashboard(request, drudge):
 
 
 class UserForm(forms.ModelForm):
-    formfield_callback = stripped_formfield_callback
+    formfield_callback = towel_formfield_callback
     error_css_class = 'error'
     required_css_class = 'required'
 
@@ -127,7 +127,7 @@ class UserForm(forms.ModelForm):
 
 
 class DrudgeForm(forms.ModelForm):
-    formfield_callback = stripped_formfield_callback
+    formfield_callback = towel_formfield_callback
     error_css_class = 'error'
     required_css_class = 'required'
 

@@ -44,7 +44,7 @@ class ZivinetzModelView(modelview.ModelView):
 
     def get_form(self, request, instance=None, change=None, **kwargs):
         return modelform_factory(self.model,
-            formfield_callback=towel_forms.stripped_formfield_callback, **kwargs)
+            formfield_callback=towel_forms.towel_formfield_callback, **kwargs)
 
 
 class RegionalOfficeModelView(ZivinetzModelView):
@@ -57,7 +57,7 @@ regional_office_views = RegionalOfficeModelView(RegionalOffice)
 SpecificationFormSet = inlineformset_factory(ScopeStatement,
     Specification,
     extra=0,
-    formfield_callback=towel_forms.stripped_formfield_callback,
+    formfield_callback=towel_forms.towel_formfield_callback,
     )
 
 
@@ -79,7 +79,7 @@ AssessmentFormSet = inlineformset_factory(Drudge,
     Assessment,
     extra=0,
     exclude=('created',),
-    formfield_callback=towel_forms.stripped_formfield_callback,
+    formfield_callback=towel_forms.towel_formfield_callback,
     )
 
 
@@ -191,7 +191,7 @@ drudge_views = DrudgeModelView(Drudge)
 ExpenseReportFormSet = inlineformset_factory(Assignment,
     ExpenseReport,
     extra=0,
-    formfield_callback=towel_forms.stripped_formfield_callback,
+    formfield_callback=towel_forms.towel_formfield_callback,
     fields=('date_from', 'date_until', 'report_no', 'status'),
     )
 
@@ -382,7 +382,7 @@ assignment_views = AssignmentModelView(Assignment)
 ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
     ExpenseReportPeriod,
     extra=0,
-    formfield_callback=towel_forms.stripped_formfield_callback,
+    formfield_callback=towel_forms.towel_formfield_callback,
     )
 
 
@@ -472,7 +472,7 @@ class ExpenseReportModelView(ZivinetzModelView):
                     model = self.model
                     exclude = ('total', 'calculated_total_days')
 
-                formfield_callback = towel_forms.stripped_formfield_callback
+                formfield_callback = towel_forms.towel_formfield_callback
 
             return ModelForm
 

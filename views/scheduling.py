@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy
 
-from towel.forms import SearchForm, stripped_formfield_callback
+from towel.forms import SearchForm
 
 from zivinetz.models import Assignment, Specification, WaitList
 
