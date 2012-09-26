@@ -285,6 +285,11 @@ class Drudge(models.Model):
             self.zdp_no,
             )
 
+    def pretty_motor_saw_course(self):
+        """for the scheduling table"""
+        msw = self.motor_saw_course or ''
+        return msw.replace('-day', 'T')
+
 
 class AssignmentManager(SearchManager):
     search_fields = ['specification__scope_statement__name', 'specification__code'] +\
