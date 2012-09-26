@@ -517,6 +517,39 @@ class WaitListModelView(ZivinetzModelView):
         assignment_date_until__lte = forms.DateField(label=ugettext_lazy('date until'), required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
+    class batch_form(towel_forms.BatchForm):
+        mail_subject = forms.CharField(label=_('subject'))
+        mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
+        mail_attachment = forms.FileField(label=_('attachment'), required=False)
+
+        def _context(self, batch_queryset):
+            mails = 0
+            for entry in batch_queryset.select_related('drudge__user'):
+                message = EmailMessage(
+                    subject=self.cleaned_data['mail_subject'],
+                    body=self.cleaned_data['mail_body'],
+                    to=[entry.drudge.user.email],
+                    from_email='info@naturnetz.ch',
+                    headers={
+                        'Reply-To': self.request.user.email,
+                    })
+                if self.cleaned_data['mail_attachment']:
+                    message.attach(
+                        self.cleaned_data['mail_attachment'].name,
+                        self.cleaned_data['mail_attachment'].read(),
+                        )
+                message.send()
+                mails += 1
+
+            if mails:
+                messages.success(self.request, _('Successfully sent mails to %s people.') % mails)
+            else:
+                messages.error(self.request, _('Did not send any mails. Did you select people?'))
+
+            return {
+                'batch_items': batch_queryset,
+                }
+
     def deletion_allowed(self, request, instance):
         return True
 
