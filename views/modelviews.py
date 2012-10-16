@@ -338,7 +338,9 @@ class AssignmentModelView(ZivinetzModelView):
                         drudge.address,
                         drudge.zip_code,
                         drudge.city,
-                        ), '', ''),
+                        ),
+                        '',
+                        drudge.education_occupation),
                     ], (6.4*cm, 5*cm, 5*cm))
                 pdf.hr_mini()
 
