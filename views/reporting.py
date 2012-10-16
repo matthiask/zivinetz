@@ -440,10 +440,10 @@ class NaturnetzStationery(object):
             )
         """
         canvas.drawImage(
-            os.path.join(settings.APP_BASEDIR, 'naturnetz', 'data', 'logo.png'),
+            os.path.join(settings.APP_BASEDIR, 'naturnetz', 'data', 'logo-new.jpg'),
             x=16*cm, y=24*cm,
             width=177 * 0.5,
-            height=250 * 0.5,
+            height=246 * 0.5,
             )
 
         canvas.restoreState()
