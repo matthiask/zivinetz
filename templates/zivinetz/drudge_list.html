@@ -12,8 +12,8 @@
             <th>{% trans "ZDP No."|capfirst %}</th>
             <th>{% trans "first name"|capfirst %}</th>
             <th>{% trans "last name"|capfirst %}</th>
-            <th>{% trans "date of birth"|capfirst %}</th>
-            <th>{% trans "registered" %}</th>
+            <th>{% trans "motor saw course"|capfirst %}</th>
+            <th>{% trans "environment course"|capfirst %}</th>
             <th>{% trans "last assignment" %}</th>
             <th>{% trans "average mark" %}</th>
             <!--
@@ -28,6 +28,8 @@
             <th><a href="{{ object.get_absolute_url }}">{{ object.zdp_no }}</a></th>
             <td>{{ object.user.first_name }}</td>
             <td>{{ object.user.last_name }}</td>
+            <td>{{ object.pretty_motor_saw_course|default:"&ndash;" }}</td>
+            <td>{{ object.environment_course|yesno:_("Yes,No") }}</td>
             <td>{{ object.date_of_birth|date:"d.m.Y" }}</td>
             <td>{{ object.user.date_joined|date:"d.m.Y" }}</td>
             <td>{% if object.last_assignment %}

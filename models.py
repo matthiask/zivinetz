@@ -216,6 +216,11 @@ class Drudge(models.Model):
     STATES = [state[0] for state in ch_states.STATE_CHOICES]
     STATE_CHOICES = zip(STATES, STATES)
 
+    MOTOR_SAW_COURSE_CHOICES = (
+        ('2-day', _('2 day course')),
+        ('5-day', _('5 day course')),
+        )
+
     user = models.OneToOneField(User)
 
     zdp_no = models.CharField(_('ZDP No.'), unique=True, max_length=10)
@@ -257,10 +262,7 @@ class Drudge(models.Model):
     environment_course = models.BooleanField(_('environment course'), default=False,
         help_text=_('I have taken the environment course already.'))
     motor_saw_course = models.CharField(_('motor saw course'), max_length=10,
-        choices=(
-        ('2-day', _('2 day course')),
-        ('5-day', _('5 day course')),
-        ), blank=True, null=True,
+        choices=MOTOR_SAW_COURSE_CHOICES, blank=True, null=True,
         help_text=_('I have taken the denoted motor saw course already.'))
 
     regional_office = models.ForeignKey(RegionalOffice,

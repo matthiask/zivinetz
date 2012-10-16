@@ -127,6 +127,9 @@ class DrudgeModelView(ZivinetzModelView):
             label=ugettext_lazy('regional office'), required=False)
         only_active = forms.BooleanField(label=ugettext_lazy('only active'),
             required=False)
+        motor_saw_course = forms.MultipleChoiceField(
+            label=ugettext_lazy('motor saw course'), required=False,
+            choices=Drudge.MOTOR_SAW_COURSE_CHOICES)
 
         def queryset(self, model):
             query, data = self.query_data()
