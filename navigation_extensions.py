@@ -21,6 +21,7 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 (_('scope statements'), 'admin/scope_statements/'),
                 (_('specifications'), 'admin/specifications/'),
                 (_('yearly expense stats'), 'expense_statistics_pdf/'),
+                (_('job references'), 'admin/jobreferences/'),
                 (_('photos'), 'photos/'),
                 ]
         else:

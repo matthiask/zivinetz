@@ -2,6 +2,7 @@ from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from towel.managers import SearchManager
+from towel.modelview import ModelViewURLs
 
 from django.contrib.auth.models import User
 from django.contrib.localflavor.ch import ch_states
@@ -877,13 +878,19 @@ class JobReference(models.Model):
     text = models.TextField(_('text'))
 
     class Meta:
+        ordering = ['-created']
         verbose_name = _('job reference')
         verbose_name_plural = _('job references')
 
     objects = JobReferenceManager()
 
     def __unicode__(self):
-        return u'job reference for %s' % self.assignment
+        return u'%s: %s' % (self._meta.verbose_name, self.assignment)
+
+    urls = ModelViewURLs(lambda obj: {'pk': obj.pk})
+
+    def get_absolute_url(self):
+        return self.urls.url('detail')
 
     @models.permalink
     def pdf_url(self):

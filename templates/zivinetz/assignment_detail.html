@@ -63,7 +63,7 @@
 <table>
 {% for reference in object.jobreferences.all %}
     <tr>
-        <th>{{ reference }}</th>
+        <th><a href="{{ reference.urls.detail }}">{{ reference }}</a></th>
         <td><a href="{{ reference.pdf_url }}">PDF</a></td>
     </tr>
 {% endfor %}

@@ -1,0 +1,27 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n modelview_detail %}
+
+{% block title %}{{ object }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>{{ object }}</h2>
+
+<table>
+{% for title, value in object|model_details:"assignment,created" %}
+    <tr class="{% cycle "odd" "even" %}">
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+{{ object.text|linebreaksbr }}
+
+<div class="buttons cf">
+    <a href="delete/" class="button">{% trans "delete"|capfirst %}</a>
+    <a href="edit/" class="button">{% trans "edit"|capfirst %}</a>
+    <a href="{{ object.pdf_url }}" class="button">PDF</a>
+</div>
+
+{% endblock %}
