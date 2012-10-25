@@ -130,6 +130,8 @@ class DrudgeModelView(ZivinetzModelView):
         motor_saw_course = forms.MultipleChoiceField(
             label=ugettext_lazy('motor saw course'), required=False,
             choices=Drudge.MOTOR_SAW_COURSE_CHOICES)
+        driving_license = forms.NullBooleanField(
+            label=ugettext_lazy('driving license'), required=False)
 
         def queryset(self, model):
             query, data = self.query_data()
