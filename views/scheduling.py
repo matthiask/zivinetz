@@ -232,6 +232,8 @@ class SchedulingSearchForm(SearchForm):
             ('2-day', ugettext_lazy('2 day course')),
             ('5-day', ugettext_lazy('5 day course')),
             ))
+    drudge__driving_license = forms.NullBooleanField(
+        label=ugettext_lazy('driving license'), required=False)
 
     mode = forms.ChoiceField(label=ugettext_lazy('Mode'), choices=(
         ('both', ugettext_lazy('both')),

@@ -83,8 +83,11 @@
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.last_name }}&nbsp; </a></th>
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.zdp_no }}&nbsp; </a></th>
         <th>{{ assignment.specification.code }}&nbsp; </th>
-        <th>
+        <th style="white-space:nowrap">
             {{ assignment.drudge.pretty_motor_saw_course|default:"" }}
+            {% if assignment.drudge.driving_license %}
+                <span title="{% trans "driving license"|capfirst %}">F</span>
+            {% endif %}
         </th>
         {% for week, text in scheduled %}
             <td{% if week %} class="a"{% endif %}>{{ text }}</td>
