@@ -368,9 +368,9 @@ class Assignment(models.Model):
         return self.date_until_extension or self.date_until
     determine_date_until.short_description = _('eff. until date')
 
-    def assignment_days(self, until=None):
+    def assignment_days(self):
         day = self.date_from
-        until = until or self.determine_date_until()
+        until = self.determine_date_until()
         one_day = timedelta(days=1)
 
         public_holidays = PublicHoliday.objects.filter(
