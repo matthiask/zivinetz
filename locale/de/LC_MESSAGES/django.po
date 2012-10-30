@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-30 08:32+0100\n"
+"POT-Creation-Date: 2012-10-30 10:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:16 models.py:594 models.py:693
+#: admin.py:16 models.py:612 models.py:711
 #: templates/zivinetz/specification_detail.html:51
 #: templates/zivinetz/specification_detail.html:81
 #: templates/zivinetz/specification_form.html:37
@@ -26,7 +26,7 @@ msgstr ""
 msgid "working days"
 msgstr "Arbeitstage"
 
-#: admin.py:20 models.py:598 models.py:703
+#: admin.py:20 models.py:616 models.py:721
 #: templates/zivinetz/specification_detail.html:58
 #: templates/zivinetz/specification_detail.html:88
 #: templates/zivinetz/specification_form.html:44
@@ -34,7 +34,7 @@ msgstr "Arbeitstage"
 msgid "sick days"
 msgstr "Krankheitstage"
 
-#: admin.py:24 models.py:596 models.py:698
+#: admin.py:24 models.py:614 models.py:716
 #: templates/zivinetz/specification_detail.html:65
 #: templates/zivinetz/specification_detail.html:95
 #: templates/zivinetz/specification_form.html:51
@@ -63,13 +63,13 @@ msgstr "ist aktiv"
 msgid "EIS No."
 msgstr "EIS-Nr."
 
-#: models.py:17 models.py:191 models.py:753
+#: models.py:17 models.py:191 models.py:771
 msgid "name"
 msgstr "Name"
 
 #: models.py:21 models.py:64 templates/zivinetz/scopestatement_list.html:11
-#: templates/zivinetz/specification_detail.html:12 views/modelviews.py:429
-#: views/modelviews.py:515 views/modelviews.py:571
+#: templates/zivinetz/specification_detail.html:12 views/modelviews.py:436
+#: views/modelviews.py:522 views/modelviews.py:578
 msgid "scope statement"
 msgstr "Pflichtenheft-Gruppe"
 
@@ -181,7 +181,7 @@ msgstr ""
 msgid "conditions"
 msgstr "Bedingungen"
 
-#: models.py:98 models.py:329 models.py:739 models.py:792
+#: models.py:98 models.py:329 models.py:757 models.py:810
 #: templates/zivinetz/assignment_list.html:14
 #: templates/zivinetz/drudge_dashboard.html:15
 #: templates/zivinetz/drudge_dashboard.html:44
@@ -207,7 +207,7 @@ msgstr "ohne Unterkunft"
 msgid "valid from"
 msgstr "gültig ab"
 
-#: models.py:157 models.py:684
+#: models.py:157 models.py:702
 msgid "spending money"
 msgstr "Taschengeld"
 
@@ -235,7 +235,7 @@ msgstr "Mittagessen extern"
 msgid "external supper"
 msgstr "Abendessen extern"
 
-#: models.py:167 models.py:685 templates/zivinetz/specification_detail.html:45
+#: models.py:167 models.py:703 templates/zivinetz/specification_detail.html:45
 #: templates/zivinetz/specification_form.html:31
 msgid "accomodation"
 msgstr "Unterkunft"
@@ -411,8 +411,8 @@ msgstr "Holzerkurs"
 msgid "I have taken the denoted motor saw course already."
 msgstr "Ich habe den angegebenen Holzerkurs schon besucht."
 
-#: models.py:271 models.py:595 models.py:597 models.py:599 models.py:602
-#: models.py:604 models.py:612 models.py:615 models.py:619 models.py:797
+#: models.py:271 models.py:613 models.py:615 models.py:617 models.py:620
+#: models.py:622 models.py:630 models.py:633 models.py:637 models.py:815
 #: templates/zivinetz/drudge_dashboard.html:47
 #: templates/zivinetz/drudge_detail.html:70
 msgid "notes"
@@ -427,12 +427,12 @@ msgstr ""
 msgid "profile image"
 msgstr "Profilbild"
 
-#: models.py:279 models.py:330 models.py:789 models.py:816
+#: models.py:279 models.py:330 models.py:807 models.py:834
 #: templates/zivinetz/assignment_list.html:13
 #: templates/zivinetz/drudge_dashboard.html:74
 #: templates/zivinetz/expensereport_detail.html:12
 #: templates/zivinetz/waitlist_list.html:12 views/modelviews.py:217
-#: views/modelviews.py:439 views/modelviews.py:518 views/modelviews.py:579
+#: views/modelviews.py:446 views/modelviews.py:525 views/modelviews.py:586
 msgid "drudge"
 msgstr "Zivi"
 
@@ -456,7 +456,7 @@ msgstr "aufgeboten"
 msgid "declined"
 msgstr "abgelehnt"
 
-#: models.py:325 models.py:788 models.py:815 models.py:840 models.py:877
+#: models.py:325 models.py:806 models.py:833 models.py:858 models.py:895
 #: templates/zivinetz/assignment_list.html:15
 #: templates/zivinetz/drudge_dashboard.html:16
 #: templates/zivinetz/drudge_dashboard.html:46
@@ -470,15 +470,15 @@ msgstr "erstellt"
 msgid "modified"
 msgstr "geändert"
 
-#: models.py:335 models.py:587 models.py:741 models.py:766
-#: templates/zivinetz/assignment_form.html:24 views/modelviews.py:445
-#: views/modelviews.py:522 views/modelviews.py:583
+#: models.py:335 models.py:605 models.py:759 models.py:784
+#: templates/zivinetz/assignment_form.html:24 views/modelviews.py:452
+#: views/modelviews.py:529 views/modelviews.py:590
 msgid "date from"
 msgstr "Datum von"
 
-#: models.py:336 models.py:588 models.py:767
-#: templates/zivinetz/assignment_form.html:25 views/modelviews.py:447
-#: views/modelviews.py:524 views/modelviews.py:585
+#: models.py:336 models.py:606 models.py:785
+#: templates/zivinetz/assignment_form.html:25 views/modelviews.py:454
+#: views/modelviews.py:531 views/modelviews.py:592
 msgid "date until"
 msgstr "Datum bis"
 
@@ -494,14 +494,14 @@ msgstr "Nur ausfüllen falls Einsatz verlängert wurde."
 msgid "part of long assignment"
 msgstr "Teil des langen Einsatzes"
 
-#: models.py:346 models.py:591 templates/zivinetz/assignment_detail.html:35
+#: models.py:346 models.py:609 templates/zivinetz/assignment_detail.html:35
 #: templates/zivinetz/assignment_form.html:27
 #: templates/zivinetz/assignment_list.html:16
 #: templates/zivinetz/drudge_dashboard.html:17
 #: templates/zivinetz/drudge_dashboard.html:77
 #: templates/zivinetz/drudge_detail.html:92
 #: templates/zivinetz/expensereport_list.html:15 views/modelviews.py:231
-#: views/modelviews.py:444 views/scheduling.py:224
+#: views/modelviews.py:451 views/scheduling.py:224
 msgid "status"
 msgstr "Status"
 
@@ -513,10 +513,10 @@ msgstr "EiV arrangiert am"
 msgid "mobilized on"
 msgstr "aufgeboten am"
 
-#: models.py:354 models.py:585 models.py:875
+#: models.py:354 models.py:603 models.py:893
 #: templates/zivinetz/expensereport_detail.html:18
-#: templates/zivinetz/expensereport_form.html:32 views/modelviews.py:434
-#: views/modelviews.py:474 views/modelviews.py:574
+#: templates/zivinetz/expensereport_form.html:32 views/modelviews.py:441
+#: views/modelviews.py:481 views/modelviews.py:581
 msgid "assignment"
 msgstr "Einsatz"
 
@@ -530,39 +530,39 @@ msgstr "Einsätze"
 msgid "eff. until date"
 msgstr "eff. Datum bis"
 
-#: models.py:580
+#: models.py:598
 msgid "pending"
 msgstr "pendent"
 
-#: models.py:581
+#: models.py:599
 msgid "filled"
 msgstr "ausgefüllt"
 
-#: models.py:582
+#: models.py:600
 msgid "paid"
 msgstr "bezahlt"
 
-#: models.py:589 templates/zivinetz/assignment_form.html:26
+#: models.py:607 templates/zivinetz/assignment_form.html:26
 msgid "report no."
 msgstr "Berichts-Nr."
 
-#: models.py:600 models.py:710
+#: models.py:618 models.py:728
 msgid "holiday days"
 msgstr "Ferientage"
 
-#: models.py:601
+#: models.py:619
 msgid "These days are still countable towards the assignment total days."
 msgstr "Diese Tage sind immer noch als Diensttage anrechenbar."
 
-#: models.py:603 models.py:717
+#: models.py:621 models.py:735
 msgid "forced leave days"
 msgstr "Urlaubstage"
 
-#: models.py:606
+#: models.py:624
 msgid "calculated total days"
 msgstr "Berechnetes Total Tage"
 
-#: models.py:607
+#: models.py:625
 msgid ""
 "This field is filled in automatically by the system and should not be "
 "changed."
@@ -570,152 +570,152 @@ msgstr ""
 "Dieses Feld wird vom System automatisch ausgefüllt und sollte nicht "
 "verändert werden."
 
-#: models.py:610 models.py:724
+#: models.py:628 models.py:742
 msgid "clothing expenses"
 msgstr "Kleiderspesen"
 
-#: models.py:613 models.py:722
+#: models.py:631 models.py:740
 msgid "transport expenses"
 msgstr "Transportspesen"
 
-#: models.py:617 models.py:726
+#: models.py:635 models.py:744
 msgid "miscellaneous"
 msgstr "Verschiedenes"
 
-#: models.py:621
+#: models.py:639
 msgid "total"
 msgstr "Total"
 
-#: models.py:626 models.py:736
+#: models.py:644 models.py:754
 msgid "expense report"
 msgstr "Spesenrapport"
 
-#: models.py:627 navigation_extensions.py:19
+#: models.py:645 navigation_extensions.py:19
 #: templates/zivinetz/assignment_detail.html:24
 #: templates/zivinetz/assignment_form.html:17
 #: templates/zivinetz/drudge_dashboard.html:68
 msgid "expense reports"
 msgstr "Spesenrapporte"
 
-#: models.py:637
+#: models.py:655
 msgid "is editable"
 msgstr "ist bearbeitbar"
 
-#: models.py:686 templates/zivinetz/specification_detail.html:46
+#: models.py:704 templates/zivinetz/specification_detail.html:46
 #: templates/zivinetz/specification_form.html:32
 msgid "breakfast"
 msgstr "Frühstück"
 
-#: models.py:687 templates/zivinetz/specification_detail.html:47
+#: models.py:705 templates/zivinetz/specification_detail.html:47
 #: templates/zivinetz/specification_form.html:33
 msgid "lunch"
 msgstr "Mittagessen"
 
-#: models.py:688 templates/zivinetz/specification_detail.html:48
+#: models.py:706 templates/zivinetz/specification_detail.html:48
 #: templates/zivinetz/specification_form.html:34
 msgid "supper"
 msgstr "Abendessen"
 
-#: models.py:689 views/reporting.py:407
+#: models.py:707 views/reporting.py:407
 msgid "Total"
 msgstr "Total"
 
-#: models.py:745
+#: models.py:763
 msgid "expense report period"
 msgstr "Spesenrapport-Periode"
 
-#: models.py:746
+#: models.py:764
 msgid "expense report periods"
 msgstr "Spesenrapport-Perioden"
 
-#: models.py:754
+#: models.py:772
 msgid "date"
 msgstr "Datum"
 
-#: models.py:758
+#: models.py:776
 msgid "public holiday"
 msgstr "Feiertag"
 
-#: models.py:759
+#: models.py:777
 msgid "public holidays"
 msgstr "Feiertage"
 
-#: models.py:771
+#: models.py:789
 msgid "company holiday"
 msgstr "Betriebsferien"
 
-#: models.py:772
+#: models.py:790
 msgid "company holidays"
 msgstr "Betriebsferien"
 
-#: models.py:793
+#: models.py:811
 msgid "available from"
 msgstr "verfügbar von"
 
-#: models.py:794
+#: models.py:812
 msgid "available until"
 msgstr "verfügbar bis"
 
-#: models.py:795 templates/zivinetz/drudge_dashboard.html:45
+#: models.py:813 templates/zivinetz/drudge_dashboard.html:45
 #: templates/zivinetz/waitlist_list.html:15
 msgid "duration in days"
 msgstr "Dauer in Tagen"
 
-#: models.py:801 models.py:802 navigation_extensions.py:16
+#: models.py:819 models.py:820 navigation_extensions.py:16
 #: templates/zivinetz/drudge_dashboard.html:39
 msgid "waitlist"
 msgstr "Warteliste"
 
-#: models.py:818 templates/zivinetz/drudge_detail.html:118
+#: models.py:836 templates/zivinetz/drudge_detail.html:118
 msgid "mark"
 msgstr "Note"
 
-#: models.py:820 templates/zivinetz/drudge_detail.html:117
+#: models.py:838 templates/zivinetz/drudge_detail.html:117
 msgid "comment"
 msgstr "Kommentar"
 
-#: models.py:824
+#: models.py:842
 msgid "internal assessment"
 msgstr "Interne Beurteilung"
 
-#: models.py:825 templates/zivinetz/drudge_detail.html:113
+#: models.py:843 templates/zivinetz/drudge_detail.html:113
 #: templates/zivinetz/drudge_form.html:17
 msgid "internal assessments"
 msgstr "Interne Beurteilungen"
 
-#: models.py:841
+#: models.py:859
 msgid "key"
 msgstr "Schlüssel"
 
-#: models.py:842 models.py:847
+#: models.py:860 models.py:865
 msgid "codeword"
 msgstr "Codewort"
 
-#: models.py:848
+#: models.py:866
 msgid "codewords"
 msgstr "Codewörter"
 
-#: models.py:857
+#: models.py:875
 msgid "title"
 msgstr "Titel"
 
-#: models.py:858 models.py:878
+#: models.py:876 models.py:896
 msgid "text"
 msgstr "Text"
 
-#: models.py:862
+#: models.py:880
 msgid "job reference template"
 msgstr "Arbeitszeugnis-Vorlage"
 
-#: models.py:863
+#: models.py:881
 msgid "job reference templates"
 msgstr "Arbeitszeugnis-Vorlagen"
 
-#: models.py:882
+#: models.py:900
 msgid "job reference"
 msgstr "Arbeitszeugnis"
 
-#: models.py:883 navigation_extensions.py:24
+#: models.py:901 navigation_extensions.py:24
 #: templates/zivinetz/assignment_detail.html:62
 msgid "job references"
 msgstr "Arbeitszeugnisse"
@@ -819,12 +819,14 @@ msgid "Remove pending reports"
 msgstr "Rapporte in Vorbereitung löschen"
 
 #: templates/zivinetz/assignment_form.html:18
+#, fuzzy
 msgid ""
 "Expense reports are automatically created with the correct date ranges when "
-"you save the assignment."
+"you click the 'Create reports' button on the assignment detail page."
 msgstr ""
-"Spesenrapporte werden automatisch mit den korrekten Datumsbereichen erstellt "
-"sobald Sie den Einsatz sichern."
+"Spesenrapporte werden automatisch mit den korrekten Datumsbereichen erstellt, "
+"wenn Sie den 'Rapporte erstellen'-Button auf der Detailseite des Einsatzes "
+"anklicken."
 
 #: templates/zivinetz/assignment_form.html:28
 #: templates/zivinetz/drudge_form.html:24
@@ -1020,24 +1022,24 @@ msgstr "Profil bearbeiten"
 msgid "only active"
 msgstr "nur aktive"
 
-#: views/modelviews.py:150 views/modelviews.py:255 views/modelviews.py:528
+#: views/modelviews.py:150 views/modelviews.py:255 views/modelviews.py:535
 msgid "subject"
 msgstr "Betreff"
 
-#: views/modelviews.py:151 views/modelviews.py:256 views/modelviews.py:529
+#: views/modelviews.py:151 views/modelviews.py:256 views/modelviews.py:536
 msgid "body"
 msgstr "Text"
 
-#: views/modelviews.py:152 views/modelviews.py:257 views/modelviews.py:530
+#: views/modelviews.py:152 views/modelviews.py:257 views/modelviews.py:537
 msgid "attachment"
 msgstr "Anhang"
 
-#: views/modelviews.py:174 views/modelviews.py:279 views/modelviews.py:552
+#: views/modelviews.py:174 views/modelviews.py:279 views/modelviews.py:559
 #, python-format
 msgid "Successfully sent mails to %s people."
 msgstr "Erfolgreich %s Mails versendet."
 
-#: views/modelviews.py:176 views/modelviews.py:281 views/modelviews.py:554
+#: views/modelviews.py:176 views/modelviews.py:281 views/modelviews.py:561
 msgid "Did not send any mails. Did you select people?"
 msgstr "Keine Mails versendet. Hast Du Leute gewählt?"
 
@@ -1070,11 +1072,11 @@ msgstr "Keine Spesenrapporte erstellt, alle Monate schon besetzt?"
 msgid "Successfully removed pending expense reports."
 msgstr "Erfolgreich alle pendenten Spesenrapporte entfernt."
 
-#: views/modelviews.py:365
+#: views/modelviews.py:372
 msgid "Mobilized on date must be set when status is mobilized."
 msgstr "Aufgebotsdatum muss gesetzt sein wenn Status aufgeboten ist."
 
-#: views/modelviews.py:412
+#: views/modelviews.py:419
 #, python-format
 msgid ""
 "The number of days in this form (%(total)s) differs from the calculated "
@@ -1083,11 +1085,11 @@ msgstr ""
 "Die Anzahl Tage in diesem Formular (%(total)s) stimmt nicht mit der "
 "berechneten Anzahl Tage für diese Periode (%(calculated)s) überein."
 
-#: views/modelviews.py:432
+#: views/modelviews.py:439
 msgid "assignment status"
 msgstr "Einsatzstatus"
 
-#: views/modelviews.py:622
+#: views/modelviews.py:629
 msgid "Successfully created job reference."
 msgstr "Erfolgreich Arbeitszeugnis erstellt."
 
