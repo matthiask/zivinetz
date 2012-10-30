@@ -84,7 +84,9 @@
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.zdp_no }}&nbsp; </a></th>
         <th>{{ assignment.specification.code }}&nbsp; </th>
         <th style="white-space:nowrap">
-            {{ assignment.drudge.pretty_motor_saw_course|default:"" }}
+            <span title="{% trans "motor saw course" %}">
+                {{ assignment.drudge.pretty_motor_saw_course }}
+            </span>
             {% if assignment.drudge.driving_license %}
                 <span title="{% trans "driving license"|capfirst %}">FA</span>
             {% endif %}

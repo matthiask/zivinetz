@@ -28,7 +28,9 @@
             <td>{{ object.user.first_name }}</td>
             <td>{{ object.user.last_name }}</td>
             <td style="white-space:nowrap">
-                {{ object.pretty_motor_saw_course }}
+                <span title="{% trans "motor saw course" %}">
+                    {{ object.pretty_motor_saw_course }}
+                </span>
                 {% if object.environment_course %}
                     <span title="{% trans "environment course"|capfirst %}">ENV</span>
                 {% endif %}
