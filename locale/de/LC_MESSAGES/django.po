@@ -819,7 +819,6 @@ msgid "Remove pending reports"
 msgstr "Rapporte in Vorbereitung löschen"
 
 #: templates/zivinetz/assignment_form.html:18
-#, fuzzy
 msgid ""
 "Expense reports are automatically created with the correct date ranges when "
 "you click the 'Create reports' button on the assignment detail page."
