@@ -525,6 +525,9 @@ class Assignment(models.Model):
     admin_pdf_url.short_description = 'PDF'
 
     def generate_expensereports(self):
+        # TODO handle extented assignments; if the end date of the original
+        # assignment is not on a months' end, we have to generate two expense
+        # reports
         occupied_months = [(d.year, d.month) for d in self.reports.values_list('date_from', flat=True)]
 
         days, monthly_expense_days, expenses = self.expenses()
