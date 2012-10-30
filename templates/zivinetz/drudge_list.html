@@ -12,15 +12,12 @@
             <th>{% trans "ZDP No."|capfirst %}</th>
             <th>{% trans "first name"|capfirst %}</th>
             <th>{% trans "last name"|capfirst %}</th>
-            <th>{% trans "motor saw course"|capfirst %}</th>
-            <th>{% trans "environment course"|capfirst %}</th>
-            <th>{% trans "driving"|capfirst %}</th>
-            <th>{% trans "education / occupation"|capfirst %}</th>
-            <th>{% trans "last assignment" %}</th>
+            <th>{% trans "courses"|capfirst %}</th>
+            <th>
+                {% trans "education / occupation"|capfirst %}<br>
+                {% trans "last assignment" %}
+            </th>
             <th>{% trans "average mark" %}</th>
-            <!--
-            <th>{% trans "object"|capfirst %}</th>
-            -->
         </tr>
     </thead>
     <tbody>
@@ -30,18 +27,30 @@
             <th><a href="{{ object.get_absolute_url }}">{{ object.zdp_no }}</a></th>
             <td>{{ object.user.first_name }}</td>
             <td>{{ object.user.last_name }}</td>
-            <td>{{ object.pretty_motor_saw_course|default:"&ndash;" }}</td>
-            <td>{{ object.environment_course|yesno:_("Yes,No") }}</td>
-            <td>{{ object.driving_license|yesno:_("Yes,No") }}</td>
-            <td>{{ object.education_occupation|default:"&ndash;" }}</td>
-            <td>{% if object.last_assignment %}
-                <a href="{{ object.last_assignment.get_absolute_url }}">
-                    {{ object.last_assignment.specification.code }}
-                    ({{ object.last_assignment.date_from|date:"d.m.Y" }} -
-                    {{ object.last_assignment.determine_date_until|date:"d.m.Y" }}),
-                    {{ object.last_assignment.get_status_display }}
-                </a>
+            <td style="white-space:nowrap">
+                {{ object.pretty_motor_saw_course }}
+                {% if object.environment_course %}
+                    <span title="{% trans "environment course"|capfirst %}">ENV</span>
+                {% endif %}
+                {% if object.driving_license %}
+                    <span title="{% trans "driving license"|capfirst %}">FA</span>
+                {% endif %}
+            </td>
+            <td>
+            <div
+                style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;width:300px"
+                title="{{ object.education_occupation }}"
+                >
+                {{ object.education_occupation|default:"&ndash;" }}<br>
+                {% if object.last_assignment %}
+                    <a href="{{ object.last_assignment.get_absolute_url }}">
+                        {{ object.last_assignment.specification.code }}
+                        ({{ object.last_assignment.date_from|date:"d.m.Y" }} -
+                        {{ object.last_assignment.determine_date_until|date:"d.m.Y" }}),
+                        {{ object.last_assignment.get_status_display }}
+                    </a>
                 {% else %}&ndash;{% endif %}
+            </div>
             </td>
             <td>{{ object.average_mark|default:"&ndash;" }}</td>
         </tr>
