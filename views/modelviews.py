@@ -356,6 +356,13 @@ class AssignmentModelView(ZivinetzModelView):
                 exclude=('created',))
 
         class AssignmentForm(base_form):
+            class Meta:
+                model = Assignment
+                widgets = {
+                    'drudge': towel_forms.ModelAutocompleteWidget(
+                        url=urlresolvers.reverse('zivinetz_drudge_autocomplete')),
+                }
+
             def clean(self):
                 data = super(AssignmentForm, self).clean()
 
