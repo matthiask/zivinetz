@@ -460,8 +460,22 @@ class Assignment(models.Model):
                     days['working_days'] += 1
                     slot = 'working'
 
+            key = (day.year, day.month, 1)
+            if (day.month == self.date_from.month
+                    and day.year == self.date_from.year):
+                key = (self.date_from.year, self.date_from.month, self.date_from.day)
 
-            key = (day.year, day.month)
+            if day > self.date_until:
+                # Only the case when assignment has been extended
+                # If we are in the same month as the original end of the
+                # assignment, create a new key for the extension part of
+                # the given month only
+                if (day.month == self.date_until.month
+                        and day.year == self.date_until.year):
+
+                    extended_start = self.date_until + one_day
+                    key = (extended_start.year, extended_start.month, extended_start.day)
+
             monthly_expense_days.setdefault(key, {
                 'free': 0, 'working': 0, 'forced': 0, 'start': day})
             monthly_expense_days[key][slot] += 1
@@ -487,7 +501,7 @@ class Assignment(models.Model):
         expenses = {}
 
         for month, days in monthly_expense_days:
-            compensation = specification.compensation(date(month[0], month[1], 1))
+            compensation = specification.compensation(date(month[0], month[1], month[2]))
 
             free = days['free']
             working = days['working']
@@ -528,7 +542,8 @@ class Assignment(models.Model):
         # TODO handle extented assignments; if the end date of the original
         # assignment is not on a months' end, we have to generate two expense
         # reports
-        occupied_months = [(d.year, d.month) for d in self.reports.values_list('date_from', flat=True)]
+        occupied_months = [(d.year, d.month, d.day) for d in
+            self.reports.values_list('date_from', flat=True)]
 
         days, monthly_expense_days, expenses = self.expenses()
 
