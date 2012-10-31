@@ -12,7 +12,7 @@
             <th>{% trans "ZDP No."|capfirst %}</th>
             <th>{% trans "first name"|capfirst %}</th>
             <th>{% trans "last name"|capfirst %}</th>
-            <th>{% trans "courses"|capfirst %}</th>
+            <th colspan="3">{% trans "courses"|capfirst %}</th>
             <th>
                 {% trans "education / occupation"|capfirst %}<br>
                 {% trans "last assignment" %}
@@ -31,9 +31,13 @@
                 <span title="{% trans "motor saw course" %}">
                     {{ object.pretty_motor_saw_course }}
                 </span>
+            </td>
+            <td>
                 {% if object.environment_course %}
                     <span title="{% trans "environment course"|capfirst %}">ENV</span>
                 {% endif %}
+            </td>
+            <td>
                 {% if object.driving_license %}
                     <span title="{% trans "driving license"|capfirst %}">FA</span>
                 {% endif %}

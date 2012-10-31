@@ -45,7 +45,7 @@
 #scheduler tr.statuswl { opacity: 0.5; }
 #scheduler tr.statuswl td.a { background-color: #c495d0; }
 
-#scheduler td:nth-child(10n+5) { background-color: #d0d0d0; }
+#scheduler td:nth-child(10n+6) { background-color: #d0d0d0; }
 
 #scheduler th.current { color: red; }
 
@@ -56,14 +56,14 @@
 {% with scheduler.assignments as assignments %}
     <thead>
         <tr>
-            <th colspan="5"></th>
+            <th colspan="6"></th>
             {% for monday, year, week, current in scheduler.weeks %}
                 <th>{% ifchanged year %}{{ year }}{% endifchanged %}</th>
             {% endfor %}
         </tr>
         <tr>
             <th colspan="1">{% trans "week"|capfirst %}</th>
-            <th colspan="4">{% trans "Average" %}: {{ scheduler.average|floatformat:1 }}</th>
+            <th colspan="5">{% trans "Average" %}: {{ scheduler.average|floatformat:1 }}</th>
             {% for monday, year, week, current in scheduler.weeks %}
                 <th {% if current %}class="current"{% endif %}>{{ week|stringformat:"02d" }}&nbsp;</th>
             {% endfor %}
@@ -72,7 +72,7 @@
 {% for assignment, scheduled in assignments %}
     {% if forloop.counter|divisibleby:20 %}
         <tr>
-            <th colspan="5"></th>
+            <th colspan="6"></th>
             {% for monday, year, week, current in scheduler.weeks %}
                 <th {% if current %}class="current"{% endif %}>{{ week|stringformat:"02d" }}&nbsp;</th>
             {% endfor %}
@@ -87,6 +87,8 @@
             <span title="{% trans "motor saw course" %}">
                 {{ assignment.drudge.pretty_motor_saw_course }}
             </span>
+        </th>
+        <th>
             {% if assignment.drudge.driving_license %}
                 <span title="{% trans "driving license"|capfirst %}">FA</span>
             {% endif %}
