@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-30 10:36+0100\n"
+"POT-Creation-Date: 2012-10-31 10:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,12 +68,12 @@ msgid "name"
 msgstr "Name"
 
 #: models.py:21 models.py:64 templates/zivinetz/scopestatement_list.html:11
-#: templates/zivinetz/specification_detail.html:12 views/modelviews.py:436
-#: views/modelviews.py:522 views/modelviews.py:578
+#: templates/zivinetz/specification_detail.html:12 views/modelviews.py:438
+#: views/modelviews.py:524 views/modelviews.py:578
 msgid "scope statement"
 msgstr "Pflichtenheft-Gruppe"
 
-#: models.py:22 navigation_extensions.py:21 views/modelviews.py:213
+#: models.py:22 navigation_extensions.py:21 views/modelviews.py:211
 msgid "scope statements"
 msgstr "Pflichtenheft-Gruppen"
 
@@ -371,8 +371,8 @@ msgstr "Krankenkassen-Versicherungsnummer"
 msgid "education / occupation"
 msgstr "Ausbildung / Beruf"
 
-#: models.py:256 templates/zivinetz/drudge_list.html:38
-#: templates/zivinetz/scheduling.html:91 views/modelviews.py:134
+#: models.py:256 templates/zivinetz/drudge_list.html:42
+#: templates/zivinetz/scheduling.html:93 views/modelviews.py:134
 #: views/scheduling.py:236
 msgid "driving license"
 msgstr "Führerausweis"
@@ -393,7 +393,7 @@ msgstr "Anderes Abo"
 msgid "vegetarianism"
 msgstr "Vegetarier"
 
-#: models.py:263 templates/zivinetz/drudge_list.html:35
+#: models.py:263 templates/zivinetz/drudge_list.html:37
 msgid "environment course"
 msgstr "Umweltkurs"
 
@@ -431,8 +431,8 @@ msgstr "Profilbild"
 #: templates/zivinetz/assignment_list.html:13
 #: templates/zivinetz/drudge_dashboard.html:74
 #: templates/zivinetz/expensereport_detail.html:12
-#: templates/zivinetz/waitlist_list.html:12 views/modelviews.py:217
-#: views/modelviews.py:446 views/modelviews.py:525 views/modelviews.py:586
+#: templates/zivinetz/waitlist_list.html:12 views/modelviews.py:215
+#: views/modelviews.py:448 views/modelviews.py:527 views/modelviews.py:586
 msgid "drudge"
 msgstr "Zivi"
 
@@ -471,14 +471,14 @@ msgid "modified"
 msgstr "geändert"
 
 #: models.py:335 models.py:605 models.py:759 models.py:784
-#: templates/zivinetz/assignment_form.html:24 views/modelviews.py:452
-#: views/modelviews.py:529 views/modelviews.py:590
+#: templates/zivinetz/assignment_form.html:24 views/modelviews.py:454
+#: views/modelviews.py:531 views/modelviews.py:590
 msgid "date from"
 msgstr "Datum von"
 
 #: models.py:336 models.py:606 models.py:785
-#: templates/zivinetz/assignment_form.html:25 views/modelviews.py:454
-#: views/modelviews.py:531 views/modelviews.py:592
+#: templates/zivinetz/assignment_form.html:25 views/modelviews.py:456
+#: views/modelviews.py:533 views/modelviews.py:592
 msgid "date until"
 msgstr "Datum bis"
 
@@ -500,8 +500,8 @@ msgstr "Teil des langen Einsatzes"
 #: templates/zivinetz/drudge_dashboard.html:17
 #: templates/zivinetz/drudge_dashboard.html:77
 #: templates/zivinetz/drudge_detail.html:92
-#: templates/zivinetz/expensereport_list.html:15 views/modelviews.py:231
-#: views/modelviews.py:451 views/scheduling.py:224
+#: templates/zivinetz/expensereport_list.html:15 views/modelviews.py:229
+#: views/modelviews.py:453 views/scheduling.py:224
 msgid "status"
 msgstr "Status"
 
@@ -515,8 +515,8 @@ msgstr "aufgeboten am"
 
 #: models.py:354 models.py:603 models.py:893
 #: templates/zivinetz/expensereport_detail.html:18
-#: templates/zivinetz/expensereport_form.html:32 views/modelviews.py:441
-#: views/modelviews.py:481 views/modelviews.py:581
+#: templates/zivinetz/expensereport_form.html:32 views/modelviews.py:443
+#: views/modelviews.py:483 views/modelviews.py:581
 msgid "assignment"
 msgstr "Einsatz"
 
@@ -823,9 +823,9 @@ msgid ""
 "Expense reports are automatically created with the correct date ranges when "
 "you click the 'Create reports' button on the assignment detail page."
 msgstr ""
-"Spesenrapporte werden automatisch mit den korrekten Datumsbereichen erstellt, "
-"wenn Sie den 'Rapporte erstellen'-Button auf der Detailseite des Einsatzes "
-"anklicken."
+"Spesenrapporte werden automatisch mit den korrekten Datumsbereichen "
+"erstellt, wenn Sie den 'Rapporte erstellen'-Button auf der Detailseite des "
+"Einsatzes anklicken."
 
 #: templates/zivinetz/assignment_form.html:28
 #: templates/zivinetz/drudge_form.html:24
@@ -1021,61 +1021,69 @@ msgstr "Profil bearbeiten"
 msgid "only active"
 msgstr "nur aktive"
 
-#: views/modelviews.py:150 views/modelviews.py:255 views/modelviews.py:535
+#: views/modelviews.py:150 views/modelviews.py:253 views/modelviews.py:537
 msgid "subject"
 msgstr "Betreff"
 
-#: views/modelviews.py:151 views/modelviews.py:256 views/modelviews.py:536
+#: views/modelviews.py:151 views/modelviews.py:254 views/modelviews.py:538
 msgid "body"
 msgstr "Text"
 
-#: views/modelviews.py:152 views/modelviews.py:257 views/modelviews.py:537
+#: views/modelviews.py:152 views/modelviews.py:255 views/modelviews.py:539
 msgid "attachment"
 msgstr "Anhang"
 
-#: views/modelviews.py:174 views/modelviews.py:279 views/modelviews.py:559
+#: views/modelviews.py:174 views/modelviews.py:277 views/modelviews.py:561
 #, python-format
 msgid "Successfully sent mails to %s people."
 msgstr "Erfolgreich %s Mails versendet."
 
-#: views/modelviews.py:176 views/modelviews.py:281 views/modelviews.py:561
+#: views/modelviews.py:176 views/modelviews.py:279 views/modelviews.py:563
 msgid "Did not send any mails. Did you select people?"
 msgstr "Keine Mails versendet. Hast Du Leute gewählt?"
 
-#: views/modelviews.py:219
+#: views/modelviews.py:217
 msgid "active on"
 msgstr "im Einsatz am"
 
-#: views/modelviews.py:222
+#: views/modelviews.py:220
 msgid "service between"
 msgstr "Im Einsatz zwischen"
 
-#: views/modelviews.py:225
+#: views/modelviews.py:223
 msgid "Drudges in service any time between the following two dates."
 msgstr "Zivis im Einsatz irgendwann zwischen den folgenden zwei Daten."
 
-#: views/modelviews.py:226
+#: views/modelviews.py:224
 msgid "and"
 msgstr "und"
 
-#: views/modelviews.py:307
+#: views/modelviews.py:303
 #, python-format
 msgid "Successfully created %s expense reports."
 msgstr "Erfolgreich %s Spesenrapporte erstellt."
 
-#: views/modelviews.py:309
+#: views/modelviews.py:305
 msgid "No expense reports created, all months occupied already?"
 msgstr "Keine Spesenrapporte erstellt, alle Monate schon besetzt?"
 
-#: views/modelviews.py:315
+#: views/modelviews.py:311
 msgid "Successfully removed pending expense reports."
 msgstr "Erfolgreich alle pendenten Spesenrapporte entfernt."
 
-#: views/modelviews.py:372
+#: views/modelviews.py:368
 msgid "Mobilized on date must be set when status is mobilized."
 msgstr "Aufgebotsdatum muss gesetzt sein wenn Status aufgeboten ist."
 
-#: views/modelviews.py:419
+#: views/modelviews.py:390
+msgid ""
+"The extended until date has been changed. Please check whether you need to "
+"generate additional expense reports."
+msgstr ""
+"Die Einsatzverlängerung wurde angepasst. Bitte überprüfen Sie die "
+"Spesenrapporte."
+
+#: views/modelviews.py:421
 #, python-format
 msgid ""
 "The number of days in this form (%(total)s) differs from the calculated "
@@ -1084,7 +1092,7 @@ msgstr ""
 "Die Anzahl Tage in diesem Formular (%(total)s) stimmt nicht mit der "
 "berechneten Anzahl Tage für diese Periode (%(calculated)s) überein."
 
-#: views/modelviews.py:439
+#: views/modelviews.py:441
 msgid "assignment status"
 msgstr "Einsatzstatus"
 
