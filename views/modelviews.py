@@ -175,7 +175,7 @@ class DrudgeModelView(ZivinetzModelView):
             else:
                 messages.error(self.request, _('Did not send any mails. Did you select people?'))
 
-            return batch_queryset
+            return self.batch_queryset
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Drudge])
