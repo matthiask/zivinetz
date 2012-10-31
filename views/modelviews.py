@@ -385,7 +385,8 @@ class AssignmentModelView(ZivinetzModelView):
         for report in instance.reports.all():
             report.recalculate_total()
 
-        if 'date_until_extension' in form.changed_data:
+        if ('date_until_extension' in form.changed_data
+                and instance.reports.exists()):
             messages.warning(request,
                 _('The extended until date has been changed. Please check'
                     ' whether you need to generate additional expense'
