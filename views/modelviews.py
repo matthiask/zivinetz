@@ -151,9 +151,9 @@ class DrudgeModelView(ZivinetzModelView):
         mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
         mail_attachment = forms.FileField(label=_('attachment'), required=False)
 
-        def _context(self, batch_queryset):
+        def process(self):
             mails = 0
-            for drudge in batch_queryset.select_related('user'):
+            for drudge in self.batch_queryset.select_related('user'):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
                     body=self.cleaned_data['mail_body'],
@@ -175,9 +175,7 @@ class DrudgeModelView(ZivinetzModelView):
             else:
                 messages.error(self.request, _('Did not send any mails. Did you select people?'))
 
-            return {
-                'batch_items': batch_queryset,
-                }
+            return batch_queryset
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance, [Drudge])
@@ -256,9 +254,9 @@ class AssignmentModelView(ZivinetzModelView):
         mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
         mail_attachment = forms.FileField(label=_('attachment'), required=False)
 
-        def _context(self, batch_queryset):
+        def process(self):
             mails = 0
-            for assignment in batch_queryset.select_related('drudge__user'):
+            for assignment in self.batch_queryset.select_related('drudge__user'):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
                     body=self.cleaned_data['mail_body'],
@@ -280,9 +278,7 @@ class AssignmentModelView(ZivinetzModelView):
             else:
                 messages.error(self.request, _('Did not send any mails. Did you select people?'))
 
-            return {
-                'batch_items': batch_queryset,
-                }
+            return self.batch_queryset
 
     def additional_urls(self):
         return [
@@ -536,9 +532,9 @@ class WaitListModelView(ZivinetzModelView):
         mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
         mail_attachment = forms.FileField(label=_('attachment'), required=False)
 
-        def _context(self, batch_queryset):
+        def process(self):
             mails = 0
-            for entry in batch_queryset.select_related('drudge__user'):
+            for entry in self.batch_queryset.select_related('drudge__user'):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
                     body=self.cleaned_data['mail_body'],
@@ -560,9 +556,7 @@ class WaitListModelView(ZivinetzModelView):
             else:
                 messages.error(self.request, _('Did not send any mails. Did you select people?'))
 
-            return {
-                'batch_items': batch_queryset,
-                }
+            return self.batch_queryset
 
     def deletion_allowed(self, request, instance):
         return True
