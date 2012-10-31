@@ -34,7 +34,7 @@
     {% endif %}
 
     <div class="sub">
-        {% feincms_navigation of feincms_page as sub level=4,extended %}
+        {% feincms_nav feincms_page level=4 as sub %}
         {% for page in sub %}
             <a {% if page|is_equal_or_parent_of:feincms_page %}class="current"{% endif %} href="{{ page.get_navigation_url }}"><span>{{ page.title }}</span></a>
             {% if not forloop.last %}|{% endif %}
