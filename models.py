@@ -567,11 +567,7 @@ class Assignment(models.Model):
                 forced_leave_days=data['forced'],
                 calculated_total_days=data['working'] + data['free'] + data['forced'],
                 clothing_expenses=clothing_expenses,
-                )
-
-            report.periods.create(
                 specification=self.specification,
-                date_from=report.date_from,
                 )
 
             report.recalculate_total()
@@ -639,6 +635,9 @@ class ExpenseReport(models.Model):
     total = models.DecimalField(_('total'), max_digits=10, decimal_places=2,
         default=0)
 
+    specification = models.ForeignKey(Specification,
+        verbose_name=_('specification'))
+
     class Meta:
         ordering = ['assignment__drudge', 'date_from']
         verbose_name = _('expense report')
@@ -673,8 +672,7 @@ class ExpenseReport(models.Model):
             if not mobilized_on:
                 return None
 
-        period = self.periods.order_by('date_from')[0] # TODO handle more than one / non-existing period
-        return period.specification.compensation(mobilized_on or self.assignment.mobilized_on)
+        return self.specification.compensation(mobilized_on or self.assignment.mobilized_on)
 
     def compensations(self):
         if not self.assignment.mobilized_on:
@@ -748,23 +746,6 @@ class ExpenseReport(models.Model):
         total = sum(r[6] for r in ret[1::2] if r) + sum(r[1] for r in additional[::2])
 
         return ret, additional, total
-
-
-class ExpenseReportPeriod(models.Model):
-    expense_report = models.ForeignKey(ExpenseReport, verbose_name=_('expense report'),
-        related_name='periods')
-    specification = models.ForeignKey(Specification,
-        verbose_name=_('specification'))
-
-    date_from = models.DateField(_('date from'))
-
-    class Meta:
-        ordering = ['date_from']
-        verbose_name = _('expense report period')
-        verbose_name_plural = _('expense report periods')
-
-    def __unicode__(self):
-        return u'%s, starting on %s' % (self.expense_report, self.date_from)
 
 
 class PublicHoliday(models.Model):

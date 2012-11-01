@@ -24,6 +24,7 @@
             <th>{% trans "date from" %}</th>
             <th>{% trans "date until" %}</th>
             <th>{% trans "report no." %}</th>
+            <th>{% trans "specification" %}</th>
             <th>{% trans "status" %}</th>
             <th>{% trans "Delete" %}</th>
         </tr>
@@ -37,6 +38,7 @@
             </td>
             <td>{% form_item_plain form.date_until %}</td>
             <td>{% form_item_plain form.report_no %}</td>
+            <td>{% form_item_plain form.specification %}</td>
             <td>{% form_item_plain form.status %}</td>
             <td>{{ form.DELETE }}</td>
         </tr>
@@ -59,8 +61,8 @@
 
 <style type="text/css">
 #content form #expensereports input[type="text"] {
-    min-width: 150px;
-    width: 150px;
+    min-width: 80px;
+    width: 80px;
 }
 </style>
 {% endblock %}

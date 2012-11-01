@@ -38,6 +38,7 @@
     {% form_item form.date_until %}
     {% form_item form.report_no %}
     {% form_item form.status %}
+    {% form_item form.specification %}
 
     {% with field=form.working_days notes=form.working_days_notes %}
         <tr class="three">
@@ -116,35 +117,6 @@
             </td>
         </tr>
     {% endwith %}
-</table>
-
-<h3>{% trans "Periods" %}</h3>
-{{ formsets.periods.management_form }}
-<table>
-    <thead>
-        <tr>
-            <th>{% trans "Specification" %}</th>
-            <th>{% trans "From" %}</th>
-            <th>{% trans "Delete" %}</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% dynamic_formset formsets.periods "periods" %}
-        <tr id="{{ form_id }}" {% if empty %}class="empty"{% endif %}>
-            <td>
-                {{ form.id }}
-                {% form_item_plain form.specification %}
-            </td>
-            <td>{% form_item_plain form.date_from %}</td>
-            <td>{{ form.DELETE }}</td>
-        </tr>
-    {% enddynamic_formset %}
-    </tbody>
-    <tfoot>
-        <tr><td colspan="3">
-        <button type="button" onclick="towel_add_subform('periods')">{% trans "New period" %}</button>
-        </td></tr>
-    </tfoot>
 </table>
 
 <div class="buttons">

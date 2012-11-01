@@ -26,6 +26,7 @@
     <thead>
         <tr>
             <th>{% trans "object"|capfirst %}</th>
+            <th>{% trans "specification"|capfirst %}</th>
             <th>{% trans "total days"|capfirst %}</th>
             <th>{% trans "working"|capfirst %}</th>
             <th>{% trans "free"|capfirst %}</th>
@@ -37,13 +38,14 @@
         </tr>
     </thead>
     <tbody>
-    {% for object in object.reports.all %}
+    {% for object in object.reports.select_related %}
         <tr class="{% cycle 'odd' 'even' %}">
             <th>
                 <a href="{{ object.get_absolute_url }}">
                     {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
                 </a>
             </th>
+            <td>{{ object.specification.code }}</td>
             {% for name, value in object|model_row:"total_days,working_days,free_days,sick_days,holi_days,forced_leave_days,status" %}
                 <td>{{ value }}</td>
             {% endfor %}

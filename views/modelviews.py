@@ -25,7 +25,7 @@ from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.utils import pdf_response
 
 from zivinetz.models import (Assignment, CompanyHoliday, Drudge,
-    ExpenseReport, ExpenseReportPeriod, RegionalOffice, ScopeStatement,
+    ExpenseReport, RegionalOffice, ScopeStatement,
     Specification, WaitList, Assessment, JobReferenceTemplate,
     JobReference)
 
@@ -195,7 +195,7 @@ ExpenseReportFormSet = inlineformset_factory(Assignment,
     ExpenseReport,
     extra=0,
     formfield_callback=towel_forms.towel_formfield_callback,
-    fields=('date_from', 'date_until', 'report_no', 'status'),
+    fields=('date_from', 'date_until', 'report_no', 'specification', 'status'),
     )
 
 
@@ -396,13 +396,6 @@ class AssignmentModelView(ZivinetzModelView):
 assignment_views = AssignmentModelView(Assignment)
 
 
-ExpenseReportPeriodFormSet = inlineformset_factory(ExpenseReport,
-    ExpenseReportPeriod,
-    extra=0,
-    formfield_callback=towel_forms.towel_formfield_callback,
-    )
-
-
 class EditExpenseReportForm(forms.ModelForm, towel_forms.WarningsForm):
     class Meta:
         model = ExpenseReport
@@ -473,7 +466,7 @@ class ExpenseReportModelView(ZivinetzModelView):
 
     def deletion_allowed(self, request, instance):
         return self.deletion_allowed_if_only(request, instance,
-            [ExpenseReport, ExpenseReportPeriod])
+            [ExpenseReport])
 
     def get_form(self, request, instance=None, change=None, **kwargs):
         if instance and instance.pk:
@@ -493,19 +486,7 @@ class ExpenseReportModelView(ZivinetzModelView):
 
             return ModelForm
 
-    def get_formset_instances(self, request, instance=None, change=None, **kwargs):
-        args = self.extend_args_if_post(request, [])
-        kwargs['instance'] = instance
-
-        return {
-            'periods': ExpenseReportPeriodFormSet(*args, **kwargs),
-            }
-
     def post_save(self, request, instance, form, formset, change):
-        if not change and not instance.periods.count():
-            instance.periods.create(
-                specification=instance.assignment.specification,
-                date_from=instance.date_from)
         instance.recalculate_total()
 
         if request.POST.get('transport_expenses_copy'):

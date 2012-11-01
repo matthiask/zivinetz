@@ -71,14 +71,10 @@ admin.site.register(models.Assignment,
     )
 
 
-class ExpenseReportPeriodInline(admin.TabularInline):
-    model = models.ExpenseReportPeriod
-
 admin.site.register(models.ExpenseReport,
     date_hierarchy='date_from',
     list_display=('__unicode__', 'assignment', 'date_from', 'date_until', 'status'),
     list_filter=('status',),
-    inlines=[ExpenseReportPeriodInline],
     raw_id_fields=('assignment',),
     search_fields=models.ExpenseReport.objects.search_fields,
     )
