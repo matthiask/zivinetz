@@ -151,3 +151,6 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+sync:	html
+	rsync -avz --delete _build/html/ koala.oekohosting.ch:/var/www/naturnetz/verein-naturnetz.ch/media/docs/
