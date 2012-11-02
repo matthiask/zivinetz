@@ -69,6 +69,30 @@ gespeichert. Die wichtigsten Angaben sind:
   werden.
 
 
+Bewertung und Arbeitszeugnis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Jeder Einsatz kann mit einer Note bewertet und kommentiert werden. Der
+Durchschnitt aller Bewertungen wird anschliessend im Zivinetz angezeigt.
+Dazu wird das Model ``Assessment`` verwendet.
+
+Ebenfalls können standardisierte Arbeitszeugnisse hinterlegt und nachher
+für einzelne Einsätze übernommen werden. Die Vorlagen werden mittels
+``JobReferenceTemplate``, die Arbeitszeugnisse mittels ``JobReference``
+gespeichert. Die Vorlagen sind Lückentexte, verschiedene Werte wie Name,
+Geburtsdatum, Heimatort und Einsatzzeitraum werden automatisch abgefüllt. Der
+Text des Arbeitszeugnisses kann anschliessend individuell nachbearbeitet
+werden.
+
+
+Warteliste
+~~~~~~~~~~
+
+Auf der Warteliste können sich Zivis selbst eintragen. Die Warteliste wird
+verwendet, wenn für einen bestimmten Zeitraum zuwenige Einsatzvereinbarungen
+mit Zivis vorhanden sind. Dazu wird das Model ``WaitList`` verwendet.
+
+
 Spesen
 ------
 
@@ -112,11 +136,32 @@ Hilfsdaten
 Regionalzentren
 ~~~~~~~~~~~~~~~
 
+Eine Liste der Regionalzentren inkl. deren Postadresse.
+
+
 Codewörter
 ~~~~~~~~~~
 
-Öffentliche Feiertage
-~~~~~~~~~~~~~~~~~~~~~
+Codewörter können einfach und periodisch angepasst werden, damit verhindert
+werden kann dass sich Zivis selbst eintragen ohne vorher mindestens Kontakt
+mit dem Betrieb aufgenommen zu haben. Aktuell werden die Codewörter an
+folgenden Stellen verwendet:
 
-Betriebsferien
-~~~~~~~~~~~~~~
+- ``warteliste``: Bei der Erstellung eines Wartelisteneintrags
+- ``einsatz``: Bei der Erstellung einer provisorischen Einsatzvereinbarung
+
+Sofern das Codewort nicht definiert ist, wird ein leeres verwendet (was bei
+den Formularen aber nicht erlaubt ist, da dort die Eingabe erzwungen wird) --
+somit ist die Eintragung verunmöglicht.
+
+
+Öffentliche Feiertage und Betriebsferien
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Für jeden öffentlichen Feiertag muss eine ``PublicHoliday``-Instanz erstellt
+werden, damit die Einsatztage für die Spesenrapporte korrekt berechnet werden
+können. Dasselbe gilt für die Betriebsferien, im Model ``CompanyHoliday``
+können aber auch Datumsbereiche erfasst werden.
+
+Öffentliche Feiertage für die Jahre 2000 bis 2030 können automatisch mit Hilfe
+des Django-Befehls ``./manage.py public_holidays`` generiert werden.
