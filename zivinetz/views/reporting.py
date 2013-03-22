@@ -303,7 +303,7 @@ def assignment_pdf(request, assignment_id):
         pdf.table(zip(address, address), (8.2*cm, 8.2*cm), pdf.style.tableBase)
         pdf.spacer(40*mm)
 
-        pdf.p_markup('''
+        pdf.p_markup(u'''
 Lieber Zivi<br /><br />
 
 Vielen Dank fürs Ausfüllen der Einsatzvereinbarung im Zivinetz! Du findest hier
