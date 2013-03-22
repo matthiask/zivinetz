@@ -16,6 +16,25 @@ class ScopeStatement(models.Model):
     eis_no = models.CharField(_('EIS No.'), unique=True, max_length=10)
     name = models.CharField(_('name'), max_length=100)
 
+    company_name = models.CharField(_('company name'), max_length=100,
+        blank=True)
+    company_address = models.CharField(_('company address'), max_length=100,
+        blank=True)
+    company_zip_code = models.CharField(_('company ZIP code'), max_length=10,
+        blank=True)
+    company_city = models.CharField(_('company city'), max_length=100,
+        blank=True)
+    company_contact_name = models.CharField(_('company contact name'),
+        max_length=100, blank=True)
+    company_contact_email = models.EmailField(_('company contact email'),
+        blank=True)
+    company_contact_function = models.CharField(_('company contact function'),
+        max_length=100, blank=True)
+    company_contact_phone = models.CharField(_('company contact phone'),
+        max_length=100, blank=True)
+    work_location = models.CharField(_('work location'), max_length=100,
+        blank=True)
+
     class Meta:
         ordering = ['name']
         verbose_name = _('scope statement')
@@ -23,6 +42,13 @@ class ScopeStatement(models.Model):
 
     def __unicode__(self):
         return u'%s (%s)' % (self.name, self.eis_no)
+
+    @property
+    def company_contact_location(self):
+        return (u'%s %s' % (
+            self.company_zip_code,
+            self.company_city,
+            )).strip()
 
 
 class Choices(object):

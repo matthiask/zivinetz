@@ -106,6 +106,7 @@ class AssignmentPDFStationery(object):
 
     def page_1(self, canvas, pdfdocument):
         drudge = self.assignment.drudge
+        scope_statement = self.assignment.specification.scope_statement
 
         frame_1 = [
             drudge.user.last_name,
@@ -135,18 +136,18 @@ class AssignmentPDFStationery(object):
             ]
 
         frame_5 = [
-            'Verein Naturnetz',
-            'Chlosterstrasse',
-            '044 533 11 44',
+            scope_statement.company_name or 'Verein Naturnetz',
+            scope_statement.company_address or 'Chlosterstrasse',
+            scope_statement.company_contact_phone or '044 533 11 44',
             ]
 
         frame_6 = [
             '20995',
-            'Marco Sacchi',
-            '8109 Kloster Fahr',
-            'ms@verein-naturnetz.ch',
-            u'Geschäftsleiter',
-            '044 533 11 44',
+            scope_statement.company_contact_name or 'Marco Sacchi',
+            scope_statement.company_contact_location or '8109 Kloster Fahr',
+            scope_statement.company_contact_email or 'ms@naturnetz.ch',
+            scope_statement.company_contact_function or u'Geschäftsleiter',
+            scope_statement.company_contact_phone or '044 533 11 44',
             ]
 
         frame_7 = [
@@ -155,7 +156,7 @@ class AssignmentPDFStationery(object):
         frame_8 = [
             self.assignment.date_from.strftime('%d.%m.%Y'),
             self.assignment.date_until.strftime('%d.%m.%Y'),
-            'Kloster Fahr, ganze Schweiz',
+            scope_statement.work_location or 'Kloster Fahr, ganze Schweiz',
             ]
 
         frame_9 = [
@@ -293,10 +294,11 @@ def assignment_pdf(request, assignment_id):
         pdf.init_report()
         pdf.generate_style(font_size=10)
 
+        scope_statement = assignment.specification.scope_statement
         address = [
-            u'Verein Naturnetz',
-            u'Chlosterstrasse',
-            u'8109 Kloster Fahr',
+            scope_statement.company_name or u'Verein Naturnetz',
+            scope_statement.company_address or u'Chlosterstrasse',
+            scope_statement.company_contact_location or u'8109 Kloster Fahr',
             ]
 
         pdf.spacer(25*mm)
