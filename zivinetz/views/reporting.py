@@ -155,7 +155,7 @@ class AssignmentPDFStationery(object):
         frame_8 = [
             self.assignment.date_from.strftime('%d.%m.%Y'),
             self.assignment.date_until.strftime('%d.%m.%Y'),
-            'Kloster Fahr',
+            'Kloster Fahr, ganze Schweiz',
             ]
 
         frame_9 = [
