@@ -153,6 +153,8 @@ class DrudgeModelView(ZivinetzModelView):
 
         def process(self):
             mails = 0
+            attachment = StringIO(self.cleaned_data['mail_attachment'].read())
+
             for drudge in self.batch_queryset.select_related('user'):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
@@ -165,7 +167,7 @@ class DrudgeModelView(ZivinetzModelView):
                 if self.cleaned_data['mail_attachment']:
                     message.attach(
                         self.cleaned_data['mail_attachment'].name,
-                        self.cleaned_data['mail_attachment'].read(),
+                        attachment.getvalue(),
                         )
                 message.send()
                 mails += 1
@@ -256,6 +258,8 @@ class AssignmentModelView(ZivinetzModelView):
 
         def process(self):
             mails = 0
+            attachment = StringIO(self.cleaned_data['mail_attachment'].read())
+
             for assignment in self.batch_queryset.select_related('drudge__user'):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
@@ -268,7 +272,7 @@ class AssignmentModelView(ZivinetzModelView):
                 if self.cleaned_data['mail_attachment']:
                     message.attach(
                         self.cleaned_data['mail_attachment'].name,
-                        self.cleaned_data['mail_attachment'].read(),
+                        attachment.getvalue(),
                         )
                 message.send()
                 mails += 1
@@ -522,6 +526,8 @@ class WaitListModelView(ZivinetzModelView):
 
         def process(self):
             mails = 0
+            attachment = StringIO(self.cleaned_data['mail_attachment'].read())
+
             for entry in self.batch_queryset.select_related('drudge__user'):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
@@ -534,7 +540,7 @@ class WaitListModelView(ZivinetzModelView):
                 if self.cleaned_data['mail_attachment']:
                     message.attach(
                         self.cleaned_data['mail_attachment'].name,
-                        self.cleaned_data['mail_attachment'].read(),
+                        attachment.getvalue(),
                         )
                 message.send()
                 mails += 1
