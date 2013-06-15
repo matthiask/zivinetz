@@ -155,11 +155,11 @@ class DrudgeModelView(ZivinetzModelView):
             mails = 0
             attachment = StringIO(self.cleaned_data['mail_attachment'].read())
 
-            for drudge in self.batch_queryset.select_related('user'):
+            for email in set(self.batch_queryset.values_list('user__email', flat=True)):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
                     body=self.cleaned_data['mail_body'],
-                    to=[drudge.user.email],
+                    to=[email],
                     from_email='info@naturnetz.ch',
                     headers={
                         'Reply-To': self.request.user.email,
@@ -260,11 +260,11 @@ class AssignmentModelView(ZivinetzModelView):
             mails = 0
             attachment = StringIO(self.cleaned_data['mail_attachment'].read())
 
-            for assignment in self.batch_queryset.select_related('drudge__user'):
+            for email in set(self.batch_queryset.values_list('drudge__user__email', flat=True)):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
                     body=self.cleaned_data['mail_body'],
-                    to=[assignment.drudge.user.email],
+                    to=[email],
                     from_email='info@naturnetz.ch',
                     headers={
                         'Reply-To': self.request.user.email,
@@ -528,11 +528,11 @@ class WaitListModelView(ZivinetzModelView):
             mails = 0
             attachment = StringIO(self.cleaned_data['mail_attachment'].read())
 
-            for entry in self.batch_queryset.select_related('drudge__user'):
+            for email in set(self.batch_queryset.values_list('drudge__user__email', flat=True)):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
                     body=self.cleaned_data['mail_body'],
-                    to=[entry.drudge.user.email],
+                    to=[email],
                     from_email='info@naturnetz.ch',
                     headers={
                         'Reply-To': self.request.user.email,
