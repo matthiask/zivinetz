@@ -46,10 +46,30 @@ class ZivinetzModelView(modelview.ModelView):
         return modelform_factory(self.model,
             formfield_callback=towel_forms.towel_formfield_callback, **kwargs)
 
+    def adding_allowed(self, request):
+        return request.user.has_perm('{}.add_{}'.format(
+            self.model._meta.app_label,
+            self.model._meta.module_name,
+            ))
+
+    def editing_allowed(self, request, instance):
+        return request.user.has_perm('{}.change_{}'.format(
+            self.model._meta.app_label,
+            self.model._meta.module_name,
+            ), instance)
+
+    def deletion_allowed(self, request, instance):
+        return request.user.has_perm('{}.delete_{}'.format(
+            self.model._meta.app_label,
+            self.model._meta.module_name,
+            ), instance)
+
 
 class RegionalOfficeModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
-        return self.deletion_allowed_if_only(request, instance, [RegionalOffice])
+        return (
+            super(RegionalOfficeModelView, self).deletion_allowed(request, instance)
+            and self.deletion_allowed_if_only(request, instance, [RegionalOffice]))
 
 regional_office_views = RegionalOfficeModelView(RegionalOffice)
 
@@ -63,14 +83,19 @@ SpecificationFormSet = inlineformset_factory(ScopeStatement,
 
 class ScopeStatementModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
-        return self.deletion_allowed_if_only(request, instance, [ScopeStatement, Specification])
+        return (
+            super(ScopeStatementModelView, self).deletion_allowed(request, instance)
+            and self.deletion_allowed_if_only(request, instance, [
+                ScopeStatement, Specification]))
 
 scope_statement_views = ScopeStatementModelView(ScopeStatement)
 
 
 class SpecificationModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
-        return self.deletion_allowed_if_only(request, instance, [Specification])
+        return (
+            super(SpecificationModelView, self).deletion_allowed(request, instance)
+            and self.deletion_allowed_if_only(request, instance, [Specification]))
 
 specification_views = SpecificationModelView(Specification)
 
@@ -180,7 +205,9 @@ class DrudgeModelView(ZivinetzModelView):
             return self.batch_queryset
 
     def deletion_allowed(self, request, instance):
-        return self.deletion_allowed_if_only(request, instance, [Drudge])
+        return (
+            super(DrudgeModelView, self).deletion_allowed(request, instance)
+            and self.deletion_allowed_if_only(request, instance, [Drudge]))
 
     def get_formset_instances(self, request, instance=None, change=None, **kwargs):
         args = self.extend_args_if_post(request, [])
@@ -375,7 +402,9 @@ class AssignmentModelView(ZivinetzModelView):
         return AssignmentForm
 
     def deletion_allowed(self, request, instance):
-        return self.deletion_allowed_if_only(request, instance, [Assignment])
+        return (
+            super(AssignmentModelView, self).deletion_allowed(request, instance)
+            and self.deletion_allowed_if_only(request, instance, [Assignment]))
 
     def get_formset_instances(self, request, instance=None, change=None, **kwargs):
         args = self.extend_args_if_post(request, [])
@@ -464,13 +493,16 @@ class ExpenseReportModelView(ZivinetzModelView):
         return queryset, response
 
     def editing_allowed(self, request, instance):
+        if not super(ExpenseReportModelView, self).editing_allowed(request, instance):
+            return False
         if instance and instance.pk:
             return instance.status < instance.PAID
         return True
 
     def deletion_allowed(self, request, instance):
-        return self.deletion_allowed_if_only(request, instance,
-            [ExpenseReport])
+        return (
+            super(ExpenseReportModelView, self).deletion_allowed(request, instance)
+            and self.deletion_allowed_if_only(request, instance, [ExpenseReport]))
 
     def get_form(self, request, instance=None, change=None, **kwargs):
         if instance and instance.pk:
@@ -553,7 +585,9 @@ class WaitListModelView(ZivinetzModelView):
             return self.batch_queryset
 
     def deletion_allowed(self, request, instance):
-        return True
+        return (
+            super(WaitListModelView, self).deletion_allowed(request, instance)
+            )
 
 waitlist_views = WaitListModelView(WaitList)
 
@@ -626,6 +660,8 @@ class JobReferenceModelView(ZivinetzModelView):
         return False
 
     def deletion_allowed(self, request, instance):
-        return True
+        return (
+            super(JobReferenceModelView, self).deletion_allowed(request, instance)
+            )
 
 jobreference_views = JobReferenceModelView(JobReference)
