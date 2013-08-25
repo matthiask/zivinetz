@@ -178,7 +178,10 @@ class DrudgeModelView(ZivinetzModelView):
 
         def process(self):
             mails = 0
-            attachment = StringIO(self.cleaned_data['mail_attachment'].read())
+            attachment = None
+
+            if self.cleaned_data['mail_attachment']:
+                attachment = StringIO(self.cleaned_data['mail_attachment'].read())
 
             for email in set(self.batch_queryset.values_list('user__email', flat=True)):
                 message = EmailMessage(
@@ -285,7 +288,10 @@ class AssignmentModelView(ZivinetzModelView):
 
         def process(self):
             mails = 0
-            attachment = StringIO(self.cleaned_data['mail_attachment'].read())
+            attachment = None
+
+            if self.cleaned_data['mail_attachment']:
+                attachment = StringIO(self.cleaned_data['mail_attachment'].read())
 
             for email in set(self.batch_queryset.values_list('drudge__user__email', flat=True)):
                 message = EmailMessage(
@@ -558,7 +564,10 @@ class WaitListModelView(ZivinetzModelView):
 
         def process(self):
             mails = 0
-            attachment = StringIO(self.cleaned_data['mail_attachment'].read())
+            attachment = None
+
+            if self.cleaned_data['mail_attachment']:
+                attachment = StringIO(self.cleaned_data['mail_attachment'].read())
 
             for email in set(self.batch_queryset.values_list('drudge__user__email', flat=True)):
                 message = EmailMessage(
