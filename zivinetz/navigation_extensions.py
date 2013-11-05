@@ -34,6 +34,6 @@ class ZivinetzNavigationExtension(NavigationExtension):
         return [PagePretender(
             title=capfirst(title),
             url='%s%s' % (page.get_navigation_url(), url),
-            level=page.level+1,
+            level=page.level + 1,
             tree_id=page.tree_id,
             ) for title, url in urls]

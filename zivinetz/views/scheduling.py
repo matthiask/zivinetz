@@ -1,8 +1,7 @@
 import calendar
 from collections import defaultdict
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 import itertools
-import operator
 
 from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
@@ -69,14 +68,10 @@ class Scheduler(object):
         self.date_range = date_range
         self.waitlist = None
 
-        max_min = self.queryset.aggregate(min=Min('date_from'), max=Max('date_until'))
-        max_ext = self.queryset.filter(date_until_extension__isnull=False).aggregate(
-            max=Max('date_until_extension'))
-
         self.date_from = _monday(date_range[0])
         self.date_until = date_range[1]
 
-        if self.date_from: # Is None if no assignments in queryset
+        if self.date_from:  # Is None if no assignments in queryset
             self.week_count = (self.date_range[1] - self.date_range[0]).days // 7
 
             self.date_slice = slice(
@@ -86,18 +81,21 @@ class Scheduler(object):
         self.date_list = list(daterange(self.date_from, self.date_until))
         self.data_weeks = SortedDict()
         for day in self.date_list:
-            self.data_weeks.setdefault(calendar_week(day), (day, defaultdict(lambda: 0)))
+            self.data_weeks.setdefault(calendar_week(day),
+                (day, defaultdict(lambda: 0)))
 
     def add_waitlist(self, queryset):
         self.waitlist = queryset
 
         if not self.queryset:
-            max_min = self.waitlist.aggregate(min=Min('assignment_date_from'), max=Max('assignment_date_until'))
+            max_min = self.waitlist.aggregate(
+                min=Min('assignment_date_from'),
+                max=Max('assignment_date_until'))
 
             self.date_from = max_min['min']
             self.date_until = max_min['max']
 
-            if self.date_from: # Is None if no assignments in queryset
+            if self.date_from:  # Is None if no assignments in queryset
                 self.week_count = (self.date_until - self.date_from).days // 7 + 1
 
                 self.date_slice = slice(
@@ -112,7 +110,8 @@ class Scheduler(object):
             this_monday = _monday(date.today())
 
             while True:
-                ret.append((monday,) + calendar_week(monday) + (monday == this_monday,))
+                ret.append(
+                    (monday,) + calendar_week(monday) + (monday == this_monday,))
 
                 monday += timedelta(days=7)
                 if monday > self.date_until:
@@ -142,7 +141,8 @@ class Scheduler(object):
                     if calendar_week(day) == calendar_week(date_from):
                         weeks.append([1, date_from.day])
                     else:
-                        weeks.append([1, '']) # assignment has not started this week
+                        # assignment has not started this week
+                        weeks.append([1, ''])
             else:
                 if inside:
                     inside = False
@@ -153,31 +153,36 @@ class Scheduler(object):
     def assignments(self):
         assignments_dict = SortedDict()
 
-        assignments = self.queryset.select_related('specification__scope_statement',
-                'drudge__user').order_by('date_from', 'date_until')
+        assignments = self.queryset.select_related(
+            'specification__scope_statement', 'drudge__user',
+            ).order_by('date_from', 'date_until')
 
         for assignment in assignments:
-            for day in daterange(assignment.date_from, assignment.determine_date_until()):
-                self.data_weeks.setdefault(
-                    calendar_week(day), (day, defaultdict(lambda: 0)))[1][assignment.drudge_id] += 1
+            for day in daterange(
+                    assignment.date_from,
+                    assignment.determine_date_until()):
+                self.data_weeks.setdefault(calendar_week(day),
+                    (day, defaultdict(int)))[1][assignment.drudge_id] += 1
 
             if assignment.drudge not in assignments_dict:
                 assignments_dict[assignment.drudge] = []
 
             assignments_dict[assignment.drudge].append((
                 assignment,
-                self._schedule_assignment(assignment.date_from, assignment.determine_date_until()),
+                self._schedule_assignment(
+                    assignment.date_from, assignment.determine_date_until()),
                 ))
 
         # linearize assignments, but still give precedence to drudge
         assignments = list(itertools.chain(*assignments_dict.values()))
-        data = [[a for a, b in d] for a, d in assignments]
 
         waitlist = []
         if self.waitlist is not None:
-            for entry in self.waitlist.select_related('specification__scope_statement',
-                    'drudge__user').order_by('assignment_date_from'):
-                entry.status = 'wl' # special waitlist entry status
+            for entry in self.waitlist.select_related(
+                    'specification__scope_statement',
+                    'drudge__user',
+                    ).order_by('assignment_date_from'):
+                entry.status = 'wl'  # special waitlist entry status
                 item = (
                     entry,
                     self._schedule_assignment(entry.assignment_date_from,
@@ -192,8 +197,8 @@ class Scheduler(object):
             # linearize assignments with waitlist entries intermingled
             assignments = list(itertools.chain(*assignments_dict.values()))
 
-
-        filtered_data_weeks = [(day, week) for day, week in self.data_weeks.values()\
+        filtered_data_weeks = [(day, week)
+            for day, week in self.data_weeks.values()
             if self.date_from <= _monday(day) <= self.date_until]
 
         sums = [(
@@ -201,7 +206,9 @@ class Scheduler(object):
             u'%.1f' % (sum(week.values()) / 7.0),
             ) for day, week in filtered_data_weeks]
 
-        self.average = sum((sum(week.values(), 0.0) for day, week in filtered_data_weeks), 0.0) / (self.date_until - self.date_from).days
+        self.average = sum(
+            (sum(week.values(), 0.0) for day, week in filtered_data_weeks),
+            0.0) / (self.date_until - self.date_from).days
 
         return [[None, sums]] + waitlist + assignments
 
@@ -213,8 +220,10 @@ def _monday(day):
 class SchedulingSearchForm(SearchForm):
     default = {
         'date_until__gte': lambda request: _monday(date.today()),
-        'date_from__lte': lambda request: _monday(date.today()) + timedelta(days=35 * 7 + 4),
-        'status': (Assignment.TENTATIVE, Assignment.ARRANGED, Assignment.MOBILIZED),
+        'date_from__lte': lambda request: _monday(
+            date.today()) + timedelta(days=35 * 7 + 4),
+        'status': (
+            Assignment.TENTATIVE, Assignment.ARRANGED, Assignment.MOBILIZED),
         'mode': 'both',
         }
 
@@ -243,7 +252,8 @@ class SchedulingSearchForm(SearchForm):
 
     def queryset(self):
         data = self.safe_cleaned_data
-        queryset = self.apply_filters(Assignment.objects.search(data.get('query')),
+        queryset = self.apply_filters(
+            Assignment.objects.search(data.get('query')),
             data, exclude=('mode',))
         return queryset
 

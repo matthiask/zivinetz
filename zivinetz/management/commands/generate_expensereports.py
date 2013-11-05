@@ -8,5 +8,6 @@ class Command(BaseCommand):
     help = ""
 
     def handle(self, *args, **options):
-        for assignment in Assignment.objects.annotate(count=Count('reports')).filter(count=0):
+        for assignment in Assignment.objects.annotate(
+                count=Count('reports')).filter(count=0):
             assignment.generate_expensereports()

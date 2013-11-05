@@ -22,7 +22,6 @@ def home(request):
     return redirect('drudge_dashboard')
 
 
-
 @staff_member_required
 def admin(request):
     return render(request, 'zivinetz/admin.html', {

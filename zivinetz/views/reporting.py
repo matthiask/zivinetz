@@ -1,6 +1,5 @@
 # coding=utf-8
 
-from datetime import date
 import operator
 import os
 import subprocess
@@ -14,7 +13,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 
 from zivinetz.models import (Assignment, CompanyHoliday, ExpenseReport,
-    CompensationSet, JobReference)
+    JobReference)
 
 from reportlab.lib import colors
 
@@ -96,13 +95,14 @@ class AssignmentPDFStationery(object):
 
     def draw_marker(self, canvas, key):
         canvas.setFont('Helvetica', 11)
-        canvas.drawString(self.markers[key][0]*mm, self.markers[key][1]*mm, 'x')
+        canvas.drawString(
+            self.markers[key][0] * mm, self.markers[key][1] * mm, 'x')
 
     def _draw_all_markers(self, canvas):
         canvas.setFillColorRGB(1, 0, 0)
         for key, pos in self.markers.items():
-            #canvas.drawString(pos[0]*mm, pos[1]*mm, u'x %s' % key)
-            canvas.drawString(pos[0]*mm, pos[1]*mm, u'x')
+            #canvas.drawString(pos[0] * mm, pos[1] * mm, u'x %s' % key)
+            canvas.drawString(pos[0] * mm, pos[1] * mm, u'x')
 
     def page_1(self, canvas, pdfdocument):
         drudge = self.assignment.drudge
@@ -127,12 +127,12 @@ class AssignmentPDFStationery(object):
 
         frame_3 = [
             drudge.health_insurance_company,
-            '', #drudge.bank_account,
+            '',  # drudge.bank_account,
             ]
 
         frame_4 = [
             drudge.health_insurance_account,
-            '', #drudge.bank_account,
+            '',  # drudge.bank_account,
             ]
 
         frame_5 = [
@@ -174,24 +174,23 @@ class AssignmentPDFStationery(object):
             ]
 
         frames = [
-            (frame_1, 55*mm, 190*mm, 6.9*mm),
-            (frame_2, 140*mm, 190*mm, 6.9*mm),
-            (frame_3, 55*mm, 167*mm, 11*mm),
-            (frame_4, 140*mm, 167*mm, 11*mm),
-            (frame_5, 55*mm, 149*mm, 7.2*mm),
-            (frame_6, 140*mm, 133*mm, 7.5*mm),
-            (frame_7, 55*mm, 108.5*mm, 0),
-            (frame_8, 140*mm, 109*mm, 7.2*mm),
-            (frame_9, 90*mm, 87.5*mm, 7.4*mm),
-            (frame_10, 127*mm, 272*mm, 0),
-            (frame_11, 55*mm, 55*mm, 8.5*mm),
+            (frame_1, 55 * mm, 190 * mm, 6.9 * mm),
+            (frame_2, 140 * mm, 190 * mm, 6.9 * mm),
+            (frame_3, 55 * mm, 167 * mm, 11 * mm),
+            (frame_4, 140 * mm, 167 * mm, 11 * mm),
+            (frame_5, 55 * mm, 149 * mm, 7.2 * mm),
+            (frame_6, 140 * mm, 133 * mm, 7.5 * mm),
+            (frame_7, 55 * mm, 108.5 * mm, 0),
+            (frame_8, 140 * mm, 109 * mm, 7.2 * mm),
+            (frame_9, 90 * mm, 87.5 * mm, 7.4 * mm),
+            (frame_10, 127 * mm, 272 * mm, 0),
+            (frame_11, 55 * mm, 55 * mm, 8.5 * mm),
             ]
 
         canvas.setFont('Helvetica', 9)
         for frame, x, y, line in frames:
             for i, text in enumerate(reversed(frame)):
-                canvas.drawString(x, y + i*line, text)
-
+                canvas.drawString(x, y + i * line, text)
 
         try:
             company_holiday = CompanyHoliday.objects.filter(
@@ -202,9 +201,10 @@ class AssignmentPDFStationery(object):
             company_holiday = None
 
         if company_holiday:
-            canvas.drawString(125*mm, 76*mm, company_holiday.date_from.strftime('%d.%m.%Y'))
-            canvas.drawString(160*mm, 76*mm, company_holiday.date_until.strftime('%d.%m.%Y'))
-
+            canvas.drawString(125 * mm, 76 * mm,
+                company_holiday.date_from.strftime('%d.%m.%Y'))
+            canvas.drawString(160 * mm, 76 * mm,
+                company_holiday.date_until.strftime('%d.%m.%Y'))
 
         if self.assignment.part_of_long_assignment:
             self.draw_marker(canvas, 'long_assignment')
@@ -256,7 +256,8 @@ class AssignmentPDFStationery(object):
 
 @login_required
 def assignment_pdf(request, assignment_id):
-    assignment = get_object_or_404(Assignment.objects.select_related('drudge__user'),
+    assignment = get_object_or_404(
+        Assignment.objects.select_related('drudge__user'),
         pk=assignment_id)
 
     if not request.user.is_staff:
@@ -267,7 +268,8 @@ def assignment_pdf(request, assignment_id):
         pdf = PDFDocument(overlay)
 
         #pdf.show_boundaries = True
-        pdf.init_report(page_fn=create_stationery_fn(AssignmentPDFStationery(assignment)))
+        pdf.init_report(
+            page_fn=create_stationery_fn(AssignmentPDFStationery(assignment)))
 
         pdf.pagebreak()
         pdf.pagebreak()
@@ -275,9 +277,10 @@ def assignment_pdf(request, assignment_id):
         pdf.generate()
         overlay.close()
 
-        p = subprocess.Popen(['/usr/bin/pdftk', '-', 'multistamp', overlay.name,
-                'output', '-'],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen([
+            '/usr/bin/pdftk', '-', 'multistamp', overlay.name,
+            'output', '-',
+            ], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         source = open(os.path.join(
             os.path.dirname(os.path.dirname(__file__)),
@@ -301,9 +304,9 @@ def assignment_pdf(request, assignment_id):
             scope_statement.company_contact_location or u'8109 Kloster Fahr',
             ]
 
-        pdf.spacer(25*mm)
-        pdf.table(zip(address, address), (8.2*cm, 8.2*cm), pdf.style.tableBase)
-        pdf.spacer(40*mm)
+        pdf.spacer(25 * mm)
+        pdf.table(zip(address, address), (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
+        pdf.spacer(40 * mm)
 
         pdf.p_markup(u'''
 Lieber Zivi<br /><br />
@@ -320,14 +323,14 @@ Einsatzvereinbarung an das Regionalzentrum weiterzuleiten.<br /><br />
 
 Wir freuen uns auf deinen Einsatz!
 ''')
-        pdf.spacer(50*mm)
+        pdf.spacer(50 * mm)
 
         address = u'\n'.join([
             assignment.regional_office.name,
             assignment.regional_office.address,
             ]).replace('\r', '')
 
-        pdf.table([(address, address)], (8.2*cm, 8.2*cm), pdf.style.tableBase)
+        pdf.table([(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
 
         pdf.generate()
         first_page.close()
@@ -354,7 +357,8 @@ Wir freuen uns auf deinen Einsatz!
 
 @login_required
 def expense_report_pdf(request, expense_report_id):
-    report = get_object_or_404(ExpenseReport.objects.select_related('assignment__drudge__user'),
+    report = get_object_or_404(
+        ExpenseReport.objects.select_related('assignment__drudge__user'),
         pk=expense_report_id)
 
     if not request.user.is_staff:
@@ -385,40 +389,42 @@ def expense_report_pdf(request, expense_report_id):
         (u'Gesamteinsatz:', u'%s - %s' % (
             assignment.date_from.strftime('%d.%m.%Y'),
             assignment.date_until.strftime('%d.%m.%Y'))),
-        (u'Meldeperiode:',  u'%s - %s' % (
+        (u'Meldeperiode:', u'%s - %s' % (
             report.date_from.strftime('%d.%m.%Y'),
             report.date_until.strftime('%d.%m.%Y'))),
-        ], (4*cm, 12.4*cm), pdf.style.tableLLR)
+        ], (4 * cm, 12.4 * cm), pdf.style.tableLLR)
 
     pdf.spacer()
 
     def notes(from_):
         return (
             ('FONT', (0, from_), (-1, from_), 'Helvetica-Oblique', 8),
-            #('LEFTPADDING', (0, from_), (-1, from_), 3*mm),
+            #('LEFTPADDING', (0, from_), (-1, from_), 3 * mm),
             )
 
     pdf.table(table,
-        (4*cm, 2*cm, 2*cm, 2*cm, 2*cm, 2*cm, 2.4*cm),
-        pdf.style.tableHead + tuple(reduce(operator.add, (notes(i) for i in range(2, 12, 2)))))
+        (4 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm, 2.4 * cm),
+        pdf.style.tableHead + tuple(
+            reduce(operator.add, (notes(i) for i in range(2, 12, 2)))))
     pdf.table(additional,
-        (14*cm, 2.4*cm),
+        (14 * cm, 2.4 * cm),
         pdf.style.table + notes(1) + notes(3) + notes(5))
-    pdf.spacer(1*mm)
+    pdf.spacer(1 * mm)
     pdf.table([
         (_('Total'), total),
-        ], (14*cm, 2.4*cm), pdf.style.tableHead)
+        ], (14 * cm, 2.4 * cm), pdf.style.tableHead)
 
     pdf.spacer()
 
     pdf.table([
         (_('bank account') + ':', drudge.bank_account),
-        ], (4*cm, 12.4*cm), pdf.style.tableLLR)
+        ], (4 * cm, 12.4 * cm), pdf.style.tableLLR)
 
     pdf.bottom_table([
         (_('Place, Date'), '', _('Jobholder'), '', _('Employer')),
-        ], (44*mm, 10*mm, 50*mm, 10*mm, 50*mm), style=pdf.style.table+(
-            ('TOPPADDING', (0, 0), (-1, -1), 1*mm),
+        ], (44 * mm, 10 * mm, 50 * mm, 10 * mm, 50 * mm),
+        style=pdf.style.table + (
+            ('TOPPADDING', (0, 0), (-1, -1), 1 * mm),
             ('LINEABOVE', (0, 0), (0, 0), 0.2, colors.black),
             ('LINEABOVE', (2, 0), (2, 0), 0.2, colors.black),
             ('LINEABOVE', (4, 0), (4, 0), 0.2, colors.black),
@@ -436,14 +442,14 @@ class NaturnetzStationery(object):
         """
         pdfdocument.draw_svg(canvas,
             os.path.join(settings.APP_BASEDIR, 'naturnetz', 'data', 'NN_Logo.svg'),
-            18*cm,
-            24*cm,
-            xsize=3*cm,
+            18 * cm,
+            24 * cm,
+            xsize=3 * cm,
             )
         """
         canvas.drawImage(
             os.path.join(settings.APP_BASEDIR, 'naturnetz', 'data', 'logo-new.jpg'),
-            x=16*cm, y=24*cm,
+            x=16 * cm, y=24 * cm,
             width=177 * 0.5,
             height=246 * 0.5,
             )
@@ -453,7 +459,8 @@ class NaturnetzStationery(object):
 
 @login_required
 def reference_pdf(request, reference_id):
-    reference = get_object_or_404(JobReference.objects.select_related('assignment__drudge__user'),
+    reference = get_object_or_404(
+        JobReference.objects.select_related('assignment__drudge__user'),
         pk=reference_id)
 
     if not request.user.is_staff:
@@ -477,7 +484,7 @@ def reference_pdf(request, reference_id):
 
     pdf.p(reference.text)
 
-    pdf.spacer(10*mm)
+    pdf.spacer(10 * mm)
     pdf.p(u'Dr. Marco Sacchi\nGeschäftsführer')
 
     pdf.generate()

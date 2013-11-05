@@ -1,32 +1,28 @@
 # coding=utf-8
 
-from datetime import date
 from StringIO import StringIO
 
 from django import forms
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
-from django.core import urlresolvers
 from django.core.mail import EmailMessage
 from django.db.models import Avg
 from django.forms.models import modelform_factory, inlineformset_factory
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, render
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template import Template, Context
 from django.utils.translation import ugettext as _, ugettext_lazy
 
-from towel import modelview
 from towel import forms as towel_forms
 
 from towel_foundation.modelview import PickerModelView
 from towel_foundation.widgets import SelectWithPicker
 
-from pdfdocument.document import PDFDocument, cm, mm
+from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
-from zivinetz.models import (Assignment, CompanyHoliday, Drudge,
+from zivinetz.models import (Assignment, Drudge,
     ExpenseReport, RegionalOffice, ScopeStatement,
     Specification, WaitList, Assessment, JobReferenceTemplate,
     JobReference)
@@ -79,8 +75,7 @@ regional_office_views = RegionalOfficeModelView(RegionalOffice)
 SpecificationFormSet = inlineformset_factory(ScopeStatement,
     Specification,
     extra=0,
-    formfield_callback=towel_forms.towel_formfield_callback,
-    )
+    formfield_callback=towel_forms.towel_formfield_callback)
 
 
 class ScopeStatementModelView(ZivinetzModelView):
@@ -160,7 +155,8 @@ class DrudgeModelView(ZivinetzModelView):
             if data.get('only_active'):
                 queryset = queryset.filter(
                     id__in=Assignment.objects.for_date().filter(status__in=(
-                        Assignment.ARRANGED, Assignment.MOBILIZED)).values('drudge'))
+                        Assignment.ARRANGED, Assignment.MOBILIZED,
+                        )).values('drudge'))
 
             return self.apply_ordering(queryset, data.get('o')).transform(
                 add_last_assignment_and_mark)
@@ -195,9 +191,11 @@ class DrudgeModelView(ZivinetzModelView):
                 mails += 1
 
             if mails:
-                messages.success(self.request, _('Successfully sent mails to %s people.') % mails)
+                messages.success(self.request,
+                    _('Successfully sent mails to %s people.') % mails)
             else:
-                messages.error(self.request, _('Did not send any mails. Did you select people?'))
+                messages.error(self.request,
+                    _('Did not send any mails. Did you select people?'))
 
             return self.batch_queryset
 
@@ -234,7 +232,8 @@ class AssignmentModelView(ZivinetzModelView):
         #    }
 
         specification__scope_statement = forms.ModelMultipleChoiceField(
-            ScopeStatement.objects.all(), label=ugettext_lazy('scope statements'), required=False)
+            ScopeStatement.objects.all(),
+            label=ugettext_lazy('scope statements'), required=False)
 
         active_on = forms.DateField(label=ugettext_lazy('active on'), required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
@@ -242,7 +241,8 @@ class AssignmentModelView(ZivinetzModelView):
         service_between = forms.DateField(label=ugettext_lazy('service between'),
             required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}),
-            help_text=ugettext_lazy('Drudges in service any time between the following two dates.'))
+            help_text=ugettext_lazy(
+                'Drudges in service any time between the following two dates.'))
         service_and = forms.DateField(label=ugettext_lazy('and'),
             required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
@@ -259,10 +259,13 @@ class AssignmentModelView(ZivinetzModelView):
             if data.get('active_on'):
                 active_on = data.get('active_on')
 
-                queryset = queryset.filter(Q(date_from__lte=active_on) & (
-                    (Q(date_until_extension__isnull=True) & Q(date_until__gte=active_on)) |
-                    Q(date_until_extension__isnull=False, date_until_extension__gte=active_on)
-                    ))
+                queryset = queryset.filter(
+                    Q(date_from__lte=active_on)
+                    & (
+                        (Q(date_until_extension__isnull=True)
+                            & Q(date_until__gte=active_on))
+                        | Q(date_until_extension__isnull=False,
+                            date_until_extension__gte=active_on)))
 
             if data.get('service_between') and data.get('service_and'):
                 queryset = queryset.filter(
@@ -283,7 +286,8 @@ class AssignmentModelView(ZivinetzModelView):
             if self.cleaned_data['mail_attachment']:
                 attachment = StringIO(self.cleaned_data['mail_attachment'].read())
 
-            for email in set(self.batch_queryset.values_list('drudge__user__email', flat=True)):
+            for email in set(self.batch_queryset.values_list(
+                    'drudge__user__email', flat=True)):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
                     body=self.cleaned_data['mail_body'],
@@ -301,17 +305,21 @@ class AssignmentModelView(ZivinetzModelView):
                 mails += 1
 
             if mails:
-                messages.success(self.request, _('Successfully sent mails to %s people.') % mails)
+                messages.success(self.request,
+                    _('Successfully sent mails to %s people.') % mails)
             else:
-                messages.error(self.request, _('Did not send any mails. Did you select people?'))
+                messages.error(self.request,
+                    _('Did not send any mails. Did you select people?'))
 
             return self.batch_queryset
 
     def additional_urls(self):
         return [
             (r'^picker/$', self.view_decorator(self.picker)),
-            (r'^%(detail)s/create_expensereports/$', self.crud_view_decorator(self.create_expensereports)),
-            (r'^%(detail)s/remove_expensereports/$', self.crud_view_decorator(self.remove_expensereports)),
+            (r'^%(detail)s/create_expensereports/$',
+                self.crud_view_decorator(self.create_expensereports)),
+            (r'^%(detail)s/remove_expensereports/$',
+                self.crud_view_decorator(self.remove_expensereports)),
         ]
 
     def create_expensereports(self, request, *args, **kwargs):
@@ -319,9 +327,11 @@ class AssignmentModelView(ZivinetzModelView):
         created = instance.generate_expensereports()
 
         if created:
-            messages.success(request, _('Successfully created %s expense reports.') % created)
+            messages.success(request,
+                _('Successfully created %s expense reports.') % created)
         else:
-            messages.info(request, _('No expense reports created, all months occupied already?'))
+            messages.info(request,
+                _('No expense reports created, all months occupied already?'))
         return redirect(instance)
 
     def remove_expensereports(self, request, *args, **kwargs):
@@ -331,7 +341,8 @@ class AssignmentModelView(ZivinetzModelView):
         return redirect(instance)
 
     def handle_search_form(self, request, *args, **kwargs):
-        queryset, response = super(AssignmentModelView, self).handle_search_form(request, *args, **kwargs)
+        queryset, response = super(AssignmentModelView, self).handle_search_form(
+            request, *args, **kwargs)
 
         if request.GET.get('s') == 'xls':
             pdf, response = pdf_response('phones')
@@ -358,7 +369,7 @@ class AssignmentModelView(ZivinetzModelView):
                         ),
                         '',
                         drudge.education_occupation),
-                    ], (6.4*cm, 5*cm, 5*cm))
+                    ], (6.4 * cm, 5 * cm, 5 * cm))
                 pdf.hr_mini()
 
             pdf.generate()
@@ -367,8 +378,8 @@ class AssignmentModelView(ZivinetzModelView):
         return queryset, response
 
     def get_form(self, request, instance=None, change=None, **kwargs):
-        base_form = super(AssignmentModelView, self).get_form(request, instance=instance,
-                exclude=('created',))
+        base_form = super(AssignmentModelView, self).get_form(request,
+            instance=instance, exclude=('created',))
 
         class AssignmentForm(base_form):
             class Meta:
@@ -432,10 +443,13 @@ class EditExpenseReportForm(forms.ModelForm, towel_forms.WarningsForm):
 
         if total_days != self.instance.calculated_total_days:
             self.add_warning(
-                _('The number of days in this form (%(total)s) differs from the calculated number of days for this period (%(calculated)s).') % {
+                _(
+                    'The number of days in this form (%(total)s) differs from'
+                    ' the calculated number of days for this period'
+                    ' (%(calculated)s).'
+                    ) % {
                     'total': total_days,
-                    'calculated': self.instance.calculated_total_days,
-                    })
+                    'calculated': self.instance.calculated_total_days})
 
         return data
 
@@ -449,19 +463,23 @@ class ExpenseReportModelView(ZivinetzModelView):
             }
 
         assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
-            queryset=ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'),
-            required=False)
+            queryset=ScopeStatement.objects.all(),
+            label=ugettext_lazy('scope statement'), required=False)
         assignment__status = forms.MultipleChoiceField(Assignment.STATUS_CHOICES,
             label=ugettext_lazy('assignment status'), required=False)
         status = forms.MultipleChoiceField(
-            ExpenseReport.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
-        date_from__gte = forms.DateField(label=ugettext_lazy('date from'), required=False,
+            ExpenseReport.STATUS_CHOICES, label=ugettext_lazy('status'),
+            required=False)
+        date_from__gte = forms.DateField(label=ugettext_lazy('date from'),
+            required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
-        date_until__lte = forms.DateField(label=ugettext_lazy('date until'), required=False,
+        date_until__lte = forms.DateField(label=ugettext_lazy('date until'),
+            required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
     def handle_search_form(self, request, *args, **kwargs):
-        queryset, response = super(ExpenseReportModelView, self).handle_search_form(request, *args, **kwargs)
+        queryset, response = super(ExpenseReportModelView, self).handle_search_form(
+            request, *args, **kwargs)
 
         if request.GET.get('s') == 'pdf':
             from zivinetz.views import expenses
@@ -503,7 +521,8 @@ class ExpenseReportModelView(ZivinetzModelView):
         instance.recalculate_total()
 
         if request.POST.get('transport_expenses_copy'):
-            for report in instance.assignment.reports.filter(date_from__gt=instance.date_from):
+            for report in instance.assignment.reports.filter(
+                    date_from__gt=instance.date_from):
                 report.transport_expenses = instance.transport_expenses
                 report.transport_expenses_notes = instance.transport_expenses_notes
                 report.recalculate_total()
@@ -516,11 +535,14 @@ class WaitListModelView(ZivinetzModelView):
 
     class search_form(towel_forms.SearchForm):
         specification__scope_statement = forms.ModelMultipleChoiceField(
-            queryset=ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'),
+            queryset=ScopeStatement.objects.all(),
+            label=ugettext_lazy('scope statement'),
             required=False)
-        assignment_date_from__gte = forms.DateField(label=ugettext_lazy('date from'), required=False,
+        assignment_date_from__gte = forms.DateField(
+            label=ugettext_lazy('date from'), required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
-        assignment_date_until__lte = forms.DateField(label=ugettext_lazy('date until'), required=False,
+        assignment_date_until__lte = forms.DateField(
+            label=ugettext_lazy('date until'), required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
     class batch_form(towel_forms.BatchForm):
@@ -535,7 +557,8 @@ class WaitListModelView(ZivinetzModelView):
             if self.cleaned_data['mail_attachment']:
                 attachment = StringIO(self.cleaned_data['mail_attachment'].read())
 
-            for email in set(self.batch_queryset.values_list('drudge__user__email', flat=True)):
+            for email in set(self.batch_queryset.values_list(
+                    'drudge__user__email', flat=True)):
                 message = EmailMessage(
                     subject=self.cleaned_data['mail_subject'],
                     body=self.cleaned_data['mail_body'],
@@ -553,9 +576,11 @@ class WaitListModelView(ZivinetzModelView):
                 mails += 1
 
             if mails:
-                messages.success(self.request, _('Successfully sent mails to %s people.') % mails)
+                messages.success(self.request,
+                    _('Successfully sent mails to %s people.') % mails)
             else:
-                messages.error(self.request, _('Did not send any mails. Did you select people?'))
+                messages.error(self.request,
+                    _('Did not send any mails. Did you select people?'))
 
             return self.batch_queryset
 
@@ -572,16 +597,20 @@ class JobReferenceModelView(ZivinetzModelView):
 
     class search_form(towel_forms.SearchForm):
         assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
-            queryset=ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'),
+            queryset=ScopeStatement.objects.all(),
+            label=ugettext_lazy('scope statement'),
             required=False)
-        created__gte = forms.DateField(label=ugettext_lazy('date from'), required=False,
+        created__gte = forms.DateField(label=ugettext_lazy('date from'),
+            required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
-        created__lte = forms.DateField(label=ugettext_lazy('date until'), required=False,
+        created__lte = forms.DateField(label=ugettext_lazy('date until'),
+            required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
     def additional_urls(self):
         return [
-            (r'^from_template/(\d+)/(\d+)/$', self.crud_view_decorator(self.from_template)),
+            (r'^from_template/(\d+)/(\d+)/$',
+                self.crud_view_decorator(self.from_template)),
         ]
 
     def from_template(self, request, template_id, assignment_id):
@@ -628,5 +657,6 @@ class JobReferenceModelView(ZivinetzModelView):
         return (
             super(JobReferenceModelView, self).deletion_allowed(request, instance)
             )
+
 
 jobreference_views = JobReferenceModelView(JobReference)

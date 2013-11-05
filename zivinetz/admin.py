@@ -9,13 +9,13 @@ class SpecificationInline(admin.StackedInline):
     can_delete = False
     extra = 0
     max_num = 2
-    fieldsets=(
+    fieldsets = (
         (None, {
             'fields': ('with_accomodation', 'clothing'),
         }),
         (_('working days'), {
-            'fields': ('accomodation_working', 'breakfast_working', 'lunch_working',
-                'supper_working'),
+            'fields': ('accomodation_working', 'breakfast_working',
+                'lunch_working', 'supper_working'),
         }),
         (_('sick days'), {
             'fields': ('accomodation_sick', 'breakfast_sick', 'lunch_sick',
@@ -58,9 +58,11 @@ admin.site.register(models.CompensationSet,
 admin.site.register(models.RegionalOffice)
 
 admin.site.register(models.Drudge,
-    list_display=('__unicode__', 'date_of_birth', 'phone_home', 'phone_office', 'mobile', 'regional_office'),
+    list_display=('__unicode__', 'date_of_birth', 'phone_home', 'phone_office',
+        'mobile', 'regional_office'),
     list_filter=('regional_office', 'driving_license'),
-    search_fields=('user__first_name', 'user__last_name', 'user__email', 'address', 'zip_code', 'city'),
+    search_fields=('user__first_name', 'user__last_name', 'user__email',
+        'address', 'zip_code', 'city'),
     )
 
 admin.site.register(models.Assignment,
@@ -73,7 +75,8 @@ admin.site.register(models.Assignment,
 
 admin.site.register(models.ExpenseReport,
     date_hierarchy='date_from',
-    list_display=('__unicode__', 'assignment', 'date_from', 'date_until', 'status'),
+    list_display=('__unicode__', 'assignment', 'date_from', 'date_until',
+        'status'),
     list_filter=('status',),
     raw_id_fields=('assignment',),
     search_fields=models.ExpenseReport.objects.search_fields,

@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, include, url
 
 from zivinetz.views.modelviews import (assignment_views, drudge_views,
     expense_report_views, regional_office_views, scope_statement_views,

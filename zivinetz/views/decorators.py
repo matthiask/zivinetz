@@ -15,7 +15,8 @@ def drudge_required(view_func):
             kwargs['drudge'] = Drudge.objects.get(user=request.user)
 
             if not kwargs['drudge'].profile_image:
-                messages.error(request, _('Please add an image of yourself to your profile.'))
+                messages.error(request,
+                    _('Please add an image of yourself to your profile.'))
                 return redirect('drudge_profile')
         except Drudge.DoesNotExist:
             return redirect('drudge_profile')

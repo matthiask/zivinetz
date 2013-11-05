@@ -2,11 +2,10 @@ from datetime import date
 
 from django import forms
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.utils.translation import ugettext_lazy, ugettext as _
 
 from towel.forms import towel_formfield_callback
@@ -36,7 +35,8 @@ class AssignmentForm(forms.ModelForm):
         data = super(AssignmentForm, self).clean()
 
         if data.get('date_from') and data.get('date_until'):
-            if data['date_from'] > data['date_until'] or data['date_from'] < date.today():
+            if (data['date_from'] > data['date_until']
+                    or data['date_from'] < date.today()):
                 raise forms.ValidationError(_('Date period is invalid.'))
 
         return data
@@ -60,8 +60,10 @@ class WaitListForm(forms.ModelForm):
     def clean(self):
         data = super(WaitListForm, self).clean()
 
-        if data.get('assignment_date_from') and data.get('assignment_date_until'):
-            if data['assignment_date_from'] >= data['assignment_date_until'] or data['assignment_date_from'] < date.today():
+        if (data.get('assignment_date_from')
+                and data.get('assignment_date_until')):
+            if (data['assignment_date_from'] >= data['assignment_date_until']
+                    or data['assignment_date_from'] < date.today()):
                 raise forms.ValidationError(_('Date period is invalid.'))
 
         return data
@@ -69,7 +71,6 @@ class WaitListForm(forms.ModelForm):
 
 @drudge_required
 def dashboard(request, drudge):
-
     aform_initial = {
         'regional_office': drudge.regional_office_id,
         }
@@ -84,7 +85,8 @@ def dashboard(request, drudge):
                 assignment = aform.save(commit=False)
                 assignment.drudge = drudge
                 assignment.save()
-                messages.success(request, _('Successfully saved new assignment.'))
+                messages.success(request,
+                    _('Successfully saved new assignment.'))
 
                 return HttpResponseRedirect('.')
 
@@ -94,7 +96,8 @@ def dashboard(request, drudge):
                 waitlist = wform.save(commit=False)
                 waitlist.drudge = drudge
                 waitlist.save()
-                messages.success(request, _('Successfully saved new waitlist entry.'))
+                messages.success(request,
+                    _('Successfully saved new waitlist entry.'))
 
                 return HttpResponseRedirect('.')
 
@@ -154,7 +157,8 @@ def profile(request):
 
             form2.save()
 
-            messages.success(request, _('Successfully saved profile information.'))
+            messages.success(request,
+                _('Successfully saved profile information.'))
 
             return HttpResponseRedirect('.')
     else:

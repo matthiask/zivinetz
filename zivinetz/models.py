@@ -65,7 +65,8 @@ class Choices(object):
             }
 
     def __getattr__(self, k):
-        self.__dict__['_choice_dict'][k] # raise KeyError if key does not exist
+        # raise KeyError if key does not exist
+        self.__dict__['_choice_dict'][k]
         return k
 
 
@@ -93,18 +94,26 @@ class Specification(models.Model):
     code = models.CharField(_('code'), max_length=10,
         help_text=_('Short, unique code identifying this specification.'))
 
-    accomodation_working = models.CharField(_('accomodation on working days'), **ACCOMODATION.kwargs)
-    breakfast_working = models.CharField(_('breakfast on working days'), **MEAL.kwargs)
-    lunch_working = models.CharField(_('lunch on working days'), **MEAL.kwargs)
-    supper_working = models.CharField(_('supper on working days'), **MEAL.kwargs)
+    accomodation_working = models.CharField(_('accomodation on working days'),
+        **ACCOMODATION.kwargs)
+    breakfast_working = models.CharField(_('breakfast on working days'),
+        **MEAL.kwargs)
+    lunch_working = models.CharField(_('lunch on working days'),
+        **MEAL.kwargs)
+    supper_working = models.CharField(_('supper on working days'),
+        **MEAL.kwargs)
 
-    accomodation_sick = models.CharField(_('accomodation on sick days'), **ACCOMODATION.kwargs)
-    breakfast_sick = models.CharField(_('breakfast on sick days'), **MEAL.kwargs)
+    accomodation_sick = models.CharField(_('accomodation on sick days'),
+        **ACCOMODATION.kwargs)
+    breakfast_sick = models.CharField(_('breakfast on sick days'),
+        **MEAL.kwargs)
     lunch_sick = models.CharField(_('lunch on sick days'), **MEAL.kwargs)
     supper_sick = models.CharField(_('supper on sick days'), **MEAL.kwargs)
 
-    accomodation_free = models.CharField(_('accomodation on free days'), **ACCOMODATION.kwargs)
-    breakfast_free = models.CharField(_('breakfast on free days'), **MEAL.kwargs)
+    accomodation_free = models.CharField(_('accomodation on free days'),
+        **ACCOMODATION.kwargs)
+    breakfast_free = models.CharField(_('breakfast on free days'),
+        **MEAL.kwargs)
     lunch_free = models.CharField(_('lunch on free days'), **MEAL.kwargs)
     supper_free = models.CharField(_('supper on free days'), **MEAL.kwargs)
 
@@ -127,7 +136,9 @@ class Specification(models.Model):
     def __unicode__(self):
         return u'%s - %s' % (
             self.scope_statement,
-            self.with_accomodation and ugettext('with accomodation') or ugettext('without accomodation'),
+            (self.with_accomodation
+                and ugettext('with accomodation')
+                or ugettext('without accomodation')),
             )
 
     def compensation(self, for_date=date.today):
@@ -180,25 +191,37 @@ class CompensationSetManager(models.Manager):
 class CompensationSet(models.Model):
     valid_from = models.DateField(_('valid from'), unique=True)
 
-    spending_money = models.DecimalField(_('spending money'), max_digits=10, decimal_places=2)
+    spending_money = models.DecimalField(_('spending money'), max_digits=10,
+        decimal_places=2)
 
-    breakfast_at_accomodation = models.DecimalField(_('breakfast at accomodation'), max_digits=10, decimal_places=2)
-    lunch_at_accomodation = models.DecimalField(_('lunch at accomodation'), max_digits=10, decimal_places=2)
-    supper_at_accomodation = models.DecimalField(_('supper at accomodation'), max_digits=10, decimal_places=2)
+    breakfast_at_accomodation = models.DecimalField(
+        _('breakfast at accomodation'), max_digits=10, decimal_places=2)
+    lunch_at_accomodation = models.DecimalField(
+        _('lunch at accomodation'), max_digits=10, decimal_places=2)
+    supper_at_accomodation = models.DecimalField(
+        _('supper at accomodation'), max_digits=10, decimal_places=2)
 
-    breakfast_external = models.DecimalField(_('external breakfast'), max_digits=10, decimal_places=2)
-    lunch_external = models.DecimalField(_('external lunch'), max_digits=10, decimal_places=2)
-    supper_external = models.DecimalField(_('external supper'), max_digits=10, decimal_places=2)
+    breakfast_external = models.DecimalField(
+        _('external breakfast'), max_digits=10, decimal_places=2)
+    lunch_external = models.DecimalField(
+        _('external lunch'), max_digits=10, decimal_places=2)
+    supper_external = models.DecimalField(
+        _('external supper'), max_digits=10, decimal_places=2)
 
-    accomodation_home = models.DecimalField(_('accomodation'), max_digits=10, decimal_places=2,
+    accomodation_home = models.DecimalField(
+        _('accomodation'), max_digits=10, decimal_places=2,
         help_text=_('Daily compensation if drudge returns home for the night.'))
 
-    private_transport_per_km = models.DecimalField(_('private transport per km'), max_digits=10, decimal_places=2,
+    private_transport_per_km = models.DecimalField(
+        _('private transport per km'), max_digits=10, decimal_places=2,
         help_text=_('Only applies if public transport use is not reasonable.'))
 
-    clothing = models.DecimalField(_('clothing'), max_digits=10, decimal_places=6,
-        help_text=_('Daily compensation for clothes if clothing isn\'t offered by the company.'))
-    clothing_limit_per_assignment = models.DecimalField(_('clothing limit per assignment'),
+    clothing = models.DecimalField(
+        _('clothing'), max_digits=10, decimal_places=6,
+        help_text=_('Daily compensation for clothes if clothing isn\'t'
+            ' offered by the company.'))
+    clothing_limit_per_assignment = models.DecimalField(
+        _('clothing limit per assignment'),
         max_digits=10, decimal_places=2,
         help_text=_('Maximal compensation for clothing per assignment.'))
 
@@ -245,7 +268,6 @@ class DrudgeManager(SearchManager):
         return self.filter(q)
 
 
-
 class Drudge(models.Model):
     STATES = [state[0] for state in ch_states.STATE_CHOICES]
     STATE_CHOICES = zip(STATES, STATES)
@@ -271,8 +293,10 @@ class Drudge(models.Model):
         _('place of citizenship (canton)'), max_length=2,
         choices=STATE_CHOICES)
 
-    phone_home = models.CharField(_('phone (home)'), max_length=20, blank=True)
-    phone_office = models.CharField(_('phone (office)'), max_length=20, blank=True)
+    phone_home = models.CharField(_('phone (home)'), max_length=20,
+        blank=True)
+    phone_office = models.CharField(_('phone (office)'), max_length=20,
+        blank=True)
     mobile = models.CharField(_('mobile'), max_length=20, blank=True)
 
     bank_account = models.CharField(_('bank account'), max_length=100,
@@ -287,13 +311,15 @@ class Drudge(models.Model):
         blank=True)
 
     driving_license = models.BooleanField(_('driving license'), default=False)
-    general_abonnement = models.BooleanField(_('general abonnement'), default=False)
+    general_abonnement = models.BooleanField(_('general abonnement'),
+        default=False)
     half_fare_card = models.BooleanField(_('half-fare card'), default=False)
     other_card = models.CharField(_('other card'), max_length=100,
         blank=True)
     vegetarianism = models.BooleanField(_('vegetarianism'), default=False)
 
-    environment_course = models.BooleanField(_('environment course'), default=False,
+    environment_course = models.BooleanField(_('environment course'),
+        default=False,
         help_text=_('I have taken the environment course already.'))
     motor_saw_course = models.CharField(_('motor saw course'), max_length=10,
         choices=MOTOR_SAW_COURSE_CHOICES, blank=True, null=True,
@@ -302,10 +328,11 @@ class Drudge(models.Model):
     regional_office = models.ForeignKey(RegionalOffice,
         verbose_name=_('regional office'))
     notes = models.TextField(_('notes'), blank=True,
-        help_text=_('Allergies, vegetarianism, anything else we should be aware of?'))
+        help_text=_('Allergies, vegetarianism, anything else we should be'
+            ' aware of?'))
 
-    profile_image = models.ImageField(_('profile image'), blank=True, null=True,
-        upload_to='profile_images/')
+    profile_image = models.ImageField(_('profile image'), blank=True,
+        null=True, upload_to='profile_images/')
 
     class Meta:
         ordering = ['user__last_name', 'user__first_name', 'zdp_no']
@@ -328,18 +355,21 @@ class Drudge(models.Model):
 
 
 class AssignmentManager(SearchManager):
-    search_fields = ['specification__scope_statement__name', 'specification__code'] +\
-        ['drudge__%s' % f for f in DrudgeManager.search_fields]
+    search_fields = [
+        'specification__scope_statement__name', 'specification__code',
+        ] + ['drudge__%s' % f for f in DrudgeManager.search_fields]
 
     def for_date(self, day=None):
         day = day if day else date.today()
 
         return self.filter(
             Q(date_from__lte=day) & (
-                Q(date_until__gte=day) | (
-                    Q(date_until_extension__isnull=False) & Q(date_until_extension__gte=day)
+                Q(date_until__gte=day)
+                | Q(
+                    date_until_extension__isnull=False,
+                    date_until_extension__gte=day)
                 )
-            ))
+            )
 
     def active_set(self, access, additional_ids=None):
         q = Q(id=0)
@@ -419,7 +449,8 @@ class Assignment(models.Model):
             date_until__gte=day))
 
         vacation_days = 0
-        assignment_days = (self.date_until - self.date_from).days + 1 # +1 because the range is inclusive
+        # +1 because the range is inclusive
+        assignment_days = (self.date_until - self.date_from).days + 1
 
         if assignment_days >= 180:
             # 30 days isn't exactly one month. But that's good enough for us.
@@ -441,7 +472,8 @@ class Assignment(models.Model):
             'working_days': 0,
 
             'countable_days': 0,
-            'forced_leave_days': 0, # days which aren't countable and are forced upon the drudge
+            # days which aren't countable and are forced upon the drudge:
+            'forced_leave_days': 0,
             }
 
         monthly_expense_days = {}
@@ -457,7 +489,8 @@ class Assignment(models.Model):
         while day <= until:
             is_weekend = day.weekday() in (5, 6)
             is_public_holiday = day in public_holidays
-            is_company_holiday = company_holiday and company_holiday.is_contained(day)
+            is_company_holiday = (company_holiday
+                and company_holiday.is_contained(day))
             slot = 'free'
 
             if is_company_holiday:
@@ -481,18 +514,19 @@ class Assignment(models.Model):
                             # if possible at all. Unfortunately for drudges.
                             days['freely_definable_vacation_days'] -= 1
 
-                            # At least they are countable towards assignment total.-
+                            # At least they are countable towards assignment
+                            # total.
                             days['countable_days'] += 1
                         else:
-                            # Damn. No vacation days left (if there were any in the
-                            # beginning. The drudge has to pause his assignment for
-                            # this time.
+                            # Damn. No vacation days left (if there were any in
+                            # the beginning. The drudge has to pause his
+                            # assignment for this time.
                             days['forced_leave_days'] += 1
                             slot = 'forced'
 
             else:
                 # No company holiday... business as usual, maybe.
-                days['countable_days'] += 1 # Nice!
+                days['countable_days'] += 1  # Nice!
 
                 if not (is_public_holiday or is_weekend):
                     # Hard beer-drinking and pickaxing action.
@@ -502,7 +536,10 @@ class Assignment(models.Model):
             key = (day.year, day.month, 1)
             if (day.month == self.date_from.month
                     and day.year == self.date_from.year):
-                key = (self.date_from.year, self.date_from.month, self.date_from.day)
+                key = (
+                    self.date_from.year,
+                    self.date_from.month,
+                    self.date_from.day)
 
             if day > self.date_until:
                 # Only the case when assignment has been extended
@@ -513,7 +550,10 @@ class Assignment(models.Model):
                         and day.year == self.date_until.year):
 
                     extended_start = self.date_until + one_day
-                    key = (extended_start.year, extended_start.month, extended_start.day)
+                    key = (
+                        extended_start.year,
+                        extended_start.month,
+                        extended_start.day)
 
             monthly_expense_days.setdefault(key, {
                 'free': 0, 'working': 0, 'forced': 0, 'start': day})
@@ -526,7 +566,8 @@ class Assignment(models.Model):
             if company_holiday and company_holiday.date_until < day:
                 company_holiday = pop_company_holiday()
 
-        return days, sorted(monthly_expense_days.items(), key=lambda item: item[0])
+        return days, sorted(
+            monthly_expense_days.items(), key=lambda item: item[0])
 
     def expenses(self):
         """
@@ -536,11 +577,12 @@ class Assignment(models.Model):
         assignment_days, monthly_expense_days = self.assignment_days()
         specification = self.specification
 
-        clothing_total = Decimal('240.00') # TODO don't hardcode this
+        clothing_total = Decimal('240.00')  # TODO don't hardcode this
         expenses = {}
 
         for month, days in monthly_expense_days:
-            compensation = specification.compensation(date(month[0], month[1], month[2]))
+            compensation = specification.compensation(
+                date(month[0], month[1], month[2]))
 
             free = days['free']
             working = days['working']
@@ -550,14 +592,17 @@ class Assignment(models.Model):
             expenses[month] = {
                 'spending_money': total * compensation['spending_money'],
                 'clothing': total * compensation['clothing'],
-                'accomodation': free * compensation['accomodation_free'] +\
-                                working * compensation['accomodation_working'],
-                'food': free * (compensation['breakfast_free'] +\
-                                compensation['lunch_free'] +\
-                                compensation['supper_free']) +\
-                        working * (compensation['breakfast_working'] +\
-                                   compensation['lunch_working'] +\
-                                   compensation['supper_working']),
+                'accomodation': (free * compensation['accomodation_free'] +
+                    working * compensation['accomodation_working']),
+                'food': free * (
+                    compensation['breakfast_free'] +
+                    compensation['lunch_free'] +
+                    compensation['supper_free']
+                    ) + working * (
+                    compensation['breakfast_working'] +
+                    compensation['lunch_working'] +
+                    compensation['supper_working']
+                    ),
                 }
 
             clothing_total -= expenses[month]['clothing']
@@ -604,7 +649,8 @@ class Assignment(models.Model):
                 sick_days=0,
                 holi_days=0,
                 forced_leave_days=data['forced'],
-                calculated_total_days=data['working'] + data['free'] + data['forced'],
+                calculated_total_days=(data['working']
+                    + data['free'] + data['forced']),
                 clothing_expenses=clothing_expenses,
                 specification=self.specification,
                 )
@@ -617,7 +663,8 @@ class Assignment(models.Model):
 
 
 class ExpenseReportManager(SearchManager):
-    search_fields = ['report_no', 'working_days_notes', 'free_days_notes',
+    search_fields = [
+        'report_no', 'working_days_notes', 'free_days_notes',
         'sick_days_notes', 'holi_days_notes', 'forced_leave_days_notes',
         'clothing_expenses_notes', 'transport_expenses_notes',
         'miscellaneous_notes',
@@ -645,31 +692,39 @@ class ExpenseReport(models.Model):
         default=PENDING)
 
     working_days = models.PositiveIntegerField(_('working days'))
-    working_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
+    working_days_notes = models.CharField(_('notes'), max_length=100,
+        blank=True)
     free_days = models.PositiveIntegerField(_('free days'))
     free_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
     sick_days = models.PositiveIntegerField(_('sick days'))
     sick_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
     holi_days = models.PositiveIntegerField(_('holiday days'),
-        help_text=_('These days are still countable towards the assignment total days.'))
+        help_text=_('These days are still countable towards the assignment'
+            ' total days.'))
     holi_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
     forced_leave_days = models.PositiveIntegerField(_('forced leave days'))
-    forced_leave_days_notes = models.CharField(_('notes'), max_length=100, blank=True)
+    forced_leave_days_notes = models.CharField(_('notes'), max_length=100,
+        blank=True)
 
-    calculated_total_days = models.PositiveIntegerField(_('calculated total days'),
-        help_text=_('This field is filled in automatically by the system and should not be changed.'),
+    calculated_total_days = models.PositiveIntegerField(
+        _('calculated total days'),
+        help_text=_('This field is filled in automatically by the system'
+            ' and should not be changed.'),
         default=0)
 
     clothing_expenses = models.DecimalField(_('clothing expenses'),
         max_digits=10, decimal_places=2, default=Decimal('0.00'))
-    clothing_expenses_notes = models.CharField(_('notes'), max_length=100, blank=True)
+    clothing_expenses_notes = models.CharField(_('notes'), max_length=100,
+        blank=True)
     transport_expenses = models.DecimalField(_('transport expenses'),
         max_digits=10, decimal_places=2, default=Decimal('0.00'))
-    transport_expenses_notes = models.CharField(_('notes'), max_length=100, blank=True)
+    transport_expenses_notes = models.CharField(_('notes'), max_length=100,
+        blank=True)
 
     miscellaneous = models.DecimalField(_('miscellaneous'),
         max_digits=10, decimal_places=2, default=Decimal('0.00'))
-    miscellaneous_notes = models.CharField(_('notes'), max_length=100, blank=True)
+    miscellaneous_notes = models.CharField(_('notes'), max_length=100,
+        blank=True)
 
     total = models.DecimalField(_('total'), max_digits=10, decimal_places=2,
         default=0)
@@ -694,8 +749,8 @@ class ExpenseReport(models.Model):
 
     @property
     def total_days(self):
-        return self.working_days + self.free_days + self.sick_days + self.holi_days\
-            + self.forced_leave_days
+        return (self.working_days + self.free_days + self.sick_days
+            + self.holi_days + self.forced_leave_days)
 
     @models.permalink
     def pdf_url(self):
@@ -711,7 +766,8 @@ class ExpenseReport(models.Model):
             if not mobilized_on:
                 return None
 
-        return self.specification.compensation(mobilized_on or self.assignment.mobilized_on)
+        return self.specification.compensation(
+            mobilized_on or self.assignment.mobilized_on)
 
     def compensations(self):
         if not self.assignment.mobilized_on:
@@ -732,7 +788,6 @@ class ExpenseReport(models.Model):
                 ]
 
             return [u'%s %s' % (days, title)] + l + [sum(l) * days]
-
 
         ret = [[
             '',
@@ -782,7 +837,8 @@ class ExpenseReport(models.Model):
             (self.miscellaneous_notes, ''),
             ]
 
-        total = sum(r[6] for r in ret[1::2] if r) + sum(r[1] for r in additional[::2])
+        total = sum(r[6] for r in ret[1::2] if r) + sum(
+            r[1] for r in additional[::2])
 
         return ret, additional, total
 
@@ -817,8 +873,8 @@ class CompanyHoliday(models.Model):
 
 
 class WaitListManager(SearchManager):
-    search_fields = ['specification__scope_statement__name', 'specification__code',
-        'notes',
+    search_fields = [
+        'specification__scope_statement__name', 'specification__code', 'notes',
         ] + ['drudge__%s' % f for f in DrudgeManager.search_fields]
 
 
@@ -905,7 +961,8 @@ class JobReferenceTemplate(models.Model):
 
 
 class JobReferenceManager(SearchManager):
-    search_fields = ['text',
+    search_fields = [
+        'text',
         ] + ['assignment__%s' % f for f in AssignmentManager.search_fields]
 
 
