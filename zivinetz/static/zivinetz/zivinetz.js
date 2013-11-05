@@ -1,14 +1,15 @@
 $(function() {
-    $.datepicker.setDefaults({
-        changeYear: true,
-        changeMonth: true,
-        dateFormat: 'dd.mm.yy',
-        firstDay: 1,
-        yearRange: 'c-40:c+40'
-    });
+    if ($.datepicker) {
+        $.datepicker.setDefaults({
+            changeYear: true,
+            changeMonth: true,
+            dateFormat: 'dd.mm.yy',
+            firstDay: 1,
+            yearRange: 'c-40:c+40'
+        });
 
-    $('input.dateinput').datepicker();
-
+        $('input.dateinput').datepicker();
+    }
 
     var searchbox = $('.searchbox');
     var query_input = searchbox.find('input[name=query]');
@@ -25,7 +26,6 @@ $(function() {
                 searchbox.find('p').hide();
         });
     }
-
 
     $('.objects thead input[type=checkbox]').bind('change', function() {
         var cbs = $('.objects tbody input[type=checkbox]');
