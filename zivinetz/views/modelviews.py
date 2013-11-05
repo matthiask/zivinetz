@@ -15,11 +15,13 @@ from django.forms.models import modelform_factory, inlineformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import Template, Context
-from django.utils import simplejson
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from towel import modelview
 from towel import forms as towel_forms
+
+from towel_foundation.modelview import PickerModelView
+from towel_foundation.widgets import SelectWithPicker
 
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.utils import pdf_response
@@ -30,7 +32,7 @@ from zivinetz.models import (Assignment, CompanyHoliday, Drudge,
     JobReference)
 
 
-class ZivinetzModelView(modelview.ModelView):
+class ZivinetzModelView(PickerModelView):
     def view_decorator(self, func):
         return staff_member_required(func)
 
@@ -133,16 +135,8 @@ class DrudgeModelView(ZivinetzModelView):
 
     def additional_urls(self):
         return [
-            (r'^autocomplete/$', self.view_decorator(self.autocomplete)),
+            (r'^picker/$', self.view_decorator(self.picker)),
         ]
-
-    def autocomplete(self, request):
-        queryset = Drudge.objects.search(request.GET.get('term', ''))
-
-        return HttpResponse(simplejson.dumps([{
-            'label': unicode(d),
-            'value': d.id,
-            } for d in queryset[:20]]), mimetype='application/json')
 
     class search_form(towel_forms.SearchForm):
         orderings = {
@@ -241,10 +235,6 @@ class AssignmentModelView(ZivinetzModelView):
 
         specification__scope_statement = forms.ModelMultipleChoiceField(
             ScopeStatement.objects.all(), label=ugettext_lazy('scope statements'), required=False)
-        drudge = forms.ModelChoiceField(Drudge.objects.all(),
-            widget=towel_forms.ModelAutocompleteWidget(url=
-                lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
-            label=ugettext_lazy('drudge'), required=False)
 
         active_on = forms.DateField(label=ugettext_lazy('active on'), required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
@@ -319,18 +309,10 @@ class AssignmentModelView(ZivinetzModelView):
 
     def additional_urls(self):
         return [
-            (r'^autocomplete/$', self.view_decorator(self.autocomplete)),
+            (r'^picker/$', self.view_decorator(self.picker)),
             (r'^%(detail)s/create_expensereports/$', self.crud_view_decorator(self.create_expensereports)),
             (r'^%(detail)s/remove_expensereports/$', self.crud_view_decorator(self.remove_expensereports)),
         ]
-
-    def autocomplete(self, request):
-        queryset = Assignment.objects.search(request.GET.get('term', ''))
-
-        return HttpResponse(simplejson.dumps([{
-            'label': unicode(d),
-            'value': d.id,
-            } for d in queryset[:20]]), mimetype='application/json')
 
     def create_expensereports(self, request, *args, **kwargs):
         instance = self.get_object_or_404(request, *args, **kwargs)
@@ -392,8 +374,7 @@ class AssignmentModelView(ZivinetzModelView):
             class Meta:
                 model = Assignment
                 widgets = {
-                    'drudge': towel_forms.ModelAutocompleteWidget(
-                        url=urlresolvers.reverse('zivinetz_drudge_autocomplete')),
+                    'drudge': SelectWithPicker(model=Drudge, request=request),
                 }
 
             def clean(self):
@@ -472,16 +453,6 @@ class ExpenseReportModelView(ZivinetzModelView):
             required=False)
         assignment__status = forms.MultipleChoiceField(Assignment.STATUS_CHOICES,
             label=ugettext_lazy('assignment status'), required=False)
-        assignment = forms.ModelChoiceField(
-            Assignment.objects.all(), label=ugettext_lazy('assignment'),
-            widget=towel_forms.ModelAutocompleteWidget(url=
-                lambda: urlresolvers.reverse('zivinetz_assignment_autocomplete')),
-            required=False)
-        assignment__drudge = forms.ModelChoiceField(
-            Drudge.objects.all(), label=ugettext_lazy('drudge'),
-            widget=towel_forms.ModelAutocompleteWidget(url=
-                lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
-            required=False)
         status = forms.MultipleChoiceField(
             ExpenseReport.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
         date_from__gte = forms.DateField(label=ugettext_lazy('date from'), required=False,
@@ -517,8 +488,8 @@ class ExpenseReportModelView(ZivinetzModelView):
             class ModelForm(forms.ModelForm):
                 assignment = forms.ModelChoiceField(
                     Assignment.objects.all(), label=ugettext_lazy('assignment'),
-                    widget=towel_forms.ModelAutocompleteWidget(url=
-                        lambda: urlresolvers.reverse('zivinetz_assignment_autocomplete')))
+                    widget=SelectWithPicker(model=Assignment, request=request),
+                    )
 
                 class Meta:
                     model = self.model
@@ -546,11 +517,6 @@ class WaitListModelView(ZivinetzModelView):
     class search_form(towel_forms.SearchForm):
         specification__scope_statement = forms.ModelMultipleChoiceField(
             queryset=ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'),
-            required=False)
-        drudge = forms.ModelChoiceField(
-            Drudge.objects.all(), label=ugettext_lazy('drudge'),
-            widget=towel_forms.ModelAutocompleteWidget(url=
-                lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
             required=False)
         assignment_date_from__gte = forms.DateField(label=ugettext_lazy('date from'), required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
@@ -607,16 +573,6 @@ class JobReferenceModelView(ZivinetzModelView):
     class search_form(towel_forms.SearchForm):
         assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
             queryset=ScopeStatement.objects.all(), label=ugettext_lazy('scope statement'),
-            required=False)
-        assignment = forms.ModelChoiceField(
-            Assignment.objects.all(), label=ugettext_lazy('assignment'),
-            widget=towel_forms.ModelAutocompleteWidget(url=
-                lambda: urlresolvers.reverse('zivinetz_assignment_autocomplete')),
-            required=False)
-        assignment__drudge = forms.ModelChoiceField(
-            Drudge.objects.all(), label=ugettext_lazy('drudge'),
-            widget=towel_forms.ModelAutocompleteWidget(url=
-                lambda: urlresolvers.reverse('zivinetz_drudge_autocomplete')),
             required=False)
         created__gte = forms.DateField(label=ugettext_lazy('date from'), required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
