@@ -238,6 +238,13 @@ class DrudgeManager(SearchManager):
         'mobile', 'bank_account', 'health_insurance_account',
         'health_insurance_company', 'education_occupation')
 
+    def active_set(self, access, additional_ids=None):
+        q = Q(id=0)
+        if additional_ids:
+            q |= Q(id__in=additional_ids)
+        return self.filter(q)
+
+
 
 class Drudge(models.Model):
     STATES = [state[0] for state in ch_states.STATE_CHOICES]
@@ -333,6 +340,12 @@ class AssignmentManager(SearchManager):
                     Q(date_until_extension__isnull=False) & Q(date_until_extension__gte=day)
                 )
             ))
+
+    def active_set(self, access, additional_ids=None):
+        q = Q(id=0)
+        if additional_ids:
+            q |= Q(id__in=additional_ids)
+        return self.filter(q)
 
 
 class Assignment(models.Model):
