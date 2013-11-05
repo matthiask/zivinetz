@@ -17,3 +17,5 @@
 /docs/_build
 /MANIFEST
 /dist
+zivinetz.egg-info
+_build
