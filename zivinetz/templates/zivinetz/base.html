@@ -1,19 +1,21 @@
 {% extends "base.html" %}
 
-{% load feincms_tags feincms_page_tags i18n navigation_tags %}
-
-{% block moodboard %}{% endblock %}
+{% load feincms_page_tags i18n mark_current navigation_tags staticfiles towel_form_tags %}
 
 {% block extra-head %}{{ block.super }}
-
-<link rel="stylesheet" href="{{ STATIC_URL }}zivinetz/zivinetz.css" type="text/css" media="screen, projection, print" />
+<link href="{% static 'chosen/chosen.css' %}" rel="stylesheet">
+<link href="{% static 'towel_foundation/datepicker/datePicker.css' %}" rel="stylesheet">
+<link href="{% static 'towel_foundation/towel_foundation.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{{ STATIC_URL }}zivinetz/zivinetz.css">
+<script>onForm = [];</script>
 {% endblock %}
 
 {% block body-class %}cms_standard{% endblock %}
 
-{% block content-before %}{{ block.super }}
-<div class="row zivinetz">
+{% block main %}
+<div class="row">
   <div class="large-12 columns">
+
     <br>
     <dl class="sub-nav">
         {% feincms_nav feincms_page level=4 as sub %}
@@ -23,18 +25,128 @@
           <a href="{{ page.get_navigation_url }}"><span>{{ page.title }}</span></a>
         </dd>
         {% endfor %}
-    </ul>
-{% endblock %}
+    </dl>
 
-{% block content-after %}
-    <hr />
+    {% block page-header %}
+      {% if verbose_name_plural %}
+        <div class="page-header">
+          {% if search_form %}
+            <form method="get" action="{{ list_url|default:"." }}"
+                class="form-search right">
+              <input type="hidden" name="s" value="1">
+              {% for field in search_form.fields_iterator %}
+                {% if forloop.first %}
+                  <div class="panel">
+                {% endif %}
+                    {% if field.is_hidden %}
+                      {{ field }}
+                    {% else %}
+                      {% form_item field %}
+                    {% endif %}
+                {% if forloop.last %}
+                      {% if search_form.searching %}
+                        <a href="{{ list_url|default:"." }}?clear=1" class="button">
+                          {% trans "Reset" %}</a>
+                      {% endif %}
+                      <button type="submit" class="button right">
+                        {% trans "Search" %}</button>
+                  </div>
+                {% endif %}
+              {% endfor %}
+
+              <div class="row collapse">
+                <div class="small-9 columns">{{ search_form.query }}</div>
+                <div class="small-3 columns">
+                  <button type="button" data-toggle="form"
+                    class="button postfix radius secondary dropdown"></button>
+                </div>
+              </div>
+              <input type="submit" style="margin-left:-4000em">
+            </form>
+          {% endif %}
+          <h1>
+            {{ verbose_name_plural|capfirst }}
+            {% if paginator %}
+            <small>
+              {{ page.start_index }} - {{ page.end_index }}
+              / {{ paginator.count }}
+
+              {% if search_form.searching %}
+              {% with total=view.get_queryset.count %}
+              {% if total and paginator.count != total %}
+                (<a href="?clear=1">{% blocktrans %}{{ total }} total{% endblocktrans %}</a>)
+              {% endif %}
+              {% endwith %}
+              {% endif %}
+            </small>
+            {% endif %}
+          </h1>
+        </div>
+      {% endif %}
+    {% endblock page-header %}
+  </div>
+</div>
+<div class="row">
+  <div class="large-12 columns">
+    {% include "towel/_messages.html" %}
+
+    <div class="row">
+      <div class="large-9 columns">
+        {% block content %}{% endblock %}
+      </div>
+      <div class="large-3 columns">
+        {% block sidebar %}
+          {% if verbose_name and add_url and adding_allowed or view.allow_add %}
+            <div class="panel">
+              <ul class="side-nav">
+                <li>{{ verbose_name_plural }}</li>
+
+                {% mark_current request.path %}
+                <li><a href="{{ add_url }}" class="add">
+                  {% blocktrans %}New {{ verbose_name }}{% endblocktrans %}</a></li>
+                {% endmark_current %}
+              </ul>
+            </div>
+          {% endif %}
+        {% endblock %}
+      </div>
+    </div>
+
+    <hr>
     <a href="{% url "auth_logout" %}">{% trans "Log out" %}</a> /
     <a href="/accounts/password/change/">{% trans "Change password" %}</a>
   </div>
 </div>
 {% endblock %}
 
-{% block inline-js %}{{ block.super }}
-<script type="text/javascript" src="{{ STATIC_URL }}towel/towel.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}zivinetz/zivinetz.js"></script>
+{% block js %}{{ block.super }}
+<script src="{% static 'towel/towel.js' %}"></script>
+<script src="{% static 'towel/towel_editlive.js' %}"></script>
+<script src="{% static 'chosen/chosen.jquery.min.js' %}"></script>
+<script src="{% static 'towel_foundation/jquery.elastic.min.js' %}"></script>
+<script src="{% static 'towel_foundation/datepicker/date.js' %}"></script>
+<script src="{% static 'towel_foundation/datepicker/jquery.datePicker.js' %}"></script>
+<script src="{% static 'towel_foundation/towel_foundation.js' %}"></script>
+<script src="{% static 'zivinetz/zivinetz.js' %}"></script>
+{% endblock %}
+
+{% block inline-js %}
+<div id="spinner">Saving...</div>
+<script>
+  (function($) {
+    $(document).foundation();
+    $(document).towelFoundation();
+
+    var spinner = $('#spinner');
+    spinner.bind('ajaxSend', function(evt, jqxhr, settings) {
+      if (settings.type == 'POST') {
+        spinner.html('Saving...').show();
+      } else {
+        spinner.html('Loading...').show();
+      }
+    }).bind('ajaxComplete', function() {
+      spinner.hide();
+    });
+  })(jQuery);
+</script>
 {% endblock %}
