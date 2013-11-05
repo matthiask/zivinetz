@@ -28,6 +28,49 @@ from zivinetz.models import (Assignment, Drudge,
     JobReference)
 
 
+def create_email_batch_form(selector):
+    class BatchForm(towel_forms.BatchForm):
+        mail_subject = forms.CharField(label=_('subject'))
+        mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
+        mail_attachment = forms.FileField(label=_('attachment'), required=False)
+
+        def process(self):
+            mails = 0
+            attachment = None
+
+            if self.cleaned_data['mail_attachment']:
+                attachment = StringIO(self.cleaned_data['mail_attachment'].read())
+
+            for email in set(
+                    self.batch_queryset.values_list(selector, flat=True)):
+                message = EmailMessage(
+                    subject=self.cleaned_data['mail_subject'],
+                    body=self.cleaned_data['mail_body'],
+                    to=[email],
+                    from_email='info@naturnetz.ch',
+                    headers={
+                        'Reply-To': self.request.user.email,
+                    })
+                if self.cleaned_data['mail_attachment']:
+                    message.attach(
+                        self.cleaned_data['mail_attachment'].name,
+                        attachment.getvalue(),
+                        )
+                message.send()
+                mails += 1
+
+            if mails:
+                messages.success(self.request,
+                    _('Successfully sent mails to %s people.') % mails)
+            else:
+                messages.error(self.request,
+                    _('Did not send any mails. Did you select people?'))
+
+            return self.batch_queryset
+
+    return BatchForm
+
+
 class ZivinetzModelView(PickerModelView):
     def view_decorator(self, func):
         return staff_member_required(func)
@@ -127,6 +170,7 @@ def add_last_assignment_and_mark(queryset):
 
 class DrudgeModelView(ZivinetzModelView):
     paginate_by = 50
+    batch_form = create_email_batch_form('user__email')
 
     def additional_urls(self):
         return [
@@ -161,44 +205,6 @@ class DrudgeModelView(ZivinetzModelView):
             return self.apply_ordering(queryset, data.get('o')).transform(
                 add_last_assignment_and_mark)
 
-    class batch_form(towel_forms.BatchForm):
-        mail_subject = forms.CharField(label=_('subject'))
-        mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
-        mail_attachment = forms.FileField(label=_('attachment'), required=False)
-
-        def process(self):
-            mails = 0
-            attachment = None
-
-            if self.cleaned_data['mail_attachment']:
-                attachment = StringIO(self.cleaned_data['mail_attachment'].read())
-
-            for email in set(self.batch_queryset.values_list('user__email', flat=True)):
-                message = EmailMessage(
-                    subject=self.cleaned_data['mail_subject'],
-                    body=self.cleaned_data['mail_body'],
-                    to=[email],
-                    from_email='info@naturnetz.ch',
-                    headers={
-                        'Reply-To': self.request.user.email,
-                    })
-                if self.cleaned_data['mail_attachment']:
-                    message.attach(
-                        self.cleaned_data['mail_attachment'].name,
-                        attachment.getvalue(),
-                        )
-                message.send()
-                mails += 1
-
-            if mails:
-                messages.success(self.request,
-                    _('Successfully sent mails to %s people.') % mails)
-            else:
-                messages.error(self.request,
-                    _('Did not send any mails. Did you select people?'))
-
-            return self.batch_queryset
-
     def deletion_allowed(self, request, instance):
         return (
             super(DrudgeModelView, self).deletion_allowed(request, instance)
@@ -225,6 +231,7 @@ ExpenseReportFormSet = inlineformset_factory(Assignment,
 
 class AssignmentModelView(ZivinetzModelView):
     paginate_by = 50
+    batch_form = create_email_batch_form('drudge__user__email')
 
     class search_form(towel_forms.SearchForm):
         #default = {
@@ -273,45 +280,6 @@ class AssignmentModelView(ZivinetzModelView):
                     & Q(date_until__gte=data.get('service_between')))
 
             return self.apply_ordering(queryset, data.get('o'))
-
-    class batch_form(towel_forms.BatchForm):
-        mail_subject = forms.CharField(label=_('subject'))
-        mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
-        mail_attachment = forms.FileField(label=_('attachment'), required=False)
-
-        def process(self):
-            mails = 0
-            attachment = None
-
-            if self.cleaned_data['mail_attachment']:
-                attachment = StringIO(self.cleaned_data['mail_attachment'].read())
-
-            for email in set(self.batch_queryset.values_list(
-                    'drudge__user__email', flat=True)):
-                message = EmailMessage(
-                    subject=self.cleaned_data['mail_subject'],
-                    body=self.cleaned_data['mail_body'],
-                    to=[email],
-                    from_email='info@naturnetz.ch',
-                    headers={
-                        'Reply-To': self.request.user.email,
-                    })
-                if self.cleaned_data['mail_attachment']:
-                    message.attach(
-                        self.cleaned_data['mail_attachment'].name,
-                        attachment.getvalue(),
-                        )
-                message.send()
-                mails += 1
-
-            if mails:
-                messages.success(self.request,
-                    _('Successfully sent mails to %s people.') % mails)
-            else:
-                messages.error(self.request,
-                    _('Did not send any mails. Did you select people?'))
-
-            return self.batch_queryset
 
     def additional_urls(self):
         return [
@@ -532,6 +500,7 @@ expense_report_views = ExpenseReportModelView(ExpenseReport)
 
 class WaitListModelView(ZivinetzModelView):
     paginate_by = 50
+    batch_form = create_email_batch_form('drudge__user__email')
 
     class search_form(towel_forms.SearchForm):
         specification__scope_statement = forms.ModelMultipleChoiceField(
@@ -544,45 +513,6 @@ class WaitListModelView(ZivinetzModelView):
         assignment_date_until__lte = forms.DateField(
             label=ugettext_lazy('date until'), required=False,
             widget=forms.DateInput(attrs={'class': 'dateinput'}))
-
-    class batch_form(towel_forms.BatchForm):
-        mail_subject = forms.CharField(label=_('subject'))
-        mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
-        mail_attachment = forms.FileField(label=_('attachment'), required=False)
-
-        def process(self):
-            mails = 0
-            attachment = None
-
-            if self.cleaned_data['mail_attachment']:
-                attachment = StringIO(self.cleaned_data['mail_attachment'].read())
-
-            for email in set(self.batch_queryset.values_list(
-                    'drudge__user__email', flat=True)):
-                message = EmailMessage(
-                    subject=self.cleaned_data['mail_subject'],
-                    body=self.cleaned_data['mail_body'],
-                    to=[email],
-                    from_email='info@naturnetz.ch',
-                    headers={
-                        'Reply-To': self.request.user.email,
-                    })
-                if self.cleaned_data['mail_attachment']:
-                    message.attach(
-                        self.cleaned_data['mail_attachment'].name,
-                        attachment.getvalue(),
-                        )
-                message.send()
-                mails += 1
-
-            if mails:
-                messages.success(self.request,
-                    _('Successfully sent mails to %s people.') % mails)
-            else:
-                messages.error(self.request,
-                    _('Did not send any mails. Did you select people?'))
-
-            return self.batch_queryset
 
     def deletion_allowed(self, request, instance):
         return (
