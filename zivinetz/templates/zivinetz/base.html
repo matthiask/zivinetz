@@ -38,18 +38,18 @@
                 {% if forloop.first %}
                   <div class="panel">
                 {% endif %}
-                    {% if field.is_hidden %}
-                      {{ field }}
-                    {% else %}
-                      {% form_item field %}
-                    {% endif %}
+                  {% if field.is_hidden %}
+                    {{ field }}
+                  {% else %}
+                    {% form_item field %}
+                  {% endif %}
                 {% if forloop.last %}
-                      {% if search_form.searching %}
-                        <a href="{{ list_url|default:"." }}?clear=1" class="button">
-                          {% trans "Reset" %}</a>
-                      {% endif %}
-                      <button type="submit" class="button right">
-                        {% trans "Search" %}</button>
+                  {% if search_form.searching %}
+                    <a href="{{ list_url|default:"." }}?clear=1" class="button secondary">
+                      {% trans "Reset" %}</a>
+                  {% endif %}
+                  <button type="submit" class="button right">
+                    {% trans "Search" %}</button>
                   </div>
                 {% endif %}
               {% endfor %}
@@ -58,7 +58,9 @@
                 <div class="small-9 columns">{{ search_form.query }}</div>
                 <div class="small-3 columns">
                   <button type="button" data-toggle="form"
-                    class="button postfix radius secondary dropdown"></button>
+                    class="button postfix radius secondary has-dropdown">
+                    <i class="foundicon-plus"></i>
+                  </button>
                 </div>
               </div>
               <input type="submit" style="margin-left:-4000em">
@@ -84,39 +86,36 @@
         </div>
       {% endif %}
     {% endblock page-header %}
+
+    {% include "towel/_messages.html" %}
   </div>
 </div>
+
 <div class="row">
-  <div class="large-12 columns">
-    {% include "towel/_messages.html" %}
-
-    <div class="row">
-      <div class="large-9 columns">
-        {% block content %}{% endblock %}
-      </div>
-      <div class="large-3 columns">
-        {% block sidebar %}
-          {% if verbose_name and add_url and adding_allowed or view.allow_add %}
-            <div class="panel">
-              <ul class="side-nav">
-                <li>{{ verbose_name_plural }}</li>
-
-                {% mark_current request.path %}
-                <li><a href="{{ add_url }}" class="add">
-                  {% blocktrans %}New {{ verbose_name }}{% endblocktrans %}</a></li>
-                {% endmark_current %}
-              </ul>
-            </div>
-          {% endif %}
-        {% endblock %}
-      </div>
-    </div>
-
+  <div class="large-9 columns">
+    {% block content %}{% endblock %}
     <hr>
     <a href="{% url "auth_logout" %}">{% trans "Log out" %}</a> /
     <a href="/accounts/password/change/">{% trans "Change password" %}</a>
   </div>
+  <div class="large-3 columns">
+    {% block sidebar %}
+      {% if verbose_name and add_url and adding_allowed or view.allow_add %}
+        <div class="panel">
+          <ul class="side-nav">
+            <li>{{ verbose_name_plural }}</li>
+
+            {% mark_current request.path %}
+            <li><a href="{{ add_url }}" class="add">
+              {% blocktrans %}New {{ verbose_name }}{% endblocktrans %}</a></li>
+            {% endmark_current %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endblock %}
+  </div>
 </div>
+
 {% endblock %}
 
 {% block js %}{{ block.super }}
@@ -130,23 +129,4 @@
 <script src="{% static 'zivinetz/zivinetz.js' %}"></script>
 {% endblock %}
 
-{% block inline-js %}
-<div id="spinner">Saving...</div>
-<script>
-  (function($) {
-    $(document).foundation();
-    $(document).towelFoundation();
-
-    var spinner = $('#spinner');
-    spinner.bind('ajaxSend', function(evt, jqxhr, settings) {
-      if (settings.type == 'POST') {
-        spinner.html('Saving...').show();
-      } else {
-        spinner.html('Loading...').show();
-      }
-    }).bind('ajaxComplete', function() {
-      spinner.hide();
-    });
-  })(jQuery);
-</script>
-{% endblock %}
+{% block inline-js %}{% endblock %}
