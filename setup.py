@@ -1,22 +1,44 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
 import os
-import setuplib
+from setuptools import setup, find_packages
 
-packages, package_data = setuplib.find_packages('zivinetz')
 
-setup(name='zivinetz',
+def read(filename):
+    return open(os.path.join(os.path.dirname(__file__), filename)).read()
+
+
+setup(
+    name='zivinetz',
     version=__import__('zivinetz').__version__,
     description='App for managing civil service drudges.',
-    long_description=open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),
+    long_description=read('README.rst'),
     author='Matthias Kestenholz',
     author_email='mk@406.ch',
     url='http://github.com/matthiask/zivinetz/',
     license='BSD License',
     platforms=['OS Independent'],
-    packages=packages,
-    package_data=package_data,
+    packages=find_packages(
+        exclude=[],
+    ),
+    package_data={
+        '': ['*.html', '*.txt'],
+        'zivinetz': [
+            'locale/*/*/*.*',
+            'static/zivinetz/*.*',
+            'static/zivinetz/*/*.*',
+            'templates/*.*',
+            'templates/*/*.*',
+            'templates/*/*/*.*',
+            'templates/*/*/*/*.*',
+        ],
+    },
+    #install_requires=[
+    #    'Django>=1.6',
+    #    'Towel',
+    #    'django-photos',
+    #    'PDFDocument',
+    #],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
@@ -28,4 +50,5 @@ setup(name='zivinetz',
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
+    zip_safe=False,
 )

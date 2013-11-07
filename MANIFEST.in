@@ -1,7 +1,6 @@
 include LICENSE
 include MANIFEST.in
 include README.rst
-include setuplib.py
 recursive-include zivinetz/static *
 recursive-include zivinetz/locale *
 recursive-include zivinetz/templates *
