@@ -347,7 +347,7 @@ class AssignmentModelView(ZivinetzModelView):
 
     def get_form(self, request, instance=None, change=None, **kwargs):
         base_form = super(AssignmentModelView, self).get_form(request,
-            instance=instance, exclude=('created',))
+            instance=instance)
 
         class AssignmentForm(base_form):
             class Meta:
@@ -355,6 +355,7 @@ class AssignmentModelView(ZivinetzModelView):
                 widgets = {
                     'drudge': SelectWithPicker(model=Drudge, request=request),
                 }
+                exclude = ('created',)
 
             def clean(self):
                 data = super(AssignmentForm, self).clean()
@@ -577,8 +578,8 @@ class JobReferenceModelView(ZivinetzModelView):
         return HttpResponseRedirect(instance.get_absolute_url() + 'edit/')
 
     def get_form(self, request, instance=None, change=None, **kwargs):
-        return super(JobReferenceModelView, self).get_form(request, instance=instance,
-            exclude=('assignment',))
+        return super(JobReferenceModelView, self).get_form(request,
+            instance=instance, exclude=('assignment',))
 
     def adding_allowed(self, request):
         return False
