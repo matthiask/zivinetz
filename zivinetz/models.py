@@ -2,7 +2,7 @@ from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from towel.managers import SearchManager
-from towel.modelview import ModelViewURLs
+from towel.resources.urls import model_resource_urls
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -40,6 +40,7 @@ STATE_CHOICES = (
 )
 
 
+@model_resource_urls()
 class ScopeStatement(models.Model):
     is_active = models.BooleanField(_('is active'), default=True)
     eis_no = models.CharField(_('EIS No.'), unique=True, max_length=10)
@@ -99,6 +100,7 @@ class Choices(object):
         return k
 
 
+@model_resource_urls()
 class Specification(models.Model):
     ACCOMODATION = Choices((
         ('provided', _('provided')),
@@ -217,6 +219,7 @@ class CompensationSetManager(models.Manager):
             raise self.model.DoesNotExist
 
 
+@model_resource_urls()
 class CompensationSet(models.Model):
     valid_from = models.DateField(_('valid from'), unique=True)
 
@@ -265,6 +268,7 @@ class CompensationSet(models.Model):
         return ugettext('compensation set, valid from %s') % self.valid_from
 
 
+@model_resource_urls()
 class RegionalOffice(models.Model):
     name = models.CharField(_('name'), max_length=100)
     city = models.CharField(_('city'), max_length=100)
@@ -280,7 +284,7 @@ class RegionalOffice(models.Model):
         verbose_name_plural = _('regional offices')
 
     def __unicode__(self):
-            return self.name
+        return self.name
 
 
 class DrudgeManager(SearchManager):
@@ -297,6 +301,7 @@ class DrudgeManager(SearchManager):
         return self.filter(q)
 
 
+@model_resource_urls()
 class Drudge(models.Model):
     STATES = [state[0] for state in STATE_CHOICES]
     STATE_CHOICES = zip(STATES, STATES)
@@ -407,6 +412,7 @@ class AssignmentManager(SearchManager):
         return self.filter(q)
 
 
+@model_resource_urls()
 class Assignment(models.Model):
     TENTATIVE = 10
     ARRANGED = 20
@@ -700,6 +706,7 @@ class ExpenseReportManager(SearchManager):
         ] + ['assignment__%s' % f for f in AssignmentManager.search_fields]
 
 
+@model_resource_urls()
 class ExpenseReport(models.Model):
     PENDING = 10
     FILLED = 20
@@ -872,6 +879,7 @@ class ExpenseReport(models.Model):
         return ret, additional, total
 
 
+@model_resource_urls()
 class PublicHoliday(models.Model):
     name = models.CharField(_('name'), max_length=100)
     date = models.DateField(_('date'), unique=True)
@@ -885,6 +893,7 @@ class PublicHoliday(models.Model):
         return u'%s (%s)' % (self.name, self.date)
 
 
+@model_resource_urls()
 class CompanyHoliday(models.Model):
     date_from = models.DateField(_('date from'))
     date_until = models.DateField(_('date until'))
@@ -907,6 +916,7 @@ class WaitListManager(SearchManager):
         ] + ['drudge__%s' % f for f in DrudgeManager.search_fields]
 
 
+@model_resource_urls()
 class WaitList(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'))
@@ -934,6 +944,7 @@ class WaitList(models.Model):
             )
 
 
+@model_resource_urls()
 class Assessment(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'),
@@ -959,6 +970,7 @@ class CodewordManager(models.Manager):
             return u''
 
 
+@model_resource_urls()
 class Codeword(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     key = models.CharField(_('key'), max_length=10, db_index=True)
@@ -976,6 +988,7 @@ class Codeword(models.Model):
         return self.codeword
 
 
+@model_resource_urls()
 class JobReferenceTemplate(models.Model):
     title = models.CharField(_('title'), max_length=100)
     text = models.TextField(_('text'))
@@ -995,6 +1008,7 @@ class JobReferenceManager(SearchManager):
         ] + ['assignment__%s' % f for f in AssignmentManager.search_fields]
 
 
+@model_resource_urls()
 class JobReference(models.Model):
     assignment = models.ForeignKey(Assignment, verbose_name=_('assignment'),
         related_name='jobreferences')
@@ -1010,11 +1024,6 @@ class JobReference(models.Model):
 
     def __unicode__(self):
         return u'%s: %s' % (self._meta.verbose_name, self.assignment)
-
-    urls = ModelViewURLs(lambda obj: {'pk': obj.pk})
-
-    def get_absolute_url(self):
-        return self.urls.url('detail')
 
     @models.permalink
     def pdf_url(self):
