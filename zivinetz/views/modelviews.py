@@ -359,7 +359,7 @@ class AssignmentModelView(ZivinetzModelView):
             def clean(self):
                 data = super(AssignmentForm, self).clean()
 
-                if data['status'] == Assignment.MOBILIZED:
+                if data.get('status') == Assignment.MOBILIZED:
                     if not data.get('mobilized_on'):
                         raise forms.ValidationError(
                             _('Mobilized on date must be set when status is mobilized.'))
@@ -406,7 +406,7 @@ class EditExpenseReportForm(forms.ModelForm, towel_forms.WarningsForm):
         try:
             total_days = (data['working_days'] + data['free_days'] + data['sick_days']
                 + data['holi_days'] + data['forced_leave_days'])
-        except (ValueError, TypeError):
+        except (KeyError, ValueError, TypeError):
             return data
 
         if total_days != self.instance.calculated_total_days:
