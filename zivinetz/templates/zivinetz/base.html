@@ -95,8 +95,8 @@
   <div class="large-9 columns">
     {% block content %}{% endblock %}
     <hr>
-    <a href="{% url "logout" %}">{% trans "Log out" %}</a> /
-    <a href="/accounts/password/change/">{% trans "Change password" %}</a>
+    <a href="{% url 'logout' %}">{% trans "Log out" %}</a> /
+    <a href="{% url 'password_change' %}">{% trans "Change password" %}</a>
   </div>
   <div class="large-3 columns">
     {% block sidebar %}
