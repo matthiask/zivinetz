@@ -5,7 +5,7 @@ import itertools
 
 from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models import Max, Min
+from django.db.models import Max, Min, Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.datastructures import SortedDict
@@ -254,7 +254,17 @@ class SchedulingSearchForm(SearchForm):
         data = self.safe_cleaned_data
         queryset = self.apply_filters(
             Assignment.objects.search(data.get('query')),
-            data, exclude=('mode',))
+            data, exclude=('mode', 'date_until__gte'))
+        if data.get('date_until__gte'):
+            queryset = queryset.filter(
+                Q(
+                    date_until_extension__isnull=True,
+                    date_until__gte=data.get('date_until__gte'),
+                ) | Q(
+                    date_until_extension__isnull=False,
+                    date_until_extension__gte=data.get('date_until__gte'),
+                )
+            )
         return queryset
 
     def waitlist_queryset(self):
