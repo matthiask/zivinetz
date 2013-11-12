@@ -42,7 +42,7 @@
         <tr class="{% cycle 'odd' 'even' %}">
             <th>
                 <a href="{{ object.get_absolute_url }}">
-                    {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
+                    {{ object.date_from|date:"d.m.Y" }} - {{ object.determine_date_until|date:"d.m.Y" }}
                 </a>
             </th>
             <td>{{ object.specification.code }}</td>

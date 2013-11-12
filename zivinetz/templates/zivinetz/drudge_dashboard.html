@@ -21,7 +21,7 @@
     <tbody>
     {% for object in assignments %}
         <tr class="{% cycle 'odd' 'even' %}">
-            <th>{{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}</th>
+            <th>{{ object.date_from|date:"d.m.Y" }} - {{ object.determine_date_until|date:"d.m.Y" }}</th>
             <td title="{{ object.specification }}">{{ object.specification.code }}</td>
             <td>{{ object.created|date:"d.m.Y" }}</td>
             <td>{{ object.get_status_display }}</td>
