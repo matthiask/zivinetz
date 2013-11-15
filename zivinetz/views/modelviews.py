@@ -107,12 +107,6 @@ class ZivinetzModelView(PickerModelView):
             ), instance)
 
 
-SpecificationFormSet = inlineformset_factory(ScopeStatement,
-    Specification,
-    extra=0,
-    formfield_callback=towel_formfield_callback)
-
-
 class ScopeStatementModelView(ZivinetzModelView):
     def deletion_allowed(self, request, instance):
         return (
