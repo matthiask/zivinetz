@@ -465,30 +465,6 @@ class ExpenseReportModelView(ZivinetzModelView):
 expense_report_views = ExpenseReportModelView(ExpenseReport)
 
 
-class WaitListModelView(ZivinetzModelView):
-    paginate_by = 50
-    batch_form = create_email_batch_form('drudge__user__email')
-
-    class search_form(SearchForm):
-        specification__scope_statement = forms.ModelMultipleChoiceField(
-            queryset=ScopeStatement.objects.all(),
-            label=ugettext_lazy('scope statement'),
-            required=False)
-        assignment_date_from__gte = forms.DateField(
-            label=ugettext_lazy('date from'), required=False,
-            widget=forms.DateInput(attrs={'class': 'dateinput'}))
-        assignment_date_until__lte = forms.DateField(
-            label=ugettext_lazy('date until'), required=False,
-            widget=forms.DateInput(attrs={'class': 'dateinput'}))
-
-    def deletion_allowed(self, request, instance):
-        return (
-            super(WaitListModelView, self).deletion_allowed(request, instance)
-            )
-
-waitlist_views = WaitListModelView(WaitList)
-
-
 class JobReferenceModelView(ZivinetzModelView):
     paginate_by = 50
 

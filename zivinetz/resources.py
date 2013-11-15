@@ -23,6 +23,7 @@ from towel_foundation.widgets import SelectWithPicker
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
+from zivinetz.forms import (WaitListSearchForm,)
 from zivinetz.models import (Assignment, Drudge,
     ExpenseReport, RegionalOffice, ScopeStatement,
     Specification, WaitList, Assessment, JobReferenceTemplate,
@@ -32,6 +33,7 @@ from zivinetz.models import (Assignment, Drudge,
 class ZivinetzMixin(object):
     base_template = 'zivinetz/base.html'
     deletion_cascade_allowed = ()
+    send_emails_selector = None
 
     def allow_add(self, silent=True):
         return self.request.user.has_perm('{}.add_{}'.format(
@@ -60,6 +62,56 @@ class ZivinetzMixin(object):
             related=self.deletion_cascade_allowed,
             silent=silent)
 
+    def send_emails(self, queryset):
+        class EmailForm(forms.Form):
+            subject = forms.CharField(label=ugettext_lazy('subject'))
+            body = forms.CharField(label=ugettext_lazy('body'),
+                widget=forms.Textarea)
+            attachment = forms.FileField(label=ugettext_lazy('attachment'),
+                required=False)
+
+        if 'confirm' in self.request.POST:
+            form = EmailForm(self.request.POST)
+            if form.is_valid():
+                message = EmailMessage(
+                    subject=form.cleaned_data['subject'],
+                    body=form.cleaned_data['body'],
+                    to=[],
+                    bcc=queryset.values_list(
+                        self.send_emails_selector, flat=True),
+                    from_email='info@naturnetz.ch',
+                    headers={
+                        'Reply-To': self.request.user.email,
+                    })
+                if form.cleaned_data['attachment']:
+                    message.attach(
+                        form.cleaned_data['attachment'].name,
+                        form.cleaned_data['attachment'].read())
+                message.send()
+                messages.success(self.request, _('Successfully sent the mail.'))
+
+                return queryset
+        else:
+            form = EmailForm()
+
+        context = resources.ModelResourceView.get_context_data(self,
+            title=_('Send emails'),
+            form=form,
+            action_queryset=queryset,
+            action_hidden_fields=self.batch_action_hidden_fields(queryset, [
+                ('batch-action', 'send_emails'),
+                ('confirm', 1),
+                ]),
+            )
+        self.template_name_suffix = '_action'
+        return self.render_to_response(context)
+
+    def get_batch_actions(self):
+        actions = super(ZivinetzMixin, self).get_batch_actions()
+        if self.send_emails_selector:
+            actions.append(('send_emails', _('Send emails'), self.send_emails))
+        return actions
+
 
 regionaloffice_url = resource_url_fn(
     RegionalOffice,
@@ -78,6 +130,13 @@ specification_url = resource_url_fn(
     mixins=(ZivinetzMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Specification,),
+    )
+waitlist_url = resource_url_fn(
+    WaitList,
+    mixins=(ZivinetzMixin,),
+    decorators=(staff_member_required,),
+    deletion_cascade_allowed=(WaitList,),
+    send_emails_selector='drudge__user__email',
     )
 
 
@@ -105,5 +164,16 @@ urlpatterns = patterns('',
         specification_url('add', False, resources.AddView),
         specification_url('edit', True, resources.EditView),
         specification_url('delete', True, resources.DeleteView),
+    ))),
+    url(r'^waitlist/', include(patterns(
+        '',
+        waitlist_url('list', False, resources.ListView, suffix='',
+            paginate_by=50,
+            search_form=WaitListSearchForm,
+            ),
+        waitlist_url('detail', True, resources.DetailView, suffix=''),
+        # waitlist_url('add', False, resources.AddView),
+        waitlist_url('edit', True, resources.EditView),
+        waitlist_url('delete', True, resources.DeleteView),
     ))),
 )

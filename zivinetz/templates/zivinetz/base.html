@@ -100,7 +100,8 @@
   </div>
   <div class="large-3 columns">
     {% block sidebar %}
-      {% if verbose_name and add_url and adding_allowed or view.allow_add %}
+    {% if verbose_name and add_url %}
+      {% if adding_allowed or view.allow_add %}
         <div class="panel">
           <ul class="side-nav">
             <li>{{ verbose_name_plural }}</li>
@@ -112,6 +113,7 @@
           </ul>
         </div>
       {% endif %}
+    {% endif %}
     {% endblock %}
   </div>
 </div>
