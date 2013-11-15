@@ -15,8 +15,6 @@
 </h1>
 
 <div class="box searchbox {{ search_form.searching }}">
-    <a href="?clear=1" class="searching">clear</a>
-
     <form id="filterform" method="get" action=".">
         <input type="hidden" name="s" value="1" />
         {% form_item_plain search_form.query %}
@@ -26,6 +24,9 @@
             {% if forloop.last %}</table>{% endif %}
         {% endfor %}
         <button type="submit"><span>{% trans "Search" %}</span></button>
+        <a href="?clear=1" class="button secondary">
+          Reset
+        </a>
     </form>
 </div>
 
@@ -33,10 +34,14 @@
 <style type="text/css">
 #scheduler { background: #eee; border-collapse: collapse; font-size: 70%;
     font-family: Verdana, Arial, sans-serif; }
-#scheduler thead { font-size: 80%; }
-#scheduler td, #scheduler th { padding: 1px; vertical-align: middle; }
-#scheduler td { border: 1px solid #666; text-align: center; line-height: 1em; font-size: 80%; }
-#scheduler th:first-child, #scheduler th:nth-child(2) { white-space: nowrap; }
+#scheduler td, #scheduler th { padding: 1px; vertical-align: middle; text-align: left; }
+#scheduler td { border: 1px solid #666; text-align: center; line-height: 1em; }
+#scheduler th:first-child,
+#scheduler th:nth-child(2)
+#scheduler th:nth-child(3)
+#scheduler th:nth-child(4)
+#scheduler th:nth-child(5)
+#scheduler th:nth-child(6) { white-space: nowrap; }
 
 #scheduler tr.status10 td.a { background-color: #ffcc6e; }
 #scheduler tr.status20 td.a { background-color: #b0beed; }
