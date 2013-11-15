@@ -12,8 +12,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template import Template, Context
 from django.utils.translation import ugettext as _, ugettext_lazy
 
-from towel.forms import (BatchForm, SearchForm, WarningsForm,
-    towel_formfield_callback)
+from towel.forms import BatchForm, WarningsForm, towel_formfield_callback
 
 from towel_foundation.modelview import PickerModelView
 from towel_foundation.widgets import SelectWithPicker
@@ -22,8 +21,9 @@ from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
 from zivinetz.forms import (AssignmentSearchForm, DrudgeSearchForm,
-    JobReferenceSearchForm, AssessmentFormSet, ExpenseReportFormSet)
-from zivinetz.models import (Assignment, Drudge, ExpenseReport, ScopeStatement,
+    ExpenseReportSearchForm, JobReferenceSearchForm, AssessmentFormSet,
+    ExpenseReportFormSet)
+from zivinetz.models import (Assignment, Drudge, ExpenseReport,
     JobReferenceTemplate, JobReference)
 
 
@@ -280,26 +280,7 @@ class EditExpenseReportForm(forms.ModelForm, WarningsForm):
 
 class ExpenseReportModelView(ZivinetzModelView):
     paginate_by = 50
-
-    class search_form(SearchForm):
-        default = {
-            'assignment__status': (Assignment.ARRANGED, Assignment.MOBILIZED),
-            }
-
-        assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
-            queryset=ScopeStatement.objects.all(),
-            label=ugettext_lazy('scope statement'), required=False)
-        assignment__status = forms.MultipleChoiceField(Assignment.STATUS_CHOICES,
-            label=ugettext_lazy('assignment status'), required=False)
-        status = forms.MultipleChoiceField(
-            ExpenseReport.STATUS_CHOICES, label=ugettext_lazy('status'),
-            required=False)
-        date_from__gte = forms.DateField(label=ugettext_lazy('date from'),
-            required=False,
-            widget=forms.DateInput(attrs={'class': 'dateinput'}))
-        date_until__lte = forms.DateField(label=ugettext_lazy('date until'),
-            required=False,
-            widget=forms.DateInput(attrs={'class': 'dateinput'}))
+    search_form = ExpenseReportSearchForm
 
     def handle_search_form(self, request, *args, **kwargs):
         queryset, response = super(ExpenseReportModelView, self).handle_search_form(

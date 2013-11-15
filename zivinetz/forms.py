@@ -117,6 +117,27 @@ class AssignmentSearchForm(SearchForm):
         return self.apply_ordering(queryset, data.get('o'))
 
 
+class ExpenseReportSearchForm(SearchForm):
+    default = {
+        'assignment__status': (Assignment.ARRANGED, Assignment.MOBILIZED),
+        }
+
+    assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
+        queryset=ScopeStatement.objects.all(),
+        label=_('scope statement'), required=False)
+    assignment__status = forms.MultipleChoiceField(Assignment.STATUS_CHOICES,
+        label=_('assignment status'), required=False)
+    status = forms.MultipleChoiceField(
+        ExpenseReport.STATUS_CHOICES, label=_('status'),
+        required=False)
+    date_from__gte = forms.DateField(label=_('date from'),
+        required=False,
+        widget=forms.DateInput(attrs={'class': 'dateinput'}))
+    date_until__lte = forms.DateField(label=_('date until'),
+        required=False,
+        widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+
 class JobReferenceSearchForm(SearchForm):
     assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
         queryset=ScopeStatement.objects.all(),
