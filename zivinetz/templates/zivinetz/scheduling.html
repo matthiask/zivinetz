@@ -36,13 +36,8 @@
     font-family: Verdana, Arial, sans-serif; }
 #scheduler td, #scheduler th { padding: 1px; vertical-align: middle; text-align: left; }
 #scheduler td { border: 1px solid #666; text-align: center; line-height: 1em; }
-#scheduler th:first-child,
-#scheduler th:nth-child(2)
-#scheduler th:nth-child(3)
-#scheduler th:nth-child(4)
-#scheduler th:nth-child(5)
-#scheduler th:nth-child(6) { white-space: nowrap; }
-
+#scheduler th:nth-child(-n+6),
+#scheduler td:nth-child(-n+6) { white-space: nowrap; }
 #scheduler tr.status10 td.a { background-color: #ffcc6e; }
 #scheduler tr.status20 td.a { background-color: #b0beed; }
 #scheduler tr.status30 td.a { background-color: #76bf76; }
