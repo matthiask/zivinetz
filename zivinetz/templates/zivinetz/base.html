@@ -74,7 +74,7 @@
               / {{ paginator.count }}
 
               {% if search_form.searching %}
-              {% with total=view.get_queryset.count %}
+              {% with total=root_object_list.count %} {# XX view.get_queryset.count #}
               {% if total and paginator.count != total %}
                 (<a href="?clear=1">{% blocktrans %}{{ total }} total{% endblocktrans %}</a>)
               {% endif %}
