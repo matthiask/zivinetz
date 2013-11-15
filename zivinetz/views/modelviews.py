@@ -23,10 +23,9 @@ from towel_foundation.widgets import SelectWithPicker
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
-from zivinetz.models import (Assignment, Drudge,
-    ExpenseReport, RegionalOffice, ScopeStatement,
-    Specification, WaitList, Assessment, JobReferenceTemplate,
-    JobReference)
+from zivinetz.models import (
+    Assignment, Drudge, ExpenseReport, RegionalOffice, ScopeStatement,
+    WaitList, Assessment, JobReferenceTemplate, JobReference)
 
 
 def create_email_batch_form(selector):
@@ -105,25 +104,6 @@ class ZivinetzModelView(PickerModelView):
             self.model._meta.app_label,
             self.model._meta.module_name,
             ), instance)
-
-
-class ScopeStatementModelView(ZivinetzModelView):
-    def deletion_allowed(self, request, instance):
-        return (
-            super(ScopeStatementModelView, self).deletion_allowed(request, instance)
-            and self.deletion_allowed_if_only(request, instance, [
-                ScopeStatement, Specification]))
-
-scope_statement_views = ScopeStatementModelView(ScopeStatement)
-
-
-class SpecificationModelView(ZivinetzModelView):
-    def deletion_allowed(self, request, instance):
-        return (
-            super(SpecificationModelView, self).deletion_allowed(request, instance)
-            and self.deletion_allowed_if_only(request, instance, [Specification]))
-
-specification_views = SpecificationModelView(Specification)
 
 
 AssessmentFormSet = inlineformset_factory(Drudge,
