@@ -77,8 +77,8 @@ class ZivinetzMixin(object):
                     subject=form.cleaned_data['subject'],
                     body=form.cleaned_data['body'],
                     to=[],
-                    bcc=queryset.values_list(
-                        self.send_emails_selector, flat=True),
+                    bcc=list(set(queryset.values_list(
+                        self.send_emails_selector, flat=True))),
                     from_email='info@naturnetz.ch',
                     headers={
                         'Reply-To': self.request.user.email,
