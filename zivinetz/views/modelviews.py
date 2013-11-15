@@ -22,11 +22,9 @@ from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
 from zivinetz.forms import (AssignmentSearchForm, DrudgeSearchForm,
-    JobReferenceSearchForm,
-    AssessmentFormSet, ExpenseReportFormSet)
-from zivinetz.models import (
-    Assignment, Drudge, ExpenseReport, ScopeStatement, JobReferenceTemplate,
-    JobReference)
+    JobReferenceSearchForm, AssessmentFormSet, ExpenseReportFormSet)
+from zivinetz.models import (Assignment, Drudge, ExpenseReport, ScopeStatement,
+    JobReferenceTemplate, JobReference)
 
 
 def create_email_batch_form(selector):
