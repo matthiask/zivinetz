@@ -102,6 +102,19 @@ class AssignmentSearchForm(SearchForm):
         return self.apply_ordering(queryset, data.get('o'))
 
 
+class JobReferenceSearchForm(SearchForm):
+    assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
+        queryset=ScopeStatement.objects.all(),
+        label=_('scope statement'),
+        required=False)
+    created__gte = forms.DateField(label=_('date from'),
+        required=False,
+        widget=forms.DateInput(attrs={'class': 'dateinput'}))
+    created__lte = forms.DateField(label=_('date until'),
+        required=False,
+        widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+
 class WaitListSearchForm(SearchForm):
     specification__scope_statement = forms.ModelMultipleChoiceField(
         queryset=ScopeStatement.objects.all(),

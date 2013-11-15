@@ -21,7 +21,8 @@ from towel_foundation.widgets import SelectWithPicker
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
-from zivinetz.forms import AssignmentSearchForm, DrudgeSearchForm
+from zivinetz.forms import (AssignmentSearchForm, DrudgeSearchForm,
+    JobReferenceSearchForm)
 from zivinetz.models import (
     Assignment, Drudge, ExpenseReport, ScopeStatement,
     Assessment, JobReferenceTemplate, JobReference)
@@ -372,18 +373,7 @@ expense_report_views = ExpenseReportModelView(ExpenseReport)
 
 class JobReferenceModelView(ZivinetzModelView):
     paginate_by = 50
-
-    class search_form(SearchForm):
-        assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
-            queryset=ScopeStatement.objects.all(),
-            label=ugettext_lazy('scope statement'),
-            required=False)
-        created__gte = forms.DateField(label=ugettext_lazy('date from'),
-            required=False,
-            widget=forms.DateInput(attrs={'class': 'dateinput'}))
-        created__lte = forms.DateField(label=ugettext_lazy('date until'),
-            required=False,
-            widget=forms.DateInput(attrs={'class': 'dateinput'}))
+    search_form = JobReferenceSearchForm
 
     def additional_urls(self):
         return [
