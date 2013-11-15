@@ -30,7 +30,7 @@ from zivinetz.models import (Assignment, Drudge,
 
 
 def create_email_batch_form(selector):
-    class BatchForm(BatchForm):
+    class EmailBatchForm(BatchForm):
         mail_subject = forms.CharField(label=_('subject'))
         mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
         mail_attachment = forms.FileField(label=_('attachment'), required=False)
@@ -69,7 +69,7 @@ def create_email_batch_form(selector):
 
             return self.batch_queryset
 
-    return BatchForm
+    return EmailBatchForm
 
 
 class ZivinetzModelView(PickerModelView):
