@@ -19,3 +19,4 @@
 /dist
 zivinetz.egg-info
 _build
+.DS_Store
