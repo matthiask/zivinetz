@@ -6,7 +6,7 @@ from django import forms
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMessage
-from django.forms.models import modelform_factory, inlineformset_factory
+from django.forms.models import modelform_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Template, Context
@@ -22,10 +22,11 @@ from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
 from zivinetz.forms import (AssignmentSearchForm, DrudgeSearchForm,
-    JobReferenceSearchForm)
+    JobReferenceSearchForm,
+    AssessmentFormSet, ExpenseReportFormSet)
 from zivinetz.models import (
-    Assignment, Drudge, ExpenseReport, ScopeStatement,
-    Assessment, JobReferenceTemplate, JobReference)
+    Assignment, Drudge, ExpenseReport, ScopeStatement, JobReferenceTemplate,
+    JobReference)
 
 
 def create_email_batch_form(selector):
@@ -106,14 +107,6 @@ class ZivinetzModelView(PickerModelView):
             ), instance)
 
 
-AssessmentFormSet = inlineformset_factory(Drudge,
-    Assessment,
-    extra=0,
-    exclude=('created',),
-    formfield_callback=towel_formfield_callback,
-    )
-
-
 class DrudgeModelView(ZivinetzModelView):
     paginate_by = 50
     batch_form = create_email_batch_form('user__email')
@@ -138,14 +131,6 @@ class DrudgeModelView(ZivinetzModelView):
             }
 
 drudge_views = DrudgeModelView(Drudge)
-
-
-ExpenseReportFormSet = inlineformset_factory(Assignment,
-    ExpenseReport,
-    extra=0,
-    formfield_callback=towel_formfield_callback,
-    fields=('date_from', 'date_until', 'report_no', 'specification', 'status'),
-    )
 
 
 class AssignmentModelView(ZivinetzModelView):
