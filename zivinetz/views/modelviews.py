@@ -14,7 +14,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template import Template, Context
 from django.utils.translation import ugettext as _, ugettext_lazy
 
-from towel import forms as towel_forms
+from towel.forms import (BatchForm, SearchForm, WarningsForm,
+    towel_formfield_callback)
 
 from towel_foundation.modelview import PickerModelView
 from towel_foundation.widgets import SelectWithPicker
@@ -29,7 +30,7 @@ from zivinetz.models import (Assignment, Drudge,
 
 
 def create_email_batch_form(selector):
-    class BatchForm(towel_forms.BatchForm):
+    class BatchForm(BatchForm):
         mail_subject = forms.CharField(label=_('subject'))
         mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
         mail_attachment = forms.FileField(label=_('attachment'), required=False)
@@ -85,7 +86,7 @@ class ZivinetzModelView(PickerModelView):
 
     def get_form(self, request, instance=None, change=None, **kwargs):
         return modelform_factory(self.model,
-            formfield_callback=towel_forms.towel_formfield_callback, **kwargs)
+            formfield_callback=towel_formfield_callback, **kwargs)
 
     def adding_allowed(self, request):
         return request.user.has_perm('{}.add_{}'.format(
@@ -118,7 +119,7 @@ regional_office_views = RegionalOfficeModelView(RegionalOffice)
 SpecificationFormSet = inlineformset_factory(ScopeStatement,
     Specification,
     extra=0,
-    formfield_callback=towel_forms.towel_formfield_callback)
+    formfield_callback=towel_formfield_callback)
 
 
 class ScopeStatementModelView(ZivinetzModelView):
@@ -144,7 +145,7 @@ AssessmentFormSet = inlineformset_factory(Drudge,
     Assessment,
     extra=0,
     exclude=('created',),
-    formfield_callback=towel_forms.towel_formfield_callback,
+    formfield_callback=towel_formfield_callback,
     )
 
 
@@ -177,7 +178,7 @@ class DrudgeModelView(ZivinetzModelView):
             (r'^picker/$', self.view_decorator(self.picker)),
         ]
 
-    class search_form(towel_forms.SearchForm):
+    class search_form(SearchForm):
         orderings = {
             'date_joined': 'user__date_joined',
             }
@@ -224,7 +225,7 @@ drudge_views = DrudgeModelView(Drudge)
 ExpenseReportFormSet = inlineformset_factory(Assignment,
     ExpenseReport,
     extra=0,
-    formfield_callback=towel_forms.towel_formfield_callback,
+    formfield_callback=towel_formfield_callback,
     fields=('date_from', 'date_until', 'report_no', 'specification', 'status'),
     )
 
@@ -233,7 +234,7 @@ class AssignmentModelView(ZivinetzModelView):
     paginate_by = 50
     batch_form = create_email_batch_form('drudge__user__email')
 
-    class search_form(towel_forms.SearchForm):
+    class search_form(SearchForm):
         #default = {
         #    'status': (Assignment.TENTATIVE, Assignment.ARRANGED),
         #    }
@@ -396,7 +397,7 @@ class AssignmentModelView(ZivinetzModelView):
 assignment_views = AssignmentModelView(Assignment)
 
 
-class EditExpenseReportForm(forms.ModelForm, towel_forms.WarningsForm):
+class EditExpenseReportForm(forms.ModelForm, WarningsForm):
     class Meta:
         model = ExpenseReport
         exclude = ('assignment', 'total', 'calculated_total_days')
@@ -426,7 +427,7 @@ class EditExpenseReportForm(forms.ModelForm, towel_forms.WarningsForm):
 class ExpenseReportModelView(ZivinetzModelView):
     paginate_by = 50
 
-    class search_form(towel_forms.SearchForm):
+    class search_form(SearchForm):
         default = {
             'assignment__status': (Assignment.ARRANGED, Assignment.MOBILIZED),
             }
@@ -482,7 +483,7 @@ class ExpenseReportModelView(ZivinetzModelView):
                     model = self.model
                     exclude = ('total', 'calculated_total_days')
 
-                formfield_callback = towel_forms.towel_formfield_callback
+                formfield_callback = towel_formfield_callback
 
             return ModelForm
 
@@ -503,7 +504,7 @@ class WaitListModelView(ZivinetzModelView):
     paginate_by = 50
     batch_form = create_email_batch_form('drudge__user__email')
 
-    class search_form(towel_forms.SearchForm):
+    class search_form(SearchForm):
         specification__scope_statement = forms.ModelMultipleChoiceField(
             queryset=ScopeStatement.objects.all(),
             label=ugettext_lazy('scope statement'),
@@ -526,7 +527,7 @@ waitlist_views = WaitListModelView(WaitList)
 class JobReferenceModelView(ZivinetzModelView):
     paginate_by = 50
 
-    class search_form(towel_forms.SearchForm):
+    class search_form(SearchForm):
         assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
             queryset=ScopeStatement.objects.all(),
             label=ugettext_lazy('scope statement'),
