@@ -107,15 +107,6 @@ class ZivinetzModelView(PickerModelView):
             ), instance)
 
 
-class RegionalOfficeModelView(ZivinetzModelView):
-    def deletion_allowed(self, request, instance):
-        return (
-            super(RegionalOfficeModelView, self).deletion_allowed(request, instance)
-            and self.deletion_allowed_if_only(request, instance, [RegionalOffice]))
-
-regional_office_views = RegionalOfficeModelView(RegionalOffice)
-
-
 SpecificationFormSet = inlineformset_factory(ScopeStatement,
     Specification,
     extra=0,

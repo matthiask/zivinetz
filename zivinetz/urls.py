@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 
 from zivinetz.views.modelviews import (assignment_views, drudge_views,
-    expense_report_views, regional_office_views, scope_statement_views,
+    expense_report_views, scope_statement_views,
     specification_views, waitlist_views, jobreference_views)
 
 from zivinetz.views import photos
@@ -17,7 +17,6 @@ urlpatterns = patterns('zivinetz.views',
 
     url(r'^admin/$', 'home.admin'),
 
-    url(r'^admin/regional_offices/', include(regional_office_views.urls)),
     url(r'^admin/scope_statements/', include(scope_statement_views.urls)),
     url(r'^admin/specifications/', include(specification_views.urls)),
     url(r'^admin/drudges/', include(drudge_views.urls)),
@@ -27,6 +26,8 @@ urlpatterns = patterns('zivinetz.views',
     url(r'^admin/jobreferences/', include(jobreference_views.urls)),
 
     url(r'^admin/scheduling/$', 'scheduling.scheduling'),
+
+    url(r'^admin/', include('zivinetz.resources')),
 
     url(r'^assignments/pdf/(\d+)/$', 'reporting.assignment_pdf'),
     url(r'^expense_report_pdf/(\d+)/$', 'reporting.expense_report_pdf'),

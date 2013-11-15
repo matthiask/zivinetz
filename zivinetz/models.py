@@ -268,7 +268,7 @@ class CompensationSet(models.Model):
         return ugettext('compensation set, valid from %s') % self.valid_from
 
 
-@model_resource_urls()
+@model_resource_urls(default='edit')
 class RegionalOffice(models.Model):
     name = models.CharField(_('name'), max_length=100)
     city = models.CharField(_('city'), max_length=100)
