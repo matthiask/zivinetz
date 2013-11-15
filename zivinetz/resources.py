@@ -67,6 +67,18 @@ regionaloffice_url = resource_url_fn(
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(RegionalOffice,),
     )
+scopestatement_url = resource_url_fn(
+    ScopeStatement,
+    mixins=(ZivinetzMixin,),
+    decorators=(staff_member_required,),
+    deletion_cascade_allowed=(ScopeStatement, Specification),
+    )
+specification_url = resource_url_fn(
+    Specification,
+    mixins=(ZivinetzMixin,),
+    decorators=(staff_member_required,),
+    deletion_cascade_allowed=(Specification,),
+    )
 
 
 urlpatterns = patterns('',
@@ -77,5 +89,21 @@ urlpatterns = patterns('',
         regionaloffice_url('edit', True, resources.EditView),
         regionaloffice_url('delete', True, resources.DeleteView),
         url(r'^\d+/$', lambda request: redirect('zivinetz_regionaloffice_list')),
+    ))),
+    url(r'^scope_statements/', include(patterns(
+        '',
+        scopestatement_url('list', False, resources.ListView, suffix=''),
+        scopestatement_url('detail', True, resources.DetailView, suffix=''),
+        scopestatement_url('add', False, resources.AddView),
+        scopestatement_url('edit', True, resources.EditView),
+        scopestatement_url('delete', True, resources.DeleteView),
+    ))),
+    url(r'^specifications/', include(patterns(
+        '',
+        specification_url('list', False, resources.ListView, suffix=''),
+        specification_url('detail', True, resources.DetailView, suffix=''),
+        specification_url('add', False, resources.AddView),
+        specification_url('edit', True, resources.EditView),
+        specification_url('delete', True, resources.DeleteView),
     ))),
 )
