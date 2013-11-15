@@ -3,7 +3,6 @@
 from StringIO import StringIO
 
 from django import forms
-from django.db.models import Q
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMessage
@@ -22,7 +21,7 @@ from towel_foundation.widgets import SelectWithPicker
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
-from zivinetz.forms import DrudgeSearchForm
+from zivinetz.forms import AssignmentSearchForm, DrudgeSearchForm
 from zivinetz.models import (
     Assignment, Drudge, ExpenseReport, ScopeStatement,
     Assessment, JobReferenceTemplate, JobReference)
@@ -151,54 +150,7 @@ ExpenseReportFormSet = inlineformset_factory(Assignment,
 class AssignmentModelView(ZivinetzModelView):
     paginate_by = 50
     batch_form = create_email_batch_form('drudge__user__email')
-
-    class search_form(SearchForm):
-        #default = {
-        #    'status': (Assignment.TENTATIVE, Assignment.ARRANGED),
-        #    }
-
-        specification__scope_statement = forms.ModelMultipleChoiceField(
-            ScopeStatement.objects.all(),
-            label=ugettext_lazy('scope statements'), required=False)
-
-        active_on = forms.DateField(label=ugettext_lazy('active on'), required=False,
-            widget=forms.DateInput(attrs={'class': 'dateinput'}))
-
-        service_between = forms.DateField(label=ugettext_lazy('service between'),
-            required=False,
-            widget=forms.DateInput(attrs={'class': 'dateinput'}),
-            help_text=ugettext_lazy(
-                'Drudges in service any time between the following two dates.'))
-        service_and = forms.DateField(label=ugettext_lazy('and'),
-            required=False,
-            widget=forms.DateInput(attrs={'class': 'dateinput'}))
-
-        status = forms.MultipleChoiceField(
-            Assignment.STATUS_CHOICES, label=ugettext_lazy('status'), required=False)
-
-        def queryset(self, model):
-            query, data = self.query_data()
-            queryset = model.objects.search(query)
-            queryset = self.apply_filters(queryset, data,
-                exclude=('active_on', 'service_between', 'service_and'))
-
-            if data.get('active_on'):
-                active_on = data.get('active_on')
-
-                queryset = queryset.filter(
-                    Q(date_from__lte=active_on)
-                    & (
-                        (Q(date_until_extension__isnull=True)
-                            & Q(date_until__gte=active_on))
-                        | Q(date_until_extension__isnull=False,
-                            date_until_extension__gte=active_on)))
-
-            if data.get('service_between') and data.get('service_and'):
-                queryset = queryset.filter(
-                    Q(date_from__lte=data.get('service_and'))
-                    & Q(date_until__gte=data.get('service_between')))
-
-            return self.apply_ordering(queryset, data.get('o'))
+    search_form = AssignmentSearchForm
 
     def additional_urls(self):
         return [

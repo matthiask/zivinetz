@@ -1,5 +1,5 @@
 from django import forms
-from django.db.models import Avg
+from django.db.models import Avg, Q
 from django.utils.translation import ugettext_lazy as _
 
 from towel.forms import SearchForm
@@ -55,6 +55,51 @@ class DrudgeSearchForm(SearchForm):
 
         return self.apply_ordering(queryset, data.get('o')).transform(
             add_last_assignment_and_mark)
+
+
+class AssignmentSearchForm(SearchForm):
+    specification__scope_statement = forms.ModelMultipleChoiceField(
+        ScopeStatement.objects.all(),
+        label=_('scope statements'), required=False)
+
+    active_on = forms.DateField(label=_('active on'), required=False,
+        widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+    service_between = forms.DateField(label=_('service between'),
+        required=False,
+        widget=forms.DateInput(attrs={'class': 'dateinput'}),
+        help_text=_(
+            'Drudges in service any time between the following two dates.'))
+    service_and = forms.DateField(label=_('and'),
+        required=False,
+        widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+    status = forms.MultipleChoiceField(
+        Assignment.STATUS_CHOICES, label=_('status'), required=False)
+
+    def queryset(self, model):
+        query, data = self.query_data()
+        queryset = model.objects.search(query)
+        queryset = self.apply_filters(queryset, data,
+            exclude=('active_on', 'service_between', 'service_and'))
+
+        if data.get('active_on'):
+            active_on = data.get('active_on')
+
+            queryset = queryset.filter(
+                Q(date_from__lte=active_on)
+                & (
+                    (Q(date_until_extension__isnull=True)
+                        & Q(date_until__gte=active_on))
+                    | Q(date_until_extension__isnull=False,
+                        date_until_extension__gte=active_on)))
+
+        if data.get('service_between') and data.get('service_and'):
+            queryset = queryset.filter(
+                Q(date_from__lte=data.get('service_and'))
+                & Q(date_until__gte=data.get('service_between')))
+
+        return self.apply_ordering(queryset, data.get('o'))
 
 
 class WaitListSearchForm(SearchForm):
