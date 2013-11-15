@@ -7,7 +7,6 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMessage
-from django.db.models import Avg
 from django.forms.models import modelform_factory, inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -23,9 +22,10 @@ from towel_foundation.widgets import SelectWithPicker
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
+from zivinetz.forms import DrudgeSearchForm
 from zivinetz.models import (
-    Assignment, Drudge, ExpenseReport, RegionalOffice, ScopeStatement,
-    WaitList, Assessment, JobReferenceTemplate, JobReference)
+    Assignment, Drudge, ExpenseReport, ScopeStatement,
+    Assessment, JobReferenceTemplate, JobReference)
 
 
 def create_email_batch_form(selector):
@@ -114,62 +114,15 @@ AssessmentFormSet = inlineformset_factory(Drudge,
     )
 
 
-def add_last_assignment_and_mark(queryset):
-    drudges = dict((d.id, d) for d in queryset)
-    marks = Assessment.objects.filter(drudge__in=drudges.keys()).order_by().values(
-        'drudge').annotate(Avg('mark'))
-
-    for mark in marks:
-        drudges[mark['drudge']].average_mark = mark['mark__avg']
-
-    for assignment in Assignment.objects.select_related(
-            'specification__scope_statement').order_by('-date_from').iterator():
-
-        if assignment.drudge_id in drudges:
-            drudges[assignment.drudge_id].last_assignment = assignment
-            del drudges[assignment.drudge_id]
-
-        if not drudges:
-            # All drudges have a last assignment now
-            break
-
-
 class DrudgeModelView(ZivinetzModelView):
     paginate_by = 50
     batch_form = create_email_batch_form('user__email')
+    search_form = DrudgeSearchForm
 
     def additional_urls(self):
         return [
             (r'^picker/$', self.view_decorator(self.picker)),
         ]
-
-    class search_form(SearchForm):
-        orderings = {
-            'date_joined': 'user__date_joined',
-            }
-        regional_office = forms.ModelChoiceField(RegionalOffice.objects.all(),
-            label=ugettext_lazy('regional office'), required=False)
-        only_active = forms.BooleanField(label=ugettext_lazy('only active'),
-            required=False)
-        motor_saw_course = forms.MultipleChoiceField(
-            label=ugettext_lazy('motor saw course'), required=False,
-            choices=Drudge.MOTOR_SAW_COURSE_CHOICES)
-        driving_license = forms.NullBooleanField(
-            label=ugettext_lazy('driving license'), required=False)
-
-        def queryset(self, model):
-            query, data = self.query_data()
-            queryset = self.apply_filters(model.objects.search(query),
-                data, exclude=('only_active',))
-
-            if data.get('only_active'):
-                queryset = queryset.filter(
-                    id__in=Assignment.objects.for_date().filter(status__in=(
-                        Assignment.ARRANGED, Assignment.MOBILIZED,
-                        )).values('drudge'))
-
-            return self.apply_ordering(queryset, data.get('o')).transform(
-                add_last_assignment_and_mark)
 
     def deletion_allowed(self, request, instance):
         return (
