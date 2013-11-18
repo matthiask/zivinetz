@@ -1,6 +1,6 @@
 {% extends base_template|default:"base.html" %}
 
-{% load i18n modelview_detail modelview_list %}
+{% load i18n modelview_detail modelview_list zivinetz_tags %}
 
 {% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
 
@@ -72,8 +72,11 @@
 </table>
 
 <div class="buttons">
-    <a href="{% url "zivinetz_jobreference_from_template" 1 object.id %}" class="button">
-        <span>Erstellen</span></a>
+  {% job_reference_templates as templates %}
+  {% for template in templates %}
+    <a href="{% url 'zivinetz_jobreference_from_template' template.id object.id %}" class="button">
+      <span>+ {{ template }}</span></a>
+  {% endfor %}
 </div>
 
 {% endblock %}

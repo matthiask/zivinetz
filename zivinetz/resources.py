@@ -23,7 +23,8 @@ from towel_foundation.widgets import SelectWithPicker
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
-from zivinetz.forms import (WaitListSearchForm,)
+from zivinetz.forms import (JobReferenceForm, JobReferenceSearchForm,
+    WaitListSearchForm)
 from zivinetz.models import (Assignment, Drudge,
     ExpenseReport, RegionalOffice, ScopeStatement,
     Specification, WaitList, Assessment, JobReferenceTemplate,
@@ -114,6 +115,43 @@ class ZivinetzMixin(object):
         return actions
 
 
+class JobReferenceFromTemplateView(resources.ModelResourceView):
+    def get(self, request, template_id, assignment_id):
+        template = get_object_or_404(JobReferenceTemplate, pk=template_id)
+        assignment = get_object_or_404(Assignment, pk=assignment_id)
+
+        instance = self.model(
+            assignment=assignment,
+            created=assignment.determine_date_until(),
+            )
+
+        template = Template(template.text)
+        ctx = {
+            'full_name': assignment.drudge.user.get_full_name(),
+            'last_name': assignment.drudge.user.last_name,
+            'date_from': assignment.date_from.strftime('%d.%m.%Y'),
+            'date_until': assignment.determine_date_until().strftime(
+                '%d.%m.%Y'),
+            'place_of_citizenship': u'%s %s' % (
+                assignment.drudge.place_of_citizenship_city,
+                assignment.drudge.place_of_citizenship_state,
+                ),
+            }
+
+        if assignment.drudge.date_of_birth:
+            ctx['birth_date'] = assignment.drudge.date_of_birth.strftime(
+                '%d.%m.%Y')
+        else:
+            ctx['birth_date'] = '-' * 10
+
+        instance.text = template.render(Context(ctx))
+        instance.save()
+
+        messages.success(request, _('Successfully created job reference.'))
+
+        return HttpResponseRedirect(instance.get_absolute_url() + 'edit/')
+
+
 regionaloffice_url = resource_url_fn(
     RegionalOffice,
     mixins=(ZivinetzMixin,),
@@ -131,6 +169,12 @@ specification_url = resource_url_fn(
     mixins=(ZivinetzMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Specification,),
+    )
+jobreference_url = resource_url_fn(
+    JobReference,
+    mixins=(ZivinetzMixin,),
+    decorators=(staff_member_required,),
+    deletion_cascade_allowed=(JobReference,),
     )
 waitlist_url = resource_url_fn(
     WaitList,
@@ -166,6 +210,22 @@ urlpatterns = patterns('',
         specification_url('add', False, resources.AddView),
         specification_url('edit', True, resources.EditView),
         specification_url('delete', True, resources.DeleteView),
+    ))),
+    url(r'^jobreferences/', include(patterns(
+        '',
+        jobreference_url('list', False, resources.ListView, suffix='',
+            paginate_by=50,
+            search_form=JobReferenceSearchForm,
+            ),
+        jobreference_url('detail', True, resources.DetailView, suffix=''),
+        # jobreference_url('add', False, resources.AddView),
+        jobreference_url('edit', True, resources.EditView,
+            form_class=JobReferenceForm,
+            ),
+        jobreference_url('delete', True, resources.DeleteView),
+
+        jobreference_url('from_template', False, JobReferenceFromTemplateView,
+            suffix=r'(\d+)/(\d+)/'),
     ))),
     url(r'^waitlist/', include(patterns(
         '',

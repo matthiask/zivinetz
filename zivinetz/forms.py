@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from towel.forms import SearchForm, towel_formfield_callback
 
 from zivinetz.models import (Assessment, Assignment, Drudge, ExpenseReport,
-    RegionalOffice, ScopeStatement)
+    JobReference, RegionalOffice, ScopeStatement)
 
 
 AssessmentFormSet = inlineformset_factory(Drudge,
@@ -153,6 +153,12 @@ class JobReferenceSearchForm(SearchForm):
     created__lte = forms.DateField(label=_('date until'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+
+class JobReferenceForm(forms.ModelForm):
+    class Meta:
+        model = JobReference
+        fields = ('text',)
 
 
 class WaitListSearchForm(SearchForm):

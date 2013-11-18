@@ -7,9 +7,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMessage
 from django.forms.models import modelform_factory
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
-from django.template import Template, Context
+from django.shortcuts import redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from towel.forms import BatchForm, WarningsForm, towel_formfield_callback
@@ -21,10 +19,9 @@ from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
 from zivinetz.forms import (AssignmentSearchForm, DrudgeSearchForm,
-    ExpenseReportSearchForm, JobReferenceSearchForm, AssessmentFormSet,
+    ExpenseReportSearchForm, AssessmentFormSet,
     ExpenseReportFormSet)
-from zivinetz.models import (Assignment, Drudge, ExpenseReport,
-    JobReferenceTemplate, JobReference)
+from zivinetz.models import Assignment, Drudge, ExpenseReport
 
 
 def create_email_batch_form(selector):
@@ -350,63 +347,3 @@ class ExpenseReportModelView(ZivinetzModelView):
                 report.recalculate_total()
 
 expense_report_views = ExpenseReportModelView(ExpenseReport)
-
-
-class JobReferenceModelView(ZivinetzModelView):
-    paginate_by = 50
-    search_form = JobReferenceSearchForm
-
-    def additional_urls(self):
-        return [
-            (r'^from_template/(\d+)/(\d+)/$',
-                self.crud_view_decorator(self.from_template)),
-        ]
-
-    def from_template(self, request, template_id, assignment_id):
-        template = get_object_or_404(JobReferenceTemplate, pk=template_id)
-        assignment = get_object_or_404(Assignment, pk=assignment_id)
-
-        instance = self.model(
-            assignment=assignment,
-            created=assignment.determine_date_until(),
-            )
-
-        template = Template(template.text)
-        ctx = {
-            'full_name': assignment.drudge.user.get_full_name(),
-            'last_name': assignment.drudge.user.last_name,
-            'date_from': assignment.date_from.strftime('%d.%m.%Y'),
-            'date_until': assignment.determine_date_until().strftime(
-                '%d.%m.%Y'),
-            'place_of_citizenship': u'%s %s' % (
-                assignment.drudge.place_of_citizenship_city,
-                assignment.drudge.place_of_citizenship_state,
-                ),
-            }
-
-        if assignment.drudge.date_of_birth:
-            ctx['birth_date'] = assignment.drudge.date_of_birth.strftime(
-                '%d.%m.%Y')
-        else:
-            ctx['birth_date'] = '-' * 10
-
-        instance.text = template.render(Context(ctx))
-        instance.save()
-
-        messages.success(request, _('Successfully created job reference.'))
-
-        return HttpResponseRedirect(instance.get_absolute_url() + 'edit/')
-
-    def get_form(self, request, instance=None, change=None, **kwargs):
-        return super(JobReferenceModelView, self).get_form(request,
-            instance=instance, exclude=('assignment',))
-
-    def adding_allowed(self, request):
-        return False
-
-    def deletion_allowed(self, request, instance):
-        return super(JobReferenceModelView, self).deletion_allowed(
-            request, instance)
-
-
-jobreference_views = JobReferenceModelView(JobReference)
