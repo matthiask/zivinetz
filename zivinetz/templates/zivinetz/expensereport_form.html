@@ -128,7 +128,7 @@
 </form>
 
 <script type="text/javascript">
-$(function() {
+onReady.push(function($) {
     var working_days = $('#{{ form.working_days.auto_id }}');
     var free_days = $('#{{ form.free_days.auto_id }}');
 

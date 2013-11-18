@@ -42,9 +42,9 @@
 </table>
 <style type="text/css">#exportxls { float: right !important; margin: 15px 0 0 0 !important; }</style>
 <script type="text/javascript">
-$(function() {
+onReady.push(function($) {
     $('#exportxls').bind('click', function() {
-        window.open('?' + $('#filterform').serialize() + '&s=xls');
+        window.location.href = 'xls/?' + $('.form-search').serialize();
     });
 });
 </script>
