@@ -2,6 +2,7 @@ from StringIO import StringIO
 
 from django import forms
 from django.conf.urls import patterns, include, url
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -24,8 +25,8 @@ from towel_foundation.widgets import SelectWithPicker
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
-from zivinetz.forms import (ExpenseReportSearchForm, EditExpenseReportForm,
-    JobReferenceForm, JobReferenceSearchForm,
+from zivinetz.forms import (AssignmentSearchForm, ExpenseReportSearchForm,
+    EditExpenseReportForm, JobReferenceForm, JobReferenceSearchForm,
     WaitListSearchForm)
 from zivinetz.models import (Assignment, Drudge,
     ExpenseReport, RegionalOffice, ScopeStatement,
@@ -155,6 +156,117 @@ class JobReferenceFromTemplateView(resources.ModelResourceView):
         return HttpResponseRedirect(instance.get_absolute_url() + 'edit/')
 
 
+class AssignmentMixin(ZivinetzMixin):
+    def get_form_class(self):
+        base_form = super(AssignmentMixin, self).get_form_class()
+        request = self.request
+
+        class AssignmentForm(base_form):
+            class Meta:
+                model = Assignment
+                widgets = {
+                    'drudge': SelectWithPicker(model=Drudge, request=request),
+                }
+                exclude = ('created',)
+
+            def clean(self):
+                data = super(AssignmentForm, self).clean()
+
+                if data.get('status') == Assignment.MOBILIZED:
+                    if not data.get('mobilized_on'):
+                        raise forms.ValidationError(_(
+                            'Mobilized on date must be set when status is'
+                            ' mobilized.'))
+                return data
+
+        return AssignmentForm
+
+    def form_valid(self, form):
+        self.object = form.save()
+        messages.success(self.request,
+            _('The %(verbose_name)s has been successfully saved.') %
+            self.object._meta.__dict__,
+        )
+        for report in self.object.reports.all():
+            report.recalculate_total()
+
+        if ('date_until_extension' in form.changed_data
+                and self.object.reports.exists()):
+            messages.warning(request,
+                _('The extended until date has been changed. Please check'
+                    ' whether you need to generate additional expense'
+                    ' reports.'))
+
+        return redirect(self.object)
+
+
+class CreateExpenseReportView(resources.ModelResourceView):
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.allow_edit(self.object, silent=False):
+            raise PermissionDenied
+        created = self.object.generate_expensereports()
+        if created:
+            messages.success(request,
+                _('Successfully created %s expense reports.') % created)
+        else:
+            messages.info(request,
+                _('No expense reports created, all months occupied already?'))
+        return redirect(self.object)
+
+
+class RemoveExpenseReportView(resources.ModelResourceView):
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.allow_edit(self.object, silent=False):
+            raise PermissionDenied
+        self.object.reports.filter(status=ExpenseReport.PENDING).delete()
+        messages.success(
+            request, _('Successfully removed pending expense reports.'))
+        return redirect(self.object)
+
+
+class PhonenumberPDFExportView(resources.ModelResourceView):
+    def get(self, request):
+        self.object_list = self.get_queryset()
+        search_form = AssignmentSearchForm(request.GET, request=request)
+        if not search_form.is_valid():
+            messages.error(request, _('The search query was invalid.'))
+            return redirect('zivinetz_assignment_list')
+        self.object_list = safe_queryset_and(
+            self.object_list, search_form.queryset(self.model))
+
+        pdf, response = pdf_response('phones')
+        pdf.init_report()
+
+        specification = None
+        for assignment in self.object_list.order_by('specification', 'drudge'):
+            drudge = assignment.drudge
+
+            if specification != assignment.specification:
+                pdf.h2(unicode(assignment.specification))
+                specification = assignment.specification
+
+            pdf.table([
+                (unicode(drudge), drudge.user.email, u'%s - %s' % (
+                    assignment.date_from.strftime('%d.%m.%y'),
+                    assignment.determine_date_until().strftime('%d.%m.%y'),
+                    )),
+                (drudge.phone_home, drudge.phone_office, drudge.mobile),
+                (u'%s, %s %s' % (
+                    drudge.address,
+                    drudge.zip_code,
+                    drudge.city,
+                    ),
+                    '',
+                    drudge.education_occupation),
+                ], (6.4 * cm, 5 * cm, 5 * cm))
+            pdf.hr_mini()
+
+        pdf.generate()
+        return response
+
+
 class ExpenseReportMixin(ZivinetzMixin):
     def allow_edit(self, object=None, silent=True):
         if object is not None and object.status >= object.PAID:
@@ -185,6 +297,10 @@ class ExpenseReportMixin(ZivinetzMixin):
 
     def form_valid(self, form):
         self.object = form.save()
+        messages.success(self.request,
+            _('The %(verbose_name)s has been successfully saved.') %
+            self.object._meta.__dict__,
+        )
         self.object.recalculate_total()
 
         if self.request.POST.get('transport_expenses_copy'):
@@ -225,6 +341,13 @@ specification_url = resource_url_fn(
     mixins=(ZivinetzMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Specification,),
+    )
+# drudge_url =
+assignment_url = resource_url_fn(
+    Assignment,
+    mixins=(AssignmentMixin,),
+    decorators=(staff_member_required,),
+    deletion_cascade_allowed=(Assignment,),
     )
 expensereport_url = resource_url_fn(
     ExpenseReport,
@@ -272,6 +395,22 @@ urlpatterns = patterns('',
         specification_url('add', False, resources.AddView),
         specification_url('edit', True, resources.EditView),
         specification_url('delete', True, resources.DeleteView),
+    ))),
+    url(r'^assignments/', include(patterns(
+        '',
+        assignment_url('list', False, resources.ListView, suffix='',
+            paginate_by=50,
+            search_form=AssignmentSearchForm,
+            send_emails_selector='drudge__user__email',
+            ),
+        assignment_url('picker', False, resources.PickerView),
+        assignment_url('pdf', False, PhonenumberPDFExportView),
+        assignment_url('detail', True, resources.DetailView, suffix=''),
+        assignment_url('add', False, resources.AddView),
+        assignment_url('edit', True, resources.EditView),
+        assignment_url('delete', True, resources.DeleteView),
+        assignment_url('create_expensereports', True, CreateExpenseReportView),
+        assignment_url('remove_expensereports', True, RemoveExpenseReportView),
     ))),
     url(r'^expense_reports/', include(patterns(
         '',

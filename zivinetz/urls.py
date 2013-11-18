@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-from zivinetz.views.modelviews import assignment_views, drudge_views
+from zivinetz.views.modelviews import drudge_views
 from zivinetz.views import photos
 
 
@@ -15,7 +15,6 @@ urlpatterns = patterns('zivinetz.views',
     url(r'^admin/$', 'home.admin'),
 
     url(r'^admin/drudges/', include(drudge_views.urls)),
-    url(r'^admin/assignments/', include(assignment_views.urls)),
 
     url(r'^admin/scheduling/$', 'scheduling.scheduling'),
 

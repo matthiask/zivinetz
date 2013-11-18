@@ -15,12 +15,6 @@ AssessmentFormSet = inlineformset_factory(Drudge,
     exclude=('created',),
     formfield_callback=towel_formfield_callback,
     )
-ExpenseReportFormSet = inlineformset_factory(Assignment,
-    ExpenseReport,
-    extra=0,
-    formfield_callback=towel_formfield_callback,
-    fields=('date_from', 'date_until', 'report_no', 'specification', 'status'),
-    )
 
 
 def add_last_assignment_and_mark(queryset):

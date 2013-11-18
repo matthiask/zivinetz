@@ -36,15 +36,15 @@
     </tbody>
     <tfoot>
         <tr><td colspan="7">
-            <button id="exportxls" type="button">{% trans "Phone list" %}</button>
+            <button id="exportpdf" type="button">{% trans "Phone list" %}</button>
         </td></tr>
     </tfoot>
 </table>
-<style type="text/css">#exportxls { float: right !important; margin: 15px 0 0 0 !important; }</style>
+<style type="text/css">#exportpdf { float: right !important; margin: 15px 0 0 0 !important; }</style>
 <script type="text/javascript">
 onReady.push(function($) {
-    $('#exportxls').bind('click', function() {
-        window.location.href = 'xls/?' + $('.form-search').serialize();
+    $('#exportpdf').bind('click', function() {
+        window.location.href = 'pdf/?' + $('.form-search').serialize();
     });
 });
 </script>
