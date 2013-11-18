@@ -72,7 +72,8 @@ class Scheduler(object):
         self.date_until = date_range[1]
 
         if self.date_from:  # Is None if no assignments in queryset
-            self.week_count = (self.date_range[1] - self.date_range[0]).days // 7
+            self.week_count = (
+                self.date_range[1] - self.date_range[0]).days // 7
 
             self.date_slice = slice(
                 max(0, (self.date_range[0] - self.date_from).days // 7),
@@ -96,7 +97,8 @@ class Scheduler(object):
             self.date_until = max_min['max']
 
             if self.date_from:  # Is None if no assignments in queryset
-                self.week_count = (self.date_until - self.date_from).days // 7 + 1
+                self.week_count = (
+                    self.date_until - self.date_from).days // 7 + 1
 
                 self.date_slice = slice(
                     max(0, (self.date_range[0] - self.date_from).days // 7),
@@ -111,7 +113,9 @@ class Scheduler(object):
 
             while True:
                 ret.append(
-                    (monday,) + calendar_week(monday) + (monday == this_monday,))
+                    (monday,)
+                    + calendar_week(monday)
+                    + (monday == this_monday,))
 
                 monday += timedelta(days=7)
                 if monday > self.date_until:

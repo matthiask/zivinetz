@@ -205,7 +205,8 @@ class Specification(models.Model):
         else:
             compensation.update({
                 'clothing': cset.clothing,
-                'clothing_limit_per_assignment': cset.clothing_limit_per_assignment,
+                'clothing_limit_per_assignment':
+                cset.clothing_limit_per_assignment,
                 })
 
         return compensation
@@ -214,7 +215,8 @@ class Specification(models.Model):
 class CompensationSetManager(models.Manager):
     def for_date(self, for_date=date.today):
         try:
-            return self.filter(valid_from__lte=for_date).order_by('-valid_from')[0]
+            return self.filter(
+                valid_from__lte=for_date).order_by('-valid_from')[0]
         except IndexError:
             raise self.model.DoesNotExist
 
@@ -242,7 +244,8 @@ class CompensationSet(models.Model):
 
     accomodation_home = models.DecimalField(
         _('accomodation'), max_digits=10, decimal_places=2,
-        help_text=_('Daily compensation if drudge returns home for the night.'))
+        help_text=_('Daily compensation if drudge returns home for the'
+            ' night.'))
 
     private_transport_per_km = models.DecimalField(
         _('private transport per km'), max_digits=10, decimal_places=2,
@@ -334,7 +337,8 @@ class Drudge(models.Model):
     mobile = models.CharField(_('mobile'), max_length=20, blank=True)
 
     bank_account = models.CharField(_('bank account'), max_length=100,
-        help_text=_('Either enter your IBAN or your Swiss post account number.'))
+        help_text=_('Either enter your IBAN or your Swiss post account'
+            ' number.'))
 
     health_insurance_company = models.CharField(_('health insurance company'),
         max_length=100, blank=True)
@@ -949,7 +953,8 @@ class Assessment(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'),
         related_name='assessments')
-    mark = models.IntegerField(_('mark'), choices=zip(range(1, 7), range(1, 7)),
+    mark = models.IntegerField(
+        _('mark'), choices=zip(range(1, 7), range(1, 7)),
         blank=True, null=True)
     comment = models.TextField(_('comment'), blank=True)
 

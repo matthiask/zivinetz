@@ -113,7 +113,8 @@ class AssignmentPDFStationery(object):
             drudge.address,
             drudge.phone_home,
             drudge.mobile,
-            drudge.date_of_birth and drudge.date_of_birth.strftime('%d.%m.%Y') or u'',
+            (drudge.date_of_birth
+                and drudge.date_of_birth.strftime('%d.%m.%Y') or u''),
             ]
 
         frame_2 = [
@@ -305,7 +306,8 @@ def assignment_pdf(request, assignment_id):
             ]
 
         pdf.spacer(25 * mm)
-        pdf.table(zip(address, address), (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
+        pdf.table(
+            zip(address, address), (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
         pdf.spacer(40 * mm)
 
         pdf.p_markup(u'''
@@ -330,7 +332,8 @@ Wir freuen uns auf deinen Einsatz!
             assignment.regional_office.address,
             ]).replace('\r', '')
 
-        pdf.table([(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
+        pdf.table(
+            [(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
 
         pdf.generate()
         first_page.close()
@@ -378,13 +381,15 @@ def expense_report_pdf(request, expense_report_id):
     pdf.init_report()
 
     pdf.h1('Spesenrapport')
-    pdf.h2('Einsatzbetrieb 20995 - Naturnetz, Chlosterstrasse, 8109 Kloster Fahr')
+    pdf.h2(
+        'Einsatzbetrieb 20995 - Naturnetz, Chlosterstrasse, 8109 Kloster Fahr')
     pdf.spacer()
 
     pdf.table([
         (u'Pflichtenheft:', u'%s' % report.assignment.specification),
         (u'Name, Vorname:', u'%s' % drudge.user.get_full_name()),
-        (u'Adresse:', u'%s, %s %s' % (drudge.address, drudge.zip_code, drudge.city)),
+        (u'Adresse:', u'%s, %s %s' % (
+            drudge.address, drudge.zip_code, drudge.city)),
         (u'ZDP:', drudge.zdp_no),
         (u'Gesamteinsatz:', u'%s - %s' % (
             assignment.date_from.strftime('%d.%m.%Y'),
@@ -439,16 +444,9 @@ class NaturnetzStationery(object):
     def __call__(self, canvas, pdfdocument):
         canvas.saveState()
 
-        """
-        pdfdocument.draw_svg(canvas,
-            os.path.join(settings.APP_BASEDIR, 'naturnetz', 'data', 'NN_Logo.svg'),
-            18 * cm,
-            24 * cm,
-            xsize=3 * cm,
-            )
-        """
         canvas.drawImage(
-            os.path.join(settings.APP_BASEDIR, 'naturnetz', 'data', 'logo-new.jpg'),
+            os.path.join(
+                settings.APP_BASEDIR, 'naturnetz', 'data', 'logo-new.jpg'),
             x=16 * cm, y=24 * cm,
             width=177 * 0.5,
             height=246 * 0.5,

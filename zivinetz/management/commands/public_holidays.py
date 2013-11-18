@@ -17,5 +17,6 @@ class Command(BaseCommand):
         for year in range(2000, 2030):
             holidays = get_public_holidays(year)
             for date, name in holidays.iteritems():
-                PublicHoliday.objects.get_or_create(date=date, defaults={'name': name})
+                PublicHoliday.objects.get_or_create(
+                    date=date, defaults={'name': name})
             pprint.pprint(holidays)

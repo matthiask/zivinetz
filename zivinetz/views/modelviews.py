@@ -31,14 +31,16 @@ def create_email_batch_form(selector):
     class EmailBatchForm(BatchForm):
         mail_subject = forms.CharField(label=_('subject'))
         mail_body = forms.CharField(label=_('body'), widget=forms.Textarea)
-        mail_attachment = forms.FileField(label=_('attachment'), required=False)
+        mail_attachment = forms.FileField(label=_('attachment'),
+            required=False)
 
         def process(self):
             mails = 0
             attachment = None
 
             if self.cleaned_data['mail_attachment']:
-                attachment = StringIO(self.cleaned_data['mail_attachment'].read())
+                attachment = StringIO(
+                    self.cleaned_data['mail_attachment'].read())
 
             for email in set(
                     self.batch_queryset.values_list(selector, flat=True)):
@@ -120,7 +122,8 @@ class DrudgeModelView(ZivinetzModelView):
             super(DrudgeModelView, self).deletion_allowed(request, instance)
             and self.deletion_allowed_if_only(request, instance, [Drudge]))
 
-    def get_formset_instances(self, request, instance=None, change=None, **kwargs):
+    def get_formset_instances(self, request, instance=None, change=None,
+            **kwargs):
         args = self.extend_args_if_post(request, [])
         kwargs['instance'] = instance
 
@@ -160,12 +163,14 @@ class AssignmentModelView(ZivinetzModelView):
     def remove_expensereports(self, request, *args, **kwargs):
         instance = self.get_object_or_404(request, *args, **kwargs)
         instance.reports.filter(status=ExpenseReport.PENDING).delete()
-        messages.success(request, _('Successfully removed pending expense reports.'))
+        messages.success(
+            request, _('Successfully removed pending expense reports.'))
         return redirect(instance)
 
     def handle_search_form(self, request, *args, **kwargs):
-        queryset, response = super(AssignmentModelView, self).handle_search_form(
-            request, *args, **kwargs)
+        queryset, response = super(
+            AssignmentModelView, self
+            ).handle_search_form(request, *args, **kwargs)
 
         if request.GET.get('s') == 'xls':
             pdf, response = pdf_response('phones')
@@ -217,18 +222,21 @@ class AssignmentModelView(ZivinetzModelView):
 
                 if data.get('status') == Assignment.MOBILIZED:
                     if not data.get('mobilized_on'):
-                        raise forms.ValidationError(
-                            _('Mobilized on date must be set when status is mobilized.'))
+                        raise forms.ValidationError(_(
+                            'Mobilized on date must be set when status is'
+                            ' mobilized.'))
                 return data
 
         return AssignmentForm
 
     def deletion_allowed(self, request, instance):
         return (
-            super(AssignmentModelView, self).deletion_allowed(request, instance)
+            super(AssignmentModelView, self).deletion_allowed(
+                request, instance)
             and self.deletion_allowed_if_only(request, instance, [Assignment]))
 
-    def get_formset_instances(self, request, instance=None, change=None, **kwargs):
+    def get_formset_instances(self, request, instance=None, change=None,
+            **kwargs):
         args = self.extend_args_if_post(request, [])
         kwargs['instance'] = instance
 
@@ -260,8 +268,12 @@ class EditExpenseReportForm(forms.ModelForm, WarningsForm):
         data = super(EditExpenseReportForm, self).clean()
 
         try:
-            total_days = (data['working_days'] + data['free_days'] + data['sick_days']
-                + data['holi_days'] + data['forced_leave_days'])
+            total_days = (
+                data['working_days']
+                + data['free_days']
+                + data['sick_days']
+                + data['holi_days']
+                + data['forced_leave_days'])
         except (KeyError, ValueError, TypeError):
             return data
 
@@ -283,17 +295,18 @@ class ExpenseReportModelView(ZivinetzModelView):
     search_form = ExpenseReportSearchForm
 
     def handle_search_form(self, request, *args, **kwargs):
-        queryset, response = super(ExpenseReportModelView, self).handle_search_form(
+        qs, response = super(ExpenseReportModelView, self).handle_search_form(
             request, *args, **kwargs)
 
         if request.GET.get('s') == 'pdf':
             from zivinetz.views import expenses
-            return queryset, expenses.generate_expense_statistics_pdf(queryset)
+            return qs, expenses.generate_expense_statistics_pdf(qs)
 
-        return queryset, response
+        return qs, response
 
     def editing_allowed(self, request, instance):
-        if not super(ExpenseReportModelView, self).editing_allowed(request, instance):
+        if not super(ExpenseReportModelView, self).editing_allowed(
+                request, instance):
             return False
         if instance and instance.pk:
             return instance.status < instance.PAID
@@ -301,8 +314,10 @@ class ExpenseReportModelView(ZivinetzModelView):
 
     def deletion_allowed(self, request, instance):
         return (
-            super(ExpenseReportModelView, self).deletion_allowed(request, instance)
-            and self.deletion_allowed_if_only(request, instance, [ExpenseReport]))
+            super(ExpenseReportModelView, self).deletion_allowed(
+                request, instance)
+            and self.deletion_allowed_if_only(
+                request, instance, [ExpenseReport]))
 
     def get_form(self, request, instance=None, change=None, **kwargs):
         if instance and instance.pk:
@@ -310,7 +325,8 @@ class ExpenseReportModelView(ZivinetzModelView):
         else:
             class ModelForm(forms.ModelForm):
                 assignment = forms.ModelChoiceField(
-                    Assignment.objects.all(), label=ugettext_lazy('assignment'),
+                    Assignment.objects.all(),
+                    label=ugettext_lazy('assignment'),
                     widget=SelectWithPicker(model=Assignment, request=request),
                     )
 
@@ -329,7 +345,8 @@ class ExpenseReportModelView(ZivinetzModelView):
             for report in instance.assignment.reports.filter(
                     date_from__gt=instance.date_from):
                 report.transport_expenses = instance.transport_expenses
-                report.transport_expenses_notes = instance.transport_expenses_notes
+                report.transport_expenses_notes =\
+                    instance.transport_expenses_notes
                 report.recalculate_total()
 
 expense_report_views = ExpenseReportModelView(ExpenseReport)
@@ -359,7 +376,8 @@ class JobReferenceModelView(ZivinetzModelView):
             'full_name': assignment.drudge.user.get_full_name(),
             'last_name': assignment.drudge.user.last_name,
             'date_from': assignment.date_from.strftime('%d.%m.%Y'),
-            'date_until': assignment.determine_date_until().strftime('%d.%m.%Y'),
+            'date_until': assignment.determine_date_until().strftime(
+                '%d.%m.%Y'),
             'place_of_citizenship': u'%s %s' % (
                 assignment.drudge.place_of_citizenship_city,
                 assignment.drudge.place_of_citizenship_state,
@@ -367,7 +385,8 @@ class JobReferenceModelView(ZivinetzModelView):
             }
 
         if assignment.drudge.date_of_birth:
-            ctx['birth_date'] = assignment.drudge.date_of_birth.strftime('%d.%m.%Y')
+            ctx['birth_date'] = assignment.drudge.date_of_birth.strftime(
+                '%d.%m.%Y')
         else:
             ctx['birth_date'] = '-' * 10
 
@@ -386,9 +405,8 @@ class JobReferenceModelView(ZivinetzModelView):
         return False
 
     def deletion_allowed(self, request, instance):
-        return (
-            super(JobReferenceModelView, self).deletion_allowed(request, instance)
-            )
+        return super(JobReferenceModelView, self).deletion_allowed(
+            request, instance)
 
 
 jobreference_views = JobReferenceModelView(JobReference)

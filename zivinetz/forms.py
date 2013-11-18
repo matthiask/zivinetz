@@ -25,14 +25,16 @@ ExpenseReportFormSet = inlineformset_factory(Assignment,
 
 def add_last_assignment_and_mark(queryset):
     drudges = dict((d.id, d) for d in queryset)
-    marks = Assessment.objects.filter(drudge__in=drudges.keys()).order_by().values(
-        'drudge').annotate(Avg('mark'))
+    marks = Assessment.objects.filter(
+        drudge__in=drudges.keys(),
+    ).order_by().values('drudge').annotate(Avg('mark'))
 
     for mark in marks:
         drudges[mark['drudge']].average_mark = mark['mark__avg']
 
     for assignment in Assignment.objects.select_related(
-            'specification__scope_statement').order_by('-date_from').iterator():
+            'specification__scope_statement'
+            ).order_by('-date_from').iterator():
 
         if assignment.drudge_id in drudges:
             drudges[assignment.drudge_id].last_assignment = assignment
@@ -122,9 +124,10 @@ class ExpenseReportSearchForm(SearchForm):
         'assignment__status': (Assignment.ARRANGED, Assignment.MOBILIZED),
         }
 
-    assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
-        queryset=ScopeStatement.objects.all(),
-        label=_('scope statement'), required=False)
+    assignment__specification__scope_statement =\
+        forms.ModelMultipleChoiceField(
+            queryset=ScopeStatement.objects.all(),
+            label=_('scope statement'), required=False)
     assignment__status = forms.MultipleChoiceField(Assignment.STATUS_CHOICES,
         label=_('assignment status'), required=False)
     status = forms.MultipleChoiceField(
@@ -139,10 +142,11 @@ class ExpenseReportSearchForm(SearchForm):
 
 
 class JobReferenceSearchForm(SearchForm):
-    assignment__specification__scope_statement = forms.ModelMultipleChoiceField(
-        queryset=ScopeStatement.objects.all(),
-        label=_('scope statement'),
-        required=False)
+    assignment__specification__scope_statement =\
+        forms.ModelMultipleChoiceField(
+            queryset=ScopeStatement.objects.all(),
+            label=_('scope statement'),
+            required=False)
     created__gte = forms.DateField(label=_('date from'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))

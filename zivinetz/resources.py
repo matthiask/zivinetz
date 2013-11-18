@@ -88,7 +88,8 @@ class ZivinetzMixin(object):
                         form.cleaned_data['attachment'].name,
                         form.cleaned_data['attachment'].read())
                 message.send()
-                messages.success(self.request, _('Successfully sent the mail.'))
+                messages.success(
+                    self.request, _('Successfully sent the mail.'))
 
                 return queryset
         else:
@@ -147,7 +148,8 @@ urlpatterns = patterns('',
         regionaloffice_url('add', False, resources.AddView),
         regionaloffice_url('edit', True, resources.EditView),
         regionaloffice_url('delete', True, resources.DeleteView),
-        url(r'^\d+/$', lambda request: redirect('zivinetz_regionaloffice_list')),
+        url(r'^\d+/$',
+            lambda request: redirect('zivinetz_regionaloffice_list')),
     ))),
     url(r'^scope_statements/', include(patterns(
         '',
