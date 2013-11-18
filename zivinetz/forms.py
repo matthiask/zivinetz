@@ -1,20 +1,11 @@
 from django import forms
 from django.db.models import Avg, Q
-from django.forms.models import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 
 from towel.forms import SearchForm, WarningsForm, towel_formfield_callback
 
 from zivinetz.models import (Assessment, Assignment, Drudge, ExpenseReport,
     JobReference, RegionalOffice, ScopeStatement)
-
-
-AssessmentFormSet = inlineformset_factory(Drudge,
-    Assessment,
-    extra=0,
-    exclude=('created',),
-    formfield_callback=towel_formfield_callback,
-    )
 
 
 def add_last_assignment_and_mark(queryset):

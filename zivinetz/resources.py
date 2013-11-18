@@ -25,9 +25,9 @@ from towel_foundation.widgets import SelectWithPicker
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
-from zivinetz.forms import (AssignmentSearchForm, ExpenseReportSearchForm,
-    EditExpenseReportForm, JobReferenceForm, JobReferenceSearchForm,
-    WaitListSearchForm)
+from zivinetz.forms import (AssignmentSearchForm, DrudgeSearchForm,
+    ExpenseReportSearchForm, EditExpenseReportForm, JobReferenceForm,
+    JobReferenceSearchForm, WaitListSearchForm)
 from zivinetz.models import (Assignment, Drudge,
     ExpenseReport, RegionalOffice, ScopeStatement,
     Specification, WaitList, Assessment, JobReferenceTemplate,
@@ -118,6 +118,16 @@ class ZivinetzMixin(object):
             actions.append(('send_emails', _('Send emails'), self.send_emails))
         return actions
 
+    def form_valid(self, form):
+        self.object = form.save()
+        messages.success(self.request,
+            _('The %(verbose_name)s has been successfully saved.') %
+            self.object._meta.__dict__,
+        )
+        if '_continue' in self.request.POST:
+            return redirect(self.object.urls.url('edit'))
+        return redirect(self.object)
+
 
 class JobReferenceFromTemplateView(resources.ModelResourceView):
     def get(self, request, template_id, assignment_id):
@@ -197,6 +207,8 @@ class AssignmentMixin(ZivinetzMixin):
                     ' whether you need to generate additional expense'
                     ' reports.'))
 
+        if '_continue' in self.request.POST:
+            return redirect(self.object.urls.url('edit'))
         return redirect(self.object)
 
 
@@ -311,6 +323,10 @@ class ExpenseReportMixin(ZivinetzMixin):
                     self.object.transport_expenses_notes
                 report.recalculate_total()
 
+        if '_continue' in self.request.POST:
+            return redirect(self.object.urls.url('edit'))
+        return redirect(self.object)
+
 
 class ExpenseReportPDFExportView(resources.ModelResourceView):
     def get(self, request):
@@ -342,7 +358,12 @@ specification_url = resource_url_fn(
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Specification,),
     )
-# drudge_url =
+drudge_url = resource_url_fn(
+    Drudge,
+    mixins=(ZivinetzMixin,),
+    decorators=(staff_member_required,),
+    deletion_cascade_allowed=(Drudge,),
+    )
 assignment_url = resource_url_fn(
     Assignment,
     mixins=(AssignmentMixin,),
@@ -395,6 +416,19 @@ urlpatterns = patterns('',
         specification_url('add', False, resources.AddView),
         specification_url('edit', True, resources.EditView),
         specification_url('delete', True, resources.DeleteView),
+    ))),
+    url(r'^drudges/', include(patterns(
+        '',
+        drudge_url('list', False, resources.ListView, suffix='',
+            paginate_by=50,
+            search_form=DrudgeSearchForm,
+            send_emails_selector='user__email',
+            ),
+        drudge_url('picker', False, resources.PickerView),
+        drudge_url('detail', True, resources.DetailView, suffix=''),
+        drudge_url('add', False, resources.AddView),
+        drudge_url('edit', True, resources.EditView),
+        drudge_url('delete', True, resources.DeleteView),
     ))),
     url(r'^assignments/', include(patterns(
         '',
