@@ -3,7 +3,7 @@ from django.db.models import Avg, Q
 from django.forms.models import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 
-from towel.forms import SearchForm, towel_formfield_callback
+from towel.forms import SearchForm, WarningsForm, towel_formfield_callback
 
 from zivinetz.models import (Assessment, Assignment, Drudge, ExpenseReport,
     JobReference, RegionalOffice, ScopeStatement)
@@ -139,6 +139,37 @@ class ExpenseReportSearchForm(SearchForm):
     date_until__lte = forms.DateField(label=_('date until'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+
+class EditExpenseReportForm(forms.ModelForm, WarningsForm):
+    class Meta:
+        model = ExpenseReport
+        exclude = ('assignment', 'total', 'calculated_total_days')
+
+    def clean(self):
+        data = super(EditExpenseReportForm, self).clean()
+
+        try:
+            total_days = (
+                data['working_days']
+                + data['free_days']
+                + data['sick_days']
+                + data['holi_days']
+                + data['forced_leave_days'])
+        except (KeyError, ValueError, TypeError):
+            return data
+
+        if total_days != self.instance.calculated_total_days:
+            self.add_warning(
+                _(
+                    'The number of days in this form (%(total)s) differs from'
+                    ' the calculated number of days for this period'
+                    ' (%(calculated)s).'
+                    ) % {
+                    'total': total_days,
+                    'calculated': self.instance.calculated_total_days})
+
+        return data
 
 
 class JobReferenceSearchForm(SearchForm):

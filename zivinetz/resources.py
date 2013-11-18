@@ -14,21 +14,24 @@ from django.template import Template, Context
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views import generic
 
-from towel import forms as towel_forms
 from towel import resources
+from towel.forms import towel_formfield_callback
 from towel.resources.urls import resource_url_fn
+from towel.utils import safe_queryset_and
 
 from towel_foundation.widgets import SelectWithPicker
 
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
-from zivinetz.forms import (JobReferenceForm, JobReferenceSearchForm,
+from zivinetz.forms import (ExpenseReportSearchForm, EditExpenseReportForm,
+    JobReferenceForm, JobReferenceSearchForm,
     WaitListSearchForm)
 from zivinetz.models import (Assignment, Drudge,
     ExpenseReport, RegionalOffice, ScopeStatement,
     Specification, WaitList, Assessment, JobReferenceTemplate,
     JobReference)
+from zivinetz.views.expenses import generate_expense_statistics_pdf
 
 
 class ZivinetzMixin(object):
@@ -152,6 +155,59 @@ class JobReferenceFromTemplateView(resources.ModelResourceView):
         return HttpResponseRedirect(instance.get_absolute_url() + 'edit/')
 
 
+class ExpenseReportMixin(ZivinetzMixin):
+    def allow_edit(self, object=None, silent=True):
+        if object is not None and object.status >= object.PAID:
+            return False
+        return super(ExpenseReportMixin, self).allow_edit(
+            object=object, silent=silent)
+
+    def get_form_class(self):
+        if self.object:
+            return EditExpenseReportForm
+
+        request = self.request
+
+        class ModelForm(forms.ModelForm):
+            assignment = forms.ModelChoiceField(
+                Assignment.objects.all(),
+                label=ugettext_lazy('assignment'),
+                widget=SelectWithPicker(model=Assignment, request=request),
+                )
+
+            class Meta:
+                model = self.model
+                exclude = ('total', 'calculated_total_days')
+
+            formfield_callback = towel_formfield_callback
+
+        return ModelForm
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.recalculate_total()
+
+        if self.request.POST.get('transport_expenses_copy'):
+            for report in self.object.assignment.reports.filter(
+                    date_from__gt=self.object.date_from):
+                report.transport_expenses = self.object.transport_expenses
+                report.transport_expenses_notes =\
+                    self.object.transport_expenses_notes
+                report.recalculate_total()
+
+
+class ExpenseReportPDFExportView(resources.ModelResourceView):
+    def get(self, request):
+        self.object_list = self.get_queryset()
+        search_form = ExpenseReportSearchForm(request.GET, request=request)
+        if not search_form.is_valid():
+            messages.error(request, _('The search query was invalid.'))
+            return redirect('zivinetz_expensereport_list')
+        self.object_list = safe_queryset_and(
+            self.object_list, search_form.queryset(self.model))
+        return generate_expense_statistics_pdf(self.object_list)
+
+
 regionaloffice_url = resource_url_fn(
     RegionalOffice,
     mixins=(ZivinetzMixin,),
@@ -169,6 +225,12 @@ specification_url = resource_url_fn(
     mixins=(ZivinetzMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Specification,),
+    )
+expensereport_url = resource_url_fn(
+    ExpenseReport,
+    mixins=(ExpenseReportMixin,),
+    decorators=(staff_member_required,),
+    deletion_cascade_allowed=(ExpenseReport,),
     )
 jobreference_url = resource_url_fn(
     JobReference,
@@ -210,6 +272,18 @@ urlpatterns = patterns('',
         specification_url('add', False, resources.AddView),
         specification_url('edit', True, resources.EditView),
         specification_url('delete', True, resources.DeleteView),
+    ))),
+    url(r'^expense_reports/', include(patterns(
+        '',
+        expensereport_url('list', False, resources.ListView, suffix='',
+            paginate_by=50,
+            search_form=ExpenseReportSearchForm,
+            ),
+        expensereport_url('pdf', False, ExpenseReportPDFExportView),
+        expensereport_url('detail', True, resources.DetailView, suffix=''),
+        expensereport_url('add', False, resources.AddView),
+        expensereport_url('edit', True, resources.EditView),
+        expensereport_url('delete', True, resources.DeleteView),
     ))),
     url(r'^jobreferences/', include(patterns(
         '',

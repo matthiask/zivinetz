@@ -8,9 +8,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMessage
 from django.forms.models import modelform_factory
 from django.shortcuts import redirect
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext as _
 
-from towel.forms import BatchForm, WarningsForm, towel_formfield_callback
+from towel.forms import BatchForm, towel_formfield_callback
 
 from towel_foundation.modelview import PickerModelView
 from towel_foundation.widgets import SelectWithPicker
@@ -19,8 +19,7 @@ from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
 from zivinetz.forms import (AssignmentSearchForm, DrudgeSearchForm,
-    ExpenseReportSearchForm, AssessmentFormSet,
-    ExpenseReportFormSet)
+    AssessmentFormSet, ExpenseReportFormSet)
 from zivinetz.models import Assignment, Drudge, ExpenseReport
 
 
@@ -254,96 +253,3 @@ class AssignmentModelView(ZivinetzModelView):
 
 
 assignment_views = AssignmentModelView(Assignment)
-
-
-class EditExpenseReportForm(forms.ModelForm, WarningsForm):
-    class Meta:
-        model = ExpenseReport
-        exclude = ('assignment', 'total', 'calculated_total_days')
-
-    def clean(self):
-        data = super(EditExpenseReportForm, self).clean()
-
-        try:
-            total_days = (
-                data['working_days']
-                + data['free_days']
-                + data['sick_days']
-                + data['holi_days']
-                + data['forced_leave_days'])
-        except (KeyError, ValueError, TypeError):
-            return data
-
-        if total_days != self.instance.calculated_total_days:
-            self.add_warning(
-                _(
-                    'The number of days in this form (%(total)s) differs from'
-                    ' the calculated number of days for this period'
-                    ' (%(calculated)s).'
-                    ) % {
-                    'total': total_days,
-                    'calculated': self.instance.calculated_total_days})
-
-        return data
-
-
-class ExpenseReportModelView(ZivinetzModelView):
-    paginate_by = 50
-    search_form = ExpenseReportSearchForm
-
-    def handle_search_form(self, request, *args, **kwargs):
-        qs, response = super(ExpenseReportModelView, self).handle_search_form(
-            request, *args, **kwargs)
-
-        if request.GET.get('s') == 'pdf':
-            from zivinetz.views import expenses
-            return qs, expenses.generate_expense_statistics_pdf(qs)
-
-        return qs, response
-
-    def editing_allowed(self, request, instance):
-        if not super(ExpenseReportModelView, self).editing_allowed(
-                request, instance):
-            return False
-        if instance and instance.pk:
-            return instance.status < instance.PAID
-        return True
-
-    def deletion_allowed(self, request, instance):
-        return (
-            super(ExpenseReportModelView, self).deletion_allowed(
-                request, instance)
-            and self.deletion_allowed_if_only(
-                request, instance, [ExpenseReport]))
-
-    def get_form(self, request, instance=None, change=None, **kwargs):
-        if instance and instance.pk:
-            return EditExpenseReportForm
-        else:
-            class ModelForm(forms.ModelForm):
-                assignment = forms.ModelChoiceField(
-                    Assignment.objects.all(),
-                    label=ugettext_lazy('assignment'),
-                    widget=SelectWithPicker(model=Assignment, request=request),
-                    )
-
-                class Meta:
-                    model = self.model
-                    exclude = ('total', 'calculated_total_days')
-
-                formfield_callback = towel_formfield_callback
-
-            return ModelForm
-
-    def post_save(self, request, instance, form, formset, change):
-        instance.recalculate_total()
-
-        if request.POST.get('transport_expenses_copy'):
-            for report in instance.assignment.reports.filter(
-                    date_from__gt=instance.date_from):
-                report.transport_expenses = instance.transport_expenses
-                report.transport_expenses_notes =\
-                    instance.transport_expenses_notes
-                report.recalculate_total()
-
-expense_report_views = ExpenseReportModelView(ExpenseReport)
