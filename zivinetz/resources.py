@@ -26,8 +26,8 @@ from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
 from zivinetz.forms import (AssignmentSearchForm, DrudgeSearchForm,
-    ExpenseReportSearchForm, EditExpenseReportForm, JobReferenceForm,
-    JobReferenceSearchForm, WaitListSearchForm)
+    AssessmentForm, ExpenseReportSearchForm, EditExpenseReportForm,
+    JobReferenceForm, JobReferenceSearchForm, WaitListSearchForm)
 from zivinetz.models import (Assignment, Drudge,
     ExpenseReport, RegionalOffice, ScopeStatement,
     Specification, WaitList, Assessment, JobReferenceTemplate,
@@ -126,6 +126,27 @@ class ZivinetzMixin(object):
         )
         if '_continue' in self.request.POST:
             return redirect(self.object.urls.url('edit'))
+        return redirect(self.object)
+
+
+class DrudgeDetailView(resources.DetailView):
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(
+            object=self.object,
+            assessment_form=AssessmentForm(),
+            )
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = AssessmentForm(request.POST)
+        if form.is_valid():
+            assessment = form.save(commit=False)
+            assessment.drudge = self.object
+            assessment.save()
+        else:
+            messages.error(request, _('Form invalid: %s') % form.errors)
         return redirect(self.object)
 
 
@@ -425,7 +446,7 @@ urlpatterns = patterns('',
             send_emails_selector='user__email',
             ),
         drudge_url('picker', False, resources.PickerView),
-        drudge_url('detail', True, resources.DetailView, suffix=''),
+        drudge_url('detail', True, DrudgeDetailView, suffix=''),
         drudge_url('add', False, resources.AddView),
         drudge_url('edit', True, resources.EditView),
         drudge_url('delete', True, resources.DeleteView),

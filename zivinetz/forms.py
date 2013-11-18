@@ -59,6 +59,12 @@ class DrudgeSearchForm(SearchForm):
             add_last_assignment_and_mark)
 
 
+class AssessmentForm(forms.ModelForm):
+    class Meta:
+        model = Assessment
+        fields = ('mark', 'comment')
+
+
 class AssignmentSearchForm(SearchForm):
     specification__scope_statement = forms.ModelMultipleChoiceField(
         ScopeStatement.objects.all(),
