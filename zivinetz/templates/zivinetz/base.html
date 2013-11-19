@@ -16,7 +16,7 @@
     <br>
     <dl class="sub-nav">
         {% feincms_nav feincms_page level=4 as sub %}
-        <dt>Module:</dt>
+        <!-- <dt>Module:</dt> -->
         {% for page in sub %}
         <dd {% if page.get_navigation_url in request.path %}class="active"{% endif %}>
           <a href="{{ page.get_navigation_url }}"><span>{{ page.title }}</span></a>
