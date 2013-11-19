@@ -1,6 +1,6 @@
 {% extends "resources/object_list.html" %}
 
-{% load i18n modelview_list %}
+{% load i18n %}
 
 {% block objects %}
 <table class="objects">
@@ -14,10 +14,7 @@
     {% for object in object_list %}
         <tr class="{% cycle 'odd' 'even' %}">
             <th><a href="{{ object.get_absolute_url }}">{{ object }}</a></th>
-
-            {% for name, value in object|model_row:"code" %}
-                <td>{{ value }}</td>
-            {% endfor %}
+            <td>{{ object.code }}</td>
         </tr>
     {% endfor %}
     </tbody>
