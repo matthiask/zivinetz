@@ -11,7 +11,7 @@
 {% for title, value in object|model_details %}
     <tr class="{% cycle "odd" "even" %}">
         <th>{{ title|capfirst }}</th>
-        <td>{{ value }}</td>
+        <td>{{ value|default_if_none:"&ndash;" }}</td>
     </tr>
 {% endfor %}
 </table>
