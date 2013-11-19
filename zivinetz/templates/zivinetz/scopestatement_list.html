@@ -1,6 +1,6 @@
 {% extends "resources/object_list.html" %}
 
-{% load i18n modelview_list %}
+{% load i18n %}
 
 {% block objects %}
 <table class="objects">
@@ -14,10 +14,10 @@
     <tbody>
     {% for object in object_list %}
         <tr class="{% cycle 'odd' 'even' %}">
-            {% for name, value in object|model_row:"is_active,eis_no" %}
-                <td>{{ value }}</td>
-            {% endfor %}
-
+            <td>
+                <i class="foundicon-{{ object.is_active|yesno:'checkmark,remove' }}"></i>
+            </td>
+            <td>{{ object.eis_no }}</td>
             <th><a href="{{ object.get_absolute_url }}">{{ object }}</a></th>
         </tr>
     {% endfor %}
