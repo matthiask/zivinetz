@@ -1,19 +1,13 @@
-from StringIO import StringIO
-
 from django import forms
 from django.conf.urls import patterns, include, url
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMessage
-from django.db.models import Avg
-from django.forms.models import modelform_factory, inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Template, Context
 from django.utils.translation import ugettext as _, ugettext_lazy
-from django.views import generic
 
 from towel import resources
 from towel.forms import towel_formfield_callback
@@ -28,10 +22,9 @@ from pdfdocument.utils import pdf_response
 from zivinetz.forms import (AssignmentSearchForm, DrudgeSearchForm,
     AssessmentForm, ExpenseReportSearchForm, EditExpenseReportForm,
     JobReferenceForm, JobReferenceSearchForm, WaitListSearchForm)
-from zivinetz.models import (Assignment, Drudge,
-    ExpenseReport, RegionalOffice, ScopeStatement,
-    Specification, WaitList, Assessment, JobReferenceTemplate,
-    JobReference)
+from zivinetz.models import (Assignment, Drudge, ExpenseReport, RegionalOffice,
+        ScopeStatement, Specification, WaitList, JobReferenceTemplate,
+        JobReference)
 from zivinetz.views.expenses import generate_expense_statistics_pdf
 
 
@@ -223,7 +216,7 @@ class AssignmentMixin(ZivinetzMixin):
 
         if ('date_until_extension' in form.changed_data
                 and self.object.reports.exists()):
-            messages.warning(request,
+            messages.warning(self.request,
                 _('The extended until date has been changed. Please check'
                     ' whether you need to generate additional expense'
                     ' reports.'))

@@ -2,7 +2,7 @@ from django import forms
 from django.db.models import Avg, Q
 from django.utils.translation import ugettext_lazy as _
 
-from towel.forms import SearchForm, WarningsForm, towel_formfield_callback
+from towel.forms import SearchForm, WarningsForm
 
 from zivinetz.models import (Assessment, Assignment, Drudge, ExpenseReport,
     JobReference, RegionalOffice, ScopeStatement)
