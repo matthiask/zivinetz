@@ -56,12 +56,8 @@
 <script>
 onReady.push(function($) {
   var reposition = function() {
-    var sched = $('#scheduler'),
-      offset = sched.offset();
-    sched.css({
-      position: 'relative',
-      left: (10 - offset.left) + 'px'
-    });
+    var sched = $('#scheduler');
+    sched.offset({top: sched.offset().top, left: 10});
   }
 
   $(document.body).on('resize', reposition);
