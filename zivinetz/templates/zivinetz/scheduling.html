@@ -53,6 +53,21 @@
 
 #scheduler tr:hover { background: #fff5c2; }
 </style>
+<script>
+onReady.push(function($) {
+  var reposition = function() {
+    var sched = $('#scheduler'),
+      offset = sched.offset();
+    sched.css({
+      position: 'relative',
+      left: (10 - offset.left) + 'px'
+    });
+  }
+
+  $(document.body).on('resize', reposition);
+  reposition();
+});
+</script>
 
 {% spaceless %}<table id="scheduler">
 {% with scheduler.assignments as assignments %}
