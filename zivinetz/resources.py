@@ -28,6 +28,13 @@ from zivinetz.models import (Assignment, Drudge, ExpenseReport, RegionalOffice,
 from zivinetz.views.expenses import generate_expense_statistics_pdf
 
 
+class LimitedPickerView(resources.PickerView):
+    def get_context_data(self, object_list, **kwargs):
+        return super(LimitedPickerView, self).get_context_data(
+            object_list=object_list[:50],
+            **kwargs)
+
+
 class ZivinetzMixin(object):
     base_template = 'zivinetz/base.html'
     deletion_cascade_allowed = ()
@@ -438,7 +445,7 @@ urlpatterns = patterns('',
             search_form=DrudgeSearchForm,
             send_emails_selector='user__email',
             ),
-        drudge_url('picker', False, resources.PickerView),
+        drudge_url('picker', False, LimitedPickerView),
         drudge_url('detail', True, DrudgeDetailView, suffix=''),
         drudge_url('add', False, resources.AddView),
         drudge_url('edit', True, resources.EditView),
@@ -451,7 +458,7 @@ urlpatterns = patterns('',
             search_form=AssignmentSearchForm,
             send_emails_selector='drudge__user__email',
             ),
-        assignment_url('picker', False, resources.PickerView),
+        assignment_url('picker', False, LimitedPickerView),
         assignment_url('pdf', False, PhonenumberPDFExportView),
         assignment_url('detail', True, resources.DetailView, suffix=''),
         assignment_url('add', False, resources.AddView),
