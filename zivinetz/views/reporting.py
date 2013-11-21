@@ -48,9 +48,9 @@ class AssignmentPDFStationery(object):
             self.page_2(canvas, pdfdocument)
 
     markers = {
-        'standard': (31, 101),
-        'trial': (75, 101),
-        'long_assignment': (112, 101),
+        'standard': (52, 103),
+        'trial': (75, 103),
+        'long_assignment': (112, 103),
 
         #'working_time_fixed': (112, 60),
         #'working_time_nightshift': (151, 59),
@@ -60,49 +60,56 @@ class AssignmentPDFStationery(object):
         'vegetarianism': (113.5, 40),
         'no_vegetarianism': (155, 40),
 
-        'pocket_money': (58, 265),
+        'pocket_money': (58, 187),
 
-        'accomodation_working_compensated': (56, 248),
-        'accomodation_working_provided': (85, 248),
-        'accomodation_free_compensated': (113.5, 248),
-        'accomodation_free_provided': (143, 248),
+        'accomodation_working_compensated': (56, 230),
+        'accomodation_working_provided': (85, 230),
+        'accomodation_free_compensated': (113.5, 230),
+        'accomodation_free_provided': (143, 230),
 
         #'accomodation_used': (75, 251),
         #'accomodation_notused': (113.5, 251),
 
-        'breakfast_working_at_company': (85, 242.5),
-        'breakfast_working_at_home': (56, 242.5),
-        'breakfast_working_external': (56, 242.5),
+        'breakfast_working_at_company': (85, 225.5),
+        'breakfast_working_at_home': (56, 225.5),
+        'breakfast_working_external': (56, 225.5),
 
-        'breakfast_free_at_company': (143, 242.5),
-        'breakfast_free_at_home': (113.5, 242.5),
+        'breakfast_free_at_company': (143, 225.5),
+        'breakfast_free_at_home': (113.5, 225.5),
 
-        'lunch_working_at_company': (85, 237),
-        'lunch_working_at_home': (56, 237),
-        'lunch_working_external': (56, 237),
+        'lunch_working_at_company': (85, 221),
+        'lunch_working_at_home': (56, 221),
+        'lunch_working_external': (56, 221),
 
-        'lunch_free_at_company': (143, 237),
-        'lunch_free_at_home': (113.5, 237),
+        'lunch_free_at_company': (143, 221),
+        'lunch_free_at_home': (113.5, 221),
 
-        'supper_working_at_company': (85, 231.5),
-        'supper_working_at_home': (56, 231.5),
-        'supper_working_external': (56, 231.5),
+        'supper_working_at_company': (85, 216.5),
+        'supper_working_at_home': (56, 216.5),
+        'supper_working_external': (56, 216.5),
 
-        'supper_free_at_company': (143, 231.5),
-        'supper_free_at_home': (113.5, 231.5),
+        'supper_free_at_company': (143, 216.5),
+        'supper_free_at_home': (113.5, 216.5),
 
-        'accomodation_throughout': (31, 193),
-        'food_throughout': (31, 186),
+        'accomodation_throughout': (162, 261.5),
+        'food_throughout': (162, 255.5),
 
-        'public_transports': (31, 149),
-        'private_transport': (113.5, 149),
-        'special_tickets': (31, 142.5),
+        'accomodation_not_throughout': (176.5, 261.5),
+        'food_not_throughout': (176.5, 255.5),
 
-        'clothing_provided': (31, 117),
-        'clothing_compensated': (113.5, 117),
+        'public_transports': (31, 167),
+        'private_transport': (113.5, 167),
+        'special_tickets': (31, 161.5),
 
-        'arrangement_timely': (31, 87),
-        'arrangement_late': (31, 78),
+        'clothing_provided': (31, 139),
+        'clothing_compensated': (113.5, 139),
+
+        'arrangement_timely': (31, 108),
+        'arrangement_late': (31, 99),
+
+        'legalese_1': (31, 68.5),
+        'legalese_2': (31, 63.5),
+        'legalese_3': (31, 57.5),
         }
 
     def draw_marker(self, canvas, key):
@@ -113,20 +120,22 @@ class AssignmentPDFStationery(object):
     def _draw_all_markers(self, canvas):
         canvas.setFillColorRGB(1, 0, 0)
         for key, pos in self.markers.items():
-            #canvas.drawString(pos[0] * mm, pos[1] * mm, u'x %s' % key)
-            canvas.drawString(pos[0] * mm, pos[1] * mm, u'x')
+            canvas.drawString(pos[0] * mm, pos[1] * mm, u'x %s' % key)
+            # canvas.drawString(pos[0] * mm, pos[1] * mm, u'x')
 
     def page_1(self, canvas, pdfdocument):
+        # self._draw_all_markers(canvas)
         drudge = self.assignment.drudge
         scope_statement = self.assignment.specification.scope_statement
 
         frame_1 = [
             drudge.user.last_name,
             drudge.address,
-            drudge.phone_home,
-            drudge.mobile,
+            u'        ' + u', '.join((drudge.phone_home, drudge.mobile)),
             (drudge.date_of_birth
                 and drudge.date_of_birth.strftime('%d.%m.%Y') or u''),
+            drudge.bank_account,
+            drudge.health_insurance_company,
             ]
 
         frame_2 = [
@@ -136,40 +145,44 @@ class AssignmentPDFStationery(object):
             drudge.phone_office,
             drudge.user.email,
             drudge.education_occupation,
+            drudge.health_insurance_account,
             ]
 
         frame_3 = [
-            drudge.health_insurance_company,
-            '',  # drudge.bank_account,
+            #drudge.health_insurance_company,
+            # '',  # drudge.bank_account,
             ]
 
         frame_4 = [
-            drudge.health_insurance_account,
-            '',  # drudge.bank_account,
+            # drudge.health_insurance_account,
+            # '',  # drudge.bank_account,
             ]
 
         frame_5 = [
-            scope_statement.company_name or 'Verein Naturnetz',
+            '20995',
+            scope_statement.company_contact_name or 'Marco Sacchi',
             scope_statement.company_address or 'Chlosterstrasse',
             scope_statement.company_contact_phone or '044 533 11 44',
+            '',
+            scope_statement.company_contact_function or u'Geschäftsleiter',
             ]
 
         frame_6 = [
-            '20995',
-            scope_statement.company_contact_name or 'Marco Sacchi',
+            scope_statement.company_name or 'Verein Naturnetz',
+            scope_statement.company_contact_function or u'Geschäftsleiter',
             scope_statement.company_contact_location or '8109 Kloster Fahr',
             scope_statement.company_contact_email or 'ms@naturnetz.ch',
-            scope_statement.company_contact_function or u'Geschäftsleiter',
+            scope_statement.company_contact_name or 'Marco Sacchi',
             scope_statement.company_contact_phone or '044 533 11 44',
             ]
 
         frame_7 = [
+            self.assignment.date_from.strftime('%d.%m.%Y'),
             ]
 
         frame_8 = [
-            self.assignment.date_from.strftime('%d.%m.%Y'),
-            self.assignment.date_until.strftime('%d.%m.%Y'),
             scope_statement.work_location or 'Kloster Fahr, ganze Schweiz',
+            self.assignment.date_until.strftime('%d.%m.%Y'),
             ]
 
         frame_9 = [
@@ -187,16 +200,20 @@ class AssignmentPDFStationery(object):
             ]
 
         frames = [
-            (frame_1, 55 * mm, 190 * mm, 6.9 * mm),
-            (frame_2, 140 * mm, 190 * mm, 6.9 * mm),
+            (frame_1, 55 * mm, 193 * mm, 6.9 * mm),
+            (frame_2, 140 * mm, 193 * mm, 6.9 * mm),
+
             (frame_3, 55 * mm, 167 * mm, 11 * mm),
             (frame_4, 140 * mm, 167 * mm, 11 * mm),
-            (frame_5, 55 * mm, 149 * mm, 7.2 * mm),
-            (frame_6, 140 * mm, 133 * mm, 7.5 * mm),
-            (frame_7, 55 * mm, 108.5 * mm, 0),
-            (frame_8, 140 * mm, 109 * mm, 7.2 * mm),
-            (frame_9, 90 * mm, 87.5 * mm, 7.4 * mm),
-            (frame_10, 127 * mm, 272 * mm, 0),
+
+            (frame_5, 55 * mm, 138 * mm, 7.2 * mm),
+            (frame_6, 140 * mm, 138 * mm, 7.5 * mm),
+
+            (frame_7, 57 * mm, 114 * mm, 7 * mm),
+            (frame_8, 140 * mm, 114 * mm, 7.2 * mm),
+
+            (frame_9, 90 * mm, 95 * mm, 7.4 * mm),
+            (frame_10, 127 * mm, 271 * mm, 0),
             (frame_11, 55 * mm, 55 * mm, 8.5 * mm),
             ]
 
@@ -214,9 +231,9 @@ class AssignmentPDFStationery(object):
             company_holiday = None
 
         if company_holiday:
-            canvas.drawString(125 * mm, 76 * mm,
+            canvas.drawString(125 * mm, 82 * mm,
                 company_holiday.date_from.strftime('%d.%m.%Y'))
-            canvas.drawString(160 * mm, 76 * mm,
+            canvas.drawString(160 * mm, 82 * mm,
                 company_holiday.date_until.strftime('%d.%m.%Y'))
 
         if self.assignment.part_of_long_assignment:
@@ -226,12 +243,13 @@ class AssignmentPDFStationery(object):
 
         #self.draw_marker(canvas, 'working_time_fixed')
 
-        if drudge.vegetarianism:
-            self.draw_marker(canvas, 'vegetarianism')
-        else:
-            self.draw_marker(canvas, 'no_vegetarianism')
+        #if drudge.vegetarianism:
+            #self.draw_marker(canvas, 'vegetarianism')
+        #else:
+            #self.draw_marker(canvas, 'no_vegetarianism')
 
     def page_2(self, canvas, pdfdocument):
+        # self._draw_all_markers(canvas)
         spec = self.assignment.specification
 
         self.draw_marker(canvas, 'pocket_money')
@@ -263,8 +281,16 @@ class AssignmentPDFStationery(object):
 
         if spec.accomodation_throughout:
             self.draw_marker(canvas, 'accomodation_throughout')
+        else:
+            self.draw_marker(canvas, 'accomodation_not_throughout')
         if spec.food_throughout:
             self.draw_marker(canvas, 'food_throughout')
+        else:
+            self.draw_marker(canvas, 'food_not_throughout')
+
+        self.draw_marker(canvas, 'legalese_1')
+        self.draw_marker(canvas, 'legalese_2')
+        self.draw_marker(canvas, 'legalese_3')
 
 
 @login_required
