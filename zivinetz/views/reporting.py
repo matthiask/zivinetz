@@ -8,6 +8,7 @@ import tempfile
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext as _
@@ -20,6 +21,17 @@ from reportlab.lib import colors
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
 from pdfdocument.utils import pdf_response
+
+
+for path in (
+        '/usr/bin/pdftk',
+        '/usr/local/bin/pdftk',
+        ):
+    if os.path.exists(path):
+        pdftk = path
+        break
+else:
+    raise ImproperlyConfigured('Please install pdftk!')
 
 
 class AssignmentPDFStationery(object):
@@ -279,7 +291,7 @@ def assignment_pdf(request, assignment_id):
         overlay.close()
 
         p = subprocess.Popen([
-            '/usr/bin/pdftk', '-', 'multistamp', overlay.name,
+            pdftk, '-', 'multistamp', overlay.name,
             'output', '-',
             ], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
@@ -338,7 +350,8 @@ Wir freuen uns auf deinen Einsatz!
         pdf.generate()
         first_page.close()
 
-        p = subprocess.Popen(['/usr/bin/pdftk',
+        p = subprocess.Popen([
+            pdftk,
             first_page.name,
             '-',
             'cat', 'output', '-'],
@@ -347,7 +360,8 @@ Wir freuen uns auf deinen Einsatz!
         os.unlink(first_page.name)
 
         if assignment.specification.conditions:
-            p = subprocess.Popen(['/usr/bin/pdftk', '-',
+            p = subprocess.Popen([
+                pdftk, '-',
                 assignment.specification.conditions.path,
                 'cat', 'output', '-'],
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE)
