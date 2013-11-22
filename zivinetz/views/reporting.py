@@ -1,14 +1,12 @@
 # coding=utf-8
 
+from io import BytesIO
 import operator
 import os
-import subprocess
-import tempfile
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext as _
@@ -22,16 +20,7 @@ from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
 from pdfdocument.utils import pdf_response
 
-
-for path in (
-        '/usr/bin/pdftk',
-        '/usr/local/bin/pdftk',
-        ):
-    if os.path.exists(path):
-        pdftk = path
-        break
-else:
-    raise ImproperlyConfigured('Please install pdftk!')
+from PyPDF2 import PdfFileWriter, PdfFileReader
 
 
 class AssignmentPDFStationery(object):
@@ -303,52 +292,28 @@ def assignment_pdf(request, assignment_id):
         if assignment.drudge.user != request.user:
             return HttpResponseForbidden('<h1>Access forbidden</h1>')
 
-    with tempfile.NamedTemporaryFile(delete=False) as overlay:
-        pdf = PDFDocument(overlay)
+    result_writer = PdfFileWriter()
 
-        #pdf.show_boundaries = True
-        pdf.init_report(
-            page_fn=create_stationery_fn(AssignmentPDFStationery(assignment)))
+    # Generate the first page ################################################
+    first_page = BytesIO()
+    pdf = PDFDocument(first_page)
 
-        pdf.pagebreak()
-        pdf.pagebreak()
+    pdf.init_report()
+    pdf.generate_style(font_size=10)
 
-        pdf.generate()
-        overlay.close()
+    scope_statement = assignment.specification.scope_statement
+    address = [
+        scope_statement.company_name or u'Verein Naturnetz',
+        scope_statement.company_address or u'Chlosterstrasse',
+        scope_statement.company_contact_location or u'8109 Kloster Fahr',
+        ]
 
-        p = subprocess.Popen([
-            pdftk, '-', 'multistamp', overlay.name,
-            'output', '-',
-            ], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    pdf.spacer(25 * mm)
+    pdf.table(
+        zip(address, address), (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
+    pdf.spacer(40 * mm)
 
-        source = open(os.path.join(
-            os.path.dirname(os.path.dirname(__file__)),
-            'data',
-            'Einsatzvereinbarung.pdf',
-            ), 'rb')
-
-        result, error = p.communicate(source.read())
-        os.unlink(overlay.name)
-
-    with tempfile.NamedTemporaryFile(delete=False) as first_page:
-        pdf = PDFDocument(first_page)
-
-        pdf.init_report()
-        pdf.generate_style(font_size=10)
-
-        scope_statement = assignment.specification.scope_statement
-        address = [
-            scope_statement.company_name or u'Verein Naturnetz',
-            scope_statement.company_address or u'Chlosterstrasse',
-            scope_statement.company_contact_location or u'8109 Kloster Fahr',
-            ]
-
-        pdf.spacer(25 * mm)
-        pdf.table(
-            zip(address, address), (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
-        pdf.spacer(40 * mm)
-
-        pdf.p_markup(u'''
+    pdf.p_markup(u'''
 Lieber Zivi<br /><br />
 
 Vielen Dank fürs Ausfüllen der Einsatzvereinbarung im Zivinetz! Du findest hier
@@ -363,37 +328,59 @@ Einsatzvereinbarung an das Regionalzentrum weiterzuleiten.<br /><br />
 
 Wir freuen uns auf deinen Einsatz!
 ''')
-        pdf.spacer(50 * mm)
+    pdf.spacer(50 * mm)
 
-        address = u'\n'.join([
-            assignment.regional_office.name,
-            assignment.regional_office.address,
-            ]).replace('\r', '')
+    address = u'\n'.join([
+        assignment.regional_office.name,
+        assignment.regional_office.address,
+        ]).replace('\r', '')
 
-        pdf.table(
-            [(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
+    pdf.table(
+        [(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
 
-        pdf.generate()
-        first_page.close()
+    pdf.generate()
 
-        p = subprocess.Popen([
-            pdftk,
-            first_page.name,
-            '-',
-            'cat', 'output', '-'],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        result, error = p.communicate(result)
-        os.unlink(first_page.name)
+    # Add the first page to the output #######################################
+    first_page_reader = PdfFileReader(first_page)
+    result_writer.addPage(first_page_reader.getPage(0))
 
-        if assignment.specification.conditions:
-            p = subprocess.Popen([
-                pdftk, '-',
-                assignment.specification.conditions.path,
-                'cat', 'output', '-'],
-                stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-            result, error = p.communicate(result)
+    # Generate the form ######################################################
+    overlay = BytesIO()
+    pdf = PDFDocument(overlay)
 
-    response = HttpResponse(result, mimetype='application/pdf')
+    #pdf.show_boundaries = True
+    pdf.init_report(
+        page_fn=create_stationery_fn(AssignmentPDFStationery(assignment)))
+
+    pdf.pagebreak()
+    pdf.pagebreak()
+
+    pdf.generate()
+
+    # Merge the form and the overlay, and add everything to the output #######
+    eiv_reader = PdfFileReader(os.path.join(
+        os.path.dirname(os.path.dirname(__file__)),
+        'data',
+        'Einsatzvereinbarung.pdf',
+        ))
+    overlay_reader = PdfFileReader(overlay)
+
+    for idx in range(2):
+        page = eiv_reader.getPage(idx)
+        page.mergePage(overlay_reader.getPage(idx))
+        result_writer.addPage(page)
+
+    # Add the conditions PDF if it exists ####################################
+    if assignment.specification.conditions:
+        conditions_reader = PdfFileReader(
+            assignment.specification.conditions.path)
+        for page in range(conditions_reader.getNumPages()):
+            result_writer.addPage(conditions_reader.getPage(page))
+
+    # Response! ##############################################################
+    response = HttpResponse(content_type='application/pdf')
+    result_writer.write(response)
+
     response['Content-Disposition'] = 'attachment; filename=eiv.pdf'
     return response
 
