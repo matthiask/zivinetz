@@ -616,7 +616,7 @@ class Assignment(models.Model):
         assignment_days, monthly_expense_days = self.assignment_days()
         specification = self.specification
 
-        clothing_total = Decimal('240.00')  # TODO don't hardcode this
+        clothing_total = None
         expenses = {}
 
         for month, days in monthly_expense_days:
@@ -643,6 +643,9 @@ class Assignment(models.Model):
                     compensation['supper_working']
                     ),
                 }
+
+            if clothing_total is None:
+                clothing_total = compensation['clothing_limit_per_assignment']
 
             clothing_total -= expenses[month]['clothing']
 
