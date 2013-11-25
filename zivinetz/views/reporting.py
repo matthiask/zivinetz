@@ -266,7 +266,6 @@ class AssignmentPDFStationery(object):
                 self.draw_marker(canvas, marker)
 
         self.draw_marker(canvas, 'clothing_%s' % spec.clothing)
-        # TODO automatically draw arrangement marker?
 
         if spec.accomodation_throughout:
             self.draw_marker(canvas, 'accomodation_throughout')
