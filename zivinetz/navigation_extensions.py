@@ -24,17 +24,19 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 (_('job references'), 'admin/jobreferences/'),
                 (_('photos'), 'photos/'),
                 (_('yearly expense stats (PDF)'), 'expense_statistics_pdf/'),
-                ]
+            ]
         else:
             urls = [
                 (_('dashboard'), 'dashboard/'),
                 (_('profile'), 'profile/'),
                 (_('photos'), 'photos/'),
-                ]
+            ]
 
-        return [PagePretender(
-            title=capfirst(title),
-            url='%s%s' % (page.get_navigation_url(), url),
-            level=page.level + 1,
-            tree_id=page.tree_id,
-            ) for title, url in urls]
+        return [
+            PagePretender(
+                title=capfirst(title),
+                url='%s%s' % (page.get_navigation_url(), url),
+                level=page.level + 1,
+                tree_id=page.tree_id,
+            ) for title, url in urls
+        ]

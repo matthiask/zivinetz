@@ -73,7 +73,7 @@ class WaitListForm(forms.ModelForm):
 def dashboard(request, drudge):
     aform_initial = {
         'regional_office': drudge.regional_office_id,
-        }
+    }
 
     aform = AssignmentForm(initial=aform_initial)
     wform = WaitListForm()
@@ -111,9 +111,9 @@ def dashboard(request, drudge):
         'expense_reports': ExpenseReport.objects.filter(
             assignment__drudge=drudge,
             status__in=(ExpenseReport.FILLED, ExpenseReport.PAID),
-            ).order_by('-date_from'),
+        ).order_by('-date_from'),
         'waitlist': WaitList.objects.filter(drudge=drudge),
-        })
+    })
 
 
 class UserForm(forms.ModelForm):
@@ -170,4 +170,4 @@ def profile(request):
         'form': form,
         'form2': form2,
         'title': _('Edit profile'),
-        })
+    })

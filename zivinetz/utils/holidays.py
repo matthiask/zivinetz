@@ -170,4 +170,4 @@ def get_public_holidays(year):
         datetime.date(year, 8, 1): u'Nationalfeiertag',
         datetime.date(year, 12, 25): u'Weihnachtstag',
         datetime.date(year, 12, 26): u'Stephanstag',
-        }
+    }

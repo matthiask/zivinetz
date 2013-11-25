@@ -23,7 +23,8 @@ def generate_expense_statistics_pdf(reports):
         PageTemplate(id='First', frames=[
             Frame(.5 * cm, .5 * cm, 19.8 * cm, 28.5 * cm, showBoundary=0,
                 leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0),
-            ])])
+        ])
+    ])
     pdf.generate_style(font_size=6)
 
     pdf.h1('Spesenstatistik')
@@ -74,10 +75,10 @@ def generate_expense_statistics_pdf(reports):
     for report in reports.order_by(
             'date_from',
             'assignment__drudge',
-            ).select_related(
+    ).select_related(
             'assignment__specification__scope_statement',
             'assignment__drudge__user',
-            ):
+    ):
         compensation = report.compensation_data()
         if not compensation:
             # Attention! Using current date instead of real mobilization date
@@ -100,7 +101,7 @@ def generate_expense_statistics_pdf(reports):
             u'%s - %s' % (
                 report.date_from.strftime('%d.%m.%y'),
                 report.date_until.strftime('%d.%m.%y'),
-                ),
+            ),
             report.working_days,
             report.working_days * working_day,
             report.free_days,
@@ -131,7 +132,7 @@ def generate_expense_statistics_pdf(reports):
         pdf.table([
             ['Total %s' % title, '', ''] + [
                 sum(transposed[i], 0) for i in range(3, 18)],
-            ], table_cols, pdf.style.tableHead)
+        ], table_cols, pdf.style.tableHead)
         pdf.spacer()
 
     for scope_statement, ss_data in data.iteritems():

@@ -44,19 +44,19 @@ class ZivinetzMixin(object):
         return self.request.user.has_perm('{}.add_{}'.format(
             self.model._meta.app_label,
             self.model._meta.module_name,
-            ))
+        ))
 
     def allow_edit(self, object=None, silent=True):
         return self.request.user.has_perm('{}.change_{}'.format(
             self.model._meta.app_label,
             self.model._meta.module_name,
-            ))
+        ))
 
     def allow_delete(self, object=None, silent=True):
         if not self.request.user.has_perm('{}.delete_{}'.format(
                 self.model._meta.app_label,
                 self.model._meta.module_name,
-                )):
+        )):
             return False
 
         if not object or not self.deletion_cascade_allowed:
@@ -87,7 +87,8 @@ class ZivinetzMixin(object):
                     from_email='info@naturnetz.ch',
                     headers={
                         'Reply-To': self.request.user.email,
-                    })
+                    }
+                )
                 if form.cleaned_data['attachment']:
                     message.attach(
                         form.cleaned_data['attachment'].name,
@@ -107,8 +108,8 @@ class ZivinetzMixin(object):
             action_hidden_fields=self.batch_action_hidden_fields(queryset, [
                 ('batch-action', 'send_emails'),
                 ('confirm', 1),
-                ]),
-            )
+            ]),
+        )
         self.template_name_suffix = '_action'
         return self.render_to_response(context)
 
@@ -135,7 +136,7 @@ class DrudgeDetailView(resources.DetailView):
         context = self.get_context_data(
             object=self.object,
             assessment_form=AssessmentForm(),
-            )
+        )
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
@@ -158,7 +159,7 @@ class JobReferenceFromTemplateView(resources.ModelResourceView):
         instance = self.model(
             assignment=assignment,
             created=assignment.determine_date_until(),
-            )
+        )
 
         template = Template(template.text)
         ctx = {
@@ -170,8 +171,8 @@ class JobReferenceFromTemplateView(resources.ModelResourceView):
             'place_of_citizenship': u'%s %s' % (
                 assignment.drudge.place_of_citizenship_city,
                 assignment.drudge.place_of_citizenship_state,
-                ),
-            }
+            ),
+        }
 
         if assignment.drudge.date_of_birth:
             ctx['birth_date'] = assignment.drudge.date_of_birth.strftime(
@@ -284,16 +285,18 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
                 (unicode(drudge), drudge.user.email, u'%s - %s' % (
                     assignment.date_from.strftime('%d.%m.%y'),
                     assignment.determine_date_until().strftime('%d.%m.%y'),
-                    )),
+                )),
                 (drudge.phone_home, drudge.phone_office, drudge.mobile),
-                (u'%s, %s %s' % (
-                    drudge.address,
-                    drudge.zip_code,
-                    drudge.city,
+                (
+                    u'%s, %s %s' % (
+                        drudge.address,
+                        drudge.zip_code,
+                        drudge.city,
                     ),
                     '',
-                    drudge.education_occupation),
-                ], (6.4 * cm, 5 * cm, 5 * cm))
+                    drudge.education_occupation,
+                ),
+            ], (6.4 * cm, 5 * cm, 5 * cm))
             pdf.hr_mini()
 
         pdf.generate()
@@ -318,7 +321,7 @@ class ExpenseReportMixin(ZivinetzMixin):
                 Assignment.objects.all(),
                 label=ugettext_lazy('assignment'),
                 widget=SelectWithPicker(model=Assignment, request=request),
-                )
+            )
 
             class Meta:
                 model = self.model
@@ -366,50 +369,50 @@ regionaloffice_url = resource_url_fn(
     mixins=(ZivinetzMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(RegionalOffice,),
-    )
+)
 scopestatement_url = resource_url_fn(
     ScopeStatement,
     mixins=(ZivinetzMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(ScopeStatement, Specification),
-    )
+)
 specification_url = resource_url_fn(
     Specification,
     mixins=(ZivinetzMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Specification,),
-    )
+)
 drudge_url = resource_url_fn(
     Drudge,
     mixins=(ZivinetzMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Drudge,),
-    )
+)
 assignment_url = resource_url_fn(
     Assignment,
     mixins=(AssignmentMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Assignment,),
-    )
+)
 expensereport_url = resource_url_fn(
     ExpenseReport,
     mixins=(ExpenseReportMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(ExpenseReport,),
-    )
+)
 jobreference_url = resource_url_fn(
     JobReference,
     mixins=(ZivinetzMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(JobReference,),
-    )
+)
 waitlist_url = resource_url_fn(
     WaitList,
     mixins=(ZivinetzMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(WaitList,),
     send_emails_selector='drudge__user__email',
-    )
+)
 
 
 urlpatterns = patterns('',

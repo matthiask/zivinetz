@@ -32,7 +32,7 @@ admin.site.register(models.ScopeStatement,
     list_display_links=('name',),
     list_filter=('is_active',),
     inlines=[SpecificationInline],
-    )
+)
 
 admin.site.register(models.CompensationSet,
     save_as=True,
@@ -52,8 +52,8 @@ admin.site.register(models.CompensationSet,
             'fields': ('breakfast_external', 'lunch_external',
                 'supper_external'),
         })
-        ),
-    )
+    ),
+)
 
 admin.site.register(models.RegionalOffice)
 
@@ -63,14 +63,14 @@ admin.site.register(models.Drudge,
     list_filter=('regional_office', 'driving_license'),
     search_fields=('user__first_name', 'user__last_name', 'user__email',
         'address', 'zip_code', 'city'),
-    )
+)
 
 admin.site.register(models.Assignment,
     date_hierarchy='date_from',
     list_display=('specification', 'drudge', 'date_from',
         'determine_date_until', 'status', 'admin_pdf_url'),
     list_filter=('specification', 'part_of_long_assignment', 'status'),
-    )
+)
 
 
 admin.site.register(models.ExpenseReport,
@@ -80,35 +80,35 @@ admin.site.register(models.ExpenseReport,
     list_filter=('status',),
     raw_id_fields=('assignment',),
     search_fields=models.ExpenseReport.objects.search_fields,
-    )
+)
 
 admin.site.register(models.PublicHoliday,
     list_display=('name', 'date'),
     save_as=True,
-    )
+)
 
 admin.site.register(models.CompanyHoliday,
     list_display=('date_from', 'date_until'),
     save_as=True,
-    )
+)
 
 admin.site.register(models.WaitList,
     list_display=('created', 'drudge', '__unicode__'),
     raw_id_fields=('drudge',),
-    )
+)
 
 admin.site.register(models.Codeword,
     list_display=('key', 'codeword', 'created'),
     list_filter=('key',),
-    )
+)
 
 admin.site.register(models.JobReferenceTemplate)
 
 admin.site.register(models.JobReference,
     list_display=('assignment', 'created'),
-    )
+)
 
 admin.site.register(models.Assessment,
     list_display=('drudge', 'mark', 'comment'),
     raw_id_fields=('drudge',),
-    )
+)

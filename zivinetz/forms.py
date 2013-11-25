@@ -18,8 +18,8 @@ def add_last_assignment_and_mark(queryset):
         drudges[mark['drudge']].average_mark = mark['mark__avg']
 
     for assignment in Assignment.objects.select_related(
-            'specification__scope_statement'
-            ).order_by('-date_from').iterator():
+        'specification__scope_statement'
+    ).order_by('-date_from').iterator():
 
         if assignment.drudge_id in drudges:
             drudges[assignment.drudge_id].last_assignment = assignment
@@ -33,7 +33,7 @@ def add_last_assignment_and_mark(queryset):
 class DrudgeSearchForm(SearchForm):
     orderings = {
         'date_joined': 'user__date_joined',
-        }
+    }
     regional_office = forms.ModelChoiceField(RegionalOffice.objects.all(),
         label=_('regional office'), required=False)
     only_active = forms.BooleanField(label=_('only active'),
@@ -53,7 +53,8 @@ class DrudgeSearchForm(SearchForm):
             queryset = queryset.filter(
                 id__in=Assignment.objects.for_date().filter(status__in=(
                     Assignment.ARRANGED, Assignment.MOBILIZED,
-                    )).values('drudge'))
+                )).values('drudge')
+            )
 
         return self.apply_ordering(queryset, data.get('o')).transform(
             add_last_assignment_and_mark)
@@ -100,12 +101,15 @@ class AssignmentSearchForm(SearchForm):
                     (Q(date_until_extension__isnull=True)
                         & Q(date_until__gte=active_on))
                     | Q(date_until_extension__isnull=False,
-                        date_until_extension__gte=active_on)))
+                        date_until_extension__gte=active_on)
+                )
+            )
 
         if data.get('service_between') and data.get('service_and'):
             queryset = queryset.filter(
                 Q(date_from__lte=data.get('service_and'))
-                & Q(date_until__gte=data.get('service_between')))
+                & Q(date_until__gte=data.get('service_between'))
+            )
 
         return self.apply_ordering(queryset, data.get('o'))
 
@@ -113,7 +117,7 @@ class AssignmentSearchForm(SearchForm):
 class ExpenseReportSearchForm(SearchForm):
     default = {
         'assignment__status': (Assignment.ARRANGED, Assignment.MOBILIZED),
-        }
+    }
 
     assignment__specification__scope_statement =\
         forms.ModelMultipleChoiceField(
@@ -146,7 +150,8 @@ class EditExpenseReportForm(forms.ModelForm, WarningsForm):
                 + data['free_days']
                 + data['sick_days']
                 + data['holi_days']
-                + data['forced_leave_days'])
+                + data['forced_leave_days']
+            )
         except (KeyError, ValueError, TypeError):
             return data
 
@@ -156,9 +161,11 @@ class EditExpenseReportForm(forms.ModelForm, WarningsForm):
                     'The number of days in this form (%(total)s) differs from'
                     ' the calculated number of days for this period'
                     ' (%(calculated)s).'
-                    ) % {
+                ) % {
                     'total': total_days,
-                    'calculated': self.instance.calculated_total_days})
+                    'calculated': self.instance.calculated_total_days
+                }
+            )
 
         return data
 

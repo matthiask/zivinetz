@@ -99,7 +99,7 @@ class AssignmentPDFStationery(object):
         'legalese_1': (31, 68.5),
         'legalese_2': (31, 63.5),
         'legalese_3': (31, 57.5),
-        }
+    }
 
     def draw_marker(self, canvas, key):
         canvas.setFont('Helvetica', 11)
@@ -125,7 +125,7 @@ class AssignmentPDFStationery(object):
                 and drudge.date_of_birth.strftime('%d.%m.%Y') or u''),
             drudge.bank_account,
             drudge.health_insurance_company,
-            ]
+        ]
 
         frame_2 = [
             drudge.zdp_no,
@@ -135,17 +135,17 @@ class AssignmentPDFStationery(object):
             drudge.user.email,
             drudge.education_occupation,
             drudge.health_insurance_account,
-            ]
+        ]
 
         frame_3 = [
             #drudge.health_insurance_company,
             # '',  # drudge.bank_account,
-            ]
+        ]
 
         frame_4 = [
             # drudge.health_insurance_account,
             # '',  # drudge.bank_account,
-            ]
+        ]
 
         frame_5 = [
             '20995',
@@ -154,7 +154,7 @@ class AssignmentPDFStationery(object):
             scope_statement.company_contact_phone or '044 533 11 44',
             '',
             scope_statement.company_contact_function or u'Geschäftsleiter',
-            ]
+        ]
 
         frame_6 = [
             scope_statement.company_name or 'Verein Naturnetz',
@@ -163,30 +163,30 @@ class AssignmentPDFStationery(object):
             scope_statement.company_contact_email or 'ms@naturnetz.ch',
             scope_statement.company_contact_name or 'Marco Sacchi',
             scope_statement.company_contact_phone or '044 533 11 44',
-            ]
+        ]
 
         frame_7 = [
             self.assignment.date_from.strftime('%d.%m.%Y'),
-            ]
+        ]
 
         frame_8 = [
             scope_statement.work_location or 'Kloster Fahr, ganze Schweiz',
             self.assignment.date_until.strftime('%d.%m.%Y'),
-            ]
+        ]
 
         frame_9 = [
             u'%s %s' % (
                 self.assignment.specification.scope_statement.eis_no,
                 self.assignment.specification.scope_statement.name,
-                ),
-            ]
+            ),
+        ]
 
         frame_10 = [
             self.assignment.regional_office.city,
-            ]
+        ]
 
         frame_11 = [
-            ]
+        ]
 
         frames = [
             (frame_1, 55 * mm, 193 * mm, 6.9 * mm),
@@ -204,7 +204,7 @@ class AssignmentPDFStationery(object):
             (frame_9, 90 * mm, 95 * mm, 7.4 * mm),
             (frame_10, 127 * mm, 271 * mm, 0),
             (frame_11, 55 * mm, 55 * mm, 8.5 * mm),
-            ]
+        ]
 
         canvas.setFont('Helvetica', 9)
         for frame, x, y, line in frames:
@@ -215,7 +215,7 @@ class AssignmentPDFStationery(object):
             company_holiday = CompanyHoliday.objects.filter(
                 date_until__gte=self.assignment.date_from,
                 date_from__lte=self.assignment.date_until,
-                )[0]
+            )[0]
         except IndexError:
             company_holiday = None
 
@@ -306,7 +306,7 @@ def assignment_pdf(request, assignment_id):
         scope_statement.company_name or u'Verein Naturnetz',
         scope_statement.company_address or u'Chlosterstrasse',
         scope_statement.company_contact_location or u'8109 Kloster Fahr',
-        ]
+    ]
 
     pdf.spacer(25 * mm)
     pdf.table(
@@ -333,7 +333,7 @@ Wir freuen uns auf deinen Einsatz!
     address = u'\n'.join([
         assignment.regional_office.name,
         assignment.regional_office.address,
-        ]).replace('\r', '')
+    ]).replace('\r', '')
 
     pdf.table(
         [(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
@@ -362,7 +362,7 @@ Wir freuen uns auf deinen Einsatz!
         os.path.dirname(os.path.dirname(__file__)),
         'data',
         'Einsatzvereinbarung.pdf',
-        ))
+    ))
     overlay_reader = PdfFileReader(overlay)
 
     for idx in range(2):
@@ -424,7 +424,7 @@ def expense_report_pdf(request, expense_report_id):
         (u'Meldeperiode:', u'%s - %s' % (
             report.date_from.strftime('%d.%m.%Y'),
             report.date_until.strftime('%d.%m.%Y'))),
-        ], (4 * cm, 12.4 * cm), pdf.style.tableLLR)
+    ], (4 * cm, 12.4 * cm), pdf.style.tableLLR)
 
     pdf.spacer()
 
@@ -432,7 +432,7 @@ def expense_report_pdf(request, expense_report_id):
         return (
             ('FONT', (0, from_), (-1, from_), 'Helvetica-Oblique', 8),
             #('LEFTPADDING', (0, from_), (-1, from_), 3 * mm),
-            )
+        )
 
     pdf.table(table,
         (4 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm, 2.4 * cm),
@@ -444,24 +444,27 @@ def expense_report_pdf(request, expense_report_id):
     pdf.spacer(1 * mm)
     pdf.table([
         (_('Total'), total),
-        ], (14 * cm, 2.4 * cm), pdf.style.tableHead)
+    ], (14 * cm, 2.4 * cm), pdf.style.tableHead)
 
     pdf.spacer()
 
     pdf.table([
         (_('bank account') + ':', drudge.bank_account),
-        ], (4 * cm, 12.4 * cm), pdf.style.tableLLR)
+    ], (4 * cm, 12.4 * cm), pdf.style.tableLLR)
 
-    pdf.bottom_table([
-        (_('Place, Date'), '', _('Jobholder'), '', _('Employer')),
-        ], (44 * mm, 10 * mm, 50 * mm, 10 * mm, 50 * mm),
+    pdf.bottom_table(
+        [
+            (_('Place, Date'), '', _('Jobholder'), '', _('Employer')),
+        ],
+        (44 * mm, 10 * mm, 50 * mm, 10 * mm, 50 * mm),
         style=pdf.style.table + (
             ('TOPPADDING', (0, 0), (-1, -1), 1 * mm),
             ('LINEABOVE', (0, 0), (0, 0), 0.2, colors.black),
             ('LINEABOVE', (2, 0), (2, 0), 0.2, colors.black),
             ('LINEABOVE', (4, 0), (4, 0), 0.2, colors.black),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ))
+        ),
+    )
 
     pdf.generate()
     return response
@@ -477,7 +480,7 @@ class NaturnetzStationery(object):
             x=16 * cm, y=24 * cm,
             width=177 * 0.5,
             height=246 * 0.5,
-            )
+        )
 
         canvas.restoreState()
 

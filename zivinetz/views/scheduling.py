@@ -159,14 +159,17 @@ class Scheduler(object):
 
         assignments = self.queryset.select_related(
             'specification__scope_statement', 'drudge__user',
-            ).order_by('date_from', 'date_until')
+        ).order_by('date_from', 'date_until')
 
         for assignment in assignments:
             for day in daterange(
                     assignment.date_from,
-                    assignment.determine_date_until()):
-                self.data_weeks.setdefault(calendar_week(day),
-                    (day, defaultdict(int)))[1][assignment.drudge_id] += 1
+                    assignment.determine_date_until(),
+            ):
+                self.data_weeks.setdefault(
+                    calendar_week(day),
+                    (day, defaultdict(int)),
+                )[1][assignment.drudge_id] += 1
 
             if assignment.drudge not in assignments_dict:
                 assignments_dict[assignment.drudge] = []
@@ -175,7 +178,7 @@ class Scheduler(object):
                 assignment,
                 self._schedule_assignment(
                     assignment.date_from, assignment.determine_date_until()),
-                ))
+            ))
 
         # linearize assignments, but still give precedence to drudge
         assignments = list(itertools.chain(*assignments_dict.values()))
@@ -185,13 +188,13 @@ class Scheduler(object):
             for entry in self.waitlist.select_related(
                     'specification__scope_statement',
                     'drudge__user',
-                    ).order_by('assignment_date_from'):
+            ).order_by('assignment_date_from'):
                 entry.status = 'wl'  # special waitlist entry status
                 item = (
                     entry,
                     self._schedule_assignment(entry.assignment_date_from,
                         entry.assignment_date_until),
-                    )
+                )
 
                 if entry.drudge in assignments_dict:
                     assignments_dict[entry.drudge].append(item)
@@ -208,7 +211,7 @@ class Scheduler(object):
         sums = [(
             sum(week.values()) / 7.0,
             u'%.1f' % (sum(week.values()) / 7.0),
-            ) for day, week in filtered_data_weeks]
+        ) for day, week in filtered_data_weeks]
 
         self.average = sum(
             (sum(week.values(), 0.0) for day, week in filtered_data_weeks),
@@ -229,7 +232,7 @@ class SchedulingSearchForm(SearchForm):
         'status': (
             Assignment.TENTATIVE, Assignment.ARRANGED, Assignment.MOBILIZED),
         'mode': 'both',
-        }
+    }
 
     specification = forms.ModelMultipleChoiceField(Specification.objects.all(),
         label=ugettext_lazy('specification'), required=False)
@@ -244,7 +247,7 @@ class SchedulingSearchForm(SearchForm):
         label=ugettext_lazy('motor saw course'), required=False, choices=(
             ('2-day', ugettext_lazy('2 day course')),
             ('5-day', ugettext_lazy('5 day course')),
-            ))
+        ))
     drudge__driving_license = forms.NullBooleanField(
         label=ugettext_lazy('driving license'), required=False)
 
@@ -252,7 +255,7 @@ class SchedulingSearchForm(SearchForm):
         ('both', ugettext_lazy('both')),
         ('assignments', ugettext_lazy('only assignments')),
         ('waitlist', ugettext_lazy('only waitlist entries')),
-        ), required=False)
+    ), required=False)
 
     def queryset(self):
         data = self.safe_cleaned_data
@@ -276,7 +279,7 @@ class SchedulingSearchForm(SearchForm):
         return self.apply_filters(WaitList.objects.search(data.get('query')), {
             'assignment_date_until__gte': data.get('date_until__gte'),
             'assignment_date_from__lte': data.get('date_from__lte'),
-            })
+        })
 
 
 @staff_member_required
@@ -302,4 +305,4 @@ def scheduling(request):
     return render(request, 'zivinetz/scheduling.html', {
         'scheduler': scheduler,
         'search_form': search_form,
-        })
+    })

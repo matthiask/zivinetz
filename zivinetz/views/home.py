@@ -25,4 +25,4 @@ def home(request):
 @staff_member_required
 def admin(request):
     return render(request, 'zivinetz/admin.html', {
-        })
+    })

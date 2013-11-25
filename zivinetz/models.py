@@ -78,7 +78,7 @@ class ScopeStatement(models.Model):
         return (u'%s %s' % (
             self.company_zip_code,
             self.company_city,
-            )).strip()
+        )).strip()
 
 
 class Choices(object):
@@ -92,7 +92,7 @@ class Choices(object):
             'max_length': 20,
             'choices': self.__dict__['_choices'],
             'default': self.__dict__['_choices'][0][0],
-            }
+        }
 
     def __getattr__(self, k):
         # raise KeyError if key does not exist
@@ -105,18 +105,18 @@ class Specification(models.Model):
     ACCOMODATION = Choices((
         ('provided', _('provided')),
         ('compensated', _('compensated')),
-        ))
+    ))
 
     MEAL = Choices((
         ('no_compensation', _('no compensation')),
         ('at_accomodation', _('at accomodation')),
         ('external', _('external')),
-        ))
+    ))
 
     CLOTHING = Choices((
         ('provided', _('provided')),
         ('compensated', _('compensated')),
-        ))
+    ))
 
     scope_statement = models.ForeignKey(ScopeStatement,
         verbose_name=_('scope statement'), related_name='specifications')
@@ -170,14 +170,14 @@ class Specification(models.Model):
             (self.with_accomodation
                 and ugettext('with accomodation')
                 or ugettext('without accomodation')),
-            )
+        )
 
     def compensation(self, for_date=date.today):
         cset = CompensationSet.objects.for_date(for_date)
 
         compensation = {
             'spending_money': cset.spending_money,
-            }
+        }
 
         for day_type in ('working', 'sick', 'free'):
             key = 'accomodation_%s' % day_type
@@ -201,13 +201,13 @@ class Specification(models.Model):
             compensation.update({
                 'clothing': Decimal('0.00'),
                 'clothing_limit_per_assignment': Decimal('0.00'),
-                })
+            })
         else:
             compensation.update({
                 'clothing': cset.clothing,
                 'clothing_limit_per_assignment':
                 cset.clothing_limit_per_assignment,
-                })
+            })
 
         return compensation
 
@@ -312,7 +312,7 @@ class Drudge(models.Model):
     MOTOR_SAW_COURSE_CHOICES = (
         ('2-day', _('2 day course')),
         ('5-day', _('5 day course')),
-        )
+    )
 
     user = models.OneToOneField(User)
 
@@ -384,7 +384,7 @@ class Drudge(models.Model):
             self.user.first_name,
             self.user.last_name,
             self.zdp_no,
-            )
+        )
 
     def pretty_motor_saw_course(self):
         """for the scheduling table"""
@@ -395,7 +395,7 @@ class Drudge(models.Model):
 class AssignmentManager(SearchManager):
     search_fields = [
         'specification__scope_statement__name', 'specification__code',
-        ] + ['drudge__%s' % f for f in DrudgeManager.search_fields]
+    ] + ['drudge__%s' % f for f in DrudgeManager.search_fields]
 
     def for_date(self, day=None):
         day = day if day else date.today()
@@ -405,9 +405,10 @@ class AssignmentManager(SearchManager):
                 Q(date_until__gte=day)
                 | Q(
                     date_until_extension__isnull=False,
-                    date_until_extension__gte=day)
+                    date_until_extension__gte=day,
                 )
             )
+        )
 
     def active_set(self, access, additional_ids=None):
         q = Q(id=0)
@@ -428,7 +429,7 @@ class Assignment(models.Model):
         (ARRANGED, _('arranged')),
         (MOBILIZED, _('mobilized')),
         (DECLINED, _('declined')),
-        )
+    )
 
     created = models.DateTimeField(_('created'), default=datetime.now)
     modified = models.DateTimeField(_('modified'), auto_now=True)
@@ -449,8 +450,6 @@ class Assignment(models.Model):
     part_of_long_assignment = models.BooleanField(_('part of long assignment'),
         default=False)
 
-    # TODO assignment days, leave days etc.
-
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES,
         default=TENTATIVE)
 
@@ -470,7 +469,7 @@ class Assignment(models.Model):
             self.specification.code,
             self.date_from,
             self.determine_date_until(),
-            )
+        )
 
     def determine_date_until(self):
         return self.date_until_extension or self.date_until
@@ -513,7 +512,7 @@ class Assignment(models.Model):
             'countable_days': 0,
             # days which aren't countable and are forced upon the drudge:
             'forced_leave_days': 0,
-            }
+        }
 
         monthly_expense_days = {}
 
@@ -578,7 +577,8 @@ class Assignment(models.Model):
                 key = (
                     self.date_from.year,
                     self.date_from.month,
-                    self.date_from.day)
+                    self.date_from.day,
+                )
 
             if day > self.date_until:
                 # Only the case when assignment has been extended
@@ -592,7 +592,8 @@ class Assignment(models.Model):
                     key = (
                         extended_start.year,
                         extended_start.month,
-                        extended_start.day)
+                        extended_start.day,
+                    )
 
             monthly_expense_days.setdefault(key, {
                 'free': 0, 'working': 0, 'forced': 0, 'start': day})
@@ -637,12 +638,12 @@ class Assignment(models.Model):
                     compensation['breakfast_free'] +
                     compensation['lunch_free'] +
                     compensation['supper_free']
-                    ) + working * (
+                ) + working * (
                     compensation['breakfast_working'] +
                     compensation['lunch_working'] +
                     compensation['supper_working']
-                    ),
-                }
+                ),
+            }
 
             if clothing_total is None:
                 clothing_total = compensation['clothing_limit_per_assignment']
@@ -695,7 +696,7 @@ class Assignment(models.Model):
                     + data['free'] + data['forced']),
                 clothing_expenses=clothing_expenses,
                 specification=self.specification,
-                )
+            )
 
             report.recalculate_total()
 
@@ -710,7 +711,7 @@ class ExpenseReportManager(SearchManager):
         'sick_days_notes', 'holi_days_notes', 'forced_leave_days_notes',
         'clothing_expenses_notes', 'transport_expenses_notes',
         'miscellaneous_notes',
-        ] + ['assignment__%s' % f for f in AssignmentManager.search_fields]
+    ] + ['assignment__%s' % f for f in AssignmentManager.search_fields]
 
 
 @model_resource_urls()
@@ -723,7 +724,7 @@ class ExpenseReport(models.Model):
         (PENDING, _('pending')),
         (FILLED, _('filled')),
         (PAID, _('paid')),
-        )
+    )
 
     assignment = models.ForeignKey(Assignment, verbose_name=_('assignment'),
         related_name='reports')
@@ -828,7 +829,7 @@ class ExpenseReport(models.Model):
                 compensation['breakfast_%s' % day_type],
                 compensation['lunch_%s' % day_type],
                 compensation['supper_%s' % day_type],
-                ]
+            ]
 
             return [u'%s %s' % (days, title)] + l + [sum(l) * days]
 
@@ -840,7 +841,7 @@ class ExpenseReport(models.Model):
             ugettext('lunch'),
             ugettext('supper'),
             ugettext('Total'),
-            ]]
+        ]]
 
         ret.append(line(
             ugettext('working days'),
@@ -868,7 +869,7 @@ class ExpenseReport(models.Model):
         # forced leave counts zero
         ret.append([
             u'%s %s' % (self.forced_leave_days, ugettext('forced leave days'))
-            ] + [Decimal('0.00')] * 6)
+        ] + [Decimal('0.00')] * 6)
         ret.append([self.forced_leave_days_notes, '', '', '', '', '', ''])
 
         additional = [
@@ -878,7 +879,7 @@ class ExpenseReport(models.Model):
             (self.clothing_expenses_notes, ''),
             (ugettext('miscellaneous'), self.miscellaneous),
             (self.miscellaneous_notes, ''),
-            ]
+        ]
 
         total = sum(r[6] for r in ret[1::2] if r) + sum(
             r[1] for r in additional[::2])
@@ -920,7 +921,7 @@ class CompanyHoliday(models.Model):
 class WaitListManager(SearchManager):
     search_fields = [
         'specification__scope_statement__name', 'specification__code', 'notes',
-        ] + ['drudge__%s' % f for f in DrudgeManager.search_fields]
+    ] + ['drudge__%s' % f for f in DrudgeManager.search_fields]
 
 
 @model_resource_urls()
@@ -948,7 +949,7 @@ class WaitList(models.Model):
             self.assignment_date_from,
             self.assignment_date_until,
             self.assignment_duration,
-            )
+        )
 
 
 @model_resource_urls()
@@ -1013,7 +1014,7 @@ class JobReferenceTemplate(models.Model):
 class JobReferenceManager(SearchManager):
     search_fields = [
         'text',
-        ] + ['assignment__%s' % f for f in AssignmentManager.search_fields]
+    ] + ['assignment__%s' % f for f in AssignmentManager.search_fields]
 
 
 @model_resource_urls()
