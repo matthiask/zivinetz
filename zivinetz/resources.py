@@ -11,7 +11,6 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 
 from towel import resources
 from towel.forms import towel_formfield_callback
-from towel.resources.urls import resource_url_fn
 from towel.utils import safe_queryset_and
 
 from towel_foundation.widgets import SelectWithPicker
@@ -26,6 +25,9 @@ from zivinetz.models import (Assignment, Drudge, ExpenseReport, RegionalOffice,
         ScopeStatement, Specification, WaitList, JobReferenceTemplate,
         JobReference)
 from zivinetz.views.expenses import generate_expense_statistics_pdf
+
+
+from zivinetz.utils.resources import resource_url_fn
 
 
 class LimitedPickerView(resources.PickerView):
@@ -421,10 +423,10 @@ urlpatterns = patterns(
         r'^regional_offices/',
         include(patterns(
             '',
-            regionaloffice_url('list', False, resources.ListView, suffix=''),
-            regionaloffice_url('add', False, resources.AddView),
-            regionaloffice_url('edit', True, resources.EditView),
-            regionaloffice_url('delete', True, resources.DeleteView),
+            regionaloffice_url('list', url=r'^$'),
+            regionaloffice_url('add', url=r'^add/$'),
+            regionaloffice_url('edit'),
+            regionaloffice_url('delete'),
             url(r'^\d+/$',
                 lambda request: redirect('zivinetz_regionaloffice_list')),
         ))
@@ -433,23 +435,22 @@ urlpatterns = patterns(
         r'^scope_statements/',
         include(patterns(
             '',
-            scopestatement_url('list', False, resources.ListView, suffix=''),
-            scopestatement_url(
-                'detail', True, resources.DetailView, suffix=''),
-            scopestatement_url('add', False, resources.AddView),
-            scopestatement_url('edit', True, resources.EditView),
-            scopestatement_url('delete', True, resources.DeleteView),
+            scopestatement_url('list', url=r'^$'),
+            scopestatement_url('detail', url=r'^(?P<pk>\d+)/$'),
+            scopestatement_url('add', url=r'^add/$'),
+            scopestatement_url('edit'),
+            scopestatement_url('delete'),
         ))
     ),
     url(
         r'^specifications/',
         include(patterns(
             '',
-            specification_url('list', False, resources.ListView, suffix=''),
-            specification_url('detail', True, resources.DetailView, suffix=''),
-            specification_url('add', False, resources.AddView),
-            specification_url('edit', True, resources.EditView),
-            specification_url('delete', True, resources.DeleteView),
+            specification_url('list', url='^$'),
+            specification_url('detail', url=r'^(?P<pk>\d+)/$'),
+            specification_url('add', url=r'^add/$'),
+            specification_url('edit'),
+            specification_url('delete'),
         ))
     ),
     url(
@@ -457,16 +458,17 @@ urlpatterns = patterns(
         include(patterns(
             '',
             drudge_url(
-                'list', False, resources.ListView, suffix='',
+                'list',
+                url=r'^$',
                 paginate_by=50,
                 search_form=DrudgeSearchForm,
                 send_emails_selector='user__email',
                 ),
-            drudge_url('picker', False, LimitedPickerView),
-            drudge_url('detail', True, DrudgeDetailView, suffix=''),
-            drudge_url('add', False, resources.AddView),
-            drudge_url('edit', True, resources.EditView),
-            drudge_url('delete', True, resources.DeleteView),
+            drudge_url('picker', view=LimitedPickerView, url=r'^picker/$'),
+            drudge_url('detail', view=DrudgeDetailView, url=r'^(?P<pk>\d+)/$'),
+            drudge_url('add', url=r'^add/$'),
+            drudge_url('edit'),
+            drudge_url('delete'),
         ))
     ),
     url(
@@ -474,21 +476,22 @@ urlpatterns = patterns(
         include(patterns(
             '',
             assignment_url(
-                'list', False, resources.ListView, suffix='',
+                'list',
+                url=r'^$',
                 paginate_by=50,
                 search_form=AssignmentSearchForm,
                 send_emails_selector='drudge__user__email',
                 ),
-            assignment_url('picker', False, LimitedPickerView),
-            assignment_url('pdf', False, PhonenumberPDFExportView),
-            assignment_url('detail', True, resources.DetailView, suffix=''),
-            assignment_url('add', False, resources.AddView),
-            assignment_url('edit', True, resources.EditView),
-            assignment_url('delete', True, resources.DeleteView),
+            assignment_url('picker', view=LimitedPickerView, url=r'^picker/$'),
+            assignment_url('pdf', view=PhonenumberPDFExportView),
+            assignment_url('detail', url=r'^(?P<pk>\d+)/$'),
+            assignment_url('add', url=r'^add/$'),
+            assignment_url('edit'),
+            assignment_url('delete'),
             assignment_url(
-                'create_expensereports', True, CreateExpenseReportView),
+                'create_expensereports', view=CreateExpenseReportView),
             assignment_url(
-                'remove_expensereports', True, RemoveExpenseReportView),
+                'remove_expensereports', view=RemoveExpenseReportView),
         ))
     ),
     url(
@@ -496,15 +499,16 @@ urlpatterns = patterns(
         include(patterns(
             '',
             expensereport_url(
-                'list', False, resources.ListView, suffix='',
+                'list',
+                url=r'^$',
                 paginate_by=50,
                 search_form=ExpenseReportSearchForm,
                 ),
-            expensereport_url('pdf', False, ExpenseReportPDFExportView),
-            expensereport_url('detail', True, resources.DetailView, suffix=''),
-            expensereport_url('add', False, resources.AddView),
-            expensereport_url('edit', True, resources.EditView),
-            expensereport_url('delete', True, resources.DeleteView),
+            expensereport_url('pdf', view=ExpenseReportPDFExportView),
+            expensereport_url('detail', url=r'^(?P<pk>\d+)/$'),
+            expensereport_url('add', url=r'^add/$'),
+            expensereport_url('edit'),
+            expensereport_url('delete'),
         ))
     ),
     url(
@@ -512,20 +516,20 @@ urlpatterns = patterns(
         include(patterns(
             '',
             jobreference_url(
-                'list', False, resources.ListView, suffix='',
+                'list',
+                url=r'^$',
                 paginate_by=50,
                 search_form=JobReferenceSearchForm,
                 ),
-            jobreference_url('detail', True, resources.DetailView, suffix=''),
-            jobreference_url(
-                'edit', True, resources.EditView,
-                form_class=JobReferenceForm,
-            ),
-            jobreference_url('delete', True, resources.DeleteView),
+            jobreference_url('detail', url=r'^(?P<pk>\d+)/$'),
+            jobreference_url('edit', form_class=JobReferenceForm),
+            jobreference_url('delete'),
 
             jobreference_url(
-                'from_template', False, JobReferenceFromTemplateView,
-                suffix=r'(\d+)/(\d+)/'),
+                'from_template',
+                view=JobReferenceFromTemplateView,
+                url=r'^(\d+)/(\d+)/$',
+            ),
         ))
     ),
     url(
@@ -533,14 +537,14 @@ urlpatterns = patterns(
         include(patterns(
             '',
             waitlist_url(
-                'list', False, resources.ListView, suffix='',
+                'list',
+                url=r'^$',
                 paginate_by=50,
                 search_form=WaitListSearchForm,
                 ),
-            waitlist_url('detail', True, resources.DetailView, suffix=''),
-            # waitlist_url('add', False, resources.AddView),
-            waitlist_url('edit', True, resources.EditView),
-            waitlist_url('delete', True, resources.DeleteView),
+            waitlist_url('detail', url=r'^(?P<pk>\d+)/$'),
+            waitlist_url('edit'),
+            waitlist_url('delete'),
         ))
     ),
 )
