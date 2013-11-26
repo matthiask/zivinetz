@@ -415,98 +415,132 @@ waitlist_url = resource_url_fn(
 )
 
 
-urlpatterns = patterns('',
-    url(r'^regional_offices/', include(patterns(
-        '',
-        regionaloffice_url('list', False, resources.ListView, suffix=''),
-        regionaloffice_url('add', False, resources.AddView),
-        regionaloffice_url('edit', True, resources.EditView),
-        regionaloffice_url('delete', True, resources.DeleteView),
-        url(r'^\d+/$',
-            lambda request: redirect('zivinetz_regionaloffice_list')),
-    ))),
-    url(r'^scope_statements/', include(patterns(
-        '',
-        scopestatement_url('list', False, resources.ListView, suffix=''),
-        scopestatement_url('detail', True, resources.DetailView, suffix=''),
-        scopestatement_url('add', False, resources.AddView),
-        scopestatement_url('edit', True, resources.EditView),
-        scopestatement_url('delete', True, resources.DeleteView),
-    ))),
-    url(r'^specifications/', include(patterns(
-        '',
-        specification_url('list', False, resources.ListView, suffix=''),
-        specification_url('detail', True, resources.DetailView, suffix=''),
-        specification_url('add', False, resources.AddView),
-        specification_url('edit', True, resources.EditView),
-        specification_url('delete', True, resources.DeleteView),
-    ))),
-    url(r'^drudges/', include(patterns(
-        '',
-        drudge_url('list', False, resources.ListView, suffix='',
-            paginate_by=50,
-            search_form=DrudgeSearchForm,
-            send_emails_selector='user__email',
+urlpatterns = patterns(
+    '',
+    url(
+        r'^regional_offices/',
+        include(patterns(
+            '',
+            regionaloffice_url('list', False, resources.ListView, suffix=''),
+            regionaloffice_url('add', False, resources.AddView),
+            regionaloffice_url('edit', True, resources.EditView),
+            regionaloffice_url('delete', True, resources.DeleteView),
+            url(r'^\d+/$',
+                lambda request: redirect('zivinetz_regionaloffice_list')),
+        ))
+    ),
+    url(
+        r'^scope_statements/',
+        include(patterns(
+            '',
+            scopestatement_url('list', False, resources.ListView, suffix=''),
+            scopestatement_url(
+                'detail', True, resources.DetailView, suffix=''),
+            scopestatement_url('add', False, resources.AddView),
+            scopestatement_url('edit', True, resources.EditView),
+            scopestatement_url('delete', True, resources.DeleteView),
+        ))
+    ),
+    url(
+        r'^specifications/',
+        include(patterns(
+            '',
+            specification_url('list', False, resources.ListView, suffix=''),
+            specification_url('detail', True, resources.DetailView, suffix=''),
+            specification_url('add', False, resources.AddView),
+            specification_url('edit', True, resources.EditView),
+            specification_url('delete', True, resources.DeleteView),
+        ))
+    ),
+    url(
+        r'^drudges/',
+        include(patterns(
+            '',
+            drudge_url(
+                'list', False, resources.ListView, suffix='',
+                paginate_by=50,
+                search_form=DrudgeSearchForm,
+                send_emails_selector='user__email',
+                ),
+            drudge_url('picker', False, LimitedPickerView),
+            drudge_url('detail', True, DrudgeDetailView, suffix=''),
+            drudge_url('add', False, resources.AddView),
+            drudge_url('edit', True, resources.EditView),
+            drudge_url('delete', True, resources.DeleteView),
+        ))
+    ),
+    url(
+        r'^assignments/',
+        include(patterns(
+            '',
+            assignment_url(
+                'list', False, resources.ListView, suffix='',
+                paginate_by=50,
+                search_form=AssignmentSearchForm,
+                send_emails_selector='drudge__user__email',
+                ),
+            assignment_url('picker', False, LimitedPickerView),
+            assignment_url('pdf', False, PhonenumberPDFExportView),
+            assignment_url('detail', True, resources.DetailView, suffix=''),
+            assignment_url('add', False, resources.AddView),
+            assignment_url('edit', True, resources.EditView),
+            assignment_url('delete', True, resources.DeleteView),
+            assignment_url(
+                'create_expensereports', True, CreateExpenseReportView),
+            assignment_url(
+                'remove_expensereports', True, RemoveExpenseReportView),
+        ))
+    ),
+    url(
+        r'^expense_reports/',
+        include(patterns(
+            '',
+            expensereport_url(
+                'list', False, resources.ListView, suffix='',
+                paginate_by=50,
+                search_form=ExpenseReportSearchForm,
+                ),
+            expensereport_url('pdf', False, ExpenseReportPDFExportView),
+            expensereport_url('detail', True, resources.DetailView, suffix=''),
+            expensereport_url('add', False, resources.AddView),
+            expensereport_url('edit', True, resources.EditView),
+            expensereport_url('delete', True, resources.DeleteView),
+        ))
+    ),
+    url(
+        r'^jobreferences/',
+        include(patterns(
+            '',
+            jobreference_url(
+                'list', False, resources.ListView, suffix='',
+                paginate_by=50,
+                search_form=JobReferenceSearchForm,
+                ),
+            jobreference_url('detail', True, resources.DetailView, suffix=''),
+            jobreference_url(
+                'edit', True, resources.EditView,
+                form_class=JobReferenceForm,
             ),
-        drudge_url('picker', False, LimitedPickerView),
-        drudge_url('detail', True, DrudgeDetailView, suffix=''),
-        drudge_url('add', False, resources.AddView),
-        drudge_url('edit', True, resources.EditView),
-        drudge_url('delete', True, resources.DeleteView),
-    ))),
-    url(r'^assignments/', include(patterns(
-        '',
-        assignment_url('list', False, resources.ListView, suffix='',
-            paginate_by=50,
-            search_form=AssignmentSearchForm,
-            send_emails_selector='drudge__user__email',
-            ),
-        assignment_url('picker', False, LimitedPickerView),
-        assignment_url('pdf', False, PhonenumberPDFExportView),
-        assignment_url('detail', True, resources.DetailView, suffix=''),
-        assignment_url('add', False, resources.AddView),
-        assignment_url('edit', True, resources.EditView),
-        assignment_url('delete', True, resources.DeleteView),
-        assignment_url('create_expensereports', True, CreateExpenseReportView),
-        assignment_url('remove_expensereports', True, RemoveExpenseReportView),
-    ))),
-    url(r'^expense_reports/', include(patterns(
-        '',
-        expensereport_url('list', False, resources.ListView, suffix='',
-            paginate_by=50,
-            search_form=ExpenseReportSearchForm,
-            ),
-        expensereport_url('pdf', False, ExpenseReportPDFExportView),
-        expensereport_url('detail', True, resources.DetailView, suffix=''),
-        expensereport_url('add', False, resources.AddView),
-        expensereport_url('edit', True, resources.EditView),
-        expensereport_url('delete', True, resources.DeleteView),
-    ))),
-    url(r'^jobreferences/', include(patterns(
-        '',
-        jobreference_url('list', False, resources.ListView, suffix='',
-            paginate_by=50,
-            search_form=JobReferenceSearchForm,
-            ),
-        jobreference_url('detail', True, resources.DetailView, suffix=''),
-        # jobreference_url('add', False, resources.AddView),
-        jobreference_url('edit', True, resources.EditView,
-            form_class=JobReferenceForm,
-            ),
-        jobreference_url('delete', True, resources.DeleteView),
+            jobreference_url('delete', True, resources.DeleteView),
 
-        jobreference_url('from_template', False, JobReferenceFromTemplateView,
-            suffix=r'(\d+)/(\d+)/'),
-    ))),
-    url(r'^waitlist/', include(patterns(
-        '',
-        waitlist_url('list', False, resources.ListView, suffix='',
-            paginate_by=50,
-            search_form=WaitListSearchForm,
-            ),
-        waitlist_url('detail', True, resources.DetailView, suffix=''),
-        # waitlist_url('add', False, resources.AddView),
-        waitlist_url('edit', True, resources.EditView),
-        waitlist_url('delete', True, resources.DeleteView),
-    ))),
+            jobreference_url(
+                'from_template', False, JobReferenceFromTemplateView,
+                suffix=r'(\d+)/(\d+)/'),
+        ))
+    ),
+    url(
+        r'^waitlist/',
+        include(patterns(
+            '',
+            waitlist_url(
+                'list', False, resources.ListView, suffix='',
+                paginate_by=50,
+                search_form=WaitListSearchForm,
+                ),
+            waitlist_url('detail', True, resources.DetailView, suffix=''),
+            # waitlist_url('add', False, resources.AddView),
+            waitlist_url('edit', True, resources.EditView),
+            waitlist_url('delete', True, resources.DeleteView),
+        ))
+    ),
 )
