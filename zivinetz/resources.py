@@ -11,6 +11,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 
 from towel import resources
 from towel.forms import towel_formfield_callback
+from towel.resources.urls import resource_url_fn
 from towel.utils import safe_queryset_and
 
 from towel_foundation.widgets import SelectWithPicker
@@ -25,9 +26,6 @@ from zivinetz.models import (Assignment, Drudge, ExpenseReport, RegionalOffice,
         ScopeStatement, Specification, WaitList, JobReferenceTemplate,
         JobReference)
 from zivinetz.views.expenses import generate_expense_statistics_pdf
-
-
-from zivinetz.utils.resources import resource_url_fn
 
 
 class LimitedPickerView(resources.PickerView):
