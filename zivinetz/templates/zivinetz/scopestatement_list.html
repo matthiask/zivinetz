@@ -15,7 +15,7 @@
     {% for object in object_list %}
         <tr class="{% cycle 'odd' 'even' %}">
             <td>
-                <i class="foundicon-{{ object.is_active|yesno:'checkmark,remove' }}"></i>
+                <i class="fi-{{ object.is_active|yesno:'check,x' }}"></i>
             </td>
             <td>{{ object.eis_no }}</td>
             <th><a href="{{ object.get_absolute_url }}">{{ object }}</a></th>
