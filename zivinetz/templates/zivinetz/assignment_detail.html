@@ -1,12 +1,10 @@
-{% extends base_template|default:"base.html" %}
+{% extends "resources/object_detail.html" %}
 
 {% load i18n modelview_detail modelview_list zivinetz_tags %}
 
 {% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-<h2>{{ object }}</h2>
-
 <table>
 {% for title, value in object|model_details %}
     <tr class="{% cycle "odd" "even" %}">

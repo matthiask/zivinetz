@@ -28,6 +28,15 @@
     {% block page-header %}
       {% if verbose_name_plural %}
         <div class="page-header">
+          {% if verbose_name and add_url %}
+            {% if adding_allowed or view.allow_add %}
+              <a href="{{ add_url }}" class="button secondary right small radius"
+                title="{% blocktrans %}New {{ verbose_name }}{% endblocktrans %}"
+                >
+                <i class="fi-plus"></i>
+              </a>
+            {% endif %}
+          {% endif %}
           {% if search_form %}
             <form method="get" action="{{ list_url|default:"." }}"
                 class="form-search right">
@@ -90,29 +99,11 @@
 </div>
 
 <div class="row">
-  <div class="large-9 columns">
+  <div class="large-12 columns">
     {% block content %}{% endblock %}
     <hr>
     <a href="{% url 'logout' %}">{% trans "Log out" %}</a> /
     <a href="{% url 'password_change' %}">{% trans "Change password" %}</a>
-  </div>
-  <div class="large-3 columns">
-    {% block sidebar %}
-    {% if verbose_name and add_url %}
-      {% if adding_allowed or view.allow_add %}
-        <div class="panel">
-          <ul class="side-nav">
-            <li>{{ verbose_name_plural }}</li>
-
-            {% mark_current request.path %}
-            <li><a href="{{ add_url }}" class="add">
-              {% blocktrans %}New {{ verbose_name }}{% endblocktrans %}</a></li>
-            {% endmark_current %}
-          </ul>
-        </div>
-      {% endif %}
-    {% endif %}
-    {% endblock %}
   </div>
 </div>
 

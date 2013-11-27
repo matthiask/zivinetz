@@ -1,4 +1,4 @@
-{% extends base_template|default:"base.html" %}
+{% extends "resources/object_detail.html" %}
 
 {% load i18n modelview_detail modelview_list towel_form_tags %}
 {% load feincms_thumbnail %}
@@ -6,8 +6,6 @@
 {% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-<h2>{{ object }}</h2>
-
 <table style="width:100%"><tr><td style="width:50%">
 
 <table>

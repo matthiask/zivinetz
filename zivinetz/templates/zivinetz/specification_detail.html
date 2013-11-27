@@ -1,12 +1,10 @@
-{% extends base_template|default:"base.html" %}
+{% extends "resources/object_detail.html" %}
 
 {% load i18n l10n modelview_detail %}
 
 {% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-<h2>{{ object }}</h2>
-
 <table>
     <tr>
         <th>{% trans "scope statement"|capfirst %}</th>
