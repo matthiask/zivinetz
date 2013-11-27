@@ -2,10 +2,13 @@
 
 {% load feincms_page_tags i18n mark_current navigation_tags staticfiles towel_form_tags %}
 
+{% block css %}{{ block.super }}
+  <link href="{% static 'chosen/chosen.css' %}" rel="stylesheet">
+  <link href="{% static 'towel_foundation/datepicker/datePicker.css' %}" rel="stylesheet">
+  <link href="{% static 'towel_foundation/towel_foundation.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block extra-head %}{{ block.super }}
-<link href="{% static 'chosen/chosen.css' %}" rel="stylesheet">
-<link href="{% static 'towel_foundation/datepicker/datePicker.css' %}" rel="stylesheet">
-<link href="{% static 'towel_foundation/towel_foundation.css' %}" rel="stylesheet">
 <script>onForm = [];</script>
 {% endblock %}
 
