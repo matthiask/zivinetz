@@ -134,9 +134,19 @@ class DrudgeForm(forms.ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
+    environment_course = forms.NullBooleanField(
+        label=_('environment course'), required=True,
+        help_text=_('I have taken the environment course already.'))
+
     class Meta:
         model = Drudge
         exclude = ('user',)
+
+    def clean_environment_course(self):
+        value = self.cleaned_data.get('environment_course')
+        if value is None:
+            raise forms.ValidationError(_('Please select either yes or no.'))
+        return value
 
 
 @login_required
