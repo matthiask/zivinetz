@@ -11,8 +11,8 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 
-from zivinetz.models import (Assignment, CompanyHoliday, ExpenseReport,
-    JobReference)
+from zivinetz.models import (
+    Assignment, CompanyHoliday, ExpenseReport, JobReference)
 
 from reportlab.lib import colors
 
@@ -28,8 +28,8 @@ class AssignmentPDFStationery(object):
         self.assignment = assignment
 
     def __call__(self, canvas, pdfdocument):
-        #canvas.saveState()
-        #canvas.restoreState()
+        # canvas.saveState()
+        # canvas.restoreState()
 
         if pdfdocument.doc.page == 1:
             self.page_1(canvas, pdfdocument)
@@ -41,10 +41,10 @@ class AssignmentPDFStationery(object):
         'trial': (75, 103),
         'long_assignment': (112, 103),
 
-        #'working_time_fixed': (112, 60),
-        #'working_time_nightshift': (151, 59),
-        #'working_time_flexible': (112, 55),
-        #'working_time_weekend': (151, 55),
+        # 'working_time_fixed': (112, 60),
+        # 'working_time_nightshift': (151, 59),
+        # 'working_time_flexible': (112, 55),
+        # 'working_time_weekend': (151, 55),
 
         'vegetarianism': (113.5, 40),
         'no_vegetarianism': (155, 40),
@@ -56,8 +56,8 @@ class AssignmentPDFStationery(object):
         'accomodation_free_compensated': (113.5, 230),
         'accomodation_free_provided': (143, 230),
 
-        #'accomodation_used': (75, 251),
-        #'accomodation_notused': (113.5, 251),
+        # 'accomodation_used': (75, 251),
+        # 'accomodation_notused': (113.5, 251),
 
         'breakfast_working_at_company': (85, 225.5),
         'breakfast_working_at_home': (56, 225.5),
@@ -138,7 +138,7 @@ class AssignmentPDFStationery(object):
         ]
 
         frame_3 = [
-            #drudge.health_insurance_company,
+            # drudge.health_insurance_company,
             # '',  # drudge.bank_account,
         ]
 
@@ -220,9 +220,11 @@ class AssignmentPDFStationery(object):
             company_holiday = None
 
         if company_holiday:
-            canvas.drawString(125 * mm, 82 * mm,
+            canvas.drawString(
+                125 * mm, 82 * mm,
                 company_holiday.date_from.strftime('%d.%m.%Y'))
-            canvas.drawString(160 * mm, 82 * mm,
+            canvas.drawString(
+                160 * mm, 82 * mm,
                 company_holiday.date_until.strftime('%d.%m.%Y'))
 
         if self.assignment.part_of_long_assignment:
@@ -230,12 +232,12 @@ class AssignmentPDFStationery(object):
         else:
             self.draw_marker(canvas, 'standard')
 
-        #self.draw_marker(canvas, 'working_time_fixed')
+        # self.draw_marker(canvas, 'working_time_fixed')
 
-        #if drudge.vegetarianism:
-            #self.draw_marker(canvas, 'vegetarianism')
-        #else:
-            #self.draw_marker(canvas, 'no_vegetarianism')
+        # if drudge.vegetarianism:
+        #     self.draw_marker(canvas, 'vegetarianism')
+        # else:
+        #     self.draw_marker(canvas, 'no_vegetarianism')
 
     def page_2(self, canvas, pdfdocument):
         # self._draw_all_markers(canvas)
@@ -256,7 +258,8 @@ class AssignmentPDFStationery(object):
                     getattr(spec, '%s_%s' % (meal, day_type)))
 
                 if marker.endswith('at_accomodation'):
-                    marker = marker.replace('at_accomodation',
+                    marker = marker.replace(
+                        'at_accomodation',
                         spec.with_accomodation and 'at_company' or 'at_home')
                 elif marker.endswith('no_compensation'):
                     # in this context, at_company is the same
@@ -347,7 +350,7 @@ Wir freuen uns auf deinen Einsatz!
     overlay = BytesIO()
     pdf = PDFDocument(overlay)
 
-    #pdf.show_boundaries = True
+    # pdf.show_boundaries = True
     pdf.init_report(
         page_fn=create_stationery_fn(AssignmentPDFStationery(assignment)))
 
@@ -430,14 +433,16 @@ def expense_report_pdf(request, expense_report_id):
     def notes(from_):
         return (
             ('FONT', (0, from_), (-1, from_), 'Helvetica-Oblique', 8),
-            #('LEFTPADDING', (0, from_), (-1, from_), 3 * mm),
+            # ('LEFTPADDING', (0, from_), (-1, from_), 3 * mm),
         )
 
-    pdf.table(table,
+    pdf.table(
+        table,
         (4 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm, 2.4 * cm),
         pdf.style.tableHead + tuple(
             reduce(operator.add, (notes(i) for i in range(2, 12, 2)))))
-    pdf.table(additional,
+    pdf.table(
+        additional,
         (14 * cm, 2.4 * cm),
         pdf.style.table + notes(1) + notes(3) + notes(5))
     pdf.spacer(1 * mm)

@@ -19,12 +19,13 @@ from towel_foundation.widgets import SelectWithPicker
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
-from zivinetz.forms import (AssignmentSearchForm, DrudgeSearchForm,
-    AssessmentForm, ExpenseReportSearchForm, EditExpenseReportForm,
-    JobReferenceForm, JobReferenceSearchForm, WaitListSearchForm)
-from zivinetz.models import (Assignment, Drudge, ExpenseReport, RegionalOffice,
-        ScopeStatement, Specification, WaitList, JobReferenceTemplate,
-        JobReference)
+from zivinetz.forms import (
+    AssignmentSearchForm, DrudgeSearchForm, AssessmentForm,
+    ExpenseReportSearchForm, EditExpenseReportForm, JobReferenceForm,
+    JobReferenceSearchForm, WaitListSearchForm)
+from zivinetz.models import (
+    Assignment, Drudge, ExpenseReport, RegionalOffice, ScopeStatement,
+    Specification, WaitList, JobReferenceTemplate, JobReference)
 from zivinetz.views.expenses import generate_expense_statistics_pdf
 
 
@@ -70,10 +71,10 @@ class ZivinetzMixin(object):
     def send_emails(self, queryset):
         class EmailForm(forms.Form):
             subject = forms.CharField(label=ugettext_lazy('subject'))
-            body = forms.CharField(label=ugettext_lazy('body'),
-                widget=forms.Textarea)
-            attachment = forms.FileField(label=ugettext_lazy('attachment'),
-                required=False)
+            body = forms.CharField(
+                label=ugettext_lazy('body'), widget=forms.Textarea)
+            attachment = forms.FileField(
+                label=ugettext_lazy('attachment'), required=False)
 
         if 'confirm' in self.request.POST:
             form = EmailForm(self.request.POST)
@@ -101,7 +102,8 @@ class ZivinetzMixin(object):
         else:
             form = EmailForm()
 
-        context = resources.ModelResourceView.get_context_data(self,
+        context = resources.ModelResourceView.get_context_data(
+            self,
             title=_('Send emails'),
             form=form,
             action_queryset=queryset,
@@ -121,9 +123,11 @@ class ZivinetzMixin(object):
 
     def form_valid(self, form):
         self.object = form.save()
-        messages.success(self.request,
-            _('The %(verbose_name)s has been successfully saved.') %
-            self.object._meta.__dict__,
+        messages.success(
+            self.request,
+            _('The %(verbose_name)s has been successfully saved.') % (
+                self.object._meta.__dict__,
+            )
         )
         if '_continue' in self.request.POST:
             return redirect(self.object.urls.url('edit'))
@@ -215,7 +219,8 @@ class AssignmentMixin(ZivinetzMixin):
 
     def form_valid(self, form):
         self.object = form.save()
-        messages.success(self.request,
+        messages.success(
+            self.request,
             _('The %(verbose_name)s has been successfully saved.') %
             self.object._meta.__dict__,
         )
@@ -224,7 +229,8 @@ class AssignmentMixin(ZivinetzMixin):
 
         if ('date_until_extension' in form.changed_data
                 and self.object.reports.exists()):
-            messages.warning(self.request,
+            messages.warning(
+                self.request,
                 _('The extended until date has been changed. Please check'
                     ' whether you need to generate additional expense'
                     ' reports.'))
@@ -241,10 +247,12 @@ class CreateExpenseReportView(resources.ModelResourceView):
             raise PermissionDenied
         created = self.object.generate_expensereports()
         if created:
-            messages.success(request,
+            messages.success(
+                request,
                 _('Successfully created %s expense reports.') % created)
         else:
-            messages.info(request,
+            messages.info(
+                request,
                 _('No expense reports created, all months occupied already?'))
         return redirect(self.object)
 
@@ -333,7 +341,8 @@ class ExpenseReportMixin(ZivinetzMixin):
 
     def form_valid(self, form):
         self.object = form.save()
-        messages.success(self.request,
+        messages.success(
+            self.request,
             _('The %(verbose_name)s has been successfully saved.') %
             self.object._meta.__dict__,
         )

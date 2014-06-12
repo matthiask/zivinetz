@@ -33,12 +33,6 @@ setup(
             'templates/*/*/*/*.*',
         ],
     },
-    #install_requires=[
-    #    'Django>=1.6',
-    #    'Towel',
-    #    'django-photos',
-    #    'PDFDocument',
-    #],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',

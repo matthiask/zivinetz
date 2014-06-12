@@ -82,7 +82,8 @@ class Scheduler(object):
         self.date_list = list(daterange(self.date_from, self.date_until))
         self.data_weeks = SortedDict()
         for day in self.date_list:
-            self.data_weeks.setdefault(calendar_week(day),
+            self.data_weeks.setdefault(
+                calendar_week(day),
                 (day, defaultdict(lambda: 0)))
 
     def add_waitlist(self, queryset):
@@ -186,13 +187,14 @@ class Scheduler(object):
         waitlist = []
         if self.waitlist is not None:
             for entry in self.waitlist.select_related(
-                    'specification__scope_statement',
-                    'drudge__user',
+                'specification__scope_statement',
+                'drudge__user',
             ).order_by('assignment_date_from'):
                 entry.status = 'wl'  # special waitlist entry status
                 item = (
                     entry,
-                    self._schedule_assignment(entry.assignment_date_from,
+                    self._schedule_assignment(
+                        entry.assignment_date_from,
                         entry.assignment_date_until),
                 )
 
@@ -204,7 +206,8 @@ class Scheduler(object):
             # linearize assignments with waitlist entries intermingled
             assignments = list(itertools.chain(*assignments_dict.values()))
 
-        filtered_data_weeks = [(day, week)
+        filtered_data_weeks = [
+            (day, week)
             for day, week in self.data_weeks.values()
             if self.date_from <= _monday(day) <= self.date_until]
 
@@ -234,13 +237,17 @@ class SchedulingSearchForm(SearchForm):
         'mode': 'both',
     }
 
-    specification = forms.ModelMultipleChoiceField(Specification.objects.all(),
+    specification = forms.ModelMultipleChoiceField(
+        Specification.objects.all(),
         label=ugettext_lazy('specification'), required=False)
-    status = forms.MultipleChoiceField(choices=Assignment.STATUS_CHOICES,
+    status = forms.MultipleChoiceField(
+        choices=Assignment.STATUS_CHOICES,
         label=ugettext_lazy('status'), required=False)
-    date_until__gte = forms.DateField(label=ugettext_lazy('Start date'),
+    date_until__gte = forms.DateField(
+        label=ugettext_lazy('Start date'),
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
-    date_from__lte = forms.DateField(label=ugettext_lazy('End date'),
+    date_from__lte = forms.DateField(
+        label=ugettext_lazy('End date'),
         required=False, widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
     drudge__motor_saw_course = forms.MultipleChoiceField(

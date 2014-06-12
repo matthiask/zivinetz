@@ -4,7 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from towel.forms import SearchForm, WarningsForm
 
-from zivinetz.models import (Assessment, Assignment, Drudge, ExpenseReport,
+from zivinetz.models import (
+    Assessment, Assignment, Drudge, ExpenseReport,
     JobReference, RegionalOffice, ScopeStatement)
 
 
@@ -34,9 +35,11 @@ class DrudgeSearchForm(SearchForm):
     orderings = {
         'date_joined': 'user__date_joined',
     }
-    regional_office = forms.ModelChoiceField(RegionalOffice.objects.all(),
+    regional_office = forms.ModelChoiceField(
+        RegionalOffice.objects.all(),
         label=_('regional office'), required=False)
-    only_active = forms.BooleanField(label=_('only active'),
+    only_active = forms.BooleanField(
+        label=_('only active'),
         required=False)
     motor_saw_course = forms.MultipleChoiceField(
         label=_('motor saw course'), required=False,
@@ -46,7 +49,8 @@ class DrudgeSearchForm(SearchForm):
 
     def queryset(self, model):
         query, data = self.query_data()
-        queryset = self.apply_filters(model.objects.search(query),
+        queryset = self.apply_filters(
+            model.objects.search(query),
             data, exclude=('only_active',))
 
         if data.get('only_active'):
@@ -71,15 +75,18 @@ class AssignmentSearchForm(SearchForm):
         ScopeStatement.objects.all(),
         label=_('scope statements'), required=False)
 
-    active_on = forms.DateField(label=_('active on'), required=False,
+    active_on = forms.DateField(
+        label=_('active on'), required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
-    service_between = forms.DateField(label=_('service between'),
+    service_between = forms.DateField(
+        label=_('service between'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}),
         help_text=_(
             'Drudges in service any time between the following two dates.'))
-    service_and = forms.DateField(label=_('and'),
+    service_and = forms.DateField(
+        label=_('and'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
@@ -89,7 +96,8 @@ class AssignmentSearchForm(SearchForm):
     def queryset(self, model):
         query, data = self.query_data()
         queryset = model.objects.search(query)
-        queryset = self.apply_filters(queryset, data,
+        queryset = self.apply_filters(
+            queryset, data,
             exclude=('active_on', 'service_between', 'service_and'))
 
         if data.get('active_on'):
@@ -123,15 +131,18 @@ class ExpenseReportSearchForm(SearchForm):
         forms.ModelMultipleChoiceField(
             queryset=ScopeStatement.objects.all(),
             label=_('scope statement'), required=False)
-    assignment__status = forms.MultipleChoiceField(Assignment.STATUS_CHOICES,
+    assignment__status = forms.MultipleChoiceField(
+        Assignment.STATUS_CHOICES,
         label=_('assignment status'), required=False)
     status = forms.MultipleChoiceField(
         ExpenseReport.STATUS_CHOICES, label=_('status'),
         required=False)
-    date_from__gte = forms.DateField(label=_('date from'),
+    date_from__gte = forms.DateField(
+        label=_('date from'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
-    date_until__lte = forms.DateField(label=_('date until'),
+    date_until__lte = forms.DateField(
+        label=_('date until'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
@@ -176,10 +187,12 @@ class JobReferenceSearchForm(SearchForm):
             queryset=ScopeStatement.objects.all(),
             label=_('scope statement'),
             required=False)
-    created__gte = forms.DateField(label=_('date from'),
+    created__gte = forms.DateField(
+        label=_('date from'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
-    created__lte = forms.DateField(label=_('date until'),
+    created__lte = forms.DateField(
+        label=_('date until'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
 

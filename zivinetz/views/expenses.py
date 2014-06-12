@@ -21,7 +21,8 @@ def generate_expense_statistics_pdf(reports):
 
     pdf.doc.addPageTemplates([
         PageTemplate(id='First', frames=[
-            Frame(.5 * cm, .5 * cm, 19.8 * cm, 28.5 * cm, showBoundary=0,
+            Frame(
+                .5 * cm, .5 * cm, 19.8 * cm, 28.5 * cm, showBoundary=0,
                 leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0),
         ])
     ])
@@ -89,7 +90,8 @@ def generate_expense_statistics_pdf(reports):
         def add(keys):
             return sum(compensation[k] for k in keys.split())
 
-        tpl = ('spending_money accomodation_%(t)s breakfast_%(t)s lunch_%(t)s'
+        tpl = (
+            'spending_money accomodation_%(t)s breakfast_%(t)s lunch_%(t)s'
             ' supper_%(t)s')
         working_day = add(tpl % {'t': 'working'})
         free_day = add(tpl % {'t': 'free'})

@@ -3,7 +3,8 @@ from django.conf.urls import patterns, include, url
 from zivinetz.views import photos
 
 
-urlpatterns = patterns('zivinetz.views',
+urlpatterns = patterns(
+    'zivinetz.views',
     url(r'^$', 'home.home'),
 
     url(r'^dashboard/$', 'drudge.dashboard', name='drudge_dashboard'),

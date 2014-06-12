@@ -10,8 +10,8 @@ from django.utils.translation import ugettext_lazy, ugettext as _
 
 from towel.forms import towel_formfield_callback
 
-from zivinetz.models import (Drudge, ExpenseReport, Assignment, WaitList,
-    Codeword)
+from zivinetz.models import (
+    Drudge, ExpenseReport, Assignment, WaitList, Codeword)
 from zivinetz.views.decorators import drudge_required
 
 
@@ -22,7 +22,8 @@ class AssignmentForm(forms.ModelForm):
 
     class Meta:
         model = Assignment
-        fields = ('specification', 'regional_office', 'date_from',
+        fields = (
+            'specification', 'regional_office', 'date_from',
             'date_until', 'part_of_long_assignment')
 
     def clean_codeword(self):
@@ -85,8 +86,8 @@ def dashboard(request, drudge):
                 assignment = aform.save(commit=False)
                 assignment.drudge = drudge
                 assignment.save()
-                messages.success(request,
-                    _('Successfully saved new assignment.'))
+                messages.success(
+                    request, _('Successfully saved new assignment.'))
 
                 return HttpResponseRedirect('.')
 
@@ -96,8 +97,8 @@ def dashboard(request, drudge):
                 waitlist = wform.save(commit=False)
                 waitlist.drudge = drudge
                 waitlist.save()
-                messages.success(request,
-                    _('Successfully saved new waitlist entry.'))
+                messages.success(
+                    request, _('Successfully saved new waitlist entry.'))
 
                 return HttpResponseRedirect('.')
 
@@ -167,8 +168,8 @@ def profile(request):
 
             form2.save()
 
-            messages.success(request,
-                _('Successfully saved profile information.'))
+            messages.success(
+                request, _('Successfully saved profile information.'))
 
             return HttpResponseRedirect('.')
     else:
