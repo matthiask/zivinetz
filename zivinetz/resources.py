@@ -125,9 +125,8 @@ class ZivinetzMixin(object):
         self.object = form.save()
         messages.success(
             self.request,
-            _('The %(verbose_name)s has been successfully saved.') % (
-                self.object._meta.__dict__,
-            )
+            _('The %(verbose_name)s has been successfully saved.') %
+            self.object._meta.__dict__
         )
         if '_continue' in self.request.POST:
             return redirect(self.object.urls.url('edit'))
