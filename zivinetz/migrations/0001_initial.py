@@ -1,502 +1,358 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.db import models, migrations
 import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from decimal import Decimal
+from django.conf import settings
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        
-        # Adding model 'ScopeStatement'
-        db.create_table('zivinetz_scopestatement', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('eis_no', self.gf('django.db.models.fields.CharField')(unique=True, max_length=10)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-        ))
-        db.send_create_signal('zivinetz', ['ScopeStatement'])
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Adding model 'Specification'
-        db.create_table('zivinetz_specification', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('scope_statement', self.gf('django.db.models.fields.related.ForeignKey')(related_name='specifications', to=orm['zivinetz.ScopeStatement'])),
-            ('with_accomodation', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('code', self.gf('django.db.models.fields.CharField')(max_length=10)),
-            ('accomodation_working', self.gf('django.db.models.fields.CharField')(default='provided', max_length=20)),
-            ('breakfast_working', self.gf('django.db.models.fields.CharField')(default='no_compensation', max_length=20)),
-            ('lunch_working', self.gf('django.db.models.fields.CharField')(default='no_compensation', max_length=20)),
-            ('supper_working', self.gf('django.db.models.fields.CharField')(default='no_compensation', max_length=20)),
-            ('accomodation_sick', self.gf('django.db.models.fields.CharField')(default='provided', max_length=20)),
-            ('breakfast_sick', self.gf('django.db.models.fields.CharField')(default='no_compensation', max_length=20)),
-            ('lunch_sick', self.gf('django.db.models.fields.CharField')(default='no_compensation', max_length=20)),
-            ('supper_sick', self.gf('django.db.models.fields.CharField')(default='no_compensation', max_length=20)),
-            ('accomodation_free', self.gf('django.db.models.fields.CharField')(default='provided', max_length=20)),
-            ('breakfast_free', self.gf('django.db.models.fields.CharField')(default='no_compensation', max_length=20)),
-            ('lunch_free', self.gf('django.db.models.fields.CharField')(default='no_compensation', max_length=20)),
-            ('supper_free', self.gf('django.db.models.fields.CharField')(default='no_compensation', max_length=20)),
-            ('clothing', self.gf('django.db.models.fields.CharField')(default='provided', max_length=20)),
-            ('accomodation_throughout', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('food_throughout', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('conditions', self.gf('django.db.models.fields.files.FileField')(max_length=100, blank=True)),
-        ))
-        db.send_create_signal('zivinetz', ['Specification'])
-
-        # Adding unique constraint on 'Specification', fields ['scope_statement', 'with_accomodation']
-        db.create_unique('zivinetz_specification', ['scope_statement_id', 'with_accomodation'])
-
-        # Adding model 'CompensationSet'
-        db.create_table('zivinetz_compensationset', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('valid_from', self.gf('django.db.models.fields.DateField')(unique=True)),
-            ('spending_money', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-            ('breakfast_at_accomodation', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-            ('lunch_at_accomodation', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-            ('supper_at_accomodation', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-            ('breakfast_external', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-            ('lunch_external', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-            ('supper_external', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-            ('accomodation_home', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-            ('private_transport_per_km', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-            ('clothing', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=6)),
-            ('clothing_limit_per_assignment', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-        ))
-        db.send_create_signal('zivinetz', ['CompensationSet'])
-
-        # Adding model 'RegionalOffice'
-        db.create_table('zivinetz_regionaloffice', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('city', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('address', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('code', self.gf('django.db.models.fields.CharField')(max_length=10)),
-            ('phone', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-            ('fax', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-        ))
-        db.send_create_signal('zivinetz', ['RegionalOffice'])
-
-        # Adding model 'Drudge'
-        db.create_table('zivinetz_drudge', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
-            ('zdp_no', self.gf('django.db.models.fields.CharField')(unique=True, max_length=10)),
-            ('address', self.gf('django.db.models.fields.TextField')()),
-            ('zip_code', self.gf('django.db.models.fields.CharField')(max_length=10)),
-            ('city', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('date_of_birth', self.gf('django.db.models.fields.DateField')()),
-            ('place_of_citizenship_city', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('place_of_citizenship_state', self.gf('django.db.models.fields.CharField')(max_length=2)),
-            ('phone_home', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-            ('phone_office', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-            ('mobile', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-            ('bank_account', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('health_insurance_company', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('health_insurance_account', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('education_occupation', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('driving_license', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('general_abonnement', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('half_fare_card', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('other_card', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('vegetarianism', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('environment_course', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('motor_saw_course', self.gf('django.db.models.fields.CharField')(max_length=10, null=True, blank=True)),
-            ('regional_office', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['zivinetz.RegionalOffice'])),
-            ('notes', self.gf('django.db.models.fields.TextField')(blank=True)),
-        ))
-        db.send_create_signal('zivinetz', ['Drudge'])
-
-        # Adding model 'Assignment'
-        db.create_table('zivinetz_assignment', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('specification', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['zivinetz.Specification'])),
-            ('drudge', self.gf('django.db.models.fields.related.ForeignKey')(related_name='assignments', to=orm['zivinetz.Drudge'])),
-            ('regional_office', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['zivinetz.RegionalOffice'])),
-            ('date_from', self.gf('django.db.models.fields.DateField')()),
-            ('date_until', self.gf('django.db.models.fields.DateField')()),
-            ('date_until_extension', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('part_of_long_assignment', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('status', self.gf('django.db.models.fields.IntegerField')(default=10)),
-            ('arranged_on', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('mobilized_on', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-        ))
-        db.send_create_signal('zivinetz', ['Assignment'])
-
-        # Adding model 'ExpenseReport'
-        db.create_table('zivinetz_expensereport', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('assignment', self.gf('django.db.models.fields.related.ForeignKey')(related_name='reports', to=orm['zivinetz.Assignment'])),
-            ('date_from', self.gf('django.db.models.fields.DateField')()),
-            ('date_until', self.gf('django.db.models.fields.DateField')()),
-            ('report_no', self.gf('django.db.models.fields.CharField')(max_length=10, blank=True)),
-            ('status', self.gf('django.db.models.fields.IntegerField')(default=10)),
-            ('working_days', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('working_days_notes', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('free_days', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('free_days_notes', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('sick_days', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('sick_days_notes', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('holi_days', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('holi_days_notes', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('forced_leave_days', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('forced_leave_days_notes', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('clothing_expenses', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=10, decimal_places=2)),
-            ('clothing_expenses_notes', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('transport_expenses', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=10, decimal_places=2)),
-            ('transport_expenses_notes', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('miscellaneous', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=10, decimal_places=2)),
-            ('miscellaneous_notes', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('total', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=10, decimal_places=2)),
-        ))
-        db.send_create_signal('zivinetz', ['ExpenseReport'])
-
-        # Adding model 'ExpenseReportPeriod'
-        db.create_table('zivinetz_expensereportperiod', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('expense_report', self.gf('django.db.models.fields.related.ForeignKey')(related_name='periods', to=orm['zivinetz.ExpenseReport'])),
-            ('specification', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['zivinetz.Specification'])),
-            ('date_from', self.gf('django.db.models.fields.DateField')()),
-        ))
-        db.send_create_signal('zivinetz', ['ExpenseReportPeriod'])
-
-        # Adding model 'PublicHoliday'
-        db.create_table('zivinetz_publicholiday', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('date', self.gf('django.db.models.fields.DateField')(unique=True)),
-        ))
-        db.send_create_signal('zivinetz', ['PublicHoliday'])
-
-        # Adding model 'CompanyHoliday'
-        db.create_table('zivinetz_companyholiday', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('date_from', self.gf('django.db.models.fields.DateField')()),
-            ('date_until', self.gf('django.db.models.fields.DateField')()),
-        ))
-        db.send_create_signal('zivinetz', ['CompanyHoliday'])
-
-        # Adding model 'WaitList'
-        db.create_table('zivinetz_waitlist', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('drudge', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['zivinetz.Drudge'])),
-            ('specification', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['zivinetz.Specification'])),
-            ('assignment_date_from', self.gf('django.db.models.fields.DateField')()),
-            ('assignment_date_until', self.gf('django.db.models.fields.DateField')()),
-            ('assignment_duration', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('notes', self.gf('django.db.models.fields.TextField')(blank=True)),
-        ))
-        db.send_create_signal('zivinetz', ['WaitList'])
-
-        # Adding model 'Assessment'
-        db.create_table('zivinetz_assessment', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('drudge', self.gf('django.db.models.fields.related.ForeignKey')(related_name='assessments', to=orm['zivinetz.Drudge'])),
-            ('mark', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('comment', self.gf('django.db.models.fields.TextField')(blank=True)),
-        ))
-        db.send_create_signal('zivinetz', ['Assessment'])
-
-        # Adding model 'Codeword'
-        db.create_table('zivinetz_codeword', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('key', self.gf('django.db.models.fields.CharField')(max_length=10, db_index=True)),
-            ('codeword', self.gf('django.db.models.fields.CharField')(max_length=20)),
-        ))
-        db.send_create_signal('zivinetz', ['Codeword'])
-
-        # Adding model 'JobReferenceTemplate'
-        db.create_table('zivinetz_jobreferencetemplate', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('text', self.gf('django.db.models.fields.TextField')()),
-        ))
-        db.send_create_signal('zivinetz', ['JobReferenceTemplate'])
-
-        # Adding model 'JobReference'
-        db.create_table('zivinetz_jobreference', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('assignment', self.gf('django.db.models.fields.related.ForeignKey')(related_name='jobreferences', to=orm['zivinetz.Assignment'])),
-            ('created', self.gf('django.db.models.fields.DateField')()),
-            ('text', self.gf('django.db.models.fields.TextField')()),
-        ))
-        db.send_create_signal('zivinetz', ['JobReference'])
-
-    def backwards(self, orm):
-        
-        # Removing unique constraint on 'Specification', fields ['scope_statement', 'with_accomodation']
-        db.delete_unique('zivinetz_specification', ['scope_statement_id', 'with_accomodation'])
-
-        # Deleting model 'ScopeStatement'
-        db.delete_table('zivinetz_scopestatement')
-
-        # Deleting model 'Specification'
-        db.delete_table('zivinetz_specification')
-
-        # Deleting model 'CompensationSet'
-        db.delete_table('zivinetz_compensationset')
-
-        # Deleting model 'RegionalOffice'
-        db.delete_table('zivinetz_regionaloffice')
-
-        # Deleting model 'Drudge'
-        db.delete_table('zivinetz_drudge')
-
-        # Deleting model 'Assignment'
-        db.delete_table('zivinetz_assignment')
-
-        # Deleting model 'ExpenseReport'
-        db.delete_table('zivinetz_expensereport')
-
-        # Deleting model 'ExpenseReportPeriod'
-        db.delete_table('zivinetz_expensereportperiod')
-
-        # Deleting model 'PublicHoliday'
-        db.delete_table('zivinetz_publicholiday')
-
-        # Deleting model 'CompanyHoliday'
-        db.delete_table('zivinetz_companyholiday')
-
-        # Deleting model 'WaitList'
-        db.delete_table('zivinetz_waitlist')
-
-        # Deleting model 'Assessment'
-        db.delete_table('zivinetz_assessment')
-
-        # Deleting model 'Codeword'
-        db.delete_table('zivinetz_codeword')
-
-        # Deleting model 'JobReferenceTemplate'
-        db.delete_table('zivinetz_jobreferencetemplate')
-
-        # Deleting model 'JobReference'
-        db.delete_table('zivinetz_jobreference')
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 4, 10, 8, 29, 52, 135016)'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 4, 10, 8, 29, 52, 134901)'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'zivinetz.assessment': {
-            'Meta': {'ordering': "['-created']", 'object_name': 'Assessment'},
-            'comment': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'drudge': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'assessments'", 'to': "orm['zivinetz.Drudge']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mark': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
-        },
-        'zivinetz.assignment': {
-            'Meta': {'ordering': "['-date_from', '-date_until']", 'object_name': 'Assignment'},
-            'arranged_on': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'date_from': ('django.db.models.fields.DateField', [], {}),
-            'date_until': ('django.db.models.fields.DateField', [], {}),
-            'date_until_extension': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'drudge': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'assignments'", 'to': "orm['zivinetz.Drudge']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mobilized_on': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'part_of_long_assignment': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'regional_office': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['zivinetz.RegionalOffice']"}),
-            'specification': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['zivinetz.Specification']"}),
-            'status': ('django.db.models.fields.IntegerField', [], {'default': '10'})
-        },
-        'zivinetz.codeword': {
-            'Meta': {'ordering': "['-created']", 'object_name': 'Codeword'},
-            'codeword': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'key': ('django.db.models.fields.CharField', [], {'max_length': '10', 'db_index': 'True'})
-        },
-        'zivinetz.companyholiday': {
-            'Meta': {'ordering': "['date_from']", 'object_name': 'CompanyHoliday'},
-            'date_from': ('django.db.models.fields.DateField', [], {}),
-            'date_until': ('django.db.models.fields.DateField', [], {}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },
-        'zivinetz.compensationset': {
-            'Meta': {'ordering': "['-valid_from']", 'object_name': 'CompensationSet'},
-            'accomodation_home': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'breakfast_at_accomodation': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'breakfast_external': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'clothing': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '6'}),
-            'clothing_limit_per_assignment': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'lunch_at_accomodation': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'lunch_external': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'private_transport_per_km': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'spending_money': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'supper_at_accomodation': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'supper_external': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'valid_from': ('django.db.models.fields.DateField', [], {'unique': 'True'})
-        },
-        'zivinetz.drudge': {
-            'Meta': {'ordering': "['user__last_name', 'user__first_name', 'zdp_no']", 'object_name': 'Drudge'},
-            'address': ('django.db.models.fields.TextField', [], {}),
-            'bank_account': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'date_of_birth': ('django.db.models.fields.DateField', [], {}),
-            'driving_license': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'education_occupation': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'environment_course': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'general_abonnement': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'half_fare_card': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'health_insurance_account': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'health_insurance_company': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mobile': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'motor_saw_course': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'other_card': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'phone_home': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'phone_office': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'place_of_citizenship_city': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'place_of_citizenship_state': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
-            'regional_office': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['zivinetz.RegionalOffice']"}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'}),
-            'vegetarianism': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'zdp_no': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '10'}),
-            'zip_code': ('django.db.models.fields.CharField', [], {'max_length': '10'})
-        },
-        'zivinetz.expensereport': {
-            'Meta': {'ordering': "['assignment__drudge', 'date_from']", 'object_name': 'ExpenseReport'},
-            'assignment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reports'", 'to': "orm['zivinetz.Assignment']"}),
-            'clothing_expenses': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '10', 'decimal_places': '2'}),
-            'clothing_expenses_notes': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'date_from': ('django.db.models.fields.DateField', [], {}),
-            'date_until': ('django.db.models.fields.DateField', [], {}),
-            'forced_leave_days': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'forced_leave_days_notes': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'free_days': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'free_days_notes': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'holi_days': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'holi_days_notes': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'miscellaneous': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '10', 'decimal_places': '2'}),
-            'miscellaneous_notes': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'report_no': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
-            'sick_days': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'sick_days_notes': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'status': ('django.db.models.fields.IntegerField', [], {'default': '10'}),
-            'total': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '2'}),
-            'transport_expenses': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '10', 'decimal_places': '2'}),
-            'transport_expenses_notes': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'working_days': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'working_days_notes': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
-        },
-        'zivinetz.expensereportperiod': {
-            'Meta': {'ordering': "['date_from']", 'object_name': 'ExpenseReportPeriod'},
-            'date_from': ('django.db.models.fields.DateField', [], {}),
-            'expense_report': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'periods'", 'to': "orm['zivinetz.ExpenseReport']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'specification': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['zivinetz.Specification']"})
-        },
-        'zivinetz.jobreference': {
-            'Meta': {'object_name': 'JobReference'},
-            'assignment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'jobreferences'", 'to': "orm['zivinetz.Assignment']"}),
-            'created': ('django.db.models.fields.DateField', [], {}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'text': ('django.db.models.fields.TextField', [], {})
-        },
-        'zivinetz.jobreferencetemplate': {
-            'Meta': {'ordering': "['title']", 'object_name': 'JobReferenceTemplate'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'text': ('django.db.models.fields.TextField', [], {}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'zivinetz.publicholiday': {
-            'Meta': {'ordering': "['date']", 'object_name': 'PublicHoliday'},
-            'date': ('django.db.models.fields.DateField', [], {'unique': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'zivinetz.regionaloffice': {
-            'Meta': {'ordering': "['name']", 'object_name': 'RegionalOffice'},
-            'address': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'code': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
-            'fax': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'})
-        },
-        'zivinetz.scopestatement': {
-            'Meta': {'ordering': "['name']", 'object_name': 'ScopeStatement'},
-            'eis_no': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '10'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'zivinetz.specification': {
-            'Meta': {'ordering': "['scope_statement', 'with_accomodation']", 'unique_together': "(('scope_statement', 'with_accomodation'),)", 'object_name': 'Specification'},
-            'accomodation_free': ('django.db.models.fields.CharField', [], {'default': "'provided'", 'max_length': '20'}),
-            'accomodation_sick': ('django.db.models.fields.CharField', [], {'default': "'provided'", 'max_length': '20'}),
-            'accomodation_throughout': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'accomodation_working': ('django.db.models.fields.CharField', [], {'default': "'provided'", 'max_length': '20'}),
-            'breakfast_free': ('django.db.models.fields.CharField', [], {'default': "'no_compensation'", 'max_length': '20'}),
-            'breakfast_sick': ('django.db.models.fields.CharField', [], {'default': "'no_compensation'", 'max_length': '20'}),
-            'breakfast_working': ('django.db.models.fields.CharField', [], {'default': "'no_compensation'", 'max_length': '20'}),
-            'clothing': ('django.db.models.fields.CharField', [], {'default': "'provided'", 'max_length': '20'}),
-            'code': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
-            'conditions': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
-            'food_throughout': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'lunch_free': ('django.db.models.fields.CharField', [], {'default': "'no_compensation'", 'max_length': '20'}),
-            'lunch_sick': ('django.db.models.fields.CharField', [], {'default': "'no_compensation'", 'max_length': '20'}),
-            'lunch_working': ('django.db.models.fields.CharField', [], {'default': "'no_compensation'", 'max_length': '20'}),
-            'scope_statement': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'specifications'", 'to': "orm['zivinetz.ScopeStatement']"}),
-            'supper_free': ('django.db.models.fields.CharField', [], {'default': "'no_compensation'", 'max_length': '20'}),
-            'supper_sick': ('django.db.models.fields.CharField', [], {'default': "'no_compensation'", 'max_length': '20'}),
-            'supper_working': ('django.db.models.fields.CharField', [], {'default': "'no_compensation'", 'max_length': '20'}),
-            'with_accomodation': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
-        },
-        'zivinetz.waitlist': {
-            'Meta': {'ordering': "['created']", 'object_name': 'WaitList'},
-            'assignment_date_from': ('django.db.models.fields.DateField', [], {}),
-            'assignment_date_until': ('django.db.models.fields.DateField', [], {}),
-            'assignment_duration': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'drudge': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['zivinetz.Drudge']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'specification': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['zivinetz.Specification']"})
-        }
-    }
-
-    complete_apps = ['zivinetz']
+    operations = [
+        migrations.CreateModel(
+            name='Assessment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(default=datetime.datetime.now, verbose_name='created')),
+                ('mark', models.IntegerField(blank=True, null=True, verbose_name='mark', choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)])),
+                ('comment', models.TextField(verbose_name='comment', blank=True)),
+            ],
+            options={
+                'ordering': ['-created'],
+                'verbose_name': 'internal assessment',
+                'verbose_name_plural': 'internal assessments',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Assignment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(default=datetime.datetime.now, verbose_name='created')),
+                ('modified', models.DateTimeField(auto_now=True, verbose_name='modified')),
+                ('date_from', models.DateField(verbose_name='date from')),
+                ('date_until', models.DateField(verbose_name='date until')),
+                ('date_until_extension', models.DateField(help_text='Only fill out if assignment has been extended.', null=True, verbose_name='date until (extended)', blank=True)),
+                ('part_of_long_assignment', models.BooleanField(default=False, verbose_name='part of long assignment')),
+                ('status', models.IntegerField(default=10, verbose_name='status', choices=[(10, 'tentative'), (20, 'arranged'), (30, 'mobilized'), (40, 'declined')])),
+                ('arranged_on', models.DateField(null=True, verbose_name='arranged on', blank=True)),
+                ('mobilized_on', models.DateField(null=True, verbose_name='mobilized on', blank=True)),
+            ],
+            options={
+                'ordering': ['-date_from', '-date_until'],
+                'verbose_name': 'assignment',
+                'verbose_name_plural': 'assignments',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Codeword',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(default=datetime.datetime.now, verbose_name='created')),
+                ('key', models.CharField(max_length=10, verbose_name='key', db_index=True)),
+                ('codeword', models.CharField(max_length=20, verbose_name='codeword')),
+            ],
+            options={
+                'ordering': ['-created'],
+                'get_latest_by': 'created',
+                'verbose_name': 'codeword',
+                'verbose_name_plural': 'codewords',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyHoliday',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('date_from', models.DateField(verbose_name='date from')),
+                ('date_until', models.DateField(verbose_name='date until')),
+            ],
+            options={
+                'ordering': ['date_from'],
+                'verbose_name': 'company holiday',
+                'verbose_name_plural': 'company holidays',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompensationSet',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('valid_from', models.DateField(unique=True, verbose_name='valid from')),
+                ('spending_money', models.DecimalField(verbose_name='spending money', max_digits=10, decimal_places=2)),
+                ('breakfast_at_accomodation', models.DecimalField(verbose_name='breakfast at accomodation', max_digits=10, decimal_places=2)),
+                ('lunch_at_accomodation', models.DecimalField(verbose_name='lunch at accomodation', max_digits=10, decimal_places=2)),
+                ('supper_at_accomodation', models.DecimalField(verbose_name='supper at accomodation', max_digits=10, decimal_places=2)),
+                ('breakfast_external', models.DecimalField(verbose_name='external breakfast', max_digits=10, decimal_places=2)),
+                ('lunch_external', models.DecimalField(verbose_name='external lunch', max_digits=10, decimal_places=2)),
+                ('supper_external', models.DecimalField(verbose_name='external supper', max_digits=10, decimal_places=2)),
+                ('accomodation_home', models.DecimalField(help_text='Daily compensation if drudge returns home for the night.', verbose_name='accomodation', max_digits=10, decimal_places=2)),
+                ('private_transport_per_km', models.DecimalField(help_text='Only applies if public transport use is not reasonable.', verbose_name='private transport per km', max_digits=10, decimal_places=2)),
+                ('clothing', models.DecimalField(help_text="Daily compensation for clothes if clothing isn't offered by the company.", verbose_name='clothing', max_digits=10, decimal_places=6)),
+                ('clothing_limit_per_assignment', models.DecimalField(help_text='Maximal compensation for clothing per assignment.', verbose_name='clothing limit per assignment', max_digits=10, decimal_places=2)),
+            ],
+            options={
+                'ordering': ['-valid_from'],
+                'verbose_name': 'compensation set',
+                'verbose_name_plural': 'compensation sets',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Drudge',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('zdp_no', models.CharField(unique=True, max_length=10, verbose_name='ZDP No.')),
+                ('address', models.TextField(verbose_name='address')),
+                ('zip_code', models.CharField(max_length=10, verbose_name='ZIP code')),
+                ('city', models.CharField(max_length=100, verbose_name='city')),
+                ('date_of_birth', models.DateField(verbose_name='date of birth')),
+                ('place_of_citizenship_city', models.CharField(max_length=100, verbose_name='place of citizenship')),
+                ('place_of_citizenship_state', models.CharField(max_length=2, verbose_name='place of citizenship (canton)', choices=[(b'AG', b'AG'), (b'AI', b'AI'), (b'AR', b'AR'), (b'BS', b'BS'), (b'BL', b'BL'), (b'BE', b'BE'), (b'FR', b'FR'), (b'GE', b'GE'), (b'GL', b'GL'), (b'GR', b'GR'), (b'JU', b'JU'), (b'LU', b'LU'), (b'NE', b'NE'), (b'NW', b'NW'), (b'OW', b'OW'), (b'SH', b'SH'), (b'SZ', b'SZ'), (b'SO', b'SO'), (b'SG', b'SG'), (b'TG', b'TG'), (b'TI', b'TI'), (b'UR', b'UR'), (b'VS', b'VS'), (b'VD', b'VD'), (b'ZG', b'ZG'), (b'ZH', b'ZH')])),
+                ('phone_home', models.CharField(max_length=20, verbose_name='phone (home)', blank=True)),
+                ('phone_office', models.CharField(max_length=20, verbose_name='phone (office)', blank=True)),
+                ('mobile', models.CharField(max_length=20, verbose_name='mobile', blank=True)),
+                ('bank_account', models.CharField(help_text='Either enter your IBAN or your Swiss post account number.', max_length=100, verbose_name='bank account')),
+                ('health_insurance_company', models.CharField(max_length=100, verbose_name='health insurance company', blank=True)),
+                ('health_insurance_account', models.CharField(max_length=100, verbose_name='health insurance account', blank=True)),
+                ('education_occupation', models.TextField(verbose_name='education / occupation', blank=True)),
+                ('driving_license', models.BooleanField(default=False, verbose_name='driving license')),
+                ('general_abonnement', models.BooleanField(default=False, verbose_name='general abonnement')),
+                ('half_fare_card', models.BooleanField(default=False, verbose_name='half-fare card')),
+                ('other_card', models.CharField(max_length=100, verbose_name='other card', blank=True)),
+                ('vegetarianism', models.BooleanField(default=False, verbose_name='vegetarianism')),
+                ('environment_course', models.BooleanField(default=False, help_text='I have taken the environment course already.', verbose_name='environment course')),
+                ('motor_saw_course', models.CharField(choices=[(b'2-day', '2 day course'), (b'5-day', '5 day course')], max_length=10, blank=True, help_text='I have taken the denoted motor saw course already.', null=True, verbose_name='motor saw course')),
+                ('notes', models.TextField(help_text='Allergies, vegetarianism, anything else we should be aware of?', verbose_name='notes', blank=True)),
+                ('profile_image', models.ImageField(upload_to=b'profile_images/', null=True, verbose_name='profile image', blank=True)),
+            ],
+            options={
+                'ordering': ['user__last_name', 'user__first_name', 'zdp_no'],
+                'verbose_name': 'drudge',
+                'verbose_name_plural': 'drudges',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ExpenseReport',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('date_from', models.DateField(verbose_name='date from')),
+                ('date_until', models.DateField(verbose_name='date until')),
+                ('report_no', models.CharField(max_length=10, verbose_name='report no.', blank=True)),
+                ('status', models.IntegerField(default=10, verbose_name='status', choices=[(10, 'pending'), (20, 'filled'), (30, 'paid')])),
+                ('working_days', models.PositiveIntegerField(verbose_name='working days')),
+                ('working_days_notes', models.CharField(max_length=100, verbose_name='notes', blank=True)),
+                ('free_days', models.PositiveIntegerField(verbose_name='free days')),
+                ('free_days_notes', models.CharField(max_length=100, verbose_name='notes', blank=True)),
+                ('sick_days', models.PositiveIntegerField(verbose_name='sick days')),
+                ('sick_days_notes', models.CharField(max_length=100, verbose_name='notes', blank=True)),
+                ('holi_days', models.PositiveIntegerField(help_text='These days are still countable towards the assignment total days.', verbose_name='holiday days')),
+                ('holi_days_notes', models.CharField(max_length=100, verbose_name='notes', blank=True)),
+                ('forced_leave_days', models.PositiveIntegerField(verbose_name='forced leave days')),
+                ('forced_leave_days_notes', models.CharField(max_length=100, verbose_name='notes', blank=True)),
+                ('calculated_total_days', models.PositiveIntegerField(default=0, help_text='This field is filled in automatically by the system and should not be changed.', verbose_name='calculated total days')),
+                ('clothing_expenses', models.DecimalField(default=Decimal('0.00'), verbose_name='clothing expenses', max_digits=10, decimal_places=2)),
+                ('clothing_expenses_notes', models.CharField(max_length=100, verbose_name='notes', blank=True)),
+                ('transport_expenses', models.DecimalField(default=Decimal('0.00'), verbose_name='transport expenses', max_digits=10, decimal_places=2)),
+                ('transport_expenses_notes', models.CharField(max_length=100, verbose_name='notes', blank=True)),
+                ('miscellaneous', models.DecimalField(default=Decimal('0.00'), verbose_name='miscellaneous', max_digits=10, decimal_places=2)),
+                ('miscellaneous_notes', models.CharField(max_length=100, verbose_name='notes', blank=True)),
+                ('total', models.DecimalField(default=0, verbose_name='total', max_digits=10, decimal_places=2)),
+                ('assignment', models.ForeignKey(related_name=b'reports', verbose_name='assignment', to='zivinetz.Assignment')),
+            ],
+            options={
+                'ordering': ['assignment__drudge', 'date_from'],
+                'verbose_name': 'expense report',
+                'verbose_name_plural': 'expense reports',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='JobReference',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateField(verbose_name='created')),
+                ('text', models.TextField(verbose_name='text')),
+                ('assignment', models.ForeignKey(related_name=b'jobreferences', verbose_name='assignment', to='zivinetz.Assignment')),
+            ],
+            options={
+                'ordering': ['-created'],
+                'verbose_name': 'job reference',
+                'verbose_name_plural': 'job references',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='JobReferenceTemplate',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(max_length=100, verbose_name='title')),
+                ('text', models.TextField(verbose_name='text')),
+            ],
+            options={
+                'ordering': ['title'],
+                'verbose_name': 'job reference template',
+                'verbose_name_plural': 'job reference templates',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PublicHoliday',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100, verbose_name='name')),
+                ('date', models.DateField(unique=True, verbose_name='date')),
+            ],
+            options={
+                'ordering': ['date'],
+                'verbose_name': 'public holiday',
+                'verbose_name_plural': 'public holidays',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='RegionalOffice',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100, verbose_name='name')),
+                ('city', models.CharField(max_length=100, verbose_name='city')),
+                ('address', models.TextField(verbose_name='address', blank=True)),
+                ('code', models.CharField(help_text='Short, unique identifier.', max_length=10, verbose_name='code')),
+                ('phone', models.CharField(max_length=20, verbose_name='phone', blank=True)),
+                ('fax', models.CharField(max_length=20, verbose_name='fax', blank=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'verbose_name': 'regional office',
+                'verbose_name_plural': 'regional offices',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ScopeStatement',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('is_active', models.BooleanField(default=True, verbose_name='is active')),
+                ('eis_no', models.CharField(unique=True, max_length=10, verbose_name='EIS No.')),
+                ('name', models.CharField(max_length=100, verbose_name='name')),
+                ('company_name', models.CharField(max_length=100, verbose_name='company name', blank=True)),
+                ('company_address', models.CharField(max_length=100, verbose_name='company address', blank=True)),
+                ('company_zip_code', models.CharField(max_length=10, verbose_name='company ZIP code', blank=True)),
+                ('company_city', models.CharField(max_length=100, verbose_name='company city', blank=True)),
+                ('company_contact_name', models.CharField(max_length=100, verbose_name='company contact name', blank=True)),
+                ('company_contact_email', models.EmailField(max_length=75, verbose_name='company contact email', blank=True)),
+                ('company_contact_function', models.CharField(max_length=100, verbose_name='company contact function', blank=True)),
+                ('company_contact_phone', models.CharField(max_length=100, verbose_name='company contact phone', blank=True)),
+                ('work_location', models.CharField(max_length=100, verbose_name='work location', blank=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'verbose_name': 'scope statement',
+                'verbose_name_plural': 'scope statements',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Specification',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('with_accomodation', models.BooleanField(verbose_name='with accomodation')),
+                ('code', models.CharField(help_text='Short, unique code identifying this specification.', max_length=10, verbose_name='code')),
+                ('accomodation_working', models.CharField(default=b'provided', max_length=20, verbose_name='accomodation on working days', choices=[(b'provided', 'provided'), (b'compensated', 'compensated')])),
+                ('breakfast_working', models.CharField(default=b'no_compensation', max_length=20, verbose_name='breakfast on working days', choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')])),
+                ('lunch_working', models.CharField(default=b'no_compensation', max_length=20, verbose_name='lunch on working days', choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')])),
+                ('supper_working', models.CharField(default=b'no_compensation', max_length=20, verbose_name='supper on working days', choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')])),
+                ('accomodation_sick', models.CharField(default=b'provided', max_length=20, verbose_name='accomodation on sick days', choices=[(b'provided', 'provided'), (b'compensated', 'compensated')])),
+                ('breakfast_sick', models.CharField(default=b'no_compensation', max_length=20, verbose_name='breakfast on sick days', choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')])),
+                ('lunch_sick', models.CharField(default=b'no_compensation', max_length=20, verbose_name='lunch on sick days', choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')])),
+                ('supper_sick', models.CharField(default=b'no_compensation', max_length=20, verbose_name='supper on sick days', choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')])),
+                ('accomodation_free', models.CharField(default=b'provided', max_length=20, verbose_name='accomodation on free days', choices=[(b'provided', 'provided'), (b'compensated', 'compensated')])),
+                ('breakfast_free', models.CharField(default=b'no_compensation', max_length=20, verbose_name='breakfast on free days', choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')])),
+                ('lunch_free', models.CharField(default=b'no_compensation', max_length=20, verbose_name='lunch on free days', choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')])),
+                ('supper_free', models.CharField(default=b'no_compensation', max_length=20, verbose_name='supper on free days', choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')])),
+                ('clothing', models.CharField(default=b'provided', max_length=20, verbose_name='clothing', choices=[(b'provided', 'provided'), (b'compensated', 'compensated')])),
+                ('accomodation_throughout', models.BooleanField(help_text='Accomodation is offered throughout.', verbose_name='accomodation throughout')),
+                ('food_throughout', models.BooleanField(help_text='Food is offered throughout.', verbose_name='food throughout')),
+                ('conditions', models.FileField(upload_to=b'conditions', verbose_name='conditions', blank=True)),
+                ('scope_statement', models.ForeignKey(related_name=b'specifications', verbose_name='scope statement', to='zivinetz.ScopeStatement')),
+            ],
+            options={
+                'ordering': ['scope_statement', 'with_accomodation'],
+                'verbose_name': 'specification',
+                'verbose_name_plural': 'specifications',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='WaitList',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(default=datetime.datetime.now, verbose_name='created')),
+                ('assignment_date_from', models.DateField(verbose_name='available from')),
+                ('assignment_date_until', models.DateField(verbose_name='available until')),
+                ('assignment_duration', models.PositiveIntegerField(verbose_name='duration in days')),
+                ('notes', models.TextField(verbose_name='notes', blank=True)),
+                ('drudge', models.ForeignKey(verbose_name='drudge', to='zivinetz.Drudge')),
+                ('specification', models.ForeignKey(verbose_name='specification', to='zivinetz.Specification')),
+            ],
+            options={
+                'ordering': ['created'],
+                'verbose_name': 'waitlist',
+                'verbose_name_plural': 'waitlist',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='specification',
+            unique_together=set([('scope_statement', 'with_accomodation')]),
+        ),
+        migrations.AddField(
+            model_name='expensereport',
+            name='specification',
+            field=models.ForeignKey(verbose_name='specification', to='zivinetz.Specification'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='drudge',
+            name='regional_office',
+            field=models.ForeignKey(verbose_name='regional office', to='zivinetz.RegionalOffice'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='drudge',
+            name='user',
+            field=models.OneToOneField(to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='assignment',
+            name='drudge',
+            field=models.ForeignKey(related_name=b'assignments', verbose_name='drudge', to='zivinetz.Drudge'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='assignment',
+            name='regional_office',
+            field=models.ForeignKey(verbose_name='regional office', to='zivinetz.RegionalOffice'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='assignment',
+            name='specification',
+            field=models.ForeignKey(verbose_name='specification', to='zivinetz.Specification'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='assessment',
+            name='drudge',
+            field=models.ForeignKey(related_name=b'assessments', verbose_name='drudge', to='zivinetz.Drudge'),
+            preserve_default=True,
+        ),
+    ]
