@@ -89,7 +89,7 @@ class Scheduler(object):
     def add_waitlist(self, queryset):
         self.waitlist = queryset
 
-        if not self.queryset:
+        if not self.queryset.exists() and self.waitlist.exists():
             max_min = self.waitlist.aggregate(
                 min=Min('assignment_date_from'),
                 max=Max('assignment_date_until'))
