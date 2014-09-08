@@ -123,7 +123,7 @@
   {% for assessment in object.assessments.all %}
     <tr class="{% cycle 'odd' 'even' %}">
       <td>{{ assessment.comment|linebreaksbr }}</td>
-      <td>{{ assessment.mark }}</td>
+      <td>{{ assessment.mark|default:"&ndash;" }}</td>
       <td>{{ assessment.created|date:"d.m.Y" }}</td>
     </tr>
   {% endfor %}
