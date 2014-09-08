@@ -122,7 +122,8 @@ class Specification(models.Model):
         ScopeStatement,
         verbose_name=_('scope statement'), related_name='specifications')
 
-    with_accomodation = models.BooleanField(_('with accomodation'))
+    with_accomodation = models.BooleanField(
+        _('with accomodation'), default=False)
     code = models.CharField(
         _('code'), max_length=10,
         help_text=_('Short, unique code identifying this specification.'))
@@ -155,10 +156,10 @@ class Specification(models.Model):
 
     accomodation_throughout = models.BooleanField(
         _('accomodation throughout'),
-        help_text=_('Accomodation is offered throughout.'))
+        help_text=_('Accomodation is offered throughout.'), default=False)
     food_throughout = models.BooleanField(
         _('food throughout'),
-        help_text=_('Food is offered throughout.'))
+        help_text=_('Food is offered throughout.'), default=False)
 
     conditions = models.FileField(
         _('conditions'), upload_to='conditions', blank=True)
