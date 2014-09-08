@@ -986,7 +986,10 @@ class Assessment(models.Model):
         verbose_name_plural = _('internal assessments')
 
     def __unicode__(self):
-        return 'Mark %s for drudge %s' % (self.mark, self.drudge)
+        return ugettext('Mark %(mark)s for %(drudge)s') % {
+            'mark': self.mark or '-',
+            'drudge': self.drudge,
+        }
 
 
 class CodewordManager(models.Manager):
