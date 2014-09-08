@@ -970,7 +970,7 @@ class WaitList(models.Model):
         )
 
 
-@model_resource_urls()
+@model_resource_urls(default='edit')
 class Assessment(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(

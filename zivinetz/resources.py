@@ -24,8 +24,9 @@ from zivinetz.forms import (
     ExpenseReportSearchForm, EditExpenseReportForm, JobReferenceForm,
     JobReferenceSearchForm, WaitListSearchForm)
 from zivinetz.models import (
-    Assignment, Drudge, ExpenseReport, RegionalOffice, ScopeStatement,
-    Specification, WaitList, JobReferenceTemplate, JobReference)
+    Assessment, Assignment, Drudge, ExpenseReport, RegionalOffice,
+    ScopeStatement, Specification, WaitList, JobReferenceTemplate,
+    JobReference)
 from zivinetz.views.expenses import generate_expense_statistics_pdf
 
 
@@ -152,6 +153,21 @@ class DrudgeDetailView(resources.DetailView):
         else:
             messages.error(request, _('Form invalid: %s') % form.errors)
         return redirect(self.object)
+
+
+class AssessmentMixin(ZivinetzMixin):
+    def form_valid(self, form):
+        super(AssessmentMixin, self).form_valid(form)
+        return redirect(self.object.drudge)
+
+    def deletion_form_valid(self, form):
+        self.object.delete()
+        messages.success(
+            self.request,
+            _('The %(verbose_name)s has been successfully deleted.') %
+            self.object._meta.__dict__,
+        )
+        return redirect(self.object.drudge)
 
 
 class JobReferenceFromTemplateView(resources.ModelResourceView):
@@ -396,6 +412,12 @@ drudge_url = resource_url_fn(
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Drudge,),
 )
+assessment_url = resource_url_fn(
+    Assessment,
+    mixins=(AssessmentMixin,),
+    decorators=(staff_member_required,),
+    deletion_cascade_allowed=(Assessment,),
+)
 assignment_url = resource_url_fn(
     Assignment,
     mixins=(AssignmentMixin,),
@@ -476,6 +498,14 @@ urlpatterns = patterns(
             drudge_url('edit'),
             drudge_url('delete'),
         ))
+    ),
+    url(
+        r'^assessment/',
+        include(patterns(
+            '',
+            assessment_url('edit'),
+            assessment_url('delete'),
+        )),
     ),
     url(
         r'^assignments/',

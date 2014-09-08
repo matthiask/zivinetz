@@ -117,6 +117,7 @@
       <th>{% trans "comment" %}</th>
       <th>{% trans "mark" %}</th>
       <th>{% trans "created" %}</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -125,6 +126,10 @@
       <td>{{ assessment.comment|linebreaksbr }}</td>
       <td>{{ assessment.mark|default:"&ndash;" }}</td>
       <td>{{ assessment.created|date:"d.m.Y" }}</td>
+      <td>
+        <a href="{{ assessment.urls.edit }}"><i class="fi-pencil"></i></a>
+        <a href="{{ assessment.urls.delete }}"><i class="fi-trash"></i></a>
+      </td>
     </tr>
   {% endfor %}
     <tr>
@@ -137,7 +142,7 @@
       <td>
         <button type="submit">{% trans "Save" %}</button>
       </td>
-
+      <td></td>
     </tr>
   </tbody>
 </table>
