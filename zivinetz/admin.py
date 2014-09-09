@@ -77,6 +77,7 @@ admin.site.register(
         '__unicode__', 'date_of_birth', 'phone_home', 'phone_office',
         'mobile', 'regional_office'),
     list_filter=('regional_office', 'driving_license'),
+    raw_id_fields=('user',),
     search_fields=(
         'user__first_name', 'user__last_name', 'user__email',
         'address', 'zip_code', 'city'),
@@ -89,6 +90,7 @@ admin.site.register(
         'specification', 'drudge', 'date_from',
         'determine_date_until', 'status', 'admin_pdf_url'),
     list_filter=('specification', 'part_of_long_assignment', 'status'),
+    raw_id_fields=('drudge',),
 )
 
 
@@ -132,6 +134,7 @@ admin.site.register(models.JobReferenceTemplate)
 admin.site.register(
     models.JobReference,
     list_display=('assignment', 'created'),
+    raw_id_fields=('assignment',),
 )
 
 admin.site.register(
