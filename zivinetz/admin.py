@@ -11,7 +11,13 @@ class SpecificationInline(admin.StackedInline):
     max_num = 2
     fieldsets = (
         (None, {
-            'fields': ('with_accomodation', 'clothing'),
+            'fields': (
+                'code',
+                'with_accomodation', 'clothing',
+                'accomodation_throughout',
+                'food_throughout',
+                'conditions',
+            ),
         }),
         (_('working days'), {
             'fields': (
