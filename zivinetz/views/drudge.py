@@ -141,7 +141,7 @@ class DrudgeForm(forms.ModelForm):
 
     class Meta:
         model = Drudge
-        exclude = ('user',)
+        exclude = ('user', 'internal_notes')
 
     def clean_environment_course(self):
         value = self.cleaned_data.get('environment_course')

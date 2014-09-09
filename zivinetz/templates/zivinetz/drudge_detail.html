@@ -66,9 +66,13 @@
 
 <tr class="odd">
   <th>{% trans "notes" %}</th>
-  <td>{{ object.notes }}
+  <td>{{ object.notes|linebreaksbr }}
 </tr>
 
+<tr class="even">
+  <th>{% trans "internal notes" %}</th>
+  <td>{{ object.internal_notes|linebreaksbr }}</td>
+</tr>
 </table>
 
 {% if object.profile_image %}

@@ -380,6 +380,9 @@ class Drudge(models.Model):
         help_text=_(
             'Allergies, vegetarianism, anything else we should be'
             ' aware of?'))
+    internal_notes = models.TextField(
+        _('internal notes'), blank=True,
+        help_text=_('This field is not visible to drudges.'))
 
     profile_image = models.ImageField(
         _('profile image'), blank=True, null=True, upload_to='profile_images/')
