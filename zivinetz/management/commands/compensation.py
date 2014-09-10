@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import pprint
 
 from django.core.management.base import BaseCommand
@@ -10,6 +12,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for spec in Specification.objects.all():
-            print spec
+            print(spec)
             pprint.pprint(spec.compensation())
-            print
+            print()

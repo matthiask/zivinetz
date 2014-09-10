@@ -138,7 +138,7 @@ def generate_expense_statistics_pdf(reports):
         pdf.spacer()
 
     for scope_statement, ss_data in data.iteritems():
-        pdf.h2(unicode(scope_statement))
+        pdf.h2(u'%s' % scope_statement)
         complete = []
 
         for year_month, reports in ss_data.iteritems():
@@ -150,7 +150,7 @@ def generate_expense_statistics_pdf(reports):
             pdf.spacer()
             complete.extend(reports)
 
-        _add_sum(complete, unicode(scope_statement))
+        _add_sum(complete, u'%s' % scope_statement)
         pdf.pagebreak()
 
     pdf.generate()

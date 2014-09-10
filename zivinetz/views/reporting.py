@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from functools import reduce
 from io import BytesIO
 import operator
 import os

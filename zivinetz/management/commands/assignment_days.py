@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import pprint
 
 from django.core.management.base import BaseCommand
@@ -10,6 +12,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for assignment in Assignment.objects.all():
-            print 'Assignment days for %s' % assignment
+            print('Assignment days for %s' % assignment)
             pprint.pprint(assignment.assignment_days())
             pprint.pprint(assignment.expenses())

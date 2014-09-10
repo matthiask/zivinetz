@@ -301,11 +301,11 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
             drudge = assignment.drudge
 
             if specification != assignment.specification:
-                pdf.h2(unicode(assignment.specification))
+                pdf.h2('%s' % assignment.specification)
                 specification = assignment.specification
 
             pdf.table([
-                (unicode(drudge), drudge.user.email, u'%s - %s' % (
+                (u'%s' % drudge, drudge.user.email, u'%s - %s' % (
                     assignment.date_from.strftime('%d.%m.%y'),
                     assignment.determine_date_until().strftime('%d.%m.%y'),
                 )),
