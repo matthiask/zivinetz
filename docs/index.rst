@@ -18,7 +18,7 @@ Python-Module verwendet:
 - `feincms-photos <https://github.com/matthiask/feincms-photos/>`_
 - `FeinCMS <http://feincms.org>`_ für die Navigation
 
-Voraussetzung für den Betrieb des Zivinetz ist Python 2.7 und Django 1.6.
+Voraussetzung für den Betrieb des Zivinetz ist Python 2.7 und Django 1.7.
 
 Als Frontend-Framework wird `Foundation 4 <http://foundation.zurb.com>`_
 verwendet.
