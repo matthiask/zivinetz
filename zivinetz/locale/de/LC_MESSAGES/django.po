@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-09 13:53+0200\n"
+"POT-Creation-Date: 2014-09-10 11:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,12 +63,12 @@ msgid "only active"
 msgstr "nur aktive"
 
 #: forms.py:45 models.py:372 templates/zivinetz/drudge_list.html:31
-#: templates/zivinetz/scheduling.html:100 views/scheduling.py:258
+#: templates/zivinetz/scheduling.html:100 views/scheduling.py:256
 msgid "motor saw course"
 msgstr "Holzerkurs"
 
 #: forms.py:48 models.py:360 templates/zivinetz/drudge_list.html:42
-#: templates/zivinetz/scheduling.html:106 views/scheduling.py:263
+#: templates/zivinetz/scheduling.html:106 views/scheduling.py:261
 msgid "driving license"
 msgstr "Führerausweis"
 
@@ -98,7 +98,7 @@ msgstr "und"
 #: templates/zivinetz/drudge_dashboard.html:17
 #: templates/zivinetz/drudge_dashboard.html:77
 #: templates/zivinetz/drudge_detail.html:94
-#: templates/zivinetz/expensereport_list.html:18 views/scheduling.py:249
+#: templates/zivinetz/expensereport_list.html:18 views/scheduling.py:247
 msgid "status"
 msgstr "Status"
 
@@ -397,7 +397,7 @@ msgstr "Bedingungen"
 #: templates/zivinetz/expensereport_detail.html:22
 #: templates/zivinetz/expensereport_list.html:16
 #: templates/zivinetz/specification_list.html:9
-#: templates/zivinetz/waitlist_list.html:14 views/scheduling.py:246
+#: templates/zivinetz/waitlist_list.html:14 views/scheduling.py:244
 msgid "specification"
 msgstr "Pflichtenheft"
 
@@ -511,11 +511,11 @@ msgstr "Fax"
 msgid "regional offices"
 msgstr "Regionalzentren"
 
-#: models.py:321 views/scheduling.py:259
+#: models.py:321 views/scheduling.py:257
 msgid "2 day course"
 msgstr "zweitägiger Kurs"
 
-#: models.py:322 views/scheduling.py:260
+#: models.py:322 views/scheduling.py:258
 msgid "5 day course"
 msgstr "fünftägiger Kurs"
 
@@ -615,7 +615,6 @@ msgstr ""
 "Allergien, vegetarische Ernährung, irgendwas was wir noch wissen sollten?"
 
 #: models.py:384 templates/zivinetz/drudge_detail.html:73
-#| msgid "internal assessments"
 msgid "internal notes"
 msgstr "Interne Bemerkungen"
 
@@ -1165,6 +1164,10 @@ msgstr "Abbrechen"
 msgid "Statistics"
 msgstr "Statistik"
 
+#: templates/zivinetz/scheduling.html:77
+msgid "Drudges available at least three days this week"
+msgstr "Zivis mit mindestens drei Diensttagen in dieser Woche (entspricht ca. Stichtag Mittwoch)"
+
 #: templates/zivinetz/scheduling.html:78
 msgid "week"
 msgstr "Woche"
@@ -1236,27 +1239,27 @@ msgstr "Arbeitnehmer"
 msgid "Employer"
 msgstr "Arbeitgeber"
 
-#: views/scheduling.py:251
+#: views/scheduling.py:249
 msgid "Start date"
 msgstr "Von"
 
-#: views/scheduling.py:254
+#: views/scheduling.py:252
 msgid "End date"
 msgstr "Bis"
 
-#: views/scheduling.py:265
+#: views/scheduling.py:263
 msgid "Mode"
 msgstr "Modus"
 
-#: views/scheduling.py:266
+#: views/scheduling.py:264
 msgid "both"
 msgstr "beide"
 
-#: views/scheduling.py:267
+#: views/scheduling.py:265
 msgid "only assignments"
 msgstr "nur Einsätze"
 
-#: views/scheduling.py:268
+#: views/scheduling.py:266
 msgid "only waitlist entries"
 msgstr "nur Wartelisteneinträge"
 

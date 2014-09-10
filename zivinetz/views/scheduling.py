@@ -211,9 +211,11 @@ class Scheduler(object):
             for day, week in self.data_weeks.values()
             if self.date_from <= _monday(day) <= self.date_until]
 
+        # Weekly count is determined by the count of drudges which are
+        # available at least 3 days in a week.
         sums = [(
-            sum(week.values()) / 7.0,
-            u'%.1f' % (sum(week.values()) / 7.0),
+            sum((1 for days in week.values() if days >= 3), 0),
+            u'%d' % sum((1 for days in week.values() if days >= 3), 0),
         ) for day, week in filtered_data_weeks]
 
         self.average = sum(

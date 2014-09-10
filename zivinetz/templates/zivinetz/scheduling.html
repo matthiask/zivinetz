@@ -74,7 +74,7 @@ onReady.push(function($) {
                 <th>{% ifchanged year %}{{ year }}{% endifchanged %}</th>
             {% endfor %}
         </tr>
-        <tr>
+        <tr title="{% trans 'Drudges available at least three days this week' %}">
             <th colspan="1">{% trans "week"|capfirst %}</th>
             <th colspan="5">{% trans "Average" %}: {{ scheduler.average|floatformat:1 }}</th>
             {% for monday, year, week, current in scheduler.weeks %}
