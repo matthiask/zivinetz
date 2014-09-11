@@ -23,7 +23,7 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 (_('specifications'), 'admin/specifications/'),
                 (_('job references'), 'admin/jobreferences/'),
                 (_('photos'), 'photos/'),
-                (_('yearly expense stats (PDF)'), 'expense_statistics_pdf/'),
+                (_('reporting'), 'reporting/'),
             ]
         else:
             urls = [

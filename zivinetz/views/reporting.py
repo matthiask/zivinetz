@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from datetime import date
 from functools import reduce
 from io import BytesIO
 import operator
@@ -7,9 +8,11 @@ import os
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext as _
 
 from zivinetz.models import (
@@ -522,3 +525,40 @@ def reference_pdf(request, reference_id):
 
     pdf.generate()
     return response
+
+
+@staff_member_required
+def course_list(request):
+    assignments = Assignment.objects.filter(
+        Q(
+            environment_course_date__isnull=False,
+            environment_course_date__gte=date.today(),
+        ) | Q(
+            motor_saw_course_date__isnull=False,
+            motor_saw_course_date__gte=date.today(),
+        )
+    ).select_related('drudge__user', 'specification__scope_statement')
+
+    courses = []
+    for assignment in assignments:
+        if assignment.environment_course_date:
+            courses.append((
+                assignment.environment_course_date,
+                assignment,
+            ))
+        if assignment.motor_saw_course_date:
+            courses.append((
+                assignment.motor_saw_course_date,
+                assignment,
+            ))
+
+    return render(request, 'zivinetz/course_list.html', {
+        'course_list': sorted(
+            courses,
+            key=lambda row: (
+                row[0],
+                row[1].drudge.user.last_name,
+                row[1].drudge.user.first_name,
+            ),
+        ),
+    })

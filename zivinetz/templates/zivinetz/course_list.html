@@ -1,0 +1,44 @@
+{% extends "zivinetz/base.html" %}
+
+{% load i18n %}
+
+{% block page-header %}
+<div class="page-header">
+  <h1>{% trans "course list" %}</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<table>
+  <thead>
+    <tr>
+      <th>{% trans "drudge" %}</th>
+      <th>{% trans "environment course starting date" %}</th>
+      <th>{% trans "motor saw course starting date" %}</th>
+      <th>{% trans "assignment" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for date, assignment in course_list %}
+      <tr>
+        <td>
+          <a href="{{ assignment.drudge.get_absolute_url }}">
+            {{ assignment.drudge }}
+          </a>
+        </td>
+        <td>
+          {{ assignment.environment_course_date|date:"d.m.Y"|default:"&ndash;" }}
+        </td>
+        <td>
+          {{ assignment.motor_saw_course|date:"d.m.Y"|default:"&ndash;" }}
+        </td>
+        <td>
+          <a href="{{ assignment.get_absolute_url }}">
+            {{ assignment }}
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

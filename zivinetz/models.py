@@ -471,6 +471,11 @@ class Assignment(models.Model):
     arranged_on = models.DateField(_('arranged on'), blank=True, null=True)
     mobilized_on = models.DateField(_('mobilized on'), blank=True, null=True)
 
+    environment_course_date = models.DateField(
+        _('environment course starting date'), blank=True, null=True)
+    motor_saw_course_date = models.DateField(
+        _('motor saw course starting date'), blank=True, null=True)
+
     class Meta:
         ordering = ['-date_from', '-date_until']
         verbose_name = _('assignment')

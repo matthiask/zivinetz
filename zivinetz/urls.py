@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.views import generic
 
 from zivinetz.views import photos
 
@@ -17,6 +18,11 @@ urlpatterns = patterns(
     url(r'^assignments/pdf/(\d+)/$', 'reporting.assignment_pdf'),
     url(r'^expense_report_pdf/(\d+)/$', 'reporting.expense_report_pdf'),
     url(r'^references/pdf/(\d+)/$', 'reporting.reference_pdf'),
+
+    url(r'^reporting/$', generic.TemplateView.as_view(
+        template_name='zivinetz/reporting.html',
+        )),
+    url(r'^reporting/courses/$', 'reporting.course_list'),
 
     url(r'^expense_statistics_pdf/$', 'expenses.expense_statistics_pdf'),
 
