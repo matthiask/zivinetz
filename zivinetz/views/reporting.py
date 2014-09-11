@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from datetime import date
+from datetime import date, timedelta
 from functools import reduce
 from io import BytesIO
 import operator
@@ -529,13 +529,15 @@ def reference_pdf(request, reference_id):
 
 @staff_member_required
 def course_list(request):
+    earliest = date.today() - timedelta(days=7)
+
     assignments = Assignment.objects.filter(
         Q(
             environment_course_date__isnull=False,
-            environment_course_date__gte=date.today(),
+            environment_course_date__gte=earliest,
         ) | Q(
             motor_saw_course_date__isnull=False,
-            motor_saw_course_date__gte=date.today(),
+            motor_saw_course_date__gte=earliest,
         )
     ).select_related('drudge__user', 'specification__scope_statement')
 
