@@ -131,11 +131,15 @@ def generate_expense_statistics_pdf(reports):
 
     def _add_sum(reports, title=''):
         transposed = zip(*reports)
+        total = ['Total %s' % title, '', ''] + [
+            sum(transposed[i], 0) for i in range(3, 18)]
         pdf.table([
-            ['Total %s' % title, '', ''] + [
-                sum(transposed[i], 0) for i in range(3, 18)],
+            total,
         ], table_cols, pdf.style.tableHead)
         pdf.spacer()
+        return total
+
+    totals = []
 
     for scope_statement, ss_data in data.iteritems():
         pdf.h2(u'%s' % scope_statement)
@@ -150,8 +154,12 @@ def generate_expense_statistics_pdf(reports):
             pdf.spacer()
             complete.extend(reports)
 
-        _add_sum(complete, u'%s' % scope_statement)
+        totals.append(_add_sum(complete, u'%s' % scope_statement))
         pdf.pagebreak()
+
+    pdf.h2('Zusammenfassung')
+    pdf.table([table_head] + totals, table_cols, pdf.style.tableHead)
+    _add_sum(totals, 'Total')
 
     pdf.generate()
     return response
