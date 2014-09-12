@@ -23,6 +23,7 @@ urlpatterns = patterns(
         template_name='zivinetz/reporting.html',
         )),
     url(r'^reporting/courses/$', 'reporting.course_list'),
+    url(r'^reporting/assignmentchanges/$', 'reporting.assignmentchange_list'),
 
     url(r'^expense_statistics_pdf/$', 'expenses.expense_statistics_pdf'),
 

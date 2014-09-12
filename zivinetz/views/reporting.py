@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext as _
 
 from zivinetz.models import (
-    Assignment, CompanyHoliday, ExpenseReport, JobReference)
+    Assignment, CompanyHoliday, ExpenseReport, JobReference, AssignmentChange)
 
 from reportlab.lib import colors
 
@@ -563,4 +563,20 @@ def course_list(request):
                 row[1].drudge.user.first_name,
             ),
         ),
+    })
+
+
+@staff_member_required
+def assignmentchange_list(request):
+    earliest = date.today() - timedelta(days=7)
+
+    changes = AssignmentChange.objects.filter(
+        created__gte=earliest,
+    ).select_related(
+        'assignment__drudge__user',
+        'assignment__specification__scope_statement'
+    )
+
+    return render(request, 'zivinetz/assignmentchange_list.html', {
+        'change_list': changes,
     })

@@ -1,0 +1,41 @@
+{% extends "zivinetz/base.html" %}
+
+{% load i18n %}
+
+{% block page-header %}
+<div class="page-header">
+  <h1>{% trans "assignment changes" %}</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<table>
+  <thead>
+    <tr>
+      <th>{% trans "created" %}</th>
+      <th>{% trans "changes" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for change in change_list %}
+      <tr>
+        <td>
+          {{ change.created|date:"d.m. H:i" }}
+          {% trans "by" %} {{ change.changed_by }}
+        </td>
+        <td>
+          {% if change.assignment %}
+            <a href="{{ change.assignment.get_absolute_url }}">
+              {{ change.assignment }}
+            </a>
+          {% else %}
+            {{ change.assignment_description }}
+          {% endif %}
+          <br>
+          {{ change.changes|linebreaksbr }}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
