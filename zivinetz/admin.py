@@ -93,6 +93,13 @@ admin.site.register(
     raw_id_fields=('drudge',),
 )
 
+admin.site.register(
+    models.AssignmentChange,
+    date_hierarchy='created',
+    list_display=(
+        'created', 'assignment_description', 'changed_by', 'changes'),
+    list_filter=('changed_by',),
+)
 
 admin.site.register(
     models.ExpenseReport,

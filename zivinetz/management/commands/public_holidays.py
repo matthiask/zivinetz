@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 import pprint
 
 from django.core.management.base import BaseCommand
@@ -19,4 +18,4 @@ class Command(BaseCommand):
             for date, name in holidays.iteritems():
                 PublicHoliday.objects.get_or_create(
                     date=date, defaults={'name': name})
-            pprint.pprint(holidays)
+            self.stdout.write(pprint.pformat(holidays))

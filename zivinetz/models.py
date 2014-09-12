@@ -5,8 +5,9 @@ from towel.managers import SearchManager
 from towel.resources.urls import model_resource_urls
 
 from django.contrib.auth.models import User
+from django.dispatch import receiver
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, signals
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 
@@ -722,6 +723,113 @@ class Assignment(models.Model):
             created += 1
 
         return created
+
+
+@model_resource_urls()
+class AssignmentChange(models.Model):
+    created = models.DateTimeField(_('created'), default=datetime.now)
+    assignment = models.ForeignKey(
+        Assignment, verbose_name=_('assignment'), blank=True, null=True,
+        on_delete=models.SET_NULL)
+    assignment_description = models.CharField(
+        _('assignment description'), max_length=200)
+    changed_by = models.CharField(
+        _('changed by'), max_length=100, default='nobody')
+    changes = models.TextField(_('changes'), blank=True)
+
+    class Meta:
+        ordering = ['created']
+        verbose_name = _('assignment change')
+        verbose_name_plural = _('assignment changes')
+
+    def __unicode__(self):
+        return self.assignment_description
+
+
+def get_request():
+    """Walk up the stack, return the nearest first argument named "request"."""
+    import inspect
+    frame = None
+    try:
+        for f in inspect.stack()[1:]:
+            frame = f[0]
+            code = frame.f_code
+            if code.co_varnames[:1] == ("request",):
+                return frame.f_locals["request"]
+            elif code.co_varnames[:2] == ("self", "request",):
+                return frame.f_locals["request"]
+    finally:
+        del frame
+
+
+@receiver(signals.pre_save, sender=Assignment)
+def assignment_pre_save(sender, instance, **kwargs):
+    if hasattr(instance, 'is_change_tracked'):
+        return
+
+    try:
+        original = Assignment.objects.get(pk=instance.pk)
+    except (AttributeError, Assignment.DoesNotExist):
+        original = None
+
+    changes = []
+    if not original:
+        changes.append(ugettext('Assignment has been created.'))
+    else:
+        change_tracked_fields = [
+            'specification',
+            'drudge',
+            'date_from',
+            'date_until',
+            'date_until_extension',
+            'status',
+            'arranged_on',
+            'mobilized_on',
+            'environment_course_date',
+            'motor_saw_course_date',
+        ]
+
+        def nicify(instance, field):
+            if hasattr(instance, 'get_%s_display' % field):
+                return getattr(instance, 'get_%s_display' % field)()
+            return getattr(instance, field) or '-'
+
+        for field in change_tracked_fields:
+            if getattr(original, field) == getattr(instance, field):
+                continue
+
+            field_tuple = Assignment._meta.get_field_by_name(field)
+            changes.append(
+                ugettext(
+                    'The value of `%(field)s` has been changed from'
+                    ' %(from)s to %(to)s.'
+                ) % {
+                    'field': field_tuple[0].verbose_name,
+                    'from': nicify(original, field),
+                    'to': nicify(instance, field),
+                }
+            )
+
+    request = get_request()
+
+    AssignmentChange.objects.create(
+        assignment=instance,
+        assignment_description=u'%s' % instance,
+        changed_by=request.user.get_full_name() if request else 'unknown',
+        changes=u'\n'.join(changes)
+    )
+
+
+@receiver(signals.post_delete, sender=Assignment)
+def assignment_post_delete(sender, instance, **kwargs):
+    request = get_request()
+
+    AssignmentChange.objects.create(
+        assignment=None,
+        assignment_description=u'%s' % instance,
+        changed_by=request.user.get_full_name() if request else 'unknown',
+        changes=ugettext('Assignment has been deleted.'),
+    )
 
 
 class ExpenseReportManager(SearchManager):
