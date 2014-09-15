@@ -568,7 +568,7 @@ def course_list(request):
 
 @staff_member_required
 def assignmentchange_list(request):
-    earliest = date.today() - timedelta(days=7)
+    earliest = date.today() - timedelta(days=14)
 
     changes = AssignmentChange.objects.filter(
         created__gte=earliest,
