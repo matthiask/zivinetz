@@ -218,9 +218,12 @@ class Scheduler(object):
             u'%d' % sum((1 for days in week.values() if days >= 3), 0),
         ) for day, week in filtered_data_weeks]
 
-        self.average = sum(
-            (sum(week.values(), 0.0) for day, week in filtered_data_weeks),
-            0.0) / (self.date_until - self.date_from).days
+        try:
+            self.average = sum(
+                (sum(week.values(), 0.0) for day, week in filtered_data_weeks),
+                0.0) / (self.date_until - self.date_from).days
+        except ArithmeticError:
+            self.average = 0
 
         return [[None, sums]] + waitlist + assignments
 
