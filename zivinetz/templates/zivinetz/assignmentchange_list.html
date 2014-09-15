@@ -18,6 +18,11 @@
   </thead>
   <tbody>
     {% for change in change_list %}
+      {% ifchanged %}
+        <tr>
+          <th colspan="2">{{ change.created|date:"l d.m." }}</th>
+        </tr>
+      {% endifchanged %}
       <tr>
         <td>
           {{ change.created|date:"d.m. H:i" }}
