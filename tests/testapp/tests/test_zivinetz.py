@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.test import TestCase
 
 from zivinetz.models import AssignmentChange, CompensationSet
+from zivinetz.utils.holidays import get_public_holidays
 
 from testapp.tests import factories
 
@@ -146,13 +147,11 @@ class ZivinetzTestCase(TestCase):
             date_from=date(2010, 12, 25),
             date_until=date(2011, 1, 2),
         )
-        for day in [
-                date(2010, 12, 25),
-                date(2010, 12, 26),
-                date(2011, 1, 1),
-                date(2011, 1, 2),
-            ]:
-            factories.PublicHolidayFactory.create(date=day)
+
+        for day, name in get_public_holidays(2010).items():
+            factories.PublicHolidayFactory.create(date=day, name=name)
+        for day, name in get_public_holidays(2011).items():
+            factories.PublicHolidayFactory.create(date=day, name=name)
 
         assignment = factories.AssignmentFactory.create(
             specification=self._generate_pa_specification(),
