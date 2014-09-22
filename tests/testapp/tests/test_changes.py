@@ -28,3 +28,12 @@ class ChangesTestCase(TestCase):
         assignment.delete()
 
         self.assertEqual(AssignmentChange.objects.count(), 4)
+
+        # Test the listing view.
+        admin = factories.UserFactory.create(is_staff=True, is_superuser=True)
+        self.client.login(username=admin.username, password='test')
+
+        self.assertContains(
+            self.client.get('/zivinetz/reporting/assignmentchanges/'),
+            'by unknown',
+            4)
