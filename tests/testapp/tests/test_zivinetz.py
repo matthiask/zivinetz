@@ -6,7 +6,8 @@ from decimal import Decimal
 from django.test import TestCase
 
 from zivinetz.models import AssignmentChange, CompensationSet
-from zivinetz.tests import factories
+
+from testapp.tests import factories
 
 
 class ZivinetzTestCase(TestCase):
