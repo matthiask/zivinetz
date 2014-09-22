@@ -105,8 +105,7 @@ class DrudgeViewsTestCase(TestCase):
         self.assertEqual(assignment.status, Assignment.TENTATIVE)
         self.assertEqual(AssignmentChange.objects.count(), 1)
 
-        response = self.client.get(
-            '/zivinetz/assignments/pdf/%d/' % assignment.id)
+        response = self.client.get(assignment.pdf_url())
         self.assertEqual(response['content-type'], 'application/pdf')
         self.assertEqual(
             response['content-disposition'], 'attachment; filename=eiv.pdf')
@@ -119,8 +118,7 @@ class DrudgeViewsTestCase(TestCase):
         assignment.generate_expensereports()
 
         report = assignment.reports.all()[0]
-        response = self.client.get(
-            '/zivinetz/expense_report_pdf/%d/' % report.id)
+        response = self.client.get(report.pdf_url())
         self.assertEqual(response['content-type'], 'application/pdf')
         self.assertEqual(
             response['content-disposition'],
