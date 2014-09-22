@@ -15,6 +15,7 @@ urlpatterns = patterns(
     url(r'^admin/scheduling/$', 'scheduling.scheduling'),
     url(r'^admin/', include('zivinetz.resources')),
 
+    # TODO Convert those to resource URLs.
     url(r'^assignments/pdf/(\d+)/$', 'reporting.assignment_pdf'),
     url(r'^expense_report_pdf/(\d+)/$', 'reporting.expense_report_pdf'),
     url(r'^references/pdf/(\d+)/$', 'reporting.reference_pdf'),

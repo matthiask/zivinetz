@@ -205,6 +205,13 @@ class AdminViewsTestCase(TestCase):
         reference = JobReference.objects.get()
         self.assertRedirects(response, reference.urls.url('edit'))
 
+        response = self.client.get(
+            '/zivinetz/references/pdf/%d/' % reference.id)
+        self.assertEqual(response['content-type'], 'application/pdf')
+        self.assertEqual(
+            response['content-disposition'],
+            'attachment; filename="reference-%d.pdf"' % reference.id)
+
     def test_expensereport_list(self):
         self._admin_login()
 

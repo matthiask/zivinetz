@@ -482,13 +482,16 @@ class NaturnetzStationery(object):
     def __call__(self, canvas, pdfdocument):
         canvas.saveState()
 
-        canvas.drawImage(
-            os.path.join(
-                settings.BASE_DIR, 'naturnetz', 'data', 'logo-new.jpg'),
-            x=16 * cm, y=24 * cm,
-            width=177 * 0.5,
-            height=246 * 0.5,
-        )
+        try:
+            canvas.drawImage(
+                os.path.join(
+                    settings.BASE_DIR, 'naturnetz', 'data', 'logo-new.jpg'),
+                x=16 * cm, y=24 * cm,
+                width=177 * 0.5,
+                height=246 * 0.5,
+            )
+        except IOError:
+            pass
 
         canvas.restoreState()
 
