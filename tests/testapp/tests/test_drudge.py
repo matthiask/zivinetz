@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.test import TestCase
 
-from zivinetz.models import Assignment, AssignmentChange
+from zivinetz.models import Assignment, AssignmentChange, WaitList
 
 from testapp.tests import factories
 
@@ -101,3 +101,26 @@ class ZivinetzTestCase(TestCase):
         self.assertEqual(assignment.date_from, date.today())
         self.assertEqual(assignment.status, Assignment.TENTATIVE)
         self.assertEqual(AssignmentChange.objects.count(), 1)
+
+    def test_create_waitlist_as_drudge(self):
+        drudge = factories.DrudgeFactory.create()
+        self.client.login(username=drudge.user.username, password='test')
+
+        factories.CodewordFactory.create(key='warteliste', codeword='blaeu')
+
+        data = {
+            'waitlist': '1',
+            'specification': factories.SpecificationFactory.create().id,
+            'assignment_date_from': date.today(),
+            'assignment_date_until': date.today() + timedelta(days=60),
+            'assignment_duration': 42,
+            'codeword': 'blaeu',
+        }
+
+        response = self.client.post('/zivinetz/dashboard/', data)
+        self.assertRedirects(
+            response,
+            'http://testserver/zivinetz/dashboard/')
+
+        waitlist = WaitList.objects.get()
+        self.assertEqual(waitlist.assignment_duration, 42)
