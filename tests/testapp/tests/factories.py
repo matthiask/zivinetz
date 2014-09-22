@@ -75,6 +75,7 @@ class RegionalOfficeFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = RegionalOffice
+        django_get_or_create = ('code',)
 
 
 class UserFactory(factory.DjangoModelFactory):
