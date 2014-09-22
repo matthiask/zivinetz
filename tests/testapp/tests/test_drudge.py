@@ -102,6 +102,13 @@ class DrudgeViewsTestCase(TestCase):
         self.assertEqual(assignment.status, Assignment.TENTATIVE)
         self.assertEqual(AssignmentChange.objects.count(), 1)
 
+        response = self.client.get(
+            '/zivinetz/assignments/pdf/%d/' % assignment.id)
+        self.assertEqual(response['content-type'], 'application/pdf')
+        self.assertEqual(
+            response['content-disposition'], 'attachment; filename=eiv.pdf')
+        self.assertTrue(len(response.content))
+
     def test_create_waitlist_as_drudge(self):
         drudge = factories.DrudgeFactory.create()
         self.client.login(username=drudge.user.username, password='test')
