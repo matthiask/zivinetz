@@ -2,15 +2,12 @@
 
 from __future__ import unicode_literals
 
-from datetime import date, timedelta
+from datetime import date
 from decimal import Decimal
-import os
 
-from django.conf import settings
-from django.core.files.base import ContentFile
 from django.test import TestCase
 
-from zivinetz.models import Assignment, AssignmentChange, CompensationSet
+from zivinetz.models import AssignmentChange, CompensationSet
 from zivinetz.utils.holidays import get_public_holidays
 
 from testapp.tests import factories
@@ -203,93 +200,6 @@ class ZivinetzTestCase(TestCase):
         _assert_almost_equal('total', [
             Decimal(s) for s in '425.7 1313 1438.3 1407 1350 1367 810'.split()
         ])
-
-    def test_create_profile_as_drudge(self):
-        # Hit a few views, just for fun
-        self.assertRedirects(
-            self.client.get('/zivinetz/'),
-            'http://testserver/accounts/login/?next=/zivinetz/')
-        self.assertRedirects(
-            self.client.get('/zivinetz/dashboard/'),
-            'http://testserver/accounts/login/?next=/zivinetz/dashboard/')
-
-        user = factories.UserFactory.create()
-        self.client.login(username=user.username, password='test')
-
-        self.assertRedirects(
-            self.client.get('/zivinetz/'),
-            'http://testserver/zivinetz/profile/')
-
-        response = self.client.post('/zivinetz/profile/', {
-            'first_name': 'Hans',
-            'last_name': 'Muster',
-            'zdp_no': '12345',
-            'address': 'Musterstrasse 42',
-            'zip_code': '8000',
-            'city': 'Zürich',
-            'date_of_birth': '1980-01-01',
-            'place_of_citizenship_city': 'Zürich',
-            'place_of_citizenship_state': 'ZH',
-            'bank_account': 'CH77-12345',
-            'environment_course': '2',  # Yes.
-            'regional_office': factories.RegionalOfficeFactory.create().id,
-        })
-        self.assertRedirects(
-            response,
-            'http://testserver/zivinetz/profile/')
-
-        self.assertRedirects(
-            self.client.get('/zivinetz/dashboard/'),
-            'http://testserver/zivinetz/profile/')
-        self.assertRedirects(
-            self.client.get('/zivinetz/dashboard/'),
-            'http://testserver/zivinetz/profile/')
-
-        path = os.path.join(
-            os.path.dirname(settings.BASE_DIR),
-            'zivinetz',
-            'data',
-            '3-0.jpg')
-
-        with open(path) as image, ContentFile(image.read()) as cf:
-            user.drudge.profile_image.save('profile.jpg', cf)
-
-        response = self.client.get('/zivinetz/dashboard/')
-        self.assertEqual(response.status_code, 200)
-
-        self.assertRedirects(
-            self.client.get('/zivinetz/'),
-            'http://testserver/zivinetz/dashboard/')
-
-    def test_create_assignment_as_drudge(self):
-        drudge = factories.DrudgeFactory.create()
-        self.client.login(username=drudge.user.username, password='test')
-
-        data = {
-            'assignment': '1',
-            'specification': factories.SpecificationFactory.create().id,
-            'regional_office': drudge.regional_office.id,
-            'date_from': date.today(),
-            'date_until': date.today() + timedelta(days=60),
-            'part_of_long_assignment': '',
-            'codeword': 'whatever',
-        }
-
-        response = self.client.post('/zivinetz/dashboard/', data)
-        self.assertContains(response, 'Codeword is incorrect.')
-
-        factories.CodewordFactory.create(key='einsatz', codeword='blaaa')
-        data['codeword'] = 'blaaa'
-
-        response = self.client.post('/zivinetz/dashboard/', data)
-        self.assertRedirects(
-            response,
-            'http://testserver/zivinetz/dashboard/')
-
-        assignment = Assignment.objects.get()
-        self.assertEqual(assignment.date_from, date.today())
-        self.assertEqual(assignment.status, Assignment.TENTATIVE)
-        self.assertEqual(AssignmentChange.objects.count(), 1)
 
     def test_admin_views(self):
         self.client.get('/zivinetz/admin/')
