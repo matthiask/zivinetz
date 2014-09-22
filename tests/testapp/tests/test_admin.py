@@ -182,6 +182,11 @@ class AdminViewsTestCase(TestCase):
         self.assertEqual(ExpenseReport.objects.count(), 4)
 
         self.assertRedirects(
+            self.client.get(assignment.urls.url('create_expensereports')),
+            assignment.urls.url('detail'))
+        self.assertEqual(ExpenseReport.objects.count(), 4)
+
+        self.assertRedirects(
             self.client.get(assignment.urls.url('remove_expensereports')),
             assignment.urls.url('detail'))
         self.assertEqual(ExpenseReport.objects.count(), 0)
