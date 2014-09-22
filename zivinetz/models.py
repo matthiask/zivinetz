@@ -764,9 +764,6 @@ def get_request():
 
 @receiver(signals.pre_save, sender=Assignment)
 def assignment_pre_save(sender, instance, **kwargs):
-    if hasattr(instance, 'is_change_tracked'):
-        return
-
     try:
         original = Assignment.objects.get(pk=instance.pk)
     except (AttributeError, Assignment.DoesNotExist):
