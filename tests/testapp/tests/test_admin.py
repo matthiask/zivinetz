@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from zivinetz.models import (
-    Assignment, Drudge, JobReference)
+    Assignment, Drudge, ExpenseReport, JobReference)
 
 from testapp.tests import factories
 
@@ -122,7 +122,6 @@ class AdminViewsTestCase(TestCase):
             'mark': '3',
             'comment': 'Blaaa',
         })
-        print response.content
         self.assertRedirects(response, drudge.urls.url('detail'))
 
         response = self.client.post(assessment.urls.url('delete'))
@@ -154,6 +153,38 @@ class AdminViewsTestCase(TestCase):
         self.assertEqual(
             response['content-disposition'],
             'attachment; filename="phones.pdf"')
+
+    def test_assignment_detail(self):
+        self._admin_login()
+
+        drudge = factories.DrudgeFactory.create()
+
+        response = self.client.post(Assignment().urls.url('add'), {
+            'specification': factories.SpecificationFactory.create().id,
+            'drudge': drudge.id,
+            'regional_office': drudge.regional_office.id,
+            'date_from': '2014-01-15',
+            'date_until': '2014-04-20',
+            'status': Assignment.ARRANGED,
+            'arranged_on': '2014-01-03',
+        })
+
+        assignment = Assignment.objects.get()
+        self.assertRedirects(response, assignment.urls.url('detail'))
+
+        self.assertEqual(ExpenseReport.objects.count(), 0)
+
+        factories.CompensationSetFactory.create()
+
+        self.assertRedirects(
+            self.client.get(assignment.urls.url('create_expensereports')),
+            assignment.urls.url('detail'))
+        self.assertEqual(ExpenseReport.objects.count(), 4)
+
+        self.assertRedirects(
+            self.client.get(assignment.urls.url('remove_expensereports')),
+            assignment.urls.url('detail'))
+        self.assertEqual(ExpenseReport.objects.count(), 0)
 
     def test_jobreferences(self):
         template = factories.JobReferenceTemplateFactory.create()
