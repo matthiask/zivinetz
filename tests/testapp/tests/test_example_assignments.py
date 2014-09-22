@@ -13,7 +13,7 @@ from zivinetz.utils.holidays import get_public_holidays
 from testapp.tests import factories
 
 
-class ZivinetzTestCase(TestCase):
+class ExampleAssignmentsTestCase(TestCase):
     def test_assignment_factory(self):
         assignment = factories.AssignmentFactory.create()
 
@@ -200,7 +200,3 @@ class ZivinetzTestCase(TestCase):
         _assert_almost_equal('total', [
             Decimal(s) for s in '425.7 1313 1438.3 1407 1350 1367 810'.split()
         ])
-
-    def test_admin_views(self):
-        self.client.get('/zivinetz/admin/')
-        self.client.get('/zivinetz/admin/scheduling/')

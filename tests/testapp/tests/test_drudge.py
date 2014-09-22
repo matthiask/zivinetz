@@ -14,7 +14,7 @@ from zivinetz.models import Assignment, AssignmentChange, WaitList
 from testapp.tests import factories
 
 
-class ZivinetzTestCase(TestCase):
+class DrudgeViewsTestCase(TestCase):
     def test_create_profile_as_drudge(self):
         # Hit a few views, just for fun
         self.assertRedirects(
