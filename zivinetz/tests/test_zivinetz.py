@@ -27,10 +27,23 @@ class ZivinetzTestCase(TestCase):
         assignment.generate_expensereports()
         self.assertTrue(assignment.reports.exists())
 
-    def test_assignment_1504(self):
-        # http://www.naturnetz.ch/zivildienst/zivinetz/admin/assignments/1504/
+    def _generate_compensation_sets(self):
+        factories.CompensationSetFactory.create()
+        factories.CompensationSetFactory.create(
+            valid_from=date(2000, 1, 1),
+            accomodation_home=Decimal('11.50'),
 
-        spec = factories.SpecificationFactory(
+            breakfast_at_accomodation=Decimal('3.50'),
+            lunch_at_accomodation=Decimal('10.00'),
+            supper_at_accomodation=Decimal('8.00'),
+
+            breakfast_external=Decimal('8.00'),
+            lunch_external=Decimal('19.00'),
+            supper_external=Decimal('15.00'),
+        )
+
+    def _generate_pa_specification(self):
+        return factories.SpecificationFactory(
             scope_statement__eis_no='53378',
             scope_statement__name='Projektadministration',
 
@@ -57,10 +70,13 @@ class ZivinetzTestCase(TestCase):
             food_throughout=False,
         )
 
-        factories.CompensationSetFactory.create()
+    def test_assignment_1504(self):
+        # http://www.naturnetz.ch/zivildienst/zivinetz/admin/assignments/1504/
+
+        self._generate_compensation_sets()
 
         assignment = factories.AssignmentFactory.create(
-            specification=spec,
+            specification=self._generate_pa_specification(),
             date_from=date(2014, 9, 8),
             date_until=date(2014, 10, 3),
             arranged_on=date(2014, 1, 29),
@@ -119,3 +135,67 @@ class ZivinetzTestCase(TestCase):
         self.assertAlmostEqual(
             reports[1].total,
             Decimal('96.90'))
+
+    def test_assignment_266(self):
+        # http://www.naturnetz.ch/zivildienst/zivinetz/admin/assignments/266/
+
+        self._generate_compensation_sets()
+
+        factories.CompanyHolidayFactory.create(
+            date_from=date(2010, 12, 25),
+            date_until=date(2011, 1, 2),
+        )
+        for day in [
+                date(2010, 12, 25),
+                date(2010, 12, 26),
+                date(2011, 1, 1),
+                date(2011, 1, 2),
+            ]:
+            factories.PublicHolidayFactory.create(date=day)
+
+        assignment = factories.AssignmentFactory.create(
+            specification=self._generate_pa_specification(),
+            date_from=date(2010, 8, 23),
+            date_until=date(2011, 2, 18),
+            part_of_long_assignment=True,
+            arranged_on=date(2010, 4, 15),
+            mobilized_on=date(2010, 4, 15),
+        )
+
+        assignment.generate_expensereports()
+        reports = list(assignment.reports.all())
+        self.assertEqual(len(reports), 7)
+
+        # Umweltkurs
+        reports[1].forced_leave_days += 2
+        reports[1].working_days -= 2
+        reports[1].recalculate_total()
+
+        # Additional holidays
+        reports[4].holi_days += 5
+        reports[4].free_days -= 5
+        reports[4].recalculate_total()
+
+        def _assert_equal(attribute, list):
+            self.assertEqual(
+                [getattr(report, attribute) for report in reports],
+                list)
+
+        _assert_equal('total_days', [9, 30, 31, 30, 31, 31, 18])
+        _assert_equal('working_days', [7, 20, 21, 22, 18, 21, 14])
+        _assert_equal('free_days', [2, 8, 10, 8, 8, 10, 4])
+        _assert_equal('sick_days', [0, 0, 0, 0, 0, 0, 0])
+        _assert_equal('holi_days', [0, 0, 0, 0, 5, 0, 0])
+        _assert_equal('forced_leave_days', [0, 2, 0, 0, 0, 0, 0])
+
+        def _assert_almost_equal(attribute, list):
+            for pair in zip(
+                    [getattr(report, attribute) for report in reports],
+                    list):
+                self.assertAlmostEqual(*pair)
+
+        _assert_almost_equal('clothing_expenses', [
+            Decimal(s) for s in '20.7 69 71.3 69 10 0 0'.split()])
+        _assert_almost_equal('total', [
+            Decimal(s) for s in '425.7 1313 1438.3 1407 1350 1367 810'.split()
+        ])
