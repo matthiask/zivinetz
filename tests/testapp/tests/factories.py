@@ -141,6 +141,12 @@ class CompanyHolidayFactory(factory.DjangoModelFactory):
 class WaitListFactory(factory.DjangoModelFactory):
     drudge = factory.SubFactory(DrudgeFactory)
     specification = factory.SubFactory(SpecificationFactory)
+    assignment_date_from = factory.fuzzy.FuzzyDate(
+        date(2012, 1, 1), date.today() + timedelta(days=500))
+    assignment_date_until = factory.LazyAttribute(
+        lambda o: o.assignment_date_from + timedelta(random.randint(30, 365)))
+    assignment_duration = factory.LazyAttribute(
+        lambda o: (o.assignment_date_until - o.assignment_date_from).days)
 
     class Meta:
         model = WaitList
