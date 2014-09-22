@@ -148,10 +148,9 @@ class ZivinetzTestCase(TestCase):
             date_until=date(2011, 1, 2),
         )
 
-        for day, name in get_public_holidays(2010).items():
-            factories.PublicHolidayFactory.create(date=day, name=name)
-        for day, name in get_public_holidays(2011).items():
-            factories.PublicHolidayFactory.create(date=day, name=name)
+        for year in range(2000, 2030):
+            for day, name in get_public_holidays(year).items():
+                factories.PublicHolidayFactory.create(date=day, name=name)
 
         assignment = factories.AssignmentFactory.create(
             specification=self._generate_pa_specification(),
@@ -199,3 +198,11 @@ class ZivinetzTestCase(TestCase):
         _assert_almost_equal('total', [
             Decimal(s) for s in '425.7 1313 1438.3 1407 1350 1367 810'.split()
         ])
+
+    def test_views(self):
+        # Hit a few views, just for fun
+        self.client.get('/zivinetz/')
+        self.client.get('/zivinetz/dashboard/')
+        self.client.get('/zivinetz/profile/')
+        self.client.get('/zivinetz/admin/')
+        self.client.get('/zivinetz/admin/scheduling/')
