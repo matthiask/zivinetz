@@ -204,7 +204,7 @@ class JobReferenceFromTemplateView(resources.ModelResourceView):
 
         messages.success(request, _('Successfully created job reference.'))
 
-        return HttpResponseRedirect(instance.get_absolute_url() + 'edit/')
+        return HttpResponseRedirect(instance.urls.url('edit'))
 
 
 class AssignmentMixin(ZivinetzMixin):

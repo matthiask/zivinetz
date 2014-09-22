@@ -3,14 +3,13 @@
 from __future__ import unicode_literals
 
 from datetime import date, timedelta
-import os
 
-from django.conf import settings
-from django.core.files.base import ContentFile
 from django.core import mail
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from zivinetz.models import Assignment, AssignmentChange, Drudge, WaitList
+from zivinetz.models import (
+    Assignment, Drudge, JobReference)
 
 from testapp.tests import factories
 
@@ -98,7 +97,6 @@ class AdminViewsTestCase(TestCase):
 
         response = self.client.post('/zivinetz/admin/drudges/', data)
         self.assertEqual(len(mail.outbox), 1)  # Bcc:
-        bcc = set(mail.outbox[0].bcc)
         self.assertEqual(
             set(mail.outbox[0].bcc),
             set(Drudge.objects.values_list('user__email', flat=True)))
@@ -156,3 +154,17 @@ class AdminViewsTestCase(TestCase):
         self.assertEqual(
             response['content-disposition'],
             'attachment; filename="phones.pdf"')
+
+    def test_jobreferences(self):
+        template = factories.JobReferenceTemplateFactory.create()
+        assignment = factories.AssignmentFactory.create()
+
+        self._admin_login()
+
+        response = self.client.get(
+            reverse(
+                'zivinetz_jobreference_from_template',
+                args=(template.id, assignment.id)))
+
+        reference = JobReference.objects.get()
+        self.assertRedirects(response, reference.urls.url('edit'))
