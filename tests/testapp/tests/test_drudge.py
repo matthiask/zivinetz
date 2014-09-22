@@ -30,6 +30,9 @@ class DrudgeViewsTestCase(TestCase):
         self.assertRedirects(
             self.client.get('/zivinetz/'),
             'http://testserver/zivinetz/profile/')
+        self.assertRedirects(
+            self.client.get('/zivinetz/dashboard/'),
+            'http://testserver/zivinetz/profile/')
 
         response = self.client.post('/zivinetz/profile/', {
             'first_name': 'Hans',
