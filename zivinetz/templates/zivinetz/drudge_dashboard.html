@@ -104,7 +104,7 @@
         <input type="hidden" name="assignment" value="1" />
         {% form_errors assignment_form %}
         <table>{% form_items assignment_form %}</table>
-        <input type="submit" />
+        <input type="submit" class="button" />
     </form>
 </td>
 
@@ -114,13 +114,12 @@
         <input type="hidden" name="waitlist" value="1" />
         {% form_errors waitlist_form %}
         <table>{% form_items waitlist_form %}</table>
-        <input type="submit" />
+        <input type="submit" class="button" />
     </form>
 </td>
 </tr></table>
 
 <style type="text/css">
-select, textarea { max-width: 300px !important; }
 table td { vertical-align: top; }
 </style>
 {% endblock %}
