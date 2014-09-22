@@ -7,9 +7,10 @@ import os
 
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.core import mail
 from django.test import TestCase
 
-from zivinetz.models import Assignment, AssignmentChange, WaitList
+from zivinetz.models import Assignment, AssignmentChange, Drudge, WaitList
 
 from testapp.tests import factories
 
@@ -75,6 +76,32 @@ class AdminViewsTestCase(TestCase):
             response,
             '<td>3.5</td>',
             1)
+
+        # Batch mailing
+        data = {
+            'batchform': 1,
+            'batch-action': 'send_emails',
+        }
+        for drudge in Drudge.objects.all():
+            data['batch_%d' % drudge.id] = drudge.id
+
+        response = self.client.post('/zivinetz/admin/drudges/', data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'div class="action-objects"', 1)
+
+        data.update({
+            'confirm': 1,
+            'subject': 'Hello and welcome',
+            'body': 'Whatever\nYes.',
+            'attachment': '',
+        })
+
+        response = self.client.post('/zivinetz/admin/drudges/', data)
+        self.assertEqual(len(mail.outbox), 1)  # Bcc:
+        bcc = set(mail.outbox[0].bcc)
+        self.assertEqual(
+            set(mail.outbox[0].bcc),
+            set(Drudge.objects.values_list('user__email', flat=True)))
 
     def test_assignment_list(self):
         self._admin_login()
