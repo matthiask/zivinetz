@@ -81,6 +81,7 @@ class UserFactory(factory.DjangoModelFactory):
     first_name = factory.Sequence(lambda n: 'Vorname %d' % n)
     last_name = factory.Sequence(lambda n: 'Nachname %d' % n)
     email = factory.Sequence(lambda n: 'mail%d@gmail.com' % n)
+    password = 'pbkdf2_sha256$12000$HQbIVphmynXw$HKw4uuZyqNEWTV4pjPRskmuBDzSw9U5a5x1Q5xFw0UI='  # noqa
 
     class Meta:
         model = User

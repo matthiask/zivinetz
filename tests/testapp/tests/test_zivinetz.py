@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 import os
 
@@ -10,7 +10,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.test import TestCase
 
-from zivinetz.models import AssignmentChange, CompensationSet
+from zivinetz.models import Assignment, AssignmentChange, CompensationSet
 from zivinetz.utils.holidays import get_public_holidays
 
 from testapp.tests import factories
@@ -214,9 +214,6 @@ class ZivinetzTestCase(TestCase):
             'http://testserver/accounts/login/?next=/zivinetz/dashboard/')
 
         user = factories.UserFactory.create()
-        user.set_password('test')
-        user.save()
-
         self.client.login(username=user.username, password='test')
 
         self.assertRedirects(
@@ -263,6 +260,36 @@ class ZivinetzTestCase(TestCase):
         self.assertRedirects(
             self.client.get('/zivinetz/'),
             'http://testserver/zivinetz/dashboard/')
+
+    def test_create_assignment_as_drudge(self):
+        drudge = factories.DrudgeFactory.create()
+        self.client.login(username=drudge.user.username, password='test')
+
+        data = {
+            'assignment': '1',
+            'specification': factories.SpecificationFactory.create().id,
+            'regional_office': drudge.regional_office.id,
+            'date_from': date.today(),
+            'date_until': date.today() + timedelta(days=60),
+            'part_of_long_assignment': '',
+            'codeword': 'whatever',
+        }
+
+        response = self.client.post('/zivinetz/dashboard/', data)
+        self.assertContains(response, 'Codeword is incorrect.')
+
+        factories.CodewordFactory.create(key='einsatz', codeword='blaaa')
+        data['codeword'] = 'blaaa'
+
+        response = self.client.post('/zivinetz/dashboard/', data)
+        self.assertRedirects(
+            response,
+            'http://testserver/zivinetz/dashboard/')
+
+        assignment = Assignment.objects.get()
+        self.assertEqual(assignment.date_from, date.today())
+        self.assertEqual(assignment.status, Assignment.TENTATIVE)
+        self.assertEqual(AssignmentChange.objects.count(), 1)
 
     def test_admin_views(self):
         self.client.get('/zivinetz/admin/')
