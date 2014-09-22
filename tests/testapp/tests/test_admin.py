@@ -204,3 +204,25 @@ class AdminViewsTestCase(TestCase):
 
         reference = JobReference.objects.get()
         self.assertRedirects(response, reference.urls.url('edit'))
+
+    def test_expensereport_list(self):
+        self._admin_login()
+
+        factories.CompensationSetFactory.create()
+        for i in range(10):
+            factories.AssignmentFactory.create(
+                status=Assignment.MOBILIZED,
+                arranged_on=date.today(),
+                mobilized_on=date.today(),
+            ).generate_expensereports()
+
+        self.assertContains(
+            self.client.get(ExpenseReport().urls.url('list')),
+            'class="batch"',
+            50)
+
+        response = self.client.get(ExpenseReport().urls.url('pdf'))
+        self.assertEqual(response['content-type'], 'application/pdf')
+        self.assertEqual(
+            response['content-disposition'],
+            'attachment; filename="expense-statistics.pdf"')
