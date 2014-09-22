@@ -1,2 +1,2 @@
 #!/bin/sh
-coverage run ./manage.py test testapp && coverage html
+venv/bin/python -Wall venv/bin/coverage run ./manage.py test testapp && venv/bin/coverage html
