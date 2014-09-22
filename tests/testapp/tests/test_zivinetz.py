@@ -199,10 +199,29 @@ class ZivinetzTestCase(TestCase):
             Decimal(s) for s in '425.7 1313 1438.3 1407 1350 1367 810'.split()
         ])
 
-    def test_views(self):
+    def test_drudge_views(self):
         # Hit a few views, just for fun
-        self.client.get('/zivinetz/')
+        self.assertRedirects(
+            self.client.get('/zivinetz/'),
+            'http://testserver/accounts/login/?next=/zivinetz/')
+        self.assertRedirects(
+            self.client.get('/zivinetz/dashboard/'),
+            'http://testserver/accounts/login/?next=/zivinetz/dashboard/')
+
+        user = factories.UserFactory.create()
+        user.set_password('test')
+        user.save()
+
+        self.client.login(username=user.username, password='test')
+
+        self.assertRedirects(
+            self.client.get('/zivinetz/'),
+            'http://testserver/zivinetz/profile/')
+
+
         self.client.get('/zivinetz/dashboard/')
         self.client.get('/zivinetz/profile/')
+
+    def test_admin_views(self):
         self.client.get('/zivinetz/admin/')
         self.client.get('/zivinetz/admin/scheduling/')

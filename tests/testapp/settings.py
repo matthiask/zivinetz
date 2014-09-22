@@ -19,6 +19,9 @@ INSTALLED_APPS = [
     'testapp',
     'towel',
     'zivinetz',
+    'feincms',
+    'feincms.module.page',
+    'towel_foundation',
 ]
 
 MIDDLEWARE_CLASSES = (

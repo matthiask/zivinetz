@@ -11,6 +11,6 @@ urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', lambda request: HttpResponse(repr(request.REQUEST))),
-    url(r'^ac/', include('django.contrib.auth.urls')),
+    url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^zivinetz/', include('zivinetz.urls')),
 ) + staticfiles_urlpatterns()
