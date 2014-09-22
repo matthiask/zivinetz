@@ -1,8 +1,11 @@
+# coding=utf-8
+
 from __future__ import unicode_literals
 
 from datetime import date
 from decimal import Decimal
 
+from django.core.files.base import ContentFile
 from django.test import TestCase
 
 from zivinetz.models import AssignmentChange, CompensationSet
@@ -199,7 +202,7 @@ class ZivinetzTestCase(TestCase):
             Decimal(s) for s in '425.7 1313 1438.3 1407 1350 1367 810'.split()
         ])
 
-    def test_drudge_views(self):
+    def test_create_profile_as_drudge(self):
         # Hit a few views, just for fun
         self.assertRedirects(
             self.client.get('/zivinetz/'),
@@ -218,9 +221,40 @@ class ZivinetzTestCase(TestCase):
             self.client.get('/zivinetz/'),
             'http://testserver/zivinetz/profile/')
 
+        response = self.client.post('/zivinetz/profile/', {
+            'first_name': 'Hans',
+            'last_name': 'Muster',
+            'zdp_no': '12345',
+            'address': 'Musterstrasse 42',
+            'zip_code': '8000',
+            'city': 'Zürich',
+            'date_of_birth': '1980-01-01',
+            'place_of_citizenship_city': 'Zürich',
+            'place_of_citizenship_state': 'ZH',
+            'bank_account': 'CH77-12345',
+            'environment_course': '2',  # Yes.
+            'regional_office': factories.RegionalOfficeFactory.create().id,
+        })
+        self.assertRedirects(
+            response,
+            'http://testserver/zivinetz/profile/')
 
-        self.client.get('/zivinetz/dashboard/')
-        self.client.get('/zivinetz/profile/')
+        self.assertRedirects(
+            self.client.get('/zivinetz/dashboard/'),
+            'http://testserver/zivinetz/profile/')
+        self.assertRedirects(
+            self.client.get('/zivinetz/dashboard/'),
+            'http://testserver/zivinetz/profile/')
+        with open('../zivinetz/data/3-0.jpg') as image:
+            with ContentFile(image.read()) as cf:
+                user.drudge.profile_image.save('profile.jpg', cf)
+
+        response = self.client.get('/zivinetz/dashboard/')
+        self.assertEqual(response.status_code, 200)
+
+        self.assertRedirects(
+            self.client.get('/zivinetz/'),
+            'http://testserver/zivinetz/dashboard/')
 
     def test_admin_views(self):
         self.client.get('/zivinetz/admin/')
