@@ -121,3 +121,9 @@ class AdminViewsTestCase(TestCase):
                     % day.strftime('%Y-%m-%d')),
                 'class="batch"',
                 Assignment.objects.for_date(day).count())
+
+        response = self.client.get('/zivinetz/admin/assignments/pdf/?q=test')
+        self.assertEqual(response['content-type'], 'application/pdf')
+        self.assertEqual(
+            response['content-disposition'],
+            'attachment; filename="phones.pdf"')
