@@ -109,6 +109,21 @@ class DrudgeViewsTestCase(TestCase):
             response['content-disposition'], 'attachment; filename=eiv.pdf')
         self.assertTrue(len(response.content))
 
+        # Fast forward a bit.
+        assignment.arranged_on = assignment.mobilized_on = date.today()
+        assignment.save()
+        factories.CompensationSetFactory.create()
+        assignment.generate_expensereports()
+
+        report = assignment.reports.all()[0]
+        response = self.client.get(
+            '/zivinetz/expense_report_pdf/%d/' % report.id)
+        self.assertEqual(response['content-type'], 'application/pdf')
+        self.assertEqual(
+            response['content-disposition'],
+            'attachment; filename="expense-report-%d.pdf"' % report.id)
+        self.assertTrue(len(response.content))
+
     def test_create_waitlist_as_drudge(self):
         drudge = factories.DrudgeFactory.create()
         self.client.login(username=drudge.user.username, password='test')
