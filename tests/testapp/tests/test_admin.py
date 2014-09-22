@@ -103,6 +103,35 @@ class AdminViewsTestCase(TestCase):
             set(mail.outbox[0].bcc),
             set(Drudge.objects.values_list('user__email', flat=True)))
 
+    def test_drudge_detail(self):
+        self._admin_login()
+        drudge = factories.DrudgeFactory.create()
+
+        self.assertContains(
+            self.client.get(drudge.urls.url('detail')),
+            '<form', 1)
+
+        response = self.client.post(drudge.urls.url('detail'), {
+            'mark': '5',
+            'comment': 'Viel schaffe, viel rauche, viel trinke',
+        })
+
+        self.assertEqual(drudge.assessments.count(), 1)
+
+        assessment = drudge.assessments.get()
+
+        response = self.client.post(assessment.urls.url('edit'), {
+            'mark': '3',
+            'comment': 'Blaaa',
+        })
+        print response.content
+        self.assertRedirects(response, drudge.urls.url('detail'))
+
+        response = self.client.post(assessment.urls.url('delete'))
+        self.assertRedirects(response, drudge.urls.url('detail'))
+
+        self.assertFalse(drudge.assessments.exists())
+
     def test_assignment_list(self):
         self._admin_login()
 

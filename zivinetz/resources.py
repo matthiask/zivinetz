@@ -503,7 +503,7 @@ urlpatterns = patterns(
         r'^assessment/',
         include(patterns(
             '',
-            assessment_url('edit'),
+            assessment_url('edit', form_class=AssessmentForm),
             assessment_url('delete'),
         )),
     ),
