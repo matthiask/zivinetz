@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 
 from datetime import date
 from decimal import Decimal
+import os
 
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.test import TestCase
 
@@ -245,9 +247,15 @@ class ZivinetzTestCase(TestCase):
         self.assertRedirects(
             self.client.get('/zivinetz/dashboard/'),
             'http://testserver/zivinetz/profile/')
-        with open('../zivinetz/data/3-0.jpg') as image:
-            with ContentFile(image.read()) as cf:
-                user.drudge.profile_image.save('profile.jpg', cf)
+
+        path = os.path.join(
+            os.path.dirname(settings.BASE_DIR),
+            'zivinetz',
+            'data',
+            '3-0.jpg')
+
+        with open(path) as image, ContentFile(image.read()) as cf:
+            user.drudge.profile_image.save('profile.jpg', cf)
 
         response = self.client.get('/zivinetz/dashboard/')
         self.assertEqual(response.status_code, 200)

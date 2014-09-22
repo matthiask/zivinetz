@@ -1,6 +1,6 @@
 import os
 
-SITE_ID = 1
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 DATABASES = {
     'default': {
