@@ -45,19 +45,19 @@ class ZivinetzMixin(object):
     def allow_add(self, silent=True):
         return self.request.user.has_perm('{}.add_{}'.format(
             self.model._meta.app_label,
-            self.model._meta.module_name,
+            self.model._meta.model_name,
         ))
 
     def allow_edit(self, object=None, silent=True):
         return self.request.user.has_perm('{}.change_{}'.format(
             self.model._meta.app_label,
-            self.model._meta.module_name,
+            self.model._meta.model_name,
         ))
 
     def allow_delete(self, object=None, silent=True):
         if not self.request.user.has_perm('{}.delete_{}'.format(
                 self.model._meta.app_label,
-                self.model._meta.module_name,
+                self.model._meta.model_name,
         )):
             return False
 
