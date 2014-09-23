@@ -291,7 +291,11 @@ class AdminViewsTestCase(TestCase):
         response = self.client.post(report.urls.url('edit'), data)
         self.assertRedirects(response, report.urls.url('detail'))
 
-        state['holi_days'] += 2
+        del data['holi_days']
+        response = self.client.post(report.urls.url('edit'), data)
+        self.assertEqual(response.status_code, 200)
+
+        state['holi_days'] = 2
         data.update(state)
         response = self.client.post(report.urls.url('edit'), data)
         self.assertContains(response, 'id="id_ignore_warnings"', 1)
