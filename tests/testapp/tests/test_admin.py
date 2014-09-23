@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from datetime import date, timedelta
+from decimal import Decimal
 
 from django.core import mail
 from django.core.urlresolvers import reverse
@@ -233,3 +234,64 @@ class AdminViewsTestCase(TestCase):
         self.assertEqual(
             response['content-disposition'],
             'attachment; filename="expense-statistics.pdf"')
+
+    def test_expensereport_editing(self):
+        self._admin_login()
+
+        factories.CompensationSetFactory.create()
+        factories.AssignmentFactory.create(
+            status=Assignment.MOBILIZED,
+            date_from=date(2014, 9, 1),
+            date_until=date(2014, 9, 26),
+            arranged_on=date(2014, 9, 1),
+            mobilized_on=date(2014, 9, 1),
+        ).generate_expensereports()
+
+        report = ExpenseReport.objects.get()
+
+        self.assertAlmostEqual(report.total, Decimal('130.00'))
+
+        state = {
+            'working_days': 20,
+            'free_days': 6,
+            'sick_days': 0,
+            'holi_days': 0,
+            'forced_leave_days': 0,
+        }
+        for type, days in state.items():
+            self.assertEqual(getattr(report, type), days)
+        self.assertEqual(report.calculated_total_days, 26)
+
+        base_data = {
+            'date_from': report.date_from,
+            'date_until': report.date_until,
+            'report_no': report.report_no,
+            'status': report.status,
+            'specification': report.specification.id,
+
+            'clothing_expenses': report.clothing_expenses,
+            'transport_expenses': report.transport_expenses,
+            'miscellaneous': report.miscellaneous,
+        }
+
+        data = {}
+        data.update(base_data)
+        data.update(state)
+
+        response = self.client.post(report.urls.url('edit'), data)
+        self.assertRedirects(response, report.urls.url('detail'))
+
+        state['holi_days'] += 2
+        data.update(state)
+        response = self.client.post(report.urls.url('edit'), data)
+        self.assertContains(response, 'id="id_ignore_warnings"', 1)
+
+        state['working_days'] -= 2
+        data.update(state)
+        response = self.client.post(report.urls.url('edit'), data)
+        self.assertRedirects(response, report.urls.url('detail'))
+
+        report = ExpenseReport.objects.get()
+        for type, days in state.items():
+            self.assertEqual(getattr(report, type), days)
+        self.assertEqual(report.calculated_total_days, 26)

@@ -12,4 +12,4 @@ class SchedulingTestCase(TestCase):
         admin = factories.UserFactory.create(is_staff=True, is_superuser=True)
         self.client.login(username=admin.username, password='test')
 
-        response = self.client.get('/zivinetz/admin/scheduling/')
+        self.client.get('/zivinetz/admin/scheduling/')
