@@ -22,13 +22,13 @@
     </td>
   </tr>
   {% for title, value in object.user|model_details:"email,is_active,last_login,date_joined" %}
-    <tr class="{% cycle "odd" "even" %}">
+    <tr>
       <th>{{ title|capfirst }}</th>
       <td>{{ value }}</td>
     </tr>
   {% endfor %}
   {% for title, value in object|model_details:"date_of_birth,phone_home,phone_office,mobile,regional_office" %}
-    <tr class="{% cycle "odd" "even" %}">
+    <tr>
       <th>{{ title|capfirst }}</th>
       <td>{{ value }}</td>
     </tr>
@@ -39,7 +39,7 @@
 
 <table>
   {% for title, value in object|model_details:"bank_account,health_insurance_company,health_insurance_account" %}
-    <tr class="{% cycle "odd" "even" %}">
+    <tr>
       <th>{{ title|capfirst }}</th>
       <td>{{ value }}</td>
     </tr>
@@ -49,7 +49,7 @@
     <td>{{ object.place_of_citizenship_city }} {{ object.place_of_citizenship_state }}</td>
   </tr>
   {% for title, value in object|model_details:"driving_license,general_abonnement,half_fare_card,other_card,environment_course,motor_saw_course,vegetarianism" %}
-    <tr class="{% cycle "odd" "even" %}">
+    <tr>
       <th>{{ title|capfirst }}</th>
       <td>{{ value }}</td>
     </tr>
@@ -97,7 +97,7 @@
   </thead>
   <tbody>
   {% for object in object.assignments.all %}
-    <tr class="{% cycle 'odd' 'even' %}">
+    <tr>
       <th>
         <a href="{{ object.get_absolute_url }}">
           {{ object.date_from|date:"d.m.Y" }} - {{ object.determine_date_until|date:"d.m.Y" }}
@@ -126,7 +126,7 @@
   </thead>
   <tbody>
   {% for assessment in object.assessments.all %}
-    <tr class="{% cycle 'odd' 'even' %}">
+    <tr>
       <td>{{ assessment.comment|linebreaksbr }}</td>
       <td>{{ assessment.mark|default:"&ndash;" }}</td>
       <td>{{ assessment.created|date:"d.m.Y" }}</td>

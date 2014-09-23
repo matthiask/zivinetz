@@ -7,7 +7,7 @@
 {% block content %}
 <table>
 {% for title, value in object|model_details:"assignment,created" %}
-    <tr class="{% cycle "odd" "even" %}">
+    <tr>
         <th>{{ title|capfirst }}</th>
         <td>{{ value }}</td>
     </tr>

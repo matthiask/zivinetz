@@ -7,7 +7,7 @@
 {% block content %}
 <table>
 {% for title, value in object|model_details %}
-    <tr class="{% cycle "odd" "even" %}">
+    <tr>
         <th>{{ title|capfirst }}</th>
         <td>{{ value }}</td>
     </tr>
@@ -28,7 +28,7 @@
     </thead>
     <tbody>
     {% for object in object.specifications.all %}
-        <tr class="{% cycle 'odd' 'even' %}">
+        <tr>
             <th>
                 <a href="{{ object.get_absolute_url }}">{{ object }}</a>
             </th>

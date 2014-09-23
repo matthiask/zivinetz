@@ -7,7 +7,7 @@
 {% block content %}
 <table>
 {% for title, value in object|model_details %}
-    <tr class="{% cycle "odd" "even" %}">
+    <tr>
         <th>{{ title|capfirst }}</th>
         <td>{{ value|default_if_none:"&ndash;" }}</td>
     </tr>
@@ -37,7 +37,7 @@
     </thead>
     <tbody>
     {% for object in object.reports.select_related %}
-        <tr class="{% cycle 'odd' 'even' %}">
+        <tr>
             <th>
                 <a href="{{ object.get_absolute_url }}">
                     {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}

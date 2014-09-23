@@ -91,7 +91,7 @@ onReady.push(function($) {
             {% endfor %}
         </tr>
     {% endif %}
-    <tr class="status{{ assignment.status }} {% cycle "odd" "even" %}" title="{{ assignment }}">
+    <tr class="status{{ assignment.status }}" title="{{ assignment }}">
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.first_name }}&nbsp; </a></th>
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.user.last_name }}&nbsp; </a></th>
         <th><a href="{{ assignment.get_absolute_url }}">{{ assignment.drudge.zdp_no }}&nbsp; </a></th>

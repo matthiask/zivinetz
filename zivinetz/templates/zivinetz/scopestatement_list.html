@@ -13,7 +13,7 @@
     </thead>
     <tbody>
     {% for object in object_list %}
-        <tr class="{% cycle 'odd' 'even' %}">
+        <tr>
             <td>
                 <i class="fi-{{ object.is_active|yesno:'check,x' }}"></i>
             </td>

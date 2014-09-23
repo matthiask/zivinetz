@@ -20,7 +20,7 @@
     </thead>
     <tbody>
     {% for object in assignments %}
-        <tr class="{% cycle 'odd' 'even' %}">
+        <tr>
             <th>{{ object.date_from|date:"d.m.Y" }} - {{ object.determine_date_until|date:"d.m.Y" }}</th>
             <td title="{{ object.specification }}">{{ object.specification.code }}</td>
             <td>{{ object.created|date:"d.m.Y" }}</td>
@@ -49,7 +49,7 @@
     </thead>
     <tbody>
     {% for object in waitlist %}
-        <tr class="{% cycle 'odd' 'even' %}">
+        <tr>
             <th>{{ object.assignment_date_from|date:"d.m.Y" }} - {{ object.assignment_date_until|date:"d.m.Y" }}</th>
             <td title="{{ object.specification }}">{{ object.specification.code }}</td>
             <td>{{ object.assignment_duration }}</td>
@@ -80,7 +80,7 @@
     </thead>
     <tbody>
     {% for object in expense_reports %}
-        <tr class="{% cycle 'odd' 'even' %}">
+        <tr>
             <th>{{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}</th>
             <td>{{ object.assignment.drudge }}</td>
             <td>{{ object.assignment.specification.code }}</td>
