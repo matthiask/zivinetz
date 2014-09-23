@@ -18,10 +18,6 @@ from testapp.tests import factories
 class AdminViewsTestCase(TestCase):
     admin = None
 
-    def test_admin_views(self):
-        self.client.get('/zivinetz/admin/')
-        self.client.get('/zivinetz/admin/scheduling/')
-
     def _admin_login(self):
         if not self.admin:
             self.admin = factories.UserFactory.create(
@@ -29,6 +25,19 @@ class AdminViewsTestCase(TestCase):
                 is_superuser=True,
             )
         self.client.login(username=self.admin.username, password='test')
+
+    def test_admin_views(self):
+        self.assertRedirects(
+            self.client.get('/zivinetz/admin/'),
+            'http://testserver/admin/login/?next=/zivinetz/admin/')
+        self.assertRedirects(
+            self.client.get('/zivinetz/admin/scheduling/'),
+            'http://testserver/admin/login/?next=/zivinetz/admin/scheduling/')
+
+        self._admin_login()
+        self.assertRedirects(
+            self.client.get('/zivinetz/'),
+            'http://testserver/zivinetz/admin/')
 
     def test_drudge_list(self):
         self._admin_login()
