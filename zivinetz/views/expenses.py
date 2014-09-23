@@ -1,8 +1,8 @@
+from collections import OrderedDict
 from datetime import date
 from decimal import Decimal
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.utils.datastructures import SortedDict
 
 from zivinetz.models import (ExpenseReport,)
 
@@ -71,7 +71,7 @@ def generate_expense_statistics_pdf(reports):
         1.25 * cm,
     )
 
-    data = SortedDict()
+    data = OrderedDict()
 
     for report in reports.order_by(
             'date_from',
@@ -123,7 +123,7 @@ def generate_expense_statistics_pdf(reports):
 
         data.setdefault(
             report.assignment.specification.scope_statement,
-            SortedDict(),
+            OrderedDict(),
         ).setdefault(
             (report.date_from.year, report.date_from.month),
             [],

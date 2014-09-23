@@ -1,5 +1,5 @@
 import calendar
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from datetime import date, timedelta
 import itertools
 
@@ -8,7 +8,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Max, Min, Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy
 
 from towel.forms import SearchForm
@@ -80,7 +79,7 @@ class Scheduler(object):
                 (self.date_range[1] - self.date_from).days // 7 + 1)
 
         self.date_list = list(daterange(self.date_from, self.date_until))
-        self.data_weeks = SortedDict()
+        self.data_weeks = OrderedDict()
         for day in self.date_list:
             self.data_weeks.setdefault(
                 calendar_week(day),
@@ -156,7 +155,7 @@ class Scheduler(object):
         return weeks
 
     def assignments(self):
-        assignments_dict = SortedDict()
+        assignments_dict = OrderedDict()
 
         assignments = self.queryset.select_related(
             'specification__scope_statement', 'drudge__user',
