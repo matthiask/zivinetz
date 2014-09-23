@@ -155,6 +155,16 @@ class AdminViewsTestCase(TestCase):
             response['content-disposition'],
             'attachment; filename="phones.pdf"')
 
+        self.assertContains(
+            self.client.get(
+                '/zivinetz/admin/assignments/'
+                '?service_between=%s&service_and=%s' % (
+                    '2000-01-01',
+                    '2020-01-01',
+                )),
+            'class="batch"',
+            10)
+
     def test_assignment_detail(self):
         self._admin_login()
 
