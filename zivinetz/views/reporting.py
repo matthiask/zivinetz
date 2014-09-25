@@ -18,7 +18,6 @@ from django.utils.translation import ugettext as _
 from zivinetz.models import (
     Assignment, CompanyHoliday, ExpenseReport, JobReference, AssignmentChange)
 
-
 from reportlab.lib import colors
 
 from pdfdocument.document import PDFDocument, cm, mm

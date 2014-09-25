@@ -28,13 +28,14 @@
       <th>{% trans "motor saw course starting date" %}</th>
       <th>{% trans "branch" %}</th>
       <th>{% trans "assignment" %}</th>
+      <th>{% trans "time frame" %}</th>
     </tr>
   </thead>
   <tbody>
     {% for date, assignment in course_list %}
       {% ifchanged date|date:"W Y" %}
       <tr>
-        <th colspan="5">
+        <th colspan="6">
           {{ date|date:"\K\WW Y" }}
         </th>
       </tr>
@@ -56,7 +57,13 @@
         </td>
         <td>
           <a href="{{ assignment.get_absolute_url }}">
-            {{ assignment }}
+            {{ assignment.specification.code }}
+          </a>
+        </td>
+        <td>
+          <a href="{{ assignment.get_absolute_url }}">
+            {{ assignment.date_from|date:"d.m.Y" }} &ndash;
+            {{ assignment.determine_date_until|date:"d.m.Y" }}
           </a>
         </td>
       </tr>
