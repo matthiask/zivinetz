@@ -2,17 +2,32 @@
 
 from __future__ import unicode_literals
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from django.core import mail
 from django.core.urlresolvers import reverse
+from django.forms.models import model_to_dict
 from django.test import TestCase
 
 from zivinetz.models import (
     Assignment, Drudge, ExpenseReport, JobReference)
 
 from testapp.tests import factories
+
+
+def model_to_postable_dict(instance):
+    data = model_to_dict(instance)
+    for key in list(data.keys()):
+        if data[key] is None:
+            data[key] = ''
+        elif isinstance(data[key], (date, datetime)):
+            data[key] = data[key].strftime('%Y-%m-%d')
+    return data
+
+
+def _messages(response):
+    return [m.message for m in response.context['messages']]
 
 
 class AdminViewsTestCase(TestCase):
@@ -210,6 +225,49 @@ class AdminViewsTestCase(TestCase):
             self.client.get(assignment.urls.url('remove_expensereports')),
             assignment.urls.url('detail'))
         self.assertEqual(ExpenseReport.objects.count(), 0)
+
+    def test_assignment_detail_with_courses(self):
+        self._admin_login()
+
+        assignment = factories.AssignmentFactory.create()
+        data = model_to_postable_dict(assignment)
+        response = self.client.post(
+            assignment.urls.url('edit'),
+            data)
+        self.assertRedirects(response, assignment.urls.url('detail'))
+
+        drudge = Drudge.objects.get(id=assignment.drudge_id)
+        self.assertFalse(drudge.environment_course)
+
+        data = model_to_postable_dict(assignment)
+        data['environment_course_date'] = '2014-09-01'
+        response = self.client.post(
+            assignment.urls.url('edit'),
+            data,
+            follow=True)
+
+        self.assertEqual(
+            _messages(response),
+            [
+                'The assignment has been successfully saved.',
+                'The drudge is now registered as having visited'
+                ' the environment course.'
+            ])
+
+        drudge = Drudge.objects.get(id=assignment.drudge_id)
+        self.assertTrue(drudge.environment_course)
+
+        data = model_to_postable_dict(assignment)
+        data['environment_course_date'] = '2014-10-01'
+        response = self.client.post(
+            assignment.urls.url('edit'),
+            data)
+        self.assertContains(
+            response,
+            '<li>Drudge already visited an environment course.</li>')
+        self.assertContains(
+            response,
+            'id="id_ignore_warnings"')
 
     def test_jobreferences(self):
         template = factories.JobReferenceTemplateFactory.create()
