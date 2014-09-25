@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-25 10:27+0200\n"
+"POT-Creation-Date: 2014-09-25 16:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -703,7 +703,7 @@ msgstr "UNA-Kurs Startdatum"
 msgid "motor saw course starting date"
 msgstr "MSK Startdatum"
 
-#: models.py:483 models.py:733 models.py:855 models.py:1158 resources.py:345
+#: models.py:483 models.py:733 models.py:855 models.py:1158 resources.py:388
 #: templates/zivinetz/course_list.html:30
 #: templates/zivinetz/expensereport_detail.html:16
 #: templates/zivinetz/expensereport_form.html:21
@@ -983,7 +983,7 @@ msgstr "Erfolgreich Mail versendet."
 msgid "Send emails"
 msgstr "Mails senden"
 
-#: resources.py:129 resources.py:239 resources.py:361
+#: resources.py:129 resources.py:266 resources.py:404
 #, python-format
 msgid "The %(verbose_name)s has been successfully saved."
 msgstr ""
@@ -1002,11 +1002,40 @@ msgstr ""
 msgid "Successfully created job reference."
 msgstr "Erfolgreich Arbeitszeugnis erstellt."
 
-#: resources.py:229
+#: resources.py:217
+#| msgid "motor saw course starting date"
+msgid "Set motor saw course field on drudge to"
+msgstr "Holzerkurs-Feld bei Zivi setzen auf"
+
+#: resources.py:236
 msgid "Mobilized on date must be set when status is mobilized."
 msgstr "Aufgebotsdatum muss gesetzt sein wenn Status aufgeboten ist."
 
-#: resources.py:249
+#: resources.py:243
+msgid "Drudge already visited a motor saw course."
+msgstr "Zivi hat schon einen Holzerkurs besucht."
+
+#: resources.py:248
+#| msgid "I have taken the environment course already."
+msgid "Drudge already visited an environment course."
+msgstr "Zivi hat schon einen Umweltkurs besucht."
+
+#: resources.py:255
+msgid ""
+"Please also provide a value in the motor saw course selector when entering a "
+"starting date."
+msgstr ""
+"Bitte auch einen Holzerkurs auswählen wenn MSK Startdatum gesetzt wird."
+
+#: resources.py:275
+msgid "The drudge is now registered as having visited the environment course."
+msgstr "Der Zivi ist nun vermerkt als \"Umweltkurs besucht\"."
+
+#: resources.py:283
+msgid "The drudge is now registered as having visited the motor saw course."
+msgstr "Der Zivi ist nun vermerkt als \"Holzerkurs besucht\"."
+
+#: resources.py:292
 msgid ""
 "The extended until date has been changed. Please check whether you need to "
 "generate additional expense reports."
@@ -1014,34 +1043,53 @@ msgstr ""
 "Die Einsatzverlängerung wurde angepasst. Bitte überprüfen Sie die "
 "Spesenrapporte."
 
-#: resources.py:267
+#: resources.py:310
 #, python-format
 msgid "Successfully created %s expense reports."
 msgstr "Erfolgreich %s Spesenrapporte erstellt."
 
-#: resources.py:271
+#: resources.py:314
 msgid "No expense reports created, all months occupied already?"
 msgstr "Keine Spesenrapporte erstellt, alle Monate schon besetzt?"
 
-#: resources.py:282
+#: resources.py:325
 msgid "Successfully removed pending expense reports."
 msgstr "Erfolgreich alle pendenten Spesenrapporte entfernt."
 
-#: resources.py:291 resources.py:384
+#: resources.py:334 resources.py:427
 msgid "The search query was invalid."
 msgstr ""
 
-#: templates/resources/object_detail.html:11
-#: templates/resources/object_detail.html:46
-#: templates/zivinetz/jobreference_form.html:22
-msgid "Delete"
-msgstr "Löschen"
+#: templates/resources/object_action.html:19
+msgid "Items"
+msgstr ""
 
-#: templates/resources/object_detail.html:17
-#: templates/resources/object_detail.html:42
-msgid "Edit"
-msgstr "Bearbeiten"
+#: templates/resources/object_action.html:35
+msgid "confirm"
+msgstr ""
 
+#: templates/resources/object_action.html:37
+#: templates/resources/object_delete_confirmation.html:36
+#: templates/resources/object_form.html:29
+#: templates/zivinetz/drudge_profile.html:51
+msgid "cancel"
+msgstr "Abbrechen"
+
+#: templates/resources/object_delete_confirmation.html:8
+#, python-format
+msgid "Delete %(object)s"
+msgstr ""
+
+#: templates/resources/object_delete_confirmation.html:14
+#, python-format
+msgid "Do you really want to delete %(object)s?"
+msgstr ""
+
+#: templates/resources/object_delete_confirmation.html:17
+msgid "You are about to delete the following objects:"
+msgstr ""
+
+#: templates/resources/object_delete_confirmation.html:34
 #: templates/zivinetz/assignment_detail.html:18
 #: templates/zivinetz/drudge_detail.html:83
 #: templates/zivinetz/expensereport_detail.html:87
@@ -1050,6 +1098,32 @@ msgstr "Bearbeiten"
 #: templates/zivinetz/specification_detail.html:106
 msgid "delete"
 msgstr "löschen"
+
+#: templates/resources/object_detail.html:28
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: templates/resources/object_detail.html:32
+#: templates/zivinetz/jobreference_form.html:22
+msgid "Delete"
+msgstr "Löschen"
+
+#: templates/resources/object_form.html:27
+#: templates/zivinetz/drudge_profile.html:50
+msgid "save"
+msgstr "Sichern"
+
+#: templates/resources/object_list.html:18
+#, fuzzy
+#| msgid "vacation"
+msgid "Action"
+msgstr "Urlaub"
+
+#: templates/resources/object_picker.html:6
+#, fuzzy, python-format
+#| msgid "New %(verbose_name)s"
+msgid "Select a %(verbose_name)s"
+msgstr "%(verbose_name)s hinzufügen"
 
 #: templates/zivinetz/assignment_detail.html:19
 #: templates/zivinetz/drudge_detail.html:84
@@ -1114,7 +1188,6 @@ msgid "Phone list"
 msgstr "Telefonliste"
 
 #: templates/zivinetz/assignmentchange_list.html:29
-#| msgid "body"
 msgid "by"
 msgstr "von"
 
@@ -1194,14 +1267,6 @@ msgstr "Letzter Einsatz"
 #: templates/zivinetz/drudge_list.html:20
 msgid "average mark"
 msgstr "Durchschnitt"
-
-#: templates/zivinetz/drudge_profile.html:50
-msgid "save"
-msgstr "Sichern"
-
-#: templates/zivinetz/drudge_profile.html:51
-msgid "cancel"
-msgstr "Abbrechen"
 
 #: templates/zivinetz/expensereport_form.html:11
 msgid "This expense report is already paid."
