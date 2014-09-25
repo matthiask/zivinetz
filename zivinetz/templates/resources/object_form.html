@@ -1,0 +1,33 @@
+{% extends base_template|default:"base.html" %}
+
+{% load i18n towel_form_tags verbose_name_tags %}
+
+{% block title %}{{ title }}{% if block.super %} - {{ block.super }}{% endif %}{% endblock %}
+
+{% block page-header %}
+<h1>
+  {% if object %}<a href="{{ object.get_absolute_url }}">{{ title }}</a>
+  {% else %}{{ title }}
+  {% endif %}
+</h1>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ request.get_full_path|default:"." }}"
+  enctype="multipart/form-data" class="form form-horizontal">
+{% csrf_token %}
+{% form_errors form %}
+{% form_warnings form %}
+
+<fieldset>
+  {% form_items form %}
+</fieldset>
+
+<div class="form-actions">
+    <input class="button" type="submit" value="{% trans "save"|capfirst %}">
+
+    <a href="../" class="button alert right">{% trans "cancel"|capfirst %}</a>
+</div>
+
+</form>
+{% endblock %}

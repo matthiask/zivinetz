@@ -10,7 +10,7 @@ from django.template import Template, Context
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from towel import resources
-from towel.forms import towel_formfield_callback
+from towel.forms import WarningsForm, towel_formfield_callback
 from towel.resources.urls import resource_url_fn
 from towel.utils import safe_queryset_and
 
@@ -212,7 +212,14 @@ class AssignmentMixin(ZivinetzMixin):
         base_form = super(AssignmentMixin, self).get_form_class()
         request = self.request
 
-        class AssignmentForm(base_form):
+        class AssignmentForm(base_form, WarningsForm):
+            motor_saw_course = forms.ChoiceField(
+                label=_('Set motor saw course field on drudge to'),
+                required=False,
+                choices=(
+                    ('', '-' * 10),
+                ) + Drudge.MOTOR_SAW_COURSE_CHOICES)
+
             class Meta:
                 model = Assignment
                 widgets = {
@@ -228,6 +235,26 @@ class AssignmentMixin(ZivinetzMixin):
                         raise forms.ValidationError(_(
                             'Mobilized on date must be set when status is'
                             ' mobilized.'))
+
+                if (data.get('motor_saw_course_date')
+                        and 'motor_saw_course_date' in self.changed_data
+                        and data.get('drudge').motor_saw_course):
+                    self.add_warning(
+                        _('Drudge already visited a motor saw course.'))
+                if (data.get('environment_course_date')
+                        and 'environment_course_date' in self.changed_data
+                        and data.get('drudge').environment_course):
+                    self.add_warning(
+                        _('Drudge already visited an environment course.'))
+
+                if (data.get('motor_saw_course_date') and (
+                        not data.get('drudge').motor_saw_course
+                        and not data.get('motor_saw_course'))):
+
+                    raise forms.ValidationError(_(
+                        'Please also provide a value in the motor saw course'
+                        ' selector when entering a starting date.'))
+
                 return data
 
         return AssignmentForm
@@ -239,16 +266,32 @@ class AssignmentMixin(ZivinetzMixin):
             _('The %(verbose_name)s has been successfully saved.') %
             self.object._meta.__dict__,
         )
+
+        if (self.object.environment_course_date
+                and not self.object.drudge.environment_course):
+            self.object.drudge.environment_course = True
+            self.object.drudge.save()
+            messages.success(self.request, _(
+                'The drudge is now registered as having visited the'
+                ' environment course.'))
+
+        if form.cleaned_data.get('motor_saw_course'):
+            self.object.drudge.motor_saw_course = form.cleaned_data.get(
+                'motor_saw_course')
+            self.object.drudge.save()
+            messages.success(self.request, _(
+                'The drudge is now registered as having visited the'
+                ' motor saw course.'))
+
         for report in self.object.reports.all():
             report.recalculate_total()
 
         if ('date_until_extension' in form.changed_data
                 and self.object.reports.exists()):
-            messages.warning(
-                self.request,
-                _('The extended until date has been changed. Please check'
-                    ' whether you need to generate additional expense'
-                    ' reports.'))
+            messages.warning(self.request, _(
+                'The extended until date has been changed. Please check'
+                ' whether you need to generate additional expense'
+                ' reports.'))
 
         if '_continue' in self.request.POST:
             return redirect(self.object.urls.url('edit'))
