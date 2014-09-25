@@ -16,7 +16,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext as _
 
 from zivinetz.models import (
-    Assignment, CompanyHoliday, ExpenseReport, JobReference, AssignmentChange)
+    Assignment, CompanyHoliday, ExpenseReport, JobReference, AssignmentChange,
+    RegionalOffice)
 
 from reportlab.lib import colors
 
@@ -542,7 +543,17 @@ def course_list(request):
             motor_saw_course_date__isnull=False,
             motor_saw_course_date__gte=earliest,
         )
-    ).select_related('drudge__user', 'specification__scope_statement')
+    ).select_related(
+        'drudge__user',
+        'specification__scope_statement',
+    )
+
+    branches = set(assignments.values_list(
+        'specification__scope_statement__branch', flat=True))
+    branch = request.GET.get('branch')
+    if branch in branches:
+        assignments = assignments.filter(
+            specification__scope_statement__branch=branch)
 
     courses = []
     for assignment in assignments:
@@ -566,6 +577,7 @@ def course_list(request):
                 row[1].drudge.user.first_name,
             ),
         ),
+        'branches': sorted(branches),
     })
 
 

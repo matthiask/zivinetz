@@ -9,17 +9,36 @@
 {% endblock %}
 
 {% block content %}
+<dl class="sub-nav zivinetz-nav">
+  <dt>Standort:</dt>
+  <dd>
+    <a href=".">Alle</a>
+  </dd>
+  {% for branch in branches %}
+    <dd {% if branch == request.GET.branch %}class="active"{% endif %}>
+      <a href="?branch={{ branch }}">{{ branch }}</a>
+    </dd>
+  {% endfor %}
+</dl>
 <table>
   <thead>
     <tr>
       <th>{% trans "drudge" %}</th>
       <th>{% trans "environment course starting date" %}</th>
       <th>{% trans "motor saw course starting date" %}</th>
+      <th>{% trans "branch" %}</th>
       <th>{% trans "assignment" %}</th>
     </tr>
   </thead>
   <tbody>
     {% for date, assignment in course_list %}
+      {% ifchanged date|date:"W Y" %}
+      <tr>
+        <th colspan="5">
+          {{ date|date:"\K\WW Y" }}
+        </th>
+      </tr>
+      {% endifchanged %}
       <tr>
         <td>
           <a href="{{ assignment.drudge.get_absolute_url }}">
@@ -30,7 +49,10 @@
           {{ assignment.environment_course_date|date:"d.m.Y"|default:"&ndash;" }}
         </td>
         <td>
-          {{ assignment.motor_saw_course|date:"d.m.Y"|default:"&ndash;" }}
+          {{ assignment.motor_saw_course_date|date:"d.m.Y"|default:"&ndash;" }}
+        </td>
+        <td>
+          {{ assignment.specification.scope_statement.branch }}
         </td>
         <td>
           <a href="{{ assignment.get_absolute_url }}">

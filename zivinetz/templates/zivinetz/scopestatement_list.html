@@ -9,6 +9,7 @@
             <th>{% trans "is active"|capfirst %}</th>
             <th>{% trans "EIS No."|capfirst %}</th>
             <th>{% trans "scope statement"|capfirst %}</th>
+            <th>{% trans "branch"|capfirst %}</th>
         </tr>
     </thead>
     <tbody>
@@ -19,6 +20,7 @@
             </td>
             <td>{{ object.eis_no }}</td>
             <th><a href="{{ object.get_absolute_url }}">{{ object }}</a></th>
+            <td>{{ object.branch }}</td>
         </tr>
     {% endfor %}
     </tbody>
