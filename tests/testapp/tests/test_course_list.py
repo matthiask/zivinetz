@@ -26,8 +26,8 @@ class CourseListTestCase(TestCase):
         self.client.login(username=admin.username, password='test')
 
         response = self.client.get('/zivinetz/reporting/courses/')
-        # Four entries for three assignments.
-        self.assertContains(response, '<tr>', 4 + 1)
+        # Four entries for three assignments, one header row and one week row.
+        self.assertContains(response, '<tr>', 4 + 1 + 1)
         self.assertContains(response, a1.get_absolute_url(), 1)
         self.assertContains(response, a2.get_absolute_url(), 2)
         self.assertContains(response, a3.get_absolute_url(), 1)
