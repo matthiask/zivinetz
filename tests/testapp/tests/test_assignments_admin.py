@@ -226,7 +226,7 @@ class AssignmentsAdminViewsTestCase(TestCase):
 
         data = model_to_postable_dict(assignment)
         data['date_until_extension'] = assignment.date_until + timedelta(
-            days=14)
+            days=60)
         response = self.client.post(
             assignment.urls.url('edit'),
             data,
@@ -240,3 +240,9 @@ class AssignmentsAdminViewsTestCase(TestCase):
                 ' whether you need to generate additional expense'
                 ' reports.',
             ])
+
+        assignment = assignment.__class__.objects.get(pk=assignment.id)
+        previous = assignment.reports.count()
+        assignment.generate_expensereports()
+        new = assignment.reports.count()
+        self.assertTrue(new in (previous + 2, previous + 3))
