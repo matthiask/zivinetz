@@ -91,18 +91,24 @@ class AdminViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'div class="action-objects"', 1)
 
-        data.update({
-            'confirm': 1,
-            'subject': 'Hello and welcome',
-            'body': 'Whatever\nYes.',
-            'attachment': '',
-        })
+        with open('requirements.txt') as fp:
+            data.update({
+                'confirm': 1,
+                'subject': 'Hello and welcome',
+                'body': 'Whatever\nYes.',
+                'attachment': fp,
+            })
 
-        response = self.client.post('/zivinetz/admin/drudges/', data)
+            response = self.client.post('/zivinetz/admin/drudges/', data)
+
         self.assertEqual(len(mail.outbox), 1)  # Bcc:
         self.assertEqual(
             set(mail.outbox[0].bcc),
             set(Drudge.objects.values_list('user__email', flat=True)))
+
+        attachment = mail.outbox[0].attachments[0]
+        self.assertEqual(attachment[0], 'requirements.txt')
+        self.assertIn('Django==', attachment[1])
 
     def test_drudge_detail(self):
         admin_login(self)

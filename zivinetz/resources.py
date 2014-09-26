@@ -78,7 +78,7 @@ class ZivinetzMixin(object):
                 label=ugettext_lazy('attachment'), required=False)
 
         if 'confirm' in self.request.POST:
-            form = EmailForm(self.request.POST)
+            form = EmailForm(self.request.POST, self.request.FILES)
             if form.is_valid():
                 message = EmailMessage(
                     subject=form.cleaned_data['subject'],
