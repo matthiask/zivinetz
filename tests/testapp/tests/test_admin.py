@@ -214,8 +214,7 @@ class AdminViewsTestCase(TestCase):
         reference = JobReference.objects.get()
         self.assertRedirects(response, reference.urls.url('edit'))
 
-        response = self.client.get(
-            '/zivinetz/references/pdf/%d/' % reference.id)
+        response = self.client.get(reference.pdf_url())
         self.assertEqual(response['content-type'], 'application/pdf')
         self.assertEqual(
             response['content-disposition'],
