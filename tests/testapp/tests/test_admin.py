@@ -15,8 +15,6 @@ from testapp.tests.utils import admin_login
 
 
 class AdminViewsTestCase(TestCase):
-    admin = None
-
     def test_admin_views(self):
         self.assertRedirects(
             self.client.get('/zivinetz/admin/'),

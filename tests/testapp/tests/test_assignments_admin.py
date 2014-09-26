@@ -14,8 +14,6 @@ from testapp.tests.utils import (
 
 
 class AssignmentsAdminViewsTestCase(TestCase):
-    admin = None
-
     def test_assignment_list(self):
         admin_login(self)
 

@@ -22,7 +22,7 @@ def get_messages(response):
 
 
 def admin_login(testcase):
-    if not testcase.admin:
+    if not getattr(testcase, 'admin', None):
         testcase.admin = factories.UserFactory.create(
             is_staff=True,
             is_superuser=True,
