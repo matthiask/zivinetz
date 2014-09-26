@@ -126,3 +126,52 @@ class ExpenseReportsAdminViewsTestCase(TestCase):
         for type, days in state.items():
             self.assertEqual(getattr(report, type), days)
         self.assertEqual(report.calculated_total_days, 26)
+
+    def test_transport_expenses_copying(self):
+        factories.CompensationSetFactory.create()
+        factories.AssignmentFactory.create(
+            status=Assignment.MOBILIZED,
+            date_from=date(2014, 9, 1),
+            date_until=date(2014, 11, 26),
+            arranged_on=date(2014, 9, 1),
+            mobilized_on=date(2014, 9, 1),
+        ).generate_expensereports()
+
+        self.assertEqual(
+            [r.transport_expenses for r in ExpenseReport.objects.all()],
+            [0, 0, 0])
+
+        report = ExpenseReport.objects.all()[1]
+        admin_login(self)
+        data = model_to_postable_dict(report)
+        data['transport_expenses'] = 10
+
+        response = self.client.post(
+            report.urls.url('edit'),
+            data)
+        self.assertRedirects(
+            response,
+            report.urls.url('detail'))
+
+        self.assertEqual(
+            [r.transport_expenses for r in ExpenseReport.objects.all()],
+            [0, 10, 0])
+
+        data['transport_expenses'] = 20
+        data['transport_expenses_notes'] = 'Auto-Dumm'
+        data['transport_expenses_copy'] = '1'
+
+        response = self.client.post(
+            report.urls.url('edit'),
+            data)
+        self.assertRedirects(
+            response,
+            report.urls.url('detail'))
+
+
+        self.assertEqual(
+            [r.transport_expenses for r in ExpenseReport.objects.all()],
+            [0, 20, 20])
+        self.assertEqual(
+            [r.transport_expenses_notes for r in ExpenseReport.objects.all()],
+            ['', 'Auto-Dumm', 'Auto-Dumm'])
