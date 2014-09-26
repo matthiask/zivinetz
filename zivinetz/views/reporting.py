@@ -110,7 +110,7 @@ class AssignmentPDFStationery(object):
         canvas.drawString(
             self.markers[key][0] * mm, self.markers[key][1] * mm, 'x')
 
-    def _draw_all_markers(self, canvas):
+    def _draw_all_markers(self, canvas):  # pragma: no cover
         canvas.setFillColorRGB(1, 0, 0)
         for key, pos in self.markers.items():
             canvas.drawString(pos[0] * mm, pos[1] * mm, u'x %s' % key)
