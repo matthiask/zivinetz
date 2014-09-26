@@ -10,7 +10,8 @@ from django.test import TestCase
 from zivinetz.models import Assignment, ExpenseReport
 
 from testapp.tests import factories
-from testapp.tests.utils import admin_login
+from testapp.tests.utils import (
+    admin_login, get_messages, model_to_postable_dict)
 
 
 class ExpenseReportsAdminViewsTestCase(TestCase):
@@ -36,9 +37,7 @@ class ExpenseReportsAdminViewsTestCase(TestCase):
             response['content-disposition'],
             'attachment; filename="expense-statistics.pdf"')
 
-    def test_expensereport_editing(self):
-        admin_login(self)
-
+    def _create_report(self):
         factories.CompensationSetFactory.create()
         factories.AssignmentFactory.create(
             status=Assignment.MOBILIZED,
@@ -47,9 +46,35 @@ class ExpenseReportsAdminViewsTestCase(TestCase):
             arranged_on=date(2014, 9, 1),
             mobilized_on=date(2014, 9, 1),
         ).generate_expensereports()
+        return ExpenseReport.objects.get()
 
-        report = ExpenseReport.objects.get()
+    def test_expensereport_editing_allowed(self):
+        report = self._create_report()
+        admin_login(self)
+        self.assertEqual(
+            self.client.get(report.urls.url('detail')).status_code,
+            200)
+        self.assertEqual(
+            self.client.get(report.urls.url('edit')).status_code,
+            200)
 
+        report.status = report.PAID
+        report.save()
+
+        response = self.client.get(
+            report.urls.url('edit'),
+            follow=True)
+
+        self.assertRedirects(
+            response,
+            'http://testserver%s' % report.urls.url('detail'))
+
+        self.assertEqual(
+            get_messages(response),
+            [])
+
+    def test_expensereport_editing(self):
+        report = self._create_report()
         self.assertAlmostEqual(report.total, Decimal('130.00'))
 
         state = {
@@ -79,6 +104,7 @@ class ExpenseReportsAdminViewsTestCase(TestCase):
         data.update(base_data)
         data.update(state)
 
+        admin_login(self)
         response = self.client.post(report.urls.url('edit'), data)
         self.assertRedirects(response, report.urls.url('detail'))
 
