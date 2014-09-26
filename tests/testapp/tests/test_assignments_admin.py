@@ -88,6 +88,22 @@ class AssignmentsAdminViewsTestCase(TestCase):
             assignment.urls.url('detail'))
         self.assertEqual(ExpenseReport.objects.count(), 0)
 
+    def test_mobilized_on(self):
+        admin_login(self)
+
+        assignment = factories.AssignmentFactory.create()
+
+        data = model_to_postable_dict(assignment)
+        data['status'] = assignment.MOBILIZED
+        response = self.client.post(
+            assignment.urls.url('edit'),
+            data)
+
+        self.assertContains(
+            response,
+            'Mobilized on date must be set when status is mobilized.',
+            status_code=200)
+
     def test_assignment_editing_with_environment_course(self):
         admin_login(self)
 
