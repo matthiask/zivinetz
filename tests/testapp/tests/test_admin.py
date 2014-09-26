@@ -28,6 +28,36 @@ class AdminViewsTestCase(TestCase):
             self.client.get('/zivinetz/'),
             'http://testserver/zivinetz/admin/')
 
+    def test_deletion(self):
+        admin_login(self)
+        assignment = factories.AssignmentFactory.create()
+        drudge = assignment.drudge
+        regional_office = assignment.regional_office
+
+        self.assertRedirects(
+            self.client.get(drudge.urls.url('delete')),
+            drudge.urls.url('detail'))
+
+        self.assertEqual(
+            self.client.get(assignment.urls.url('delete')).status_code,
+            200)
+
+        self.assertRedirects(
+            self.client.post(assignment.urls.url('delete')),
+            assignment.urls.url('list'))
+
+        self.assertEqual(Assignment.objects.count(), 0)
+
+        self.assertRedirects(
+            self.client.post(drudge.urls.url('delete')),
+            drudge.urls.url('list'))
+
+        self.assertEqual(Drudge.objects.count(), 0)
+
+        self.assertRedirects(
+            self.client.post(regional_office.urls.url('delete')),
+            regional_office.urls.url('list'))
+
     def test_drudge_list(self):
         admin_login(self)
 
