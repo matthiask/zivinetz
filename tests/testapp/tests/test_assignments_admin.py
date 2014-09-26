@@ -88,7 +88,7 @@ class AssignmentsAdminViewsTestCase(TestCase):
             assignment.urls.url('detail'))
         self.assertEqual(ExpenseReport.objects.count(), 0)
 
-    def test_assignment_detail_with_courses(self):
+    def test_assignment_editing_with_environment_course(self):
         admin_login(self)
 
         assignment = factories.AssignmentFactory.create()
@@ -127,6 +127,59 @@ class AssignmentsAdminViewsTestCase(TestCase):
         self.assertContains(
             response,
             '<li>Drudge already visited an environment course.</li>')
+        self.assertContains(
+            response,
+            'id="id_ignore_warnings"')
+
+    def test_assignment_editing_with_motor_saw_course(self):
+        admin_login(self)
+
+        assignment = factories.AssignmentFactory.create()
+        data = model_to_postable_dict(assignment)
+        response = self.client.post(
+            assignment.urls.url('edit'),
+            data)
+        self.assertRedirects(response, assignment.urls.url('detail'))
+
+        drudge = Drudge.objects.get(id=assignment.drudge_id)
+        self.assertFalse(drudge.motor_saw_course)
+
+        data = model_to_postable_dict(assignment)
+        data['motor_saw_course_date'] = '2014-09-01'
+        response = self.client.post(
+            assignment.urls.url('edit'),
+            data)
+
+        self.assertContains(
+            response,
+            'Please also provide a value in the motor saw course'
+            ' selector when entering a starting date.')
+
+        data['motor_saw_course'] = '2-day'
+        response = self.client.post(
+            assignment.urls.url('edit'),
+            data,
+            follow=True)
+
+        self.assertEqual(
+            get_messages(response),
+            [
+                'The assignment has been successfully saved.',
+                'The drudge is now registered as having visited'
+                ' the motor saw course.'
+            ])
+
+        drudge = Drudge.objects.get(id=assignment.drudge_id)
+        self.assertEqual(drudge.motor_saw_course, '2-day')
+
+        data = model_to_postable_dict(assignment)
+        data['motor_saw_course_date'] = '2014-10-01'
+        response = self.client.post(
+            assignment.urls.url('edit'),
+            data)
+        self.assertContains(
+            response,
+            '<li>Drudge already visited a motor saw course.</li>')
         self.assertContains(
             response,
             'id="id_ignore_warnings"')
