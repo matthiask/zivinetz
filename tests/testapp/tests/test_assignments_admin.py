@@ -199,3 +199,46 @@ class AssignmentsAdminViewsTestCase(TestCase):
         self.assertContains(
             response,
             'id="id_ignore_warnings"')
+
+    def test_warning_message_about_reports(self):
+        admin_login(self)
+
+        assignment = factories.AssignmentFactory.create()
+        data = model_to_postable_dict(assignment)
+        data['date_until_extension'] = assignment.date_until + timedelta(
+            days=14)
+        response = self.client.post(
+            assignment.urls.url('edit'),
+            data,
+            follow=True)
+
+        self.assertEqual(
+            get_messages(response),
+            [
+                'The assignment has been successfully saved.',
+            ])
+
+        assignment.date_until_extension = None
+        assignment.mobilized_on = date.today()
+        assignment.arranged_on = date.today()
+        assignment.save()
+
+        factories.CompensationSetFactory.create()
+        assignment.generate_expensereports()
+
+        data = model_to_postable_dict(assignment)
+        data['date_until_extension'] = assignment.date_until + timedelta(
+            days=14)
+        response = self.client.post(
+            assignment.urls.url('edit'),
+            data,
+            follow=True)
+
+        self.assertEqual(
+            get_messages(response),
+            [
+                'The assignment has been successfully saved.',
+                'The extended until date has been changed. Please check'
+                ' whether you need to generate additional expense'
+                ' reports.',
+            ])
