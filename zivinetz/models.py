@@ -307,7 +307,7 @@ class DrudgeManager(SearchManager):
         'mobile', 'bank_account', 'health_insurance_account',
         'health_insurance_company', 'education_occupation')
 
-    def active_set(self, access, additional_ids=None):
+    def active_set(self, access, additional_ids=None):  # pragma: no cover
         q = Q(id=0)
         if additional_ids:
             q |= Q(id__in=additional_ids)
@@ -427,7 +427,7 @@ class AssignmentManager(SearchManager):
             )
         )
 
-    def active_set(self, access, additional_ids=None):
+    def active_set(self, access, additional_ids=None):  # pragma: no cover
         q = Q(id=0)
         if additional_ids:
             q |= Q(id__in=additional_ids)
@@ -933,12 +933,11 @@ class ExpenseReport(models.Model):
             self.save()
 
     def compensation_data(self, mobilized_on=None):
-        if not self.assignment.mobilized_on:
-            if not mobilized_on:
-                return None
+        mobilized_on = mobilized_on or self.assignment.mobilized_on
 
-        return self.specification.compensation(
-            mobilized_on or self.assignment.mobilized_on)
+        return (
+            self.specification.compensation(mobilized_on)
+            if mobilized_on else None)
 
     def compensations(self):
         if not self.assignment.mobilized_on:
