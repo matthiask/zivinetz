@@ -34,7 +34,7 @@ class DrudgeViewsTestCase(TestCase):
             self.client.get('/zivinetz/dashboard/'),
             'http://testserver/zivinetz/profile/')
 
-        response = self.client.post('/zivinetz/profile/', {
+        data = {
             'first_name': 'Hans',
             'last_name': 'Muster',
             'zdp_no': '12345',
@@ -45,9 +45,16 @@ class DrudgeViewsTestCase(TestCase):
             'place_of_citizenship_city': 'Zürich',
             'place_of_citizenship_state': 'ZH',
             'bank_account': 'CH77-12345',
-            'environment_course': '2',  # Yes.
             'regional_office': factories.RegionalOfficeFactory.create().id,
-        })
+        }
+
+        self.assertContains(
+            self.client.post('/zivinetz/profile/', data),
+            'Please select either yes or no.')
+
+        data['environment_course'] = '2'  # Yes.
+
+        response = self.client.post('/zivinetz/profile/', data)
         self.assertRedirects(
             response,
             'http://testserver/zivinetz/profile/')
@@ -84,16 +91,19 @@ class DrudgeViewsTestCase(TestCase):
             'specification': factories.SpecificationFactory.create().id,
             'regional_office': drudge.regional_office.id,
             'date_from': date.today(),
-            'date_until': date.today() + timedelta(days=60),
+            'date_until': date.today() - timedelta(days=60),
             'part_of_long_assignment': '',
             'codeword': 'whatever',
         }
 
         response = self.client.post('/zivinetz/dashboard/', data)
         self.assertContains(response, 'Codeword is incorrect.')
+        self.assertContains(response, 'Date period is invalid.')
 
         factories.CodewordFactory.create(key='einsatz', codeword='blaaa')
         data['codeword'] = 'blaaa'
+
+        data['date_until'] = date.today() + timedelta(days=60)
 
         response = self.client.post('/zivinetz/dashboard/', data)
         self.assertRedirects(
