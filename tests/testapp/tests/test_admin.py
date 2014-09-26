@@ -58,6 +58,21 @@ class AdminViewsTestCase(TestCase):
             self.client.post(regional_office.urls.url('delete')),
             regional_office.urls.url('list'))
 
+        self.admin.is_superuser = False
+        self.admin.save()
+
+        regional_office = factories.RegionalOfficeFactory.create()
+
+        # Deletion is not allowed. (Editing neither, but that is not what
+        # we care about right now.)
+        response = self.client.get(
+            regional_office.urls.url('delete'),
+            follow=False)
+
+        self.assertEqual(
+            response['location'],
+            'http://testserver%s' % regional_office.urls.url('edit'))
+
     def test_drudge_list(self):
         admin_login(self)
 
