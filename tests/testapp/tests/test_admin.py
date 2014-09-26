@@ -132,6 +132,27 @@ class AdminViewsTestCase(TestCase):
 
         self.assertFalse(drudge.assessments.exists())
 
+    def test_drudge_picker(self):
+        drudge = factories.DrudgeFactory.create()
+        for i in range(60):
+            factories.DrudgeFactory.create(
+                regional_office=drudge.regional_office,
+            )
+
+        url = drudge.urls.url('picker')
+        self.assertRedirects(
+            self.client.get(url),
+            'http://testserver/admin/login/'
+            '?next=/zivinetz/admin/drudges/picker/')
+
+        admin_login(self)
+
+        response = self.client.get(url)
+        self.assertContains(
+            response,
+            '<tr data-value=',
+            50)
+
     def test_jobreferences(self):
         template = factories.JobReferenceTemplateFactory.create()
         assignment = factories.AssignmentFactory.create()
