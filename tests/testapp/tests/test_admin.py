@@ -7,39 +7,18 @@ from decimal import Decimal
 
 from django.core import mail
 from django.core.urlresolvers import reverse
-from django.forms.models import model_to_dict
 from django.test import TestCase
 
 from zivinetz.models import (
     Assignment, Drudge, ExpenseReport, JobReference)
 
 from testapp.tests import factories
-
-
-def model_to_postable_dict(instance):
-    data = model_to_dict(instance)
-    for key in list(data.keys()):
-        if data[key] is None:
-            data[key] = ''
-        elif isinstance(data[key], (date, datetime)):
-            data[key] = data[key].strftime('%Y-%m-%d')
-    return data
-
-
-def _messages(response):
-    return [m.message for m in response.context['messages']]
+from testapp.tests.utils import (
+    admin_login, get_messages, model_to_postable_dict)
 
 
 class AdminViewsTestCase(TestCase):
     admin = None
-
-    def _admin_login(self):
-        if not self.admin:
-            self.admin = factories.UserFactory.create(
-                is_staff=True,
-                is_superuser=True,
-            )
-        self.client.login(username=self.admin.username, password='test')
 
     def test_admin_views(self):
         self.assertRedirects(
@@ -49,13 +28,13 @@ class AdminViewsTestCase(TestCase):
             self.client.get('/zivinetz/admin/scheduling/'),
             'http://testserver/admin/login/?next=/zivinetz/admin/scheduling/')
 
-        self._admin_login()
+        admin_login(self)
         self.assertRedirects(
             self.client.get('/zivinetz/'),
             'http://testserver/zivinetz/admin/')
 
     def test_drudge_list(self):
-        self._admin_login()
+        admin_login(self)
 
         for i in range(5):
             factories.DrudgeFactory.create()
@@ -127,7 +106,7 @@ class AdminViewsTestCase(TestCase):
             set(Drudge.objects.values_list('user__email', flat=True)))
 
     def test_drudge_detail(self):
-        self._admin_login()
+        admin_login(self)
         drudge = factories.DrudgeFactory.create()
 
         self.assertContains(
@@ -155,7 +134,7 @@ class AdminViewsTestCase(TestCase):
         self.assertFalse(drudge.assessments.exists())
 
     def test_assignment_list(self):
-        self._admin_login()
+        admin_login(self)
 
         for i in range(10):
             factories.AssignmentFactory.create()
@@ -190,7 +169,7 @@ class AdminViewsTestCase(TestCase):
             10)
 
     def test_assignment_detail(self):
-        self._admin_login()
+        admin_login(self)
 
         drudge = factories.DrudgeFactory.create()
 
@@ -227,7 +206,7 @@ class AdminViewsTestCase(TestCase):
         self.assertEqual(ExpenseReport.objects.count(), 0)
 
     def test_assignment_detail_with_courses(self):
-        self._admin_login()
+        admin_login(self)
 
         assignment = factories.AssignmentFactory.create()
         data = model_to_postable_dict(assignment)
@@ -247,7 +226,7 @@ class AdminViewsTestCase(TestCase):
             follow=True)
 
         self.assertEqual(
-            _messages(response),
+            get_messages(response),
             [
                 'The assignment has been successfully saved.',
                 'The drudge is now registered as having visited'
@@ -273,7 +252,7 @@ class AdminViewsTestCase(TestCase):
         template = factories.JobReferenceTemplateFactory.create()
         assignment = factories.AssignmentFactory.create()
 
-        self._admin_login()
+        admin_login(self)
 
         response = self.client.get(
             reverse(
@@ -291,7 +270,7 @@ class AdminViewsTestCase(TestCase):
             'attachment; filename="reference-%d.pdf"' % reference.id)
 
     def test_expensereport_list(self):
-        self._admin_login()
+        admin_login(self)
 
         factories.CompensationSetFactory.create()
         for i in range(10):
@@ -313,7 +292,7 @@ class AdminViewsTestCase(TestCase):
             'attachment; filename="expense-statistics.pdf"')
 
     def test_expensereport_editing(self):
-        self._admin_login()
+        admin_login(self)
 
         factories.CompensationSetFactory.create()
         factories.AssignmentFactory.create(
