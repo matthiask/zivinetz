@@ -168,7 +168,6 @@ class ExpenseReportsAdminViewsTestCase(TestCase):
             response,
             report.urls.url('detail'))
 
-
         self.assertEqual(
             [r.transport_expenses for r in ExpenseReport.objects.all()],
             [0, 20, 20])

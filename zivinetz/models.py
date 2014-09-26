@@ -573,6 +573,8 @@ class Assignment(models.Model):
                             # Vacations need to be taken during public holidays
                             # if possible at all. Unfortunately for drudges.
                             days['freely_definable_vacation_days'] -= 1
+                            days['vacation_days_during_company_holidays'] += 1
+                            slot = 'holi'
 
                             # At least they are countable towards assignment
                             # total.
@@ -618,7 +620,12 @@ class Assignment(models.Model):
                     )
 
             monthly_expense_days.setdefault(key, {
-                'free': 0, 'working': 0, 'forced': 0, 'start': day})
+                'free': 0,
+                'working': 0,
+                'holi': 0,
+                'forced': 0,
+                'start': day,
+            })
             monthly_expense_days[key][slot] += 1
             monthly_expense_days[key]['end'] = day
 
@@ -711,10 +718,14 @@ class Assignment(models.Model):
                 working_days=data['working'],
                 free_days=data['free'],
                 sick_days=0,
-                holi_days=0,
+                holi_days=data['holi'],
                 forced_leave_days=data['forced'],
-                calculated_total_days=(
-                    data['working'] + data['free'] + data['forced']),
+                calculated_total_days=sum((
+                    data['working'],
+                    data['free'],
+                    data['holi'],
+                    data['forced'],
+                ), 0),
                 clothing_expenses=clothing_expenses,
                 specification=self.specification,
             )
