@@ -917,11 +917,6 @@ class ExpenseReport(models.Model):
     def __unicode__(self):
         return u'%s - %s' % (self.date_from, self.date_until)
 
-    def is_editable(self):
-        return self.status < self.PAID
-    is_editable.boolean = True
-    is_editable.short_description = _('is editable')
-
     @property
     def total_days(self):
         return (
