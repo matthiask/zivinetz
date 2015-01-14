@@ -52,7 +52,10 @@ def calendar_week(day):
         return (day.year, _has_53_weeks(day.year) and 53 or 52)
 
     if week == 53:
-        return (day.year, _has_53_weeks(day.year) and 53 or 1)
+        if _has_53_weeks(day.year):
+            return (day.year, 53)
+        # Otherwise, it is already week one of the next year
+        return (day.year + 1, 1)
 
 
 def daterange(start_date, end_date):
