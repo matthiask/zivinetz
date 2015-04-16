@@ -42,6 +42,15 @@ class ZivinetzMixin(object):
     deletion_cascade_allowed = ()
     send_emails_selector = None
 
+    def get_form_class(self):
+        # TODO Remove this hack.
+        from django.forms.models import modelform_factory
+        return modelform_factory(
+            self.model,
+            form=self.form_class,
+            formfield_callback=towel_formfield_callback,
+            fields='__all__')
+
     def allow_add(self, silent=True):
         return self.request.user.has_perm('{}.add_{}'.format(
             self.model._meta.app_label,
