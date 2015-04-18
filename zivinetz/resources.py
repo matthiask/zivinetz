@@ -45,11 +45,18 @@ class ZivinetzMixin(object):
     def get_form_class(self):
         # TODO Remove this hack.
         from django.forms.models import modelform_factory
+        kw = {
+            'form': self.form_class,
+            'formfield_callback': towel_formfield_callback,
+        }
+        _meta = getattr(self.form_class, '_meta', None)
+        if not _meta or not (_meta.fields or _meta.exclude):
+            # TODO Emit a warning?
+            kw['fields'] = '__all__'
+
         return modelform_factory(
             self.model,
-            form=self.form_class,
-            formfield_callback=towel_formfield_callback,
-            fields='__all__')
+            **kw)
 
     def allow_add(self, silent=True):
         return self.request.user.has_perm('{}.add_{}'.format(
