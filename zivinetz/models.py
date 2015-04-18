@@ -85,21 +85,13 @@ class ScopeStatement(models.Model):
 
 class Choices(object):
     def __init__(self, choices):
-        self._choices = choices
-        self._choice_dict = dict(choices)
-
-    @property
-    def kwargs(self):
-        return {
+        self.kwargs = {
             'max_length': 20,
-            'choices': self.__dict__['_choices'],
-            'default': self.__dict__['_choices'][0][0],
+            'choices': choices,
+            'default': choices[0][0],
         }
-
-    def __getattr__(self, k):
-        # raise KeyError if key does not exist
-        self.__dict__['_choice_dict'][k]
-        return k
+        for key, value in choices:
+            setattr(self, key, key)
 
 
 @model_resource_urls()
