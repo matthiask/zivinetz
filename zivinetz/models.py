@@ -799,13 +799,13 @@ def assignment_pre_save(sender, instance, **kwargs):
             if getattr(original, field) == getattr(instance, field):
                 continue
 
-            field_tuple = Assignment._meta.get_field_by_name(field)
+            field_instance = Assignment._meta.get_field(field)
             changes.append(
                 ugettext(
                     'The value of `%(field)s` has been changed from'
                     ' %(from)s to %(to)s.'
                 ) % {
-                    'field': field_tuple[0].verbose_name,
+                    'field': field_instance.verbose_name,
                     'from': nicify(original, field),
                     'to': nicify(instance, field),
                 }
