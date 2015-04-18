@@ -813,12 +813,18 @@ def assignment_pre_save(sender, instance, **kwargs):
 
     request = get_request()
 
-    AssignmentChange.objects.create(
+    instance._assignment_change = dict(
         assignment=instance,
         assignment_description=u'%s' % instance,
         changed_by=request.user.get_full_name() if request else 'unknown',
         changes=u'\n'.join(changes)
     )
+
+
+@receiver(signals.post_save, sender=Assignment)
+def assignment_post_save(sender, instance, **kwargs):
+    if getattr(instance, '_assignment_change', None):
+        AssignmentChange.objects.create(**instance._assignment_change)
 
 
 @receiver(signals.post_delete, sender=Assignment)
