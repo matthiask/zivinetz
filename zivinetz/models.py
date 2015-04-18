@@ -688,7 +688,7 @@ class Assignment(models.Model):
 
     @models.permalink
     def pdf_url(self):
-        return ('zivinetz.views.reporting.assignment_pdf', (self.pk,), {})
+        return ('zivinetz_assignment_pdf', (self.pk,), {})
 
     def admin_pdf_url(self):
         return u'<a href="%s">PDF</a>' % self.pdf_url()
@@ -936,7 +936,7 @@ class ExpenseReport(models.Model):
 
     @models.permalink
     def pdf_url(self):
-        return ('zivinetz.views.reporting.expense_report_pdf', (self.pk,), {})
+        return ('zivinetz_expensereport_pdf', (self.pk,), {})
 
     def recalculate_total(self, save=True):
         _n1, _n2, self.total = self.compensations()
@@ -1176,4 +1176,4 @@ class JobReference(models.Model):
 
     @models.permalink
     def pdf_url(self):
-        return ('zivinetz.views.reporting.reference_pdf', (self.pk,), {})
+        return ('zivinetz_reference_pdf', (self.pk,), {})

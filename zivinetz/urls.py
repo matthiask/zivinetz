@@ -16,9 +16,12 @@ urlpatterns = patterns(
     url(r'^admin/', include('zivinetz.resources')),
 
     # TODO Convert those to resource URLs.
-    url(r'^assignments/pdf/(\d+)/$', 'reporting.assignment_pdf'),
-    url(r'^expense_report_pdf/(\d+)/$', 'reporting.expense_report_pdf'),
-    url(r'^references/pdf/(\d+)/$', 'reporting.reference_pdf'),
+    url(r'^assignments/pdf/(\d+)/$', 'reporting.assignment_pdf',
+        name='zivinetz_assignment_pdf'),
+    url(r'^expense_report_pdf/(\d+)/$', 'reporting.expense_report_pdf',
+        name='zivinetz_expensereport_pdf'),
+    url(r'^references/pdf/(\d+)/$', 'reporting.reference_pdf',
+        name='zivinetz_reference_pdf'),
 
     url(r'^reporting/$', generic.TemplateView.as_view(
         template_name='zivinetz/reporting.html',
