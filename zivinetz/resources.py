@@ -1,5 +1,5 @@
 from django import forms
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -504,46 +504,41 @@ waitlist_url = resource_url_fn(
 )
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(
         r'^regional_offices/',
-        include(patterns(
-            '',
+        include([
             regionaloffice_url('list', url=r'^$'),
             regionaloffice_url('add', url=r'^add/$'),
             regionaloffice_url('edit'),
             regionaloffice_url('delete'),
             url(r'^\d+/$',
                 lambda request: redirect('zivinetz_regionaloffice_list')),
-        ))
+        ])
     ),
     url(
         r'^scope_statements/',
-        include(patterns(
-            '',
+        include([
             scopestatement_url('list', url=r'^$'),
             scopestatement_url('detail', url=r'^(?P<pk>\d+)/$'),
             scopestatement_url('add', url=r'^add/$'),
             scopestatement_url('edit'),
             scopestatement_url('delete'),
-        ))
+        ])
     ),
     url(
         r'^specifications/',
-        include(patterns(
-            '',
+        include([
             specification_url('list', url='^$'),
             specification_url('detail', url=r'^(?P<pk>\d+)/$'),
             specification_url('add', url=r'^add/$'),
             specification_url('edit'),
             specification_url('delete'),
-        ))
+        ])
     ),
     url(
         r'^drudges/',
-        include(patterns(
-            '',
+        include([
             drudge_url(
                 'list',
                 url=r'^$',
@@ -556,20 +551,18 @@ urlpatterns = patterns(
             drudge_url('add', url=r'^add/$'),
             drudge_url('edit'),
             drudge_url('delete'),
-        ))
+        ])
     ),
     url(
         r'^assessment/',
-        include(patterns(
-            '',
+        include([
             assessment_url('edit', form_class=AssessmentForm),
             assessment_url('delete'),
-        )),
+        ]),
     ),
     url(
         r'^assignments/',
-        include(patterns(
-            '',
+        include([
             assignment_url(
                 'list',
                 url=r'^$',
@@ -591,12 +584,11 @@ urlpatterns = patterns(
                 'create_expensereports', view=CreateExpenseReportView),
             assignment_url(
                 'remove_expensereports', view=RemoveExpenseReportView),
-        ))
+        ])
     ),
     url(
         r'^expense_reports/',
-        include(patterns(
-            '',
+        include([
             expensereport_url(
                 'list',
                 url=r'^$',
@@ -612,12 +604,11 @@ urlpatterns = patterns(
             expensereport_url('add', url=r'^add/$'),
             expensereport_url('edit'),
             expensereport_url('delete'),
-        ))
+        ])
     ),
     url(
         r'^jobreferences/',
-        include(patterns(
-            '',
+        include([
             jobreference_url(
                 'list',
                 url=r'^$',
@@ -633,12 +624,11 @@ urlpatterns = patterns(
                 view=JobReferenceFromTemplateView,
                 url=r'^(\d+)/(\d+)/$',
             ),
-        ))
+        ])
     ),
     url(
         r'^waitlist/',
-        include(patterns(
-            '',
+        include([
             waitlist_url(
                 'list',
                 url=r'^$',
@@ -648,6 +638,6 @@ urlpatterns = patterns(
             waitlist_url('detail', url=r'^(?P<pk>\d+)/$'),
             waitlist_url('edit'),
             waitlist_url('delete'),
-        ))
+        ])
     ),
-)
+]
