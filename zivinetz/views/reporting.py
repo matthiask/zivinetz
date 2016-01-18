@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext as _
 
 from zivinetz.models import (
-    Assignment, CompanyHoliday, ExpenseReport, JobReference, AssignmentChange)
+    Assignment, ExpenseReport, JobReference, AssignmentChange)
 
 from reportlab.lib import colors
 
@@ -216,7 +216,7 @@ class AssignmentPDFStationery(object):
                 canvas.drawString(x, y + i * line, text)
 
         try:
-            company_holiday = CompanyHoliday.objects.filter(
+            company_holiday = self.assignment.specification.scope_statement.company_holidays.filter(
                 date_until__gte=self.assignment.date_from,
                 date_from__lte=self.assignment.date_until,
             )[0]

@@ -496,9 +496,10 @@ class Assignment(models.Model):
 
         public_holidays = PublicHoliday.objects.filter(
             date__range=(day, until)).values_list('date', flat=True)
-        company_holidays = list(CompanyHoliday.objects.filter(
+        company_holidays = list(self.specification.scope_statement.company_holidays.filter(
             date_from__lte=until,
-            date_until__gte=day))
+            date_until__gte=day,
+        ))
 
         vacation_days = 0
         # +1 because the range is inclusive
@@ -1040,6 +1041,12 @@ class PublicHoliday(models.Model):
 class CompanyHoliday(models.Model):
     date_from = models.DateField(_('date from'))
     date_until = models.DateField(_('date until'))
+    applies_to = models.ManyToManyField(
+        ScopeStatement,
+        blank=False,
+        verbose_name=_('applies to scope statements'),
+        related_name='company_holidays',
+    )
 
     class Meta:
         ordering = ['date_from']

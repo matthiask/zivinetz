@@ -7,7 +7,7 @@ from decimal import Decimal
 
 from django.test import TestCase
 
-from zivinetz.models import AssignmentChange, CompensationSet
+from zivinetz.models import AssignmentChange, CompensationSet, ScopeStatement
 from zivinetz.utils.holidays import get_public_holidays
 
 from testapp.tests import factories
@@ -173,11 +173,6 @@ class ExampleAssignmentsTestCase(TestCase):
 
         self._generate_compensation_sets()
 
-        factories.CompanyHolidayFactory.create(
-            date_from=date(2010, 12, 25),
-            date_until=date(2011, 1, 2),
-        )
-
         for year in range(2000, 2030):
             for day, name in get_public_holidays(year).items():
                 factories.PublicHolidayFactory.create(date=day, name=name)
@@ -190,6 +185,12 @@ class ExampleAssignmentsTestCase(TestCase):
             arranged_on=date(2010, 4, 15),
             mobilized_on=date(2010, 4, 15),
         )
+
+        cf = factories.CompanyHolidayFactory.create(
+            date_from=date(2010, 12, 25),
+            date_until=date(2011, 1, 2),
+        )
+        cf.applies_to = ScopeStatement.objects.all()
 
         assignment.generate_expensereports()
         reports = list(assignment.reports.all())
@@ -235,11 +236,6 @@ class ExampleAssignmentsTestCase(TestCase):
 
         self._generate_compensation_sets()
 
-        factories.CompanyHolidayFactory.create(
-            date_from=date(2012, 12, 22),
-            date_until=date(2013, 1, 13),
-        )
-
         for year in range(2012, 2014):
             for day, name in get_public_holidays(year).items():
                 factories.PublicHolidayFactory.create(date=day, name=name)
@@ -252,6 +248,12 @@ class ExampleAssignmentsTestCase(TestCase):
             arranged_on=date(2012, 5, 16),
             mobilized_on=date(2012, 5, 16),
         )
+
+        cf = factories.CompanyHolidayFactory.create(
+            date_from=date(2012, 12, 22),
+            date_until=date(2013, 1, 13),
+        )
+        cf.applies_to = ScopeStatement.objects.all()
 
         assignment.generate_expensereports()
         reports = list(assignment.reports.all())

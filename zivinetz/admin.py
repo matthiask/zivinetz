@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from zivinetz import models
@@ -35,6 +36,18 @@ class SpecificationInline(admin.StackedInline):
                 'supper_free'),
         }),
     )
+
+
+class CompanyHolidayAdmin(admin.ModelAdmin):
+    filter_horizontal = ('applies_to',)
+    list_display = ('date_from', 'date_until', 'locations')
+    save_as = True
+
+    def locations(self, instance):
+        return mark_safe(u'<br>'.join(
+            '%s' % object for object in instance.applies_to.all()
+        ))
+
 
 admin.site.register(
     models.ScopeStatement,
@@ -120,8 +133,7 @@ admin.site.register(
 
 admin.site.register(
     models.CompanyHoliday,
-    list_display=('date_from', 'date_until'),
-    save_as=True,
+    CompanyHolidayAdmin,
 )
 
 admin.site.register(
