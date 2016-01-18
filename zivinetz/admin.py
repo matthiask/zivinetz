@@ -162,3 +162,14 @@ admin.site.register(
     list_display=('drudge', 'mark', 'comment'),
     raw_id_fields=('drudge',),
 )
+
+admin.site.register(
+    models.Specification,
+    list_display=('__unicode__', 'ordering'),
+    list_editable=('ordering',),
+    readonly_fields=[
+        f.name for f in
+        models.Specification._meta.get_fields(include_hidden=False)
+        if not f.one_to_many
+    ],
+)

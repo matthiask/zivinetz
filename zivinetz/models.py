@@ -158,8 +158,10 @@ class Specification(models.Model):
     conditions = models.FileField(
         _('conditions'), upload_to='conditions', blank=True)
 
+    ordering = models.IntegerField(_('ordering'), default=0)
+
     class Meta:
-        ordering = ['scope_statement', 'with_accomodation']
+        ordering = ['ordering', 'scope_statement', 'with_accomodation']
         unique_together = (('scope_statement', 'with_accomodation'),)
         verbose_name = _('specification')
         verbose_name_plural = _('specifications')
