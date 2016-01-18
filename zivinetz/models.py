@@ -216,6 +216,9 @@ class Specification(models.Model):
 
 class CompensationSetManager(models.Manager):
     def for_date(self, for_date=date.today):
+        if hasattr(for_date, '__call__'):
+            for_date = for_date()
+
         try:
             return self.filter(
                 valid_from__lte=for_date).order_by('-valid_from')[0]

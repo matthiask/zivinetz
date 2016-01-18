@@ -7,7 +7,7 @@ from decimal import Decimal
 
 from django.test import TestCase
 
-from zivinetz.models import Assignment, ExpenseReport
+from zivinetz.models import Assignment, ExpenseReport, CompensationSet
 
 from testapp.tests import factories
 from testapp.tests.utils import (
@@ -18,7 +18,13 @@ class ExpenseReportsAdminViewsTestCase(TestCase):
     def test_expensereport_list(self):
         admin_login(self)
 
-        factories.CompensationSetFactory.create()
+        cf = factories.CompensationSetFactory.create()
+        # for_date should not fail
+        self.assertEqual(
+            CompensationSet.objects.for_date(),
+            cf,
+        )
+
         for i in range(10):
             factories.AssignmentFactory.create(
                 status=Assignment.MOBILIZED,
