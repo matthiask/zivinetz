@@ -20,7 +20,7 @@ from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
 from zivinetz.forms import (
-    AssignmentSearchForm, DrudgeSearchForm, AssessmentForm,
+    AssignmentSearchForm, SpecificationForm, DrudgeSearchForm, AssessmentForm,
     ExpenseReportSearchForm, EditExpenseReportForm, JobReferenceForm,
     JobReferenceSearchForm, WaitListSearchForm)
 from zivinetz.models import (
@@ -531,8 +531,13 @@ urlpatterns = [
         include([
             specification_url('list', url='^$'),
             specification_url('detail', url=r'^(?P<pk>\d+)/$'),
-            specification_url('add', url=r'^add/$'),
-            specification_url('edit'),
+            specification_url(
+                'add',
+                url=r'^add/$',
+                form_class=SpecificationForm),
+            specification_url(
+                'edit',
+                form_class=SpecificationForm),
             specification_url('delete'),
         ])
     ),

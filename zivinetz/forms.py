@@ -6,7 +6,7 @@ from towel.forms import SearchForm, WarningsForm
 
 from zivinetz.models import (
     Assessment, Assignment, Drudge, ExpenseReport,
-    JobReference, RegionalOffice, ScopeStatement)
+    JobReference, RegionalOffice, ScopeStatement, Specification)
 
 
 def add_last_assignment_and_mark(queryset):
@@ -29,6 +29,27 @@ def add_last_assignment_and_mark(queryset):
         if not drudges:
             # All drudges have a last assignment now
             break
+
+
+class SpecificationForm(forms.ModelForm):
+    class Meta:
+        model = Specification
+        fields = [
+            'scope_statement',
+            'with_accomodation',
+            'code',
+            'clothing',
+            'accomodation_throughout',
+            'food_throughout',
+            'conditions',
+        ]
+
+        for type in ('accomodation', 'breakfast', 'lunch', 'supper'):
+            fields.extend([
+                '%s_working' % type,
+                '%s_sick' % type,
+                '%s_free' % type,
+            ])
 
 
 class DrudgeSearchForm(SearchForm):
