@@ -1,4 +1,4 @@
-from feincms.content.raw.models import RawContent
+from feincms.contents import RawContent
 from feincms.module.page.models import Page
 
 

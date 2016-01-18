@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'feincms',
     'feincms.module.page',
     'towel_foundation',
+    'photos',
 ]
 
 MIDDLEWARE_CLASSES = (
