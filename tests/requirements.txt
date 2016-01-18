@@ -1,5 +1,5 @@
 Django==1.9.1
-FeinCMS==2.0a10
+FeinCMS==2.0a11
 Pillow==3.1.0
 PyPDF2==1.23
 coverage==3.7.1

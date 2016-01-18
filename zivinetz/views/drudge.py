@@ -89,7 +89,7 @@ def dashboard(request, drudge):
                 messages.success(
                     request, _('Successfully saved new assignment.'))
 
-                return HttpResponseRedirect('.')
+                return HttpResponseRedirect(request.path)
 
         if 'waitlist' in request.POST:
             wform = WaitListForm(request.POST)
@@ -100,7 +100,7 @@ def dashboard(request, drudge):
                 messages.success(
                     request, _('Successfully saved new waitlist entry.'))
 
-                return HttpResponseRedirect('.')
+                return HttpResponseRedirect(request.path)
 
     return render(request, 'zivinetz/drudge_dashboard.html', {
         'drudge': drudge,
@@ -171,7 +171,7 @@ def profile(request):
             messages.success(
                 request, _('Successfully saved profile information.'))
 
-            return HttpResponseRedirect('.')
+            return HttpResponseRedirect(request.path)
     else:
         form = DrudgeForm(instance=drudge)
         form2 = UserForm(instance=request.user)

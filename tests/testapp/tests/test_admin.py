@@ -26,7 +26,8 @@ class AdminViewsTestCase(TestCase):
         admin_login(self)
         self.assertRedirects(
             self.client.get('/zivinetz/'),
-            'http://testserver/zivinetz/admin/')
+            'admin/',
+            fetch_redirect_response=False)
 
     def test_deletion(self):
         admin_login(self)
@@ -71,7 +72,7 @@ class AdminViewsTestCase(TestCase):
 
         self.assertEqual(
             response['location'],
-            'http://testserver%s' % regional_office.urls.url('edit'))
+            regional_office.urls.url('edit'))
 
     def test_drudge_list(self):
         admin_login(self)

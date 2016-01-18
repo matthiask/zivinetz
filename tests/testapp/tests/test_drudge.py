@@ -19,20 +19,20 @@ class DrudgeViewsTestCase(TestCase):
         # Hit a few views, just for fun
         self.assertRedirects(
             self.client.get('/zivinetz/'),
-            'http://testserver/accounts/login/?next=/zivinetz/')
+            '/accounts/login/?next=/zivinetz/')
         self.assertRedirects(
             self.client.get('/zivinetz/dashboard/'),
-            'http://testserver/accounts/login/?next=/zivinetz/dashboard/')
+            '/accounts/login/?next=/zivinetz/dashboard/')
 
         user = factories.UserFactory.create()
         self.client.login(username=user.username, password='test')
 
         self.assertRedirects(
             self.client.get('/zivinetz/'),
-            'http://testserver/zivinetz/profile/')
+            '/zivinetz/profile/')
         self.assertRedirects(
             self.client.get('/zivinetz/dashboard/'),
-            'http://testserver/zivinetz/profile/')
+            '/zivinetz/profile/')
 
         data = {
             'first_name': 'Hans',
@@ -57,14 +57,14 @@ class DrudgeViewsTestCase(TestCase):
         response = self.client.post('/zivinetz/profile/', data)
         self.assertRedirects(
             response,
-            'http://testserver/zivinetz/profile/')
+            '/zivinetz/profile/')
 
         self.assertRedirects(
             self.client.get('/zivinetz/dashboard/'),
-            'http://testserver/zivinetz/profile/')
+            '/zivinetz/profile/')
         self.assertRedirects(
             self.client.get('/zivinetz/dashboard/'),
-            'http://testserver/zivinetz/profile/')
+            '/zivinetz/profile/')
 
         path = os.path.join(
             os.path.dirname(settings.BASE_DIR),
@@ -80,7 +80,7 @@ class DrudgeViewsTestCase(TestCase):
 
         self.assertRedirects(
             self.client.get('/zivinetz/'),
-            'http://testserver/zivinetz/dashboard/')
+            '/zivinetz/dashboard/')
 
     def test_create_assignment_as_drudge(self):
         drudge = factories.DrudgeFactory.create()
@@ -108,7 +108,7 @@ class DrudgeViewsTestCase(TestCase):
         response = self.client.post('/zivinetz/dashboard/', data)
         self.assertRedirects(
             response,
-            'http://testserver/zivinetz/dashboard/')
+            '/zivinetz/dashboard/')
 
         assignment = Assignment.objects.get()
         self.assertEqual(assignment.date_from, date.today())
@@ -153,7 +153,8 @@ class DrudgeViewsTestCase(TestCase):
         response = self.client.post('/zivinetz/dashboard/', data)
         self.assertRedirects(
             response,
-            'http://testserver/zivinetz/dashboard/')
+            '/zivinetz/dashboard/',
+            fetch_redirect_response=False)
 
         waitlist = WaitList.objects.get()
         self.assertEqual(waitlist.assignment_duration, 42)
