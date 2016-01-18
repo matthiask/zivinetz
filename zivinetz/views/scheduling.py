@@ -147,7 +147,7 @@ class Scheduler(object):
                     css += ' c'
                     title = '%s (Start: %s)' % (
                         courses[day],
-                        day.strftime('%d.%m.%Y'),
+                        day.strftime('%A %d.%m.'),
                     )
 
                 if inside:
