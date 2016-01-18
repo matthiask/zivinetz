@@ -128,7 +128,7 @@ class Scheduler(object):
 
         return ret
 
-    def _schedule_assignment(self, date_from, date_until):
+    def _schedule_assignment(self, date_from, date_until, courses={}):
         weeks = []
         cw = None
         inside = False
@@ -141,20 +141,29 @@ class Scheduler(object):
                 cw = new_cw
 
             if date_from <= day <= date_until:
+                css = 'a'
+                title = None
+                if day in courses:
+                    css += ' c'
+                    title = '%s (Start: %s)' % (
+                        courses[day],
+                        day.strftime('%d.%m.%Y'),
+                    )
+
                 if inside:
-                    weeks.append([1, ''])
+                    weeks.append([css, '', title])
                 else:
                     inside = True
                     if calendar_week(day) == calendar_week(date_from):
-                        weeks.append([1, date_from.day])
+                        weeks.append([css, date_from.day, title])
                     else:
                         # assignment has not started this week
-                        weeks.append([1, ''])
+                        weeks.append([css, '', title])
             else:
                 if inside:
                     inside = False
                     weeks[-1][1] = date_until.day
-                weeks.append([0, ''])
+                weeks.append(['', '', None])
         return weeks
 
     def assignments(self):
@@ -180,7 +189,13 @@ class Scheduler(object):
             assignments_dict[assignment.drudge].append((
                 assignment,
                 self._schedule_assignment(
-                    assignment.date_from, assignment.determine_date_until()),
+                    assignment.date_from,
+                    assignment.determine_date_until(),
+                    {
+                        assignment.motor_saw_course_date: 'MSK',
+                        assignment.environment_course_date: 'UNA',
+                    },
+                ),
             ))
 
         # linearize assignments, but still give precedence to drudge

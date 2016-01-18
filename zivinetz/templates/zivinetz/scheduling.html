@@ -5,12 +5,17 @@
 {% block content %}
 <h1>{% trans "scheduling"|capfirst %}
     <small style="font-size:70%">(
+        <!--
         <a href="?s=1&date_until__gte=01.01.2010&date_from__lte=31.12.2010">2010</a> /
         <a href="?s=1&date_until__gte=01.01.2011&date_from__lte=31.12.2011">2011</a> /
         <a href="?s=1&date_until__gte=01.01.2012&date_from__lte=31.12.2012">2012</a> /
         <a href="?s=1&date_until__gte=01.01.2013&date_from__lte=31.12.2013">2013</a> /
         <a href="?s=1&date_until__gte=01.01.2014&date_from__lte=31.12.2014">2014</a> /
-        <a href="?s=1&date_until__gte=01.01.2015&date_from__lte=31.12.2015">2015</a>
+        -->
+        <a href="?s=1&date_until__gte=01.01.2015&date_from__lte=31.12.2015">2015</a> /
+        <a href="?s=1&date_until__gte=01.01.2016&date_from__lte=31.12.2016">2016</a> /
+        <a href="?s=1&date_until__gte=01.01.2017&date_from__lte=31.12.2017">2017</a> /
+        <a href="?s=1&date_until__gte=01.01.2018&date_from__lte=31.12.2018">2018</a>
     )</small>
 </h1>
 
@@ -36,13 +41,31 @@
     font-family: Verdana, Arial, sans-serif; }
 #scheduler td, #scheduler th { padding: 2px; vertical-align: middle; text-align: left;
     font-weight: normal; font-size: .75rem !important; }
-#scheduler td { border: 1px solid #666; text-align: center; line-height: 1em; }
+#scheduler td { border: 1px solid #666; text-align: center; line-height: 1em; position: relative; }
 #scheduler th:nth-child(-n+6),
 #scheduler td:nth-child(-n+6) { white-space: nowrap; }
 #scheduler tr.status10 td.a { background-color: #ffcc6e; }
 #scheduler tr.status20 td.a { background-color: #b0beed; }
 #scheduler tr.status30 td.a { background-color: #76bf76; }
 #scheduler tr.status40 td.a { background-color: #a0a0a0; }
+
+#scheduler tr td.a.c:after {
+    content: ' ';
+    background: repeating-linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 0, 0) 1px,
+        rgba(0, 0, 0, 1) 1px,
+        rgba(0, 0, 0, 1) 2px,
+        rgba(0, 0, 0, 0) 3px
+    );
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    opacity: .4;
+}
 
 #scheduler tr.statuswl { opacity: 0.5; }
 #scheduler tr.statuswl td.a { background-color: #c495d0; }
@@ -106,8 +129,8 @@ onReady.push(function($) {
                 <span title="{% trans "driving license"|capfirst %}">FA</span>
             {% endif %}
         </th>
-        {% for week, text in scheduled %}
-            <td{% if week %} class="a"{% endif %}>{{ text }}</td>
+        {% for class, text, title in scheduled %}
+            <td {% if class %}class="{{ class }}"{% endif %} {% if title %}title="{{ title }}"{% endif %}>{{ text }}</td>
         {% endfor %}
     </tr>
 {% endfor %}
