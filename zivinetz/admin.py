@@ -40,13 +40,14 @@ class SpecificationInline(admin.StackedInline):
 
 class CompanyHolidayAdmin(admin.ModelAdmin):
     filter_horizontal = ('applies_to',)
-    list_display = ('date_from', 'date_until', 'locations')
+    list_display = ('date_from', 'date_until', 'scope_statements')
     save_as = True
 
-    def locations(self, instance):
+    def scope_statements(self, instance):
         return mark_safe(u'<br>'.join(
             '%s' % object for object in instance.applies_to.all()
         ))
+    scope_statements.short_description = _('scope statements')
 
 
 admin.site.register(
