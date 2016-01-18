@@ -216,7 +216,8 @@ class AssignmentPDFStationery(object):
                 canvas.drawString(x, y + i * line, text)
 
         try:
-            company_holiday = self.assignment.specification.scope_statement.company_holidays.filter(
+            scope_statement = self.assignment.specification.scope_statement
+            company_holiday = scope_statement.company_holidays.filter(
                 date_until__gte=self.assignment.date_from,
                 date_from__lte=self.assignment.date_until,
             )[0]

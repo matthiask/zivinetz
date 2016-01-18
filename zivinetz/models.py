@@ -498,7 +498,8 @@ class Assignment(models.Model):
 
         public_holidays = PublicHoliday.objects.filter(
             date__range=(day, until)).values_list('date', flat=True)
-        company_holidays = list(self.specification.scope_statement.company_holidays.filter(
+        company_holidays = self.specification.scope_statement.company_holidays
+        company_holidays = list(company_holidays.filter(
             date_from__lte=until,
             date_until__gte=day,
         ))
