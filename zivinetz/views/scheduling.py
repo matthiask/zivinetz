@@ -144,7 +144,7 @@ class Scheduler(object):
                 css = 'a'
                 title = None
                 if day in courses:
-                    css += ' c'
+                    css += ' c-%s' % courses[day].lower()
                     title = '%s (Start: %s)' % (
                         courses[day],
                         day.strftime('%A %d.%m.'),
