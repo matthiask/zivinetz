@@ -24,13 +24,13 @@
   {% for title, value in object.user|model_details:"email,is_active,last_login,date_joined" %}
     <tr>
       <th>{{ title|capfirst }}</th>
-      <td>{{ value }}</td>
+      <td>{{ value|default:"&ndash;" }}</td>
     </tr>
   {% endfor %}
   {% for title, value in object|model_details:"date_of_birth,phone_home,phone_office,mobile,regional_office" %}
     <tr>
       <th>{{ title|capfirst }}</th>
-      <td>{{ value }}</td>
+      <td>{{ value|default:"&ndash;" }}</td>
     </tr>
   {% endfor %}
 </table>
@@ -41,7 +41,7 @@
   {% for title, value in object|model_details:"bank_account,health_insurance_company,health_insurance_account" %}
     <tr>
       <th>{{ title|capfirst }}</th>
-      <td>{{ value }}</td>
+      <td>{{ value|default:"&ndash;" }}</td>
     </tr>
   {% endfor %}
   <tr class="even">
@@ -51,7 +51,7 @@
   {% for title, value in object|model_details:"driving_license,general_abonnement,half_fare_card,other_card,environment_course,motor_saw_course,vegetarianism" %}
     <tr>
       <th>{{ title|capfirst }}</th>
-      <td>{{ value }}</td>
+      <td>{{ value|default:"&ndash;" }}</td>
     </tr>
   {% endfor %}
 </table>
@@ -66,12 +66,12 @@
 
 <tr class="odd">
   <th>{% trans "notes" %}</th>
-  <td>{{ object.notes|linebreaksbr }}
+  <td>{{ object.notes|default:"&ndash;"|linebreaksbr }}
 </tr>
 
 <tr class="even">
   <th>{% trans "internal notes" %}</th>
-  <td>{{ object.internal_notes|linebreaksbr }}</td>
+  <td>{{ object.internal_notes|default:"&ndash;"|linebreaksbr }}</td>
 </tr>
 </table>
 
@@ -127,7 +127,7 @@
   <tbody>
   {% for assessment in object.assessments.all %}
     <tr>
-      <td>{{ assessment.comment|linebreaksbr }}</td>
+      <td>{{ assessment.comment|default:"&ndash;"|linebreaksbr }}</td>
       <td>{{ assessment.mark|default:"&ndash;" }}</td>
       <td>{{ assessment.created|date:"d.m.Y" }}</td>
       <td>

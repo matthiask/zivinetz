@@ -30,7 +30,7 @@
     </tr>
     <tr>
         <th>Berichts-Nr.</th>
-        <td colspan="2">{{ object.report_no }}</td>
+        <td colspan="2">{{ object.report_no|default:"&ndash;" }}</td>
     </tr>
     <tr>
         <th>Status</th>
