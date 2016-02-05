@@ -286,6 +286,7 @@ class Scheduler(object):
                     una_courses_per_week
                 )],
             ],
+            # TODO Add quota
         ]
 
         return waitlist + assignments
