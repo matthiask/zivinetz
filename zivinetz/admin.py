@@ -60,8 +60,11 @@ admin.site.register(
 
 admin.site.register(
     models.DrudgeQuota,
+    date_hierarchy='week',
     list_display=('__unicode__', 'scope_statement', 'quota'),
     list_editable=('quota',),
+    list_filter=('scope_statement',),
+    ordering=('week',),
 )
 
 admin.site.register(
