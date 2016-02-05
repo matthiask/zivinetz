@@ -82,9 +82,9 @@ class Scheduler(object):
                 (self.date_range[1] - self.date_from).days // 7 + 1)
 
         self.date_list = list(daterange(self.date_from, self.date_until))
-        self.data_weeks = OrderedDict()
+        self.drudge_days_per_week = OrderedDict()
         for day in self.date_list:
-            self.data_weeks.setdefault(
+            self.drudge_days_per_week.setdefault(
                 calendar_week(day),
                 (day, defaultdict(lambda: 0)))
 
@@ -178,7 +178,7 @@ class Scheduler(object):
                     assignment.date_from,
                     assignment.determine_date_until(),
             ):
-                self.data_weeks.setdefault(
+                self.drudge_days_per_week.setdefault(
                     calendar_week(day),
                     (day, defaultdict(int)),
                 )[1][assignment.drudge_id] += 1
@@ -223,9 +223,9 @@ class Scheduler(object):
             # linearize assignments with waitlist entries intermingled
             assignments = list(itertools.chain(*assignments_dict.values()))
 
-        filtered_data_weeks = [
+        filtered_days_per_drudge_and_week = [
             (day, week)
-            for day, week in self.data_weeks.values()
+            for day, week in self.drudge_days_per_week.values()
             if self.date_from <= _monday(day) <= self.date_until]
 
         # Weekly count is determined by the count of drudges which are
@@ -236,13 +236,17 @@ class Scheduler(object):
 
         sums = [
             drudges_count_tuple(week)
-            for day, week in filtered_data_weeks
+            for day, week in filtered_days_per_drudge_and_week
         ]
 
         try:
-            self.average = sum(
-                (sum(week.values(), 0.0) for day, week in filtered_data_weeks),
-                0.0) / (self.date_until - self.date_from).days
+            filtered_days_per_week = [
+                sum(week.values(), 0.0)
+                for day, week in filtered_days_per_drudge_and_week
+            ]
+            self.average = sum(filtered_days_per_week, 0.0) / (
+                (self.date_until - self.date_from).days
+            )
         except ArithmeticError:
             self.average = 0
 
