@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy
 
 from towel.forms import SearchForm
 
-from zivinetz.models import Assignment, Specification, WaitList
+from zivinetz.models import Assignment, ScopeStatement, WaitList
 
 
 # Calendar week calculation according to ISO 8601
@@ -263,9 +263,12 @@ class SchedulingSearchForm(SearchForm):
         'mode': 'both',
     }
 
-    specification = forms.ModelMultipleChoiceField(
-        Specification.objects.all(),
-        label=ugettext_lazy('specification'), required=False)
+    specification__scope_statement = forms.ModelMultipleChoiceField(
+        ScopeStatement.objects.all(),
+        label=ugettext_lazy('scope statement'), required=False)
+    specification__with_accomodation = forms.NullBooleanField(
+        label=ugettext_lazy('with accomodation'), required=False,
+    )
     status = forms.MultipleChoiceField(
         choices=Assignment.STATUS_CHOICES,
         label=ugettext_lazy('status'), required=False)
