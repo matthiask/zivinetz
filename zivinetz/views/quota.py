@@ -40,7 +40,8 @@ def quota_year(request, year):
 
         for scope_statement in ScopeStatement.objects.all():
             existing_quotas = {
-                quota.week: quota for quota in scope_statement.drudgequota_set.all()
+                quota.week: quota
+                for quota in scope_statement.drudgequota_set.all()
             }
             for day in dates:
                 try:
