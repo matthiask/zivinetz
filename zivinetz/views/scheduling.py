@@ -285,7 +285,7 @@ class Scheduler(object):
                     quasi_full_drudge_weeks,
                     una_courses_per_week
                 )],
-            ]
+            ],
         ]
 
         return waitlist + assignments
