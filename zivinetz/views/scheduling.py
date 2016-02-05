@@ -230,10 +230,14 @@ class Scheduler(object):
 
         # Weekly count is determined by the count of drudges which are
         # available at least 3 days in a week.
-        sums = [(
-            sum((1 for days in week.values() if days >= 3), 0),
-            u'%d' % sum((1 for days in week.values() if days >= 3), 0),
-        ) for day, week in filtered_data_weeks]
+        def drudges_count_tuple(week):
+            count = sum((1 for days in week.values() if days >= 3), 0)
+            return (count, str(count))
+
+        sums = [
+            drudges_count_tuple(week)
+            for day, week in filtered_data_weeks
+        ]
 
         try:
             self.average = sum(
