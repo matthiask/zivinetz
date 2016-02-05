@@ -173,6 +173,8 @@ class Scheduler(object):
             'specification__scope_statement', 'drudge__user',
         ).order_by('date_from', 'date_until')
 
+        una_courses_per_week = defaultdict(list)
+
         for assignment in assignments:
             for day in daterange(
                     assignment.date_from,
@@ -180,8 +182,18 @@ class Scheduler(object):
             ):
                 self.drudge_days_per_week.setdefault(
                     calendar_week(day),
-                    (day, defaultdict(int)),
+                    (_monday(day), defaultdict(int)),
                 )[1][assignment.drudge_id] += 1
+
+            if assignment.environment_course_date and (
+                assignment.date_from <= assignment.environment_course_date <=
+                assignment.determine_date_until()
+            ):
+                # Only subtract env course if it is during the assignment.
+                # (Can be outside in rare cases.)
+                una_courses_per_week[
+                    _monday(assignment.environment_course_date)
+                ].append(assignment)
 
             if assignment.drudge not in assignments_dict:
                 assignments_dict[assignment.drudge] = []
@@ -226,17 +238,27 @@ class Scheduler(object):
         filtered_days_per_drudge_and_week = [
             (day, week)
             for day, week in self.drudge_days_per_week.values()
-            if self.date_from <= _monday(day) <= self.date_until]
+            if self.date_from <= day <= self.date_until]
 
         # Weekly count is determined by the count of drudges which are
         # available at least 3 days in a week.
         def drudges_count_tuple(week):
             count = sum((1 for days in week.values() if days >= 3), 0)
-            return (count, str(count))
+            return ('', count, '')  # class, text, title
 
-        sums = [
+        quasi_full_drudge_weeks = [
             drudges_count_tuple(week)
             for day, week in filtered_days_per_drudge_and_week
+        ]
+        una_courses_per_week = [
+            (
+                '',
+                len(una_courses_per_week.get(day, ())),
+                u'\n'.join(
+                    u'%s' % a
+                    for a in una_courses_per_week.get(day, ())
+                ),
+            ) for day, week in filtered_days_per_drudge_and_week
         ]
 
         try:
@@ -250,7 +272,23 @@ class Scheduler(object):
         except ArithmeticError:
             self.average = 0
 
-        return [[None, sums]] + waitlist + assignments
+        self.head = [
+            ['IST vor Abzug Kurse', quasi_full_drudge_weeks],
+            ['Umwelt-Kurse', una_courses_per_week],
+            [
+                'IST nach Abzug Kurse',
+                [(
+                    '',
+                    a[1] - b[1],
+                    '',
+                ) for a, b in zip(
+                    quasi_full_drudge_weeks,
+                    una_courses_per_week
+                )],
+            ]
+        ]
+
+        return waitlist + assignments
 
 
 def _monday(day):

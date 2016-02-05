@@ -117,6 +117,14 @@ onReady.push(function($) {
                 <th {% if current %}class="current"{% endif %}>{{ week|stringformat:"02d" }}&nbsp;</th>
             {% endfor %}
         </tr>
+        {% for title, row in scheduler.head %}
+            <tr>
+                <th colspan="6">{{ title }}</th>
+                {% for class, text, title in row %}
+                    <td {% if class %}class="{{ class }}"{% endif %} {% if title %}title="{{ title }}"{% endif %}>{{ text }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
     </thead>
 {% for assignment, scheduled in assignments %}
     {% if forloop.counter|divisibleby:20 %}
