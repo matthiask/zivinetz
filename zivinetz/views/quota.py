@@ -55,9 +55,10 @@ def quota_year(request, year):
                     continue
                 else:
                     if day in existing_quotas:
-                        existing_quotas[day].quota = value
-                        existing_quotas[day].save()
-                        updated += 1
+                        if existing_quotas[day].quota != value:
+                            existing_quotas[day].quota = value
+                            existing_quotas[day].save()
+                            updated += 1
                     else:
                         DrudgeQuota.objects.create(
                             scope_statement=scope_statement,
