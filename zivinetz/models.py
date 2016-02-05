@@ -83,6 +83,31 @@ class ScopeStatement(models.Model):
         )).strip()
 
 
+class DrudgeQuota(models.Model):
+    scope_statement = models.ForeignKey(
+        ScopeStatement,
+        verbose_name=_('scope statement'),
+    )
+    week = models.DateField(_('week'))
+    quota = models.PositiveIntegerField(
+        _('quota'),
+    )
+
+    class Meta:
+        verbose_name = _('drudge quota')
+        verbose_name_plural = _('drudge quotas')
+
+    def __unicode__(self):
+        from zivinetz.views.scheduling import calendar_week
+        year, week = calendar_week(self.week)
+        return u'%s: %s Zivis in KW%s %s' % (
+            self.scope_statement.name,
+            self.quota,
+            week,
+            year,
+        )
+
+
 class Choices(object):
     def __init__(self, choices):
         self.kwargs = {

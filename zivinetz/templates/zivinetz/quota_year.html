@@ -1,0 +1,79 @@
+{% extends "zivinetz/base.html" %}
+
+{% block content %}
+<style>
+.quotas {
+    border-collapse: collapse;
+    position: relative;
+    top: 80px;
+}
+.quotas td,
+.quotas th {
+    padding: 0;
+    text-align: center;
+    vertical-align: top;
+    font-size: 12px;
+}
+.quotas th:first-child {
+    white-space: nowrap;
+    text-align: left;
+}
+.quotas input {
+    border: none;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #555;
+    width: 2rem;
+    background: inherit;
+    text-align: center;
+}
+
+.quotas th { position: relative; }
+.quotas th span {
+    position: absolute;
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    bottom: -15px;
+    left: 0;
+    width: 80px;
+    text-align: right;
+    background: white;
+    padding: .5rem;
+}
+</style>
+<script>
+onReady.push(function($) {
+  var reposition = function() {
+    var sched = $('.quotas');
+    sched.offset({top: sched.offset().top, left: 10});
+  }
+
+  $(document.body).on('resize', reposition);
+  reposition();
+});
+</script>
+<form method="post">
+  {% csrf_token %}
+  <h2>Zivi-Soll für {{ year }}</h2>
+  <table class="quotas">
+      <tr>
+          <th>Kalenderwoche</th>
+          {% for date in dates %}
+          <th title="{{ date }}"><span>{{ date|date:"d.m.Y" }}</span> {{ date|date:"W" }}</th>
+          {% endfor %}
+      </tr>
+      {% for scope_statement, forms in all_forms.items %}
+        <tr>
+            <th>{{ scope_statement }}</th>
+            {% for day, form in forms.items %}
+                <td>{{ form.quota }}</td>
+            {% endfor %}
+        </tr>
+      {% endfor %}
+  </table>
+
+  <br><br><br><br>
+  <button type="submit">Sichern</button>
+
+</form>
+{% endblock %}

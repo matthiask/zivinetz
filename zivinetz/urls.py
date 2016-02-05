@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from django.views import generic
 
 from zivinetz.views import (
-    drudge, expenses, home, scheduling, reporting, photos
+    drudge, expenses, home, scheduling, reporting, quota, photos
 )
 
 
@@ -14,6 +14,7 @@ urlpatterns = [
 
     url(r'^admin/$', home.admin),
     url(r'^admin/scheduling/$', scheduling.scheduling),
+    url(r'^admin/scheduling/quotas/(?P<year>\d+)/$', quota.quota_year),
     url(r'^admin/', include('zivinetz.resources')),
 
     # TODO Convert those to resource URLs.

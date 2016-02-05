@@ -59,6 +59,12 @@ admin.site.register(
 )
 
 admin.site.register(
+    models.DrudgeQuota,
+    list_display=('__unicode__', 'scope_statement', 'quota'),
+    list_editable=('quota',),
+)
+
+admin.site.register(
     models.CompensationSet,
     save_as=True,
     fieldsets=(
