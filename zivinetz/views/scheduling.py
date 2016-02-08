@@ -287,6 +287,34 @@ class Scheduler(object):
             ) for day, week in filtered_days_per_drudge_and_week
         ]
 
+        full_drudge_weeks = [
+            [
+                '',
+                a[1] - b[1],
+                '',
+            ] for a, b in zip(
+                quasi_full_drudge_weeks,
+                una_courses_per_week
+            )
+        ]
+
+        for a, b in zip(quota_per_week, full_drudge_weeks):
+            try:
+                quota = int(a[1])
+            except (TypeError, ValueError):
+                continue
+
+            full = b[1]
+
+            if full < quota - 5:
+                b[0] = 'quota green'
+            elif full < quota:
+                b[0] = 'quota yellow'
+            elif full < quota + 5:
+                b[0] = 'quota orange'
+            else:
+                b[0] = 'quota red'
+
         try:
             filtered_days_per_week = [
                 sum(week.values(), 0.0)
@@ -302,19 +330,12 @@ class Scheduler(object):
             # ['IST vor Abzug Kurse', quasi_full_drudge_weeks],
             # ['Umwelt-Kurse', una_courses_per_week],
             [
-                'IST nach Abzug UNA-Kurse',
-                [(
-                    '',
-                    a[1] - b[1],
-                    '',
-                ) for a, b in zip(
-                    quasi_full_drudge_weeks,
-                    una_courses_per_week
-                )],
-            ],
-            [
                 'Soll-Tage',
                 quota_per_week,
+            ],
+            [
+                'IST nach Abzug UNA-Kurse',
+                full_drudge_weeks,
             ],
         ]
 

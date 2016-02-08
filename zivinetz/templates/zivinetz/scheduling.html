@@ -88,6 +88,21 @@
 #scheduler th.current { color: red; }
 
 #scheduler tr:hover { background: #fff5c2; }
+
+#scheduler .quota { position: relative; }
+#scheduler .quota:before {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+#scheduler .quota.green:before { background: rgba(0, 255, 0, 0.3); }
+#scheduler .quota.yellow:before { background: rgba(255, 255, 0, 0.3); }
+#scheduler .quota.orange:before { background: rgba(255, 100, 30, 0.3); }
+#scheduler .quota.red:before { background: rgba(255, 0, 0, 0.3); }
 </style>
 <script>
 onReady.push(function($) {
