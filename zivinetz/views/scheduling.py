@@ -5,14 +5,14 @@ import itertools
 
 from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models import Max, Min, Q
+from django.db.models import Max, Min, Q, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import ugettext_lazy
 
 from towel.forms import SearchForm
 
-from zivinetz.models import Assignment, ScopeStatement, WaitList
+from zivinetz.models import Assignment, ScopeStatement, WaitList, DrudgeQuota
 
 
 # Calendar week calculation according to ISO 8601
@@ -166,6 +166,24 @@ class Scheduler(object):
                 weeks.append(['', '', None])
         return weeks
 
+    def add_quotas(self, with_accomodation, scope_statements):
+        if with_accomodation is not None:
+            self.quota_per_week = None
+            return
+
+        quota = DrudgeQuota.objects.filter(
+            week__gte=self.date_from,
+            week__lte=self.date_until,
+        ).order_by()
+
+        if scope_statements:
+            quota = quota.filter(scope_statement__in=scope_statements)
+
+        self.quota_per_week = {
+            q['week']: q['quota__sum']
+            for q in quota.values('week').annotate(Sum('quota'))
+        }
+
     def assignments(self):
         assignments_dict = OrderedDict()
 
@@ -261,6 +279,14 @@ class Scheduler(object):
             ) for day, week in filtered_days_per_drudge_and_week
         ]
 
+        quota_per_week = [
+            (
+                '',
+                self.quota_per_week.get(day, 0) if self.quota_per_week else '-',
+                '',
+            ) for day, week in filtered_days_per_drudge_and_week
+        ]
+
         try:
             filtered_days_per_week = [
                 sum(week.values(), 0.0)
@@ -273,10 +299,10 @@ class Scheduler(object):
             self.average = 0
 
         self.head = [
-            ['IST vor Abzug Kurse', quasi_full_drudge_weeks],
-            ['Umwelt-Kurse', una_courses_per_week],
+            # ['IST vor Abzug Kurse', quasi_full_drudge_weeks],
+            # ['Umwelt-Kurse', una_courses_per_week],
             [
-                'IST nach Abzug Kurse',
+                'IST nach Abzug UNA-Kurse',
                 [(
                     '',
                     a[1] - b[1],
@@ -286,7 +312,10 @@ class Scheduler(object):
                     una_courses_per_week
                 )],
             ],
-            # TODO Add quota
+            [
+                'Soll-Tage',
+                quota_per_week,
+            ],
         ]
 
         return waitlist + assignments
@@ -380,6 +409,15 @@ def scheduling(request):
 
     if mode != 'assignments':
         scheduler.add_waitlist(search_form.waitlist_queryset())
+
+    scheduler.add_quotas(
+        with_accomodation=search_form.safe_cleaned_data.get(
+            'specification__with_accomodation'
+        ),
+        scope_statements=search_form.safe_cleaned_data.get(
+            'specification__scope_statement',
+        ),
+    )
 
     return render(request, 'zivinetz/scheduling.html', {
         'scheduler': scheduler,
