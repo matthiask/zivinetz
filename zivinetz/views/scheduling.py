@@ -282,7 +282,7 @@ class Scheduler(object):
         quota_per_week = [
             (
                 '',
-                self.quota_per_week.get(day, 0) if self.quota_per_week else '-',
+                self.quota_per_week.get(day, '-') if self.quota_per_week else '-',
                 '',
             ) for day, week in filtered_days_per_drudge_and_week
         ]
