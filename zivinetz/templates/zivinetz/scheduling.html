@@ -83,7 +83,7 @@
 #scheduler tr.statuswl { opacity: 0.5; }
 #scheduler tr.statuswl td.a { background-color: #c495d0; }
 
-#scheduler td:nth-child(10n+6) { background-color: #d0d0d0; }
+#scheduler tbody td:nth-child(10n+6) { background-color: #d0d0d0; }
 
 #scheduler th.current { color: red; }
 
@@ -98,11 +98,12 @@
     width: 100%;
     height: 100%;
     display: block;
+    opacity: .5;
 }
-#scheduler .quota.green:before { background: rgba(0, 255, 0, 0.3); }
-#scheduler .quota.yellow:before { background: rgba(255, 255, 0, 0.3); }
-#scheduler .quota.orange:before { background: rgba(255, 100, 30, 0.3); }
-#scheduler .quota.red:before { background: rgba(255, 0, 0, 0.3); }
+#scheduler .quota.darkblue:before { background: blue; }
+#scheduler .quota.blue:before { background: lightblue; }
+#scheduler .quota.orange:before { background: orange; }
+#scheduler .quota.red:before { background: red; }
 </style>
 <script>
 onReady.push(function($) {
@@ -171,5 +172,15 @@ onReady.push(function($) {
     </tr>
 {% endfor %}
 </table>{% endwith %}{% endspaceless %}
+
+<h2>Zivi-Bedarf erfassen
+    <small style="font-size:70%">(
+        <a href="quotas/2016/">2016</a> /
+        <a href="quotas/2017/">2017</a> /
+        <a href="quotas/2018/">2018</a> /
+        <a href="quotas/2019/">2019</a> /
+        <a href="quotas/2020/">2020</a>
+    )</small>
+</h2>
 
 {% endblock %}

@@ -306,14 +306,14 @@ class Scheduler(object):
 
             full = b[1]
 
-            if full < quota - 5:
-                b[0] = 'quota green'
-            elif full < quota:
-                b[0] = 'quota yellow'
-            elif full < quota + 5:
-                b[0] = 'quota orange'
-            else:
+            if full < quota - 6:
+                b[0] = 'quota darkblue'
+            elif full < quota - 1:
+                b[0] = 'quota blue'
+            elif full > quota + 6:
                 b[0] = 'quota red'
+            elif full > quota + 1:
+                b[0] = 'quota orange'
 
         try:
             filtered_days_per_week = [
@@ -330,7 +330,7 @@ class Scheduler(object):
             # ['IST vor Abzug Kurse', quasi_full_drudge_weeks],
             # ['Umwelt-Kurse', una_courses_per_week],
             [
-                'Soll-Tage',
+                'Zivi-Bedarf',
                 quota_per_week,
             ],
             [
