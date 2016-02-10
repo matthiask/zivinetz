@@ -33,12 +33,14 @@ def quota_year(request, year):
     all_forms = defaultdict(OrderedDict)
     dates = list(yield_dates(first_monday, 7, 53))
 
+    scope_statements = ScopeStatement.objects.filter(is_active=True)
+
     if request.method == 'POST':
         created = 0
         updated = 0
         deleted = 0
 
-        for scope_statement in ScopeStatement.objects.all():
+        for scope_statement in scope_statements:
             existing_quotas = {
                 quota.week: quota
                 for quota in scope_statement.drudgequota_set.all()
@@ -78,7 +80,7 @@ def quota_year(request, year):
         )
         return redirect('.')
 
-    for scope_statement in ScopeStatement.objects.all():
+    for scope_statement in scope_statements:
         forms = all_forms[scope_statement]
         existing_quotas = {
             quota.week: quota.quota
