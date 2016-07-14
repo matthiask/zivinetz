@@ -133,6 +133,13 @@ class Scheduler(object):
         cw = None
         inside = False
 
+        # Not all courses start on a monday, but we have to normalize
+        # dates to monday otherwise we wont find them while scheduling.
+        week_courses = {
+            _monday(day) if day else None: (day, type)
+            for day, type in courses.items()
+        }
+
         for day in self.date_list:
             new_cw = calendar_week(day)
             if new_cw == cw:
@@ -143,11 +150,11 @@ class Scheduler(object):
             if date_from <= day <= date_until:
                 css = 'a'
                 title = None
-                if day in courses:
-                    css += ' c-%s' % courses[day].lower()
+                if day in week_courses:
+                    css += ' c-%s' % week_courses[day][1].lower()
                     title = '%s (Start: %s)' % (
-                        courses[day],
-                        day.strftime('%A %d.%m.'),
+                        week_courses[day][0],
+                        week_courses[day][0].strftime('%A %d.%m.'),
                     )
 
                 if inside:
