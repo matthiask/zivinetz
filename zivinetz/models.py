@@ -973,15 +973,15 @@ class ExpenseReport(models.Model):
         if save:
             self.save()
 
-    def compensation_data(self, mobilized_on=None):
-        mobilized_on = mobilized_on or self.assignment.mobilized_on
+    def compensation_data(self, arranged_on=None):
+        arranged_on = arranged_on or self.assignment.arranged_on
 
         return (
-            self.specification.compensation(mobilized_on)
-            if mobilized_on else None)
+            self.specification.compensation(arranged_on)
+            if arranged_on else None)
 
     def compensations(self):
-        if not self.assignment.mobilized_on:
+        if not self.assignment.arranged_on:
             # Make recalculate_total not fall flat on its face
             return None, None, 0
 
