@@ -415,7 +415,9 @@ Wir freuen uns auf deinen Einsatz!
     response = HttpResponse(content_type='application/pdf')
     result_writer.write(response)
 
-    response['Content-Disposition'] = 'attachment; filename=eiv.pdf'
+    response['Content-Disposition'] = 'attachment; filename=eiv-%s.pdf' % (
+        assignment.pk,
+    )
     return response
 
 
