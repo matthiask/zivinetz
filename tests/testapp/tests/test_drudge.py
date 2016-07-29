@@ -118,7 +118,8 @@ class DrudgeViewsTestCase(TestCase):
         response = self.client.get(assignment.pdf_url())
         self.assertEqual(response['content-type'], 'application/pdf')
         self.assertEqual(
-            response['content-disposition'], 'attachment; filename=eiv.pdf')
+            response['content-disposition'],
+            'attachment; filename=eiv-%s.pdf' % (assignment.pk,))
         self.assertTrue(len(response.content))
 
         # Fast forward a bit.
