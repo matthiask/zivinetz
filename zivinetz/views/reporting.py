@@ -296,13 +296,15 @@ class AssignmentPDFStationery(object):
 
         self.draw_marker(canvas, 'clothing_%s' % spec.clothing)
 
-        self.draw_marker(canvas, 'drudge_renounce_accomodation_1')
-        self.draw_marker(canvas, 'drudge_renounce_accomodation_2')
-
         if spec.accomodation_throughout:
             self.draw_marker(canvas, 'accomodation_throughout')
         else:
             self.draw_marker(canvas, 'accomodation_not_throughout')
+
+        if spec.with_accomodation:
+            self.draw_marker(canvas, 'drudge_renounce_accomodation_1')
+            self.draw_marker(canvas, 'drudge_renounce_accomodation_2')
+
         if spec.food_throughout:
             self.draw_marker(canvas, 'food_throughout')
         else:
