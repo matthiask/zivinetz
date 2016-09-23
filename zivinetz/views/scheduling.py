@@ -413,6 +413,10 @@ class SchedulingSearchForm(SearchForm):
     def waitlist_queryset(self):
         data = self.safe_cleaned_data
         return self.apply_filters(WaitList.objects.search(data.get('query')), {
+            'specification__scope_statement': data.get(
+                'specification__scope_statement'),
+            'specification__with_accomodation': data.get(
+                'specification__with_accomodation'),
             'assignment_date_until__gte': data.get('date_until__gte'),
             'assignment_date_from__lte': data.get('date_from__lte'),
         })
