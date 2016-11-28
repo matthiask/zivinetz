@@ -86,6 +86,7 @@ class ScopeStatement(models.Model):
 class DrudgeQuota(models.Model):
     scope_statement = models.ForeignKey(
         ScopeStatement,
+        on_delete=models.CASCADE,
         verbose_name=_('scope statement'),
     )
     week = models.DateField(_('week'))
@@ -139,6 +140,7 @@ class Specification(models.Model):
 
     scope_statement = models.ForeignKey(
         ScopeStatement,
+        on_delete=models.CASCADE,
         verbose_name=_('scope statement'), related_name='specifications')
 
     with_accomodation = models.BooleanField(
@@ -346,7 +348,7 @@ class Drudge(models.Model):
         ('5-day', _('5 day course')),
     )
 
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     zdp_no = models.CharField(_('ZDP No.'), unique=True, max_length=10)
 
@@ -398,7 +400,8 @@ class Drudge(models.Model):
         help_text=_('I have taken the denoted motor saw course already.'))
 
     regional_office = models.ForeignKey(
-        RegionalOffice, verbose_name=_('regional office'))
+        RegionalOffice, verbose_name=_('regional office'),
+        on_delete=models.CASCADE)
     notes = models.TextField(
         _('notes'), blank=True,
         help_text=_(
@@ -474,11 +477,14 @@ class Assignment(models.Model):
     modified = models.DateTimeField(_('modified'), auto_now=True)
 
     specification = models.ForeignKey(
-        Specification, verbose_name=_('specification'))
+        Specification, verbose_name=_('specification'),
+        on_delete=models.CASCADE)
     drudge = models.ForeignKey(
-        Drudge, verbose_name=_('drudge'), related_name='assignments')
+        Drudge, verbose_name=_('drudge'), related_name='assignments',
+        on_delete=models.CASCADE)
     regional_office = models.ForeignKey(
-        RegionalOffice, verbose_name=_('regional office'))
+        RegionalOffice, verbose_name=_('regional office'),
+        on_delete=models.CASCADE)
 
     date_from = models.DateField(_('date from'))
     date_until = models.DateField(_('date until'))
@@ -893,7 +899,8 @@ class ExpenseReport(models.Model):
     )
 
     assignment = models.ForeignKey(
-        Assignment, verbose_name=_('assignment'), related_name='reports')
+        Assignment, verbose_name=_('assignment'), related_name='reports',
+        on_delete=models.CASCADE)
     date_from = models.DateField(_('date from'))
     date_until = models.DateField(_('date until'))
     report_no = models.CharField(_('report no.'), max_length=10, blank=True)
@@ -946,7 +953,8 @@ class ExpenseReport(models.Model):
         _('total'), max_digits=10, decimal_places=2, default=0)
 
     specification = models.ForeignKey(
-        Specification, verbose_name=_('specification'))
+        Specification, verbose_name=_('specification'),
+        on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['assignment__drudge', 'date_from']
@@ -1100,10 +1108,12 @@ class WaitListManager(SearchManager):
 @model_resource_urls()
 class WaitList(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
-    drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'))
+    drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'),
+            on_delete=models.CASCADE)
 
     specification = models.ForeignKey(
-        Specification, verbose_name=_('specification'))
+        Specification, verbose_name=_('specification'),
+        on_delete=models.CASCADE)
     assignment_date_from = models.DateField(_('available from'))
     assignment_date_until = models.DateField(_('available until'))
     assignment_duration = models.PositiveIntegerField(_('duration in days'))
@@ -1129,7 +1139,8 @@ class WaitList(models.Model):
 class Assessment(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(
-        Drudge, verbose_name=_('drudge'), related_name='assessments')
+        Drudge, verbose_name=_('drudge'), related_name='assessments',
+        on_delete=models.CASCADE)
     mark = models.IntegerField(
         _('mark'), choices=zip(range(1, 7), range(1, 7)),
         blank=True, null=True)
@@ -1196,7 +1207,8 @@ class JobReferenceManager(SearchManager):
 @model_resource_urls()
 class JobReference(models.Model):
     assignment = models.ForeignKey(
-        Assignment, verbose_name=_('assignment'), related_name='jobreferences')
+        Assignment, verbose_name=_('assignment'), related_name='jobreferences',
+        on_delete=models.CASCADE)
     created = models.DateField(_('created'))
     text = models.TextField(_('text'))
 
