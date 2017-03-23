@@ -1,8 +1,12 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from django.utils import six
 
 from zivinetz import models
+
+
+str_method = '__str__' if six.PY3 else '__unicode__'
 
 
 class SpecificationInline(admin.StackedInline):
@@ -61,7 +65,7 @@ admin.site.register(
 admin.site.register(
     models.DrudgeQuota,
     date_hierarchy='week',
-    list_display=('__unicode__', 'scope_statement', 'quota'),
+    list_display=(str_method, 'scope_statement', 'quota'),
     list_editable=('quota',),
     list_filter=('scope_statement',),
     ordering=('week',),
@@ -97,7 +101,7 @@ admin.site.register(models.RegionalOffice)
 admin.site.register(
     models.Drudge,
     list_display=(
-        '__unicode__', 'date_of_birth', 'phone_home', 'phone_office',
+        str_method, 'date_of_birth', 'phone_home', 'phone_office',
         'mobile', 'regional_office'),
     list_filter=('regional_office', 'driving_license'),
     raw_id_fields=('user',),
@@ -128,7 +132,7 @@ admin.site.register(
     models.ExpenseReport,
     date_hierarchy='date_from',
     list_display=(
-        '__unicode__', 'assignment', 'date_from', 'date_until',
+        str_method, 'assignment', 'date_from', 'date_until',
         'status'),
     list_filter=('status',),
     raw_id_fields=('assignment',),
@@ -148,7 +152,7 @@ admin.site.register(
 
 admin.site.register(
     models.WaitList,
-    list_display=('created', 'drudge', '__unicode__'),
+    list_display=('created', 'drudge', str_method),
     raw_id_fields=('drudge',),
 )
 
@@ -174,7 +178,7 @@ admin.site.register(
 
 admin.site.register(
     models.Specification,
-    list_display=('__unicode__', 'ordering'),
+    list_display=(str_method, 'ordering'),
     list_editable=('ordering',),
     readonly_fields=[
         f.name for f in
