@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db import models
 from django.db.models import Q, signals
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 
@@ -42,6 +43,7 @@ STATE_CHOICES = (
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class ScopeStatement(models.Model):
     is_active = models.BooleanField(_('is active'), default=True)
     eis_no = models.CharField(_('EIS No.'), unique=True, max_length=10)
@@ -72,7 +74,7 @@ class ScopeStatement(models.Model):
         verbose_name = _('scope statement')
         verbose_name_plural = _('scope statements')
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s (%s)' % (self.name, self.eis_no)
 
     @property
@@ -83,6 +85,7 @@ class ScopeStatement(models.Model):
         )).strip()
 
 
+@python_2_unicode_compatible
 class DrudgeQuota(models.Model):
     scope_statement = models.ForeignKey(
         ScopeStatement,
@@ -98,7 +101,7 @@ class DrudgeQuota(models.Model):
         verbose_name = _('drudge quota')
         verbose_name_plural = _('drudge quotas')
 
-    def __unicode__(self):
+    def __str__(self):
         from zivinetz.views.scheduling import calendar_week
         year, week = calendar_week(self.week)
         return u'%s: %s Zivis in KW%s %s' % (
@@ -121,6 +124,7 @@ class Choices(object):
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class Specification(models.Model):
     ACCOMODATION = Choices((
         ('provided', _('provided')),
@@ -193,7 +197,7 @@ class Specification(models.Model):
         verbose_name = _('specification')
         verbose_name_plural = _('specifications')
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s - %s' % (
             self.scope_statement,
             (self.with_accomodation
@@ -254,6 +258,7 @@ class CompensationSetManager(models.Manager):
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class CompensationSet(models.Model):
     valid_from = models.DateField(_('valid from'), unique=True)
 
@@ -300,11 +305,12 @@ class CompensationSet(models.Model):
 
     objects = CompensationSetManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return ugettext('compensation set, valid from %s') % self.valid_from
 
 
 @model_resource_urls(default='edit')
+@python_2_unicode_compatible
 class RegionalOffice(models.Model):
     name = models.CharField(_('name'), max_length=100)
     city = models.CharField(_('city'), max_length=100)
@@ -319,7 +325,7 @@ class RegionalOffice(models.Model):
         verbose_name = _('regional office')
         verbose_name_plural = _('regional offices')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -339,6 +345,7 @@ class DrudgeManager(SearchManager):
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class Drudge(models.Model):
     STATES = [state[0] for state in STATE_CHOICES]
     STATE_CHOICES = zip(STATES, STATES)
@@ -421,7 +428,7 @@ class Drudge(models.Model):
 
     objects = DrudgeManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %s (%s)' % (
             self.user.first_name,
             self.user.last_name,
@@ -460,6 +467,7 @@ class AssignmentManager(SearchManager):
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class Assignment(models.Model):
     TENTATIVE = 10
     ARRANGED = 20
@@ -513,7 +521,7 @@ class Assignment(models.Model):
 
     objects = AssignmentManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s on %s (%s - %s)' % (
             self.drudge,
             self.specification.code,
@@ -768,6 +776,7 @@ class Assignment(models.Model):
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class AssignmentChange(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     assignment = models.ForeignKey(
@@ -784,7 +793,7 @@ class AssignmentChange(models.Model):
         verbose_name = _('assignment change')
         verbose_name_plural = _('assignment changes')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.assignment_description
 
 
@@ -887,6 +896,7 @@ class ExpenseReportManager(SearchManager):
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class ExpenseReport(models.Model):
     PENDING = 10
     FILLED = 20
@@ -963,7 +973,7 @@ class ExpenseReport(models.Model):
 
     objects = ExpenseReportManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s - %s' % (self.date_from, self.date_until)
 
     @property
@@ -1063,6 +1073,7 @@ class ExpenseReport(models.Model):
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class PublicHoliday(models.Model):
     name = models.CharField(_('name'), max_length=100)
     date = models.DateField(_('date'), unique=True)
@@ -1072,11 +1083,12 @@ class PublicHoliday(models.Model):
         verbose_name = _('public holiday')
         verbose_name_plural = _('public holidays')
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s (%s)' % (self.name, self.date)
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class CompanyHoliday(models.Model):
     date_from = models.DateField(_('date from'))
     date_until = models.DateField(_('date until'))
@@ -1092,7 +1104,7 @@ class CompanyHoliday(models.Model):
         verbose_name = _('company holiday')
         verbose_name_plural = _('company holidays')
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s - %s' % (self.date_from, self.date_until)
 
     def is_contained(self, day):
@@ -1106,6 +1118,7 @@ class WaitListManager(SearchManager):
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class WaitList(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'),
@@ -1127,7 +1140,7 @@ class WaitList(models.Model):
 
     objects = WaitListManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s - %s, %s days' % (
             self.assignment_date_from,
             self.assignment_date_until,
@@ -1136,6 +1149,7 @@ class WaitList(models.Model):
 
 
 @model_resource_urls(default='edit')
+@python_2_unicode_compatible
 class Assessment(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(
@@ -1151,7 +1165,7 @@ class Assessment(models.Model):
         verbose_name = _('internal assessment')
         verbose_name_plural = _('internal assessments')
 
-    def __unicode__(self):
+    def __str__(self):
         return ugettext('Mark %(mark)s for %(drudge)s') % {
             'mark': self.mark or '-',
             'drudge': self.drudge,
@@ -1167,6 +1181,7 @@ class CodewordManager(models.Manager):
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class Codeword(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     key = models.CharField(_('key'), max_length=10, db_index=True)
@@ -1180,11 +1195,12 @@ class Codeword(models.Model):
 
     objects = CodewordManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.codeword
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class JobReferenceTemplate(models.Model):
     title = models.CharField(_('title'), max_length=100)
     text = models.TextField(_('text'))
@@ -1194,7 +1210,7 @@ class JobReferenceTemplate(models.Model):
         verbose_name = _('job reference template')
         verbose_name_plural = _('job reference templates')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 
@@ -1205,6 +1221,7 @@ class JobReferenceManager(SearchManager):
 
 
 @model_resource_urls()
+@python_2_unicode_compatible
 class JobReference(models.Model):
     assignment = models.ForeignKey(
         Assignment, verbose_name=_('assignment'), related_name='jobreferences',
@@ -1219,7 +1236,7 @@ class JobReference(models.Model):
 
     objects = JobReferenceManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s: %s' % (self._meta.verbose_name, self.assignment)
 
     @models.permalink
