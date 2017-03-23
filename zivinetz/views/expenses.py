@@ -130,7 +130,7 @@ def generate_expense_statistics_pdf(reports):
         ).append(line)
 
     def _add_sum(reports, title=''):
-        transposed = zip(*reports)
+        transposed = list(zip(*reports))
         total = ['Total %s' % title, '', ''] + [
             sum(transposed[i], 0) for i in range(3, 18)]
         pdf.table([

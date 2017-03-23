@@ -346,7 +346,7 @@ def assignment_pdf(request, assignment_id):
 
     pdf.spacer(25 * mm)
     pdf.table(
-        zip(address, address), (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
+        list(zip(address, address)), (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
     pdf.spacer(40 * mm)
 
     pdf.p_markup(u'''
