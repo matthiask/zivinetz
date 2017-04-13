@@ -141,11 +141,11 @@ def generate_expense_statistics_pdf(reports):
 
     totals = []
 
-    for scope_statement, ss_data in data.iteritems():
+    for scope_statement, ss_data in data.items():
         pdf.h2(u'%s' % scope_statement)
         complete = []
 
-        for year_month, reports in ss_data.iteritems():
+        for year_month, reports in ss_data.items():
             title = date(year_month[0], year_month[1], 1).strftime('%B %Y')
             pdf.h3(title)
             pdf.spacer(2 * mm)

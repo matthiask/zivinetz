@@ -236,7 +236,9 @@ class Scheduler(object):
             ))
 
         # linearize assignments, but still give precedence to drudge
-        assignments = list(itertools.chain(*assignments_dict.values()))
+        assignments = list(itertools.chain.from_iterable(
+            assignments_dict.values()
+        ))
 
         waitlist = []
         if self.waitlist is not None:
@@ -258,7 +260,9 @@ class Scheduler(object):
                     waitlist.append(item)
 
             # linearize assignments with waitlist entries intermingled
-            assignments = list(itertools.chain(*assignments_dict.values()))
+            assignments = list(itertools.chain.from_iterable(
+                assignments_dict.values()
+            ))
 
         filtered_days_per_drudge_and_week = [
             (day, week)
