@@ -352,18 +352,28 @@ def assignment_pdf(request, assignment_id):
     pdf.p_markup(u'''
 Lieber Zivi<br /><br />
 
-Vielen Dank fürs Ausfüllen der Einsatzvereinbarung im Zivinetz! Du findest hier
-nun deine Einsatzvereinbarung sowie einige Hinweise zu deinem
-Zivildiensteinsatz beim Naturnetz. Bitte lies alles nochmals genau durch und
-überprüfe deine Daten auf Fehler. Wenn alles korrekt ist, unterschreibe die
-Einsatzvereinbarung und schicke diese ans Naturnetz. Die Naturnetz-Adresse
-ist oben aufgedruckt (passend für ein Fenstercouvert). Die Blätter mit den
-Hinweisen solltest du bei dir behalten und für deinen Zivildiensteinsatz
-aufbewahren. Die Adresse unten wird von uns benutzt, um die
-Einsatzvereinbarung an das Regionalzentrum weiterzuleiten.<br /><br />
+Vielen Dank fürs Erstellen deiner Einsatzvereinbarung! Du findest hier nun die
+Einsatzvereinbarung und einige Hinweise zum Einsatz beim Naturnetz. Bitte lies
+alles nochmals genau durch und überprüfe deine Daten auf Fehler. Wenn alles
+korrekt ist, unterschreibe die Einsatzvereinbarung und schicke diese ans
+Naturnetz. Die Naturnetz-Adresse ist oben aufgedruckt (passend für ein
+Fenstercouvert). Die Blätter mit den Hinweisen solltest du bei dir behalten und
+für deinen Zivildiensteinsatz aufbewahren. Mit deiner Unterschrift bestätigst
+du, dass du die Bestimmungen gelesen und akzeptiert hast. Die Adresse unten
+wird von uns benutzt, um die Einsatzvereinbarung an das Regionalzentrum
+weiterzuleiten.<br /><br />
+
+Bestätigung: Ich akzeptiere die internen Bestimmungen des Naturnetz (Beilagen
+zur Einsatzvereinbarung).<br /><br /><br /><br />
+
+_________________________________________<br />
+%s, %s<br /><br />
 
 Wir freuen uns auf deinen Einsatz!
-''')
+''' % (
+        date.today().strftime('%d.%m.%Y'),
+        assignment.drudge.user.get_full_name(),
+    ))
     pdf.spacer(50 * mm)
 
     address = u'\n'.join([
