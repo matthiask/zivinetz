@@ -347,7 +347,7 @@ def assignment_pdf(request, assignment_id):
     pdf.spacer(25 * mm)
     pdf.table(
         list(zip(address, address)), (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
-    pdf.spacer(40 * mm)
+    pdf.spacer(30 * mm)
 
     pdf.p_markup(u'''
 Lieber Zivi<br /><br />
@@ -374,7 +374,7 @@ Wir freuen uns auf deinen Einsatz!
         date.today().strftime('%d.%m.%Y'),
         assignment.drudge.user.get_full_name(),
     ))
-    pdf.spacer(50 * mm)
+    pdf.spacer(26 * mm)
 
     address = u'\n'.join([
         assignment.regional_office.name,
