@@ -22,14 +22,12 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 (_('scope statements'), 'admin/scope_statements/'),
                 (_('specifications'), 'admin/specifications/'),
                 (_('job references'), 'admin/jobreferences/'),
-                (_('photos'), 'photos/'),
                 (_('reporting'), 'reporting/'),
             ]
         else:
             urls = [
                 (_('dashboard'), 'dashboard/'),
                 (_('profile'), 'profile/'),
-                (_('photos'), 'photos/'),
             ]
 
         return [

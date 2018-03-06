@@ -15,7 +15,6 @@ Python-Module verwendet:
 - `towel-foundation <https://github.com/matthiask/towel-foundation/>`_
 - `PDFDocument <https://github.com/matthiask/pdfdocument/>`_ und somit
   `reportlab <http://www.reportlab.com/>`_
-- `feincms-photos <https://github.com/matthiask/feincms-photos/>`_
 - `FeinCMS <http://feincms.org>`_ für die Navigation
 
 Voraussetzung für den Betrieb des Zivinetz ist Python 2.7 und Django 1.7.

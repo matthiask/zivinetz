@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from django.views import generic
 
 from zivinetz.views import (
-    drudge, expenses, home, scheduling, reporting, quota, photos
+    drudge, expenses, home, scheduling, reporting, quota
 )
 
 
@@ -32,7 +32,4 @@ urlpatterns = [
     url(r'^reporting/assignmentchanges/$', reporting.assignmentchange_list),
 
     url(r'^expense_statistics_pdf/$', expenses.expense_statistics_pdf),
-
-    url(r'^photos/', include(photos.album_views.urls)),
-    url(r'^photos/(?P<album_id>\d+)/p/', include(photos.photo_views.urls)),
 ]
