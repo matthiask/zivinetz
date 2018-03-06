@@ -150,7 +150,7 @@ class AdminViewsTestCase(TestCase):
 
         attachment = mail.outbox[0].attachments[0]
         self.assertEqual(attachment[0], 'requirements.txt')
-        self.assertIn('Django==', attachment[1])
+        self.assertIn('Django', attachment[1])
 
     def test_drudge_detail(self):
         admin_login(self)
