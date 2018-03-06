@@ -357,11 +357,11 @@ Einsatzvereinbarung und einige Hinweise zum Einsatz beim Naturnetz. Bitte lies
 alles nochmals genau durch und überprüfe deine Daten auf Fehler. Wenn alles
 korrekt ist, unterschreibe die Einsatzvereinbarung und schicke diese ans
 Naturnetz. Die Naturnetz-Adresse ist oben aufgedruckt (passend für ein
-Fenstercouvert). Die Blätter mit den Hinweisen solltest du bei dir behalten und
-für deinen Zivildiensteinsatz aufbewahren. Mit deiner Unterschrift bestätigst
-du, dass du die Bestimmungen gelesen und akzeptiert hast. Die Adresse unten
-wird von uns benutzt, um die Einsatzvereinbarung an das Regionalzentrum
-weiterzuleiten.<br /><br />
+Fenstercouvert). Die Blätter mit den Hinweisen solltest du bei dir behalten
+und für deinen Zivildiensteinsatz aufbewahren. Mit deiner Unterschrift
+bestätigst du, dass du die Bestimmungen gelesen und akzeptiert hast. Die
+Adresse unten wird von uns benutzt, um die Einsatzvereinbarung an das
+Regionalzentrum weiterzuleiten.<br /><br />
 
 Bestätigung: Ich akzeptiere die internen Bestimmungen des Naturnetz (Beilagen
 zur Einsatzvereinbarung).<br /><br /><br /><br />

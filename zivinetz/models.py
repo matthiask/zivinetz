@@ -1008,7 +1008,7 @@ class ExpenseReport(models.Model):
         # spending_money, accomodation, breakfast, lunch, supper, total
 
         def line(title, day_type, days):
-            l = [
+            line = [
                 compensation['spending_money'],
                 compensation['accomodation_%s' % day_type],
                 compensation['breakfast_%s' % day_type],
@@ -1016,7 +1016,7 @@ class ExpenseReport(models.Model):
                 compensation['supper_%s' % day_type],
             ]
 
-            return [u'%s %s' % (days, title)] + l + [sum(l) * days]
+            return [u'%s %s' % (days, title)] + line + [sum(line) * days]
 
         ret = [[
             '',
@@ -1122,7 +1122,7 @@ class WaitListManager(SearchManager):
 class WaitList(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'),
-            on_delete=models.CASCADE)
+                               on_delete=models.CASCADE)
 
     specification = models.ForeignKey(
         Specification, verbose_name=_('specification'),
