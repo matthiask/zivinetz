@@ -8,4 +8,4 @@ install:
   - pip install -r tests/requirements.txt
   - python setup.py install
 # command to run tests, e.g. python setup.py test
-script: "cd tests && ./manage.py test testapp"
+script: "cd tests && ./manage.py test testapp -v2"
