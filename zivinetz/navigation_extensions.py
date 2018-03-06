@@ -14,7 +14,6 @@ class ZivinetzNavigationExtension(NavigationExtension):
         if request.user.is_authenticated and request.user.is_staff:
             urls = [
                 (_('scheduling'), 'admin/scheduling/'),
-                (_('waitlist'), 'admin/waitlist/'),
                 (_('drudges'), 'admin/drudges/'),
                 (_('assignments'), 'admin/assignments/'),
                 (_('expense reports'), 'admin/expense_reports/'),

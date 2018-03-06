@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.test import TestCase
 
-from zivinetz.models import Assignment, AssignmentChange, WaitList
+from zivinetz.models import Assignment, AssignmentChange
 
 from testapp.tests import factories
 
@@ -135,27 +135,3 @@ class DrudgeViewsTestCase(TestCase):
             response['content-disposition'],
             'attachment; filename="expense-report-%d.pdf"' % report.id)
         self.assertTrue(len(response.content))
-
-    def test_create_waitlist_as_drudge(self):
-        drudge = factories.DrudgeFactory.create()
-        self.client.login(username=drudge.user.username, password='test')
-
-        factories.CodewordFactory.create(key='warteliste', codeword='blaeu')
-
-        data = {
-            'waitlist': '1',
-            'specification': factories.SpecificationFactory.create().id,
-            'assignment_date_from': date.today(),
-            'assignment_date_until': date.today() + timedelta(days=60),
-            'assignment_duration': 42,
-            'codeword': 'blaeu',
-        }
-
-        response = self.client.post('/zivinetz/dashboard/', data)
-        self.assertRedirects(
-            response,
-            '/zivinetz/dashboard/',
-            fetch_redirect_response=False)
-
-        waitlist = WaitList.objects.get()
-        self.assertEqual(waitlist.assignment_duration, 42)

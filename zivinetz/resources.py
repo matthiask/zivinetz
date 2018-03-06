@@ -22,11 +22,10 @@ from pdfdocument.utils import pdf_response
 from zivinetz.forms import (
     AssignmentSearchForm, SpecificationForm, DrudgeSearchForm, AssessmentForm,
     ExpenseReportSearchForm, EditExpenseReportForm, JobReferenceForm,
-    JobReferenceSearchForm, WaitListSearchForm)
+    JobReferenceSearchForm)
 from zivinetz.models import (
     Assessment, Assignment, Drudge, ExpenseReport, RegionalOffice,
-    ScopeStatement, Specification, WaitList, JobReferenceTemplate,
-    JobReference)
+    ScopeStatement, Specification, JobReferenceTemplate, JobReference)
 from zivinetz.views.expenses import generate_expense_statistics_pdf
 
 
@@ -495,13 +494,6 @@ jobreference_url = resource_url_fn(
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(JobReference,),
 )
-waitlist_url = resource_url_fn(
-    WaitList,
-    mixins=(ZivinetzMixin,),
-    decorators=(staff_member_required,),
-    deletion_cascade_allowed=(WaitList,),
-    send_emails_selector='drudge__user__email',
-)
 
 
 urlpatterns = [
@@ -629,20 +621,6 @@ urlpatterns = [
                 view=JobReferenceFromTemplateView,
                 url=r'^(\d+)/(\d+)/$',
             ),
-        ])
-    ),
-    url(
-        r'^waitlist/',
-        include([
-            waitlist_url(
-                'list',
-                url=r'^$',
-                paginate_by=50,
-                search_form=WaitListSearchForm,
-                ),
-            waitlist_url('detail', url=r'^(?P<pk>\d+)/$'),
-            waitlist_url('edit'),
-            waitlist_url('delete'),
         ])
     ),
 ]

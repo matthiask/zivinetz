@@ -1111,43 +1111,6 @@ class CompanyHoliday(models.Model):
         return self.date_from <= day <= self.date_until
 
 
-class WaitListManager(SearchManager):
-    search_fields = [
-        'specification__scope_statement__name', 'specification__code', 'notes',
-    ] + ['drudge__%s' % f for f in DrudgeManager.search_fields]
-
-
-@model_resource_urls()
-@python_2_unicode_compatible
-class WaitList(models.Model):
-    created = models.DateTimeField(_('created'), default=datetime.now)
-    drudge = models.ForeignKey(Drudge, verbose_name=_('drudge'),
-                               on_delete=models.CASCADE)
-
-    specification = models.ForeignKey(
-        Specification, verbose_name=_('specification'),
-        on_delete=models.CASCADE)
-    assignment_date_from = models.DateField(_('available from'))
-    assignment_date_until = models.DateField(_('available until'))
-    assignment_duration = models.PositiveIntegerField(_('duration in days'))
-
-    notes = models.TextField(_('notes'), blank=True)
-
-    class Meta:
-        ordering = ['created']
-        verbose_name = _('waitlist')
-        verbose_name_plural = _('waitlist')
-
-    objects = WaitListManager()
-
-    def __str__(self):
-        return u'%s - %s, %s days' % (
-            self.assignment_date_from,
-            self.assignment_date_until,
-            self.assignment_duration,
-        )
-
-
 @model_resource_urls(default='edit')
 @python_2_unicode_compatible
 class Assessment(models.Model):

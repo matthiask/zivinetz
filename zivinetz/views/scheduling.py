@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy
 
 from towel.forms import SearchForm
 
-from zivinetz.models import Assignment, ScopeStatement, WaitList, DrudgeQuota
+from zivinetz.models import Assignment, ScopeStatement, DrudgeQuota
 
 
 # Calendar week calculation according to ISO 8601
@@ -68,7 +68,6 @@ class Scheduler(object):
     def __init__(self, assignments, date_range):
         self.queryset = assignments
         self.date_range = date_range
-        self.waitlist = None
 
         self.date_from = _monday(date_range[0])
         self.date_until = date_range[1]
@@ -87,25 +86,6 @@ class Scheduler(object):
             self.drudge_days_per_week.setdefault(
                 calendar_week(day),
                 (day, defaultdict(lambda: 0)))
-
-    def add_waitlist(self, queryset):
-        self.waitlist = queryset
-
-        if not self.queryset.exists() and self.waitlist.exists():
-            max_min = self.waitlist.aggregate(
-                min=Min('assignment_date_from'),
-                max=Max('assignment_date_until'))
-
-            self.date_from = max_min['min']
-            self.date_until = max_min['max']
-
-            if self.date_from:  # Is None if no assignments in queryset
-                self.week_count = (
-                    self.date_until - self.date_from).days // 7 + 1
-
-                self.date_slice = slice(
-                    max(0, (self.date_range[0] - self.date_from).days // 7),
-                    (self.date_range[1] - self.date_from).days // 7 + 2)
 
     def weeks(self):
         ret = []
@@ -240,30 +220,6 @@ class Scheduler(object):
             assignments_dict.values()
         ))
 
-        waitlist = []
-        if self.waitlist is not None:
-            for entry in self.waitlist.select_related(
-                'specification__scope_statement',
-                'drudge__user',
-            ).order_by('assignment_date_from'):
-                entry.status = 'wl'  # special waitlist entry status
-                item = (
-                    entry,
-                    self._schedule_assignment(
-                        entry.assignment_date_from,
-                        entry.assignment_date_until),
-                )
-
-                if entry.drudge in assignments_dict:
-                    assignments_dict[entry.drudge].append(item)
-                else:
-                    waitlist.append(item)
-
-            # linearize assignments with waitlist entries intermingled
-            assignments = list(itertools.chain.from_iterable(
-                assignments_dict.values()
-            ))
-
         filtered_days_per_drudge_and_week = [
             (day, week)
             for day, week in self.drudge_days_per_week.values()
@@ -354,7 +310,7 @@ class Scheduler(object):
             ],
         ]
 
-        return waitlist + assignments
+        return assignments
 
 
 def _monday(day):
@@ -368,7 +324,6 @@ class SchedulingSearchForm(SearchForm):
             date.today()) + timedelta(days=35 * 7 + 4),
         'status': (
             Assignment.TENTATIVE, Assignment.ARRANGED, Assignment.MOBILIZED),
-        'mode': 'both',
     }
 
     specification__scope_statement = forms.ModelMultipleChoiceField(
@@ -395,17 +350,11 @@ class SchedulingSearchForm(SearchForm):
     drudge__driving_license = forms.NullBooleanField(
         label=ugettext_lazy('driving license'), required=False)
 
-    mode = forms.ChoiceField(label=ugettext_lazy('Mode'), choices=(
-        ('both', ugettext_lazy('both')),
-        ('assignments', ugettext_lazy('only assignments')),
-        ('waitlist', ugettext_lazy('only waitlist entries')),
-    ), required=False)
-
     def queryset(self):
         data = self.safe_cleaned_data
         queryset = self.apply_filters(
             Assignment.objects.search(data.get('query')),
-            data, exclude=('mode', 'date_until__gte'))
+            data, exclude=('date_until__gte',))
         if data.get('date_until__gte'):
             queryset = queryset.filter(
                 Q(
@@ -418,17 +367,6 @@ class SchedulingSearchForm(SearchForm):
             )
         return queryset
 
-    def waitlist_queryset(self):
-        data = self.safe_cleaned_data
-        return self.apply_filters(WaitList.objects.search(data.get('query')), {
-            'specification__scope_statement': data.get(
-                'specification__scope_statement'),
-            'specification__with_accomodation': data.get(
-                'specification__with_accomodation'),
-            'assignment_date_until__gte': data.get('date_until__gte'),
-            'assignment_date_from__lte': data.get('date_from__lte'),
-        })
-
 
 @staff_member_required
 def scheduling(request):
@@ -440,15 +378,7 @@ def scheduling(request):
     if not all(date_range):
         return HttpResponseRedirect('?clear=1')
 
-    mode = search_form.safe_cleaned_data.get('mode')
-
-    if mode != 'waitlist':
-        scheduler = Scheduler(search_form.queryset(), date_range)
-    else:
-        scheduler = Scheduler(search_form.queryset().none(), date_range)
-
-    if mode != 'assignments':
-        scheduler.add_waitlist(search_form.waitlist_queryset())
+    scheduler = Scheduler(search_form.queryset(), date_range)
 
     scheduler.add_quotas(
         with_accomodation=search_form.safe_cleaned_data.get(

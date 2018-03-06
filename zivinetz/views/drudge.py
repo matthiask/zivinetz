@@ -10,8 +10,7 @@ from django.utils.translation import ugettext_lazy, ugettext as _
 
 from towel.forms import towel_formfield_callback
 
-from zivinetz.models import (
-    Drudge, ExpenseReport, Assignment, WaitList, Codeword)
+from zivinetz.models import Drudge, ExpenseReport, Assignment, Codeword
 from zivinetz.views.decorators import drudge_required
 
 
@@ -43,33 +42,6 @@ class AssignmentForm(forms.ModelForm):
         return data
 
 
-class WaitListForm(forms.ModelForm):
-    codeword = forms.CharField(label=ugettext_lazy('Codeword'))
-
-    formfield_callback = towel_formfield_callback
-
-    class Meta:
-        model = WaitList
-        exclude = ('drudge', 'created')
-
-    def clean_codeword(self):
-        codeword = self.cleaned_data.get('codeword')
-        if codeword != Codeword.objects.word(key='warteliste'):
-            raise forms.ValidationError(_('Codeword is incorrect.'))
-        return codeword
-
-    def clean(self):
-        data = super(WaitListForm, self).clean()
-
-        if (data.get('assignment_date_from')
-                and data.get('assignment_date_until')):
-            if (data['assignment_date_from'] >= data['assignment_date_until']
-                    or data['assignment_date_from'] < date.today()):
-                raise forms.ValidationError(_('Date period is invalid.'))
-
-        return data
-
-
 @drudge_required
 def dashboard(request, drudge):
     aform_initial = {
@@ -77,7 +49,6 @@ def dashboard(request, drudge):
     }
 
     aform = AssignmentForm(initial=aform_initial)
-    wform = WaitListForm()
 
     if request.method == 'POST':
         if 'assignment' in request.POST:
@@ -91,29 +62,16 @@ def dashboard(request, drudge):
 
                 return HttpResponseRedirect(request.path)
 
-        if 'waitlist' in request.POST:
-            wform = WaitListForm(request.POST)
-            if wform.is_valid():
-                waitlist = wform.save(commit=False)
-                waitlist.drudge = drudge
-                waitlist.save()
-                messages.success(
-                    request, _('Successfully saved new waitlist entry.'))
-
-                return HttpResponseRedirect(request.path)
-
     return render(request, 'zivinetz/drudge_dashboard.html', {
         'drudge': drudge,
 
         'assignment_form': aform,
-        'waitlist_form': wform,
 
         'assignments': drudge.assignments.order_by('-date_from'),
         'expense_reports': ExpenseReport.objects.filter(
             assignment__drudge=drudge,
             status__in=(ExpenseReport.FILLED, ExpenseReport.PAID),
         ).order_by('-date_from'),
-        'waitlist': WaitList.objects.filter(drudge=drudge),
     })
 
 

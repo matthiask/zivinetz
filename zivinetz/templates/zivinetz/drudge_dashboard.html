@@ -36,35 +36,6 @@
 </table>
 
 
-<h2>{% trans "waitlist"|capfirst %}</h2>
-<table class="objects">
-    <thead>
-        <tr>
-            <th>{% trans "date period"|capfirst %}</th>
-            <th>{% trans "specification"|capfirst %}</th>
-            <th>{% trans "duration in days"|capfirst %}</th>
-            <th>{% trans "created"|capfirst %}</th>
-            <th>{% trans "notes"|capfirst %}</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for object in waitlist %}
-        <tr>
-            <th>{{ object.assignment_date_from|date:"d.m.Y" }} - {{ object.assignment_date_until|date:"d.m.Y" }}</th>
-            <td title="{{ object.specification }}">{{ object.specification.code }}</td>
-            <td>{{ object.assignment_duration }}</td>
-            <td>{{ object.created|date:"d.m.Y" }}</td>
-            <td>{{ object.notes }}</td>
-        </tr>
-    {% empty %}
-        <tr>
-            <td colspan="5"><strong>{% trans "No items yet." %}</strong></td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-
 <h2>{% trans "expense reports"|capfirst %}</h2>
 
 <table class="objects">
@@ -104,16 +75,6 @@
         <input type="hidden" name="assignment" value="1" />
         {% form_errors assignment_form %}
         <table>{% form_items assignment_form %}</table>
-        <input type="submit" class="button" />
-    </form>
-</td>
-
-<td>
-    <h2>{% trans "New waitlist entry" %}</h2>
-    <form action="." method="post">{% csrf_token %}
-        <input type="hidden" name="waitlist" value="1" />
-        {% form_errors waitlist_form %}
-        <table>{% form_items waitlist_form %}</table>
         <input type="submit" class="button" />
     </form>
 </td>

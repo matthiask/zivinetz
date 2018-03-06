@@ -105,14 +105,6 @@ Text des Arbeitszeugnisses kann anschliessend individuell nachbearbeitet
 werden.
 
 
-Warteliste
-~~~~~~~~~~
-
-Auf der Warteliste können sich Zivis selbst eintragen. Die Warteliste wird
-verwendet, wenn für einen bestimmten Zeitraum zuwenige Einsatzvereinbarungen
-mit Zivis vorhanden sind. Dazu wird das Model ``WaitList`` verwendet.
-
-
 Spesen
 ------
 
@@ -167,7 +159,6 @@ werden kann dass sich Zivis selbst eintragen ohne vorher mindestens Kontakt
 mit dem Betrieb aufgenommen zu haben. Aktuell werden die Codewörter an
 folgenden Stellen verwendet:
 
-- ``warteliste``: Bei der Erstellung eines Wartelisteneintrags
 - ``einsatz``: Bei der Erstellung einer provisorischen Einsatzvereinbarung
 
 Sofern das Codewort nicht definiert ist, wird ein leeres verwendet (was bei

@@ -151,12 +151,6 @@ admin.site.register(
 )
 
 admin.site.register(
-    models.WaitList,
-    list_display=('created', 'drudge', str_method),
-    raw_id_fields=('drudge',),
-)
-
-admin.site.register(
     models.Codeword,
     list_display=('key', 'codeword', 'created'),
     list_filter=('key',),

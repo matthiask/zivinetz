@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 from zivinetz.models import (
     ScopeStatement, Specification, CompensationSet, RegionalOffice, Drudge,
-    Assignment, ExpenseReport, PublicHoliday, CompanyHoliday, WaitList,
+    Assignment, ExpenseReport, PublicHoliday, CompanyHoliday,
     Assessment, Codeword, JobReferenceTemplate, JobReference)
 
 
@@ -138,20 +138,6 @@ class CompanyHolidayFactory(factory.DjangoModelFactory):
         model = CompanyHoliday
 
 
-class WaitListFactory(factory.DjangoModelFactory):
-    drudge = factory.SubFactory(DrudgeFactory)
-    specification = factory.SubFactory(SpecificationFactory)
-    assignment_date_from = factory.fuzzy.FuzzyDate(
-        date(2012, 1, 1), date.today() + timedelta(days=500))
-    assignment_date_until = factory.LazyAttribute(
-        lambda o: o.assignment_date_from + timedelta(random.randint(30, 365)))
-    assignment_duration = factory.LazyAttribute(
-        lambda o: (o.assignment_date_until - o.assignment_date_from).days)
-
-    class Meta:
-        model = WaitList
-
-
 class AssessmentFactory(factory.DjangoModelFactory):
     drudge = factory.SubFactory(DrudgeFactory)
 
@@ -160,8 +146,8 @@ class AssessmentFactory(factory.DjangoModelFactory):
 
 
 class CodewordFactory(factory.DjangoModelFactory):
-    key = factory.Iterator(['register', 'warteliste', 'einsatz'])
-    codeword = factory.Iterator(['velo', 'demo', 'lustig'])
+    key = factory.Iterator(['register', 'einsatz'])
+    codeword = factory.Iterator(['velo', 'lustig'])
 
     class Meta:
         model = Codeword
