@@ -112,7 +112,7 @@ class AssignmentSearchForm(SearchForm):
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
 
     status = forms.MultipleChoiceField(
-        Assignment.STATUS_CHOICES, label=_('status'), required=False)
+        choices=Assignment.STATUS_CHOICES, label=_('status'), required=False)
 
     def queryset(self, model):
         query, data = self.query_data()
@@ -153,10 +153,10 @@ class ExpenseReportSearchForm(SearchForm):
             queryset=ScopeStatement.objects.all(),
             label=_('scope statement'), required=False)
     assignment__status = forms.MultipleChoiceField(
-        Assignment.STATUS_CHOICES,
+        choices=Assignment.STATUS_CHOICES,
         label=_('assignment status'), required=False)
     status = forms.MultipleChoiceField(
-        ExpenseReport.STATUS_CHOICES, label=_('status'),
+        choices=ExpenseReport.STATUS_CHOICES, label=_('status'),
         required=False)
     date_from__gte = forms.DateField(
         label=_('date from'),
