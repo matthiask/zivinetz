@@ -72,7 +72,7 @@ class DrudgeViewsTestCase(TestCase):
             'data',
             '3-0.jpg')
 
-        with open(path) as image, ContentFile(image.read()) as cf:
+        with open(path, 'rb') as image, ContentFile(image.read()) as cf:
             user.drudge.profile_image.save('profile.jpg', cf)
 
         response = self.client.get('/zivinetz/dashboard/')

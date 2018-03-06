@@ -190,7 +190,7 @@ class ExampleAssignmentsTestCase(TestCase):
             date_from=date(2010, 12, 25),
             date_until=date(2011, 1, 2),
         )
-        cf.applies_to = ScopeStatement.objects.all()
+        cf.applies_to.set(ScopeStatement.objects.all())
 
         assignment.generate_expensereports()
         reports = list(assignment.reports.all())
@@ -253,7 +253,7 @@ class ExampleAssignmentsTestCase(TestCase):
             date_from=date(2012, 12, 22),
             date_until=date(2013, 1, 13),
         )
-        cf.applies_to = ScopeStatement.objects.all()
+        cf.applies_to.set(ScopeStatement.objects.all())
 
         assignment.generate_expensereports()
         reports = list(assignment.reports.all())

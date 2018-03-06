@@ -27,4 +27,4 @@ def admin_login(testcase):
             is_staff=True,
             is_superuser=True,
         )
-    testcase.client.login(username=testcase.admin.username, password='test')
+    testcase.client.force_login(testcase.admin)

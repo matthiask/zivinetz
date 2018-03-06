@@ -73,7 +73,7 @@ class ExpenseReportsAdminViewsTestCase(TestCase):
 
         self.assertRedirects(
             response,
-            'http://testserver%s' % report.urls.url('detail'))
+            report.urls.url('detail'))
 
         self.assertEqual(
             get_messages(response),

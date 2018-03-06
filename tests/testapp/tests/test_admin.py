@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 from datetime import date, timedelta
 
 from django.core import mail
-from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.urls import reverse
 
 from zivinetz.models import Assignment, Drudge, JobReference
 
@@ -18,15 +18,15 @@ class AdminViewsTestCase(TestCase):
     def test_admin_views(self):
         self.assertRedirects(
             self.client.get('/zivinetz/admin/'),
-            'http://testserver/admin/login/?next=/zivinetz/admin/')
+            '/admin/login/?next=/zivinetz/admin/')
         self.assertRedirects(
             self.client.get('/zivinetz/admin/scheduling/'),
-            'http://testserver/admin/login/?next=/zivinetz/admin/scheduling/')
+            '/admin/login/?next=/zivinetz/admin/scheduling/')
 
         admin_login(self)
         self.assertRedirects(
             self.client.get('/zivinetz/'),
-            'admin/',
+            '/zivinetz/admin/',
             fetch_redirect_response=False)
 
     def test_deletion(self):
@@ -190,7 +190,7 @@ class AdminViewsTestCase(TestCase):
         url = drudge.urls.url('picker')
         self.assertRedirects(
             self.client.get(url),
-            'http://testserver/admin/login/'
+            '/admin/login/'
             '?next=/zivinetz/admin/drudges/picker/')
 
         admin_login(self)
