@@ -11,7 +11,7 @@ class ZivinetzNavigationExtension(NavigationExtension):
     def children(self, page, **kwargs):
         request = kwargs.get('request')
 
-        if request.user.is_authenticated() and request.user.is_staff:
+        if request.user.is_authenticated and request.user.is_staff:
             urls = [
                 (_('scheduling'), 'admin/scheduling/'),
                 (_('waitlist'), 'admin/waitlist/'),
