@@ -105,7 +105,7 @@ class AssessmentForm(forms.ModelForm):
             drudge = self.instance.drudge
         assignments = drudge.assignments.all()
         self.fields['assignment'].queryset = assignments
-        if assignments:
+        if assignments and not self.data:
             try:
                 self.fields['assignment'].initial = [
                     assignment.id for assignment in assignments
