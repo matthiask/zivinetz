@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import ugettext_lazy, ugettext as _
 
+import schwifty
 from towel.forms import towel_formfield_callback
 
 from zivinetz.models import Drudge, ExpenseReport, Assignment, Codeword
@@ -100,6 +101,15 @@ class DrudgeForm(forms.ModelForm):
     class Meta:
         model = Drudge
         exclude = ('user', 'internal_notes')
+
+    def clean_bank_account(self):
+        value = self.cleaned_data.get('bank_account')
+        if value:
+            try:
+                schwifty.IBAN(value)
+            except ValueError as exc:
+                raise forms.ValidationError(exc)
+        return value
 
     def clean_environment_course(self):
         value = self.cleaned_data.get('environment_course')

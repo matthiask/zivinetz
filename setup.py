@@ -45,4 +45,11 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     zip_safe=False,
+    install_requires=[
+        'schwifty',
+        'Pillow',
+        'PyPDF2',
+        'towel',
+        'towel-foundation',
+    ],
 )
