@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms
 from django.db.models import Avg, Q
 from django.utils.translation import ugettext_lazy as _
@@ -101,7 +103,16 @@ class AssessmentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if drudge is None:
             drudge = self.instance.drudge
-        self.fields['assignment'].queryset = drudge.assignments.all()
+        assignments = drudge.assignments.all()
+        self.fields['assignment'].queryset = assignments
+        if assignments:
+            try:
+                self.fields['assignment'].initial = [
+                    assignment.id for assignment in assignments
+                    if assignment.date_from < date.today()
+                ][0]
+            except IndexError:
+                pass
 
 
 class AssignmentSearchForm(SearchForm):
