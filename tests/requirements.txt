@@ -8,5 +8,6 @@ Pillow
 PyPDF2
 pytz
 reportlab
+schwifty
 towel
 towel-foundation
