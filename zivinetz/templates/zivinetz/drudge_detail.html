@@ -1,7 +1,7 @@
 {% extends "resources/object_detail.html" %}
 
 {% load i18n modelview_detail modelview_list towel_form_tags %}
-{% load feincms_thumbnail %}
+{% load feincms_thumbnail zivinetz_tags %}
 
 {% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
 
@@ -92,11 +92,12 @@
       <th>{% trans "specification"|capfirst %}</th>
       <th>{% trans "created"|capfirst %}</th>
       <th>{% trans "status"|capfirst %}</th>
+      <th>{% trans "mark" %}</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
-  {% for object in object.assignments.all %}
+  {% for object in object.assignments.all|mark_average %}
     <tr>
       <th>
         <a href="{{ object.get_absolute_url }}">
@@ -106,6 +107,7 @@
       <td title="{{ object.specification }}">{{ object.specification.code }}</td>
       <td>{{ object.created|date:"d.m.Y" }}</td>
       <td>{{ object.get_status_display }}</td>
+      <td>{{ object.mark_average|default:"&ndash;" }}</td>
       <td>{{ object.admin_pdf_url|safe }}</td>
     </tr>
   {% endfor %}
@@ -113,11 +115,10 @@
 </table>
 
 <h2>{% trans "internal assessments" %}</h2>
-<form action="." method="post">
-  {% csrf_token %}
 <table>
   <thead>
     <tr>
+      <th>{% trans "created by" %}</th>
       <th>{% trans "comment" %}</th>
       <th>{% trans "mark" %}</th>
       <th>{% trans "created" %}</th>
@@ -125,9 +126,18 @@
     </tr>
   </thead>
   <tbody>
-  {% for assessment in object.assessments.all %}
+  {% for assessment in object.assessments.select_related %}
     <tr>
-      <td>{{ assessment.comment|default:"&ndash;"|linebreaksbr }}</td>
+      <td>{{ assessment.created_by|default:"&ndash;" }}</td>
+      <td>
+        {% if assessment.assignment %}
+          Betrifft
+          <a href="{{ assessment.assignment.get_absolute_url }}">
+            {{ assessment.assignment }}
+          </a><br>
+        {% endif %}
+        {{ assessment.comment|default:"&ndash;"|linebreaksbr }}
+      </td>
       <td>{{ assessment.mark|default:"&ndash;" }}</td>
       <td>{{ assessment.created|date:"d.m.Y" }}</td>
       <td>
@@ -137,18 +147,15 @@
     </tr>
   {% endfor %}
     <tr>
-      <td>
-        {% form_item assessment_form.comment %}
+      <td colspan="6">
+        <form action="." method="post">
+          <h3>Bewertung erstellen</h3>
+          {% csrf_token %}
+          {% form_items assessment_form %}
+          <button type="submit">{% trans "Save" %}</button>
+        </form>
       </td>
-      <td>
-        {% form_item assessment_form.mark %}
-      </td>
-      <td>
-        <button type="submit">{% trans "Save" %}</button>
-      </td>
-      <td></td>
     </tr>
   </tbody>
 </table>
-</form>
 {% endblock %}

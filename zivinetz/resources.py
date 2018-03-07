@@ -154,15 +154,21 @@ class DrudgeDetailView(resources.DetailView):
         self.object = self.get_object()
         context = self.get_context_data(
             object=self.object,
-            assessment_form=AssessmentForm(),
+            assessment_form=AssessmentForm(
+                drudge=self.object,
+            ),
         )
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = AssessmentForm(request.POST)
+        form = AssessmentForm(
+            request.POST,
+            drudge=self.object,
+        )
         if form.is_valid():
             assessment = form.save(commit=False)
+            assessment.created_by = request.user
             assessment.drudge = self.object
             assessment.save()
         else:

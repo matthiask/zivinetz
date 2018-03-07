@@ -91,7 +91,15 @@ class DrudgeSearchForm(SearchForm):
 class AssessmentForm(forms.ModelForm):
     class Meta:
         model = Assessment
-        fields = ('mark', 'comment')
+        fields = ('assignment', 'mark', 'comment')
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        drudge = kwargs.pop('drudge')
+        super().__init__(*args, **kwargs)
+        self.fields['assignment'].queryset = drudge.assignments.all()
 
 
 class AssignmentSearchForm(SearchForm):
