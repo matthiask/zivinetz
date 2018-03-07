@@ -167,11 +167,10 @@ onReady.push(function($) {
 
 <h2>Zivi-Bedarf erfassen
     <small style="font-size:70%">(
-        <a href="quotas/2016/">2016</a> /
-        <a href="quotas/2017/">2017</a> /
-        <a href="quotas/2018/">2018</a> /
-        <a href="quotas/2019/">2019</a> /
-        <a href="quotas/2020/">2020</a>
+        {% for year in years %}
+          <a href="quotas/{{ year }}/">{{ year }}</a>
+          {% if not forloop.last %}/{% endif %}
+        {% endfor %}
     )</small>
 </h2>
 
