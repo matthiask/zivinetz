@@ -389,7 +389,10 @@ def scheduling(request):
         ),
     )
 
+    year = date.today().year
+
     return render(request, 'zivinetz/scheduling.html', {
         'scheduler': scheduler,
         'search_form': search_form,
+        'years': range(year, year + 4),
     })
