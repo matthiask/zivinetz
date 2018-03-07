@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db import models
 from django.db.models import Q, signals
+from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _, ugettext
 
@@ -724,9 +725,8 @@ class Assignment(models.Model):
 
         return assignment_days, monthly_expense_days, expenses
 
-    @models.permalink
     def pdf_url(self):
-        return ('zivinetz_assignment_pdf', (self.pk,), {})
+        return reverse('zivinetz_assignment_pdf', args=(self.pk,))
 
     def admin_pdf_url(self):
         return u'<a href="%s">PDF</a>' % self.pdf_url()
@@ -982,9 +982,8 @@ class ExpenseReport(models.Model):
             self.working_days + self.free_days + self.sick_days
             + self.holi_days + self.forced_leave_days)
 
-    @models.permalink
     def pdf_url(self):
-        return ('zivinetz_expensereport_pdf', (self.pk,), {})
+        return reverse('zivinetz_expensereport_pdf', args=(self.pk,))
 
     def recalculate_total(self, save=True):
         _n1, _n2, self.total = self.compensations()
@@ -1202,6 +1201,5 @@ class JobReference(models.Model):
     def __str__(self):
         return u'%s: %s' % (self._meta.verbose_name, self.assignment)
 
-    @models.permalink
     def pdf_url(self):
-        return ('zivinetz_reference_pdf', (self.pk,), {})
+        return reverse('zivinetz_reference_pdf', args=(self.pk,))
