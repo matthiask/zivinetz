@@ -380,7 +380,7 @@ class Drudge(models.Model):
 
     bank_account = models.CharField(
         _('bank account'), max_length=100,
-        help_text=_('Either enter your IBAN.'))
+        help_text=_('Enter your IBAN.'))
 
     health_insurance_company = models.CharField(
         _('health insurance company'), max_length=100, blank=True)
