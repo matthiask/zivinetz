@@ -97,8 +97,10 @@ class AssessmentForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        drudge = kwargs.pop('drudge')
+        drudge = kwargs.pop('drudge', None)
         super().__init__(*args, **kwargs)
+        if drudge is None:
+            drudge = self.instance.drudge
         self.fields['assignment'].queryset = drudge.assignments.all()
 
 
