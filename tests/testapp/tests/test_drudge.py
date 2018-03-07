@@ -44,7 +44,7 @@ class DrudgeViewsTestCase(TestCase):
             'date_of_birth': '1980-01-01',
             'place_of_citizenship_city': 'Zürich',
             'place_of_citizenship_state': 'ZH',
-            'bank_account': 'CH77-12345',
+            'bank_account': 'GB29 NWBK 6016 1331 9268 19',
             'regional_office': factories.RegionalOfficeFactory.create().id,
         }
 
