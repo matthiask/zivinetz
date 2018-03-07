@@ -126,6 +126,7 @@ admin.site.register(
     list_display=(
         'created', 'assignment_description', 'changed_by', 'changes'),
     list_filter=('changed_by',),
+    raw_id_fields=('assignment',),
 )
 
 admin.site.register(
