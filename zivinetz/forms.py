@@ -82,7 +82,10 @@ class DrudgeSearchForm(SearchForm):
             )
 
         return self.apply_ordering(queryset, data.get('o')).transform(
-            add_last_assignment_and_mark)
+            add_last_assignment_and_mark,
+        ).select_related(
+            'user',
+        )
 
 
 class AssessmentForm(forms.ModelForm):
@@ -140,7 +143,10 @@ class AssignmentSearchForm(SearchForm):
                 & Q(date_until__gte=data.get('service_between'))
             )
 
-        return self.apply_ordering(queryset, data.get('o'))
+        return self.apply_ordering(queryset, data.get('o')).select_related(
+            'specification__scope_statement',
+            'drudge__user',
+        )
 
 
 class ExpenseReportSearchForm(SearchForm):
@@ -166,6 +172,12 @@ class ExpenseReportSearchForm(SearchForm):
         label=_('date until'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+    def queryset(self, model):
+        return super().queryset(model).select_related(
+            'assignment__specification',
+            'assignment__drudge__user',
+        )
 
 
 class EditExpenseReportForm(forms.ModelForm, WarningsForm):
@@ -216,6 +228,12 @@ class JobReferenceSearchForm(SearchForm):
         label=_('date until'),
         required=False,
         widget=forms.DateInput(attrs={'class': 'dateinput'}))
+
+    def queryset(self, model):
+        return super().queryset(model).select_related(
+            'assignment__specification',
+            'assignment__drudge__user',
+        )
 
 
 class JobReferenceForm(forms.ModelForm):
