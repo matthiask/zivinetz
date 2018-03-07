@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import datetime
@@ -172,3 +172,14 @@ def get_public_holidays(year):
         datetime.date(year, 12, 25): u'Weihnachtstag',
         datetime.date(year, 12, 26): u'Stephanstag',
     }
+
+
+if __name__ == '__main__':
+    year = datetime.date.today().year
+    for i in range(year, year + 3):
+        days = get_public_holidays(i)
+        print('\n'.join(
+            '%s: %s' % (day.strftime('%d.%m.%Y'), name)
+            for day, name in sorted(days.items())
+        ))
+        print()
