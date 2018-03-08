@@ -419,7 +419,7 @@ Wir freuen uns auf deinen Einsatz!
     # Add the conditions PDF if it exists ####################################
     if assignment.specification.conditions:
         conditions_reader = PdfFileReader(
-            assignment.specification.conditions.path)
+            assignment.specification.conditions.open('rb'))
         for page in range(conditions_reader.getNumPages()):
             result_writer.addPage(conditions_reader.getPage(page))
 
