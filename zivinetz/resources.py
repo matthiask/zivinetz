@@ -24,7 +24,7 @@ from zivinetz.forms import (
     ExpenseReportSearchForm, EditExpenseReportForm, JobReferenceForm,
     JobReferenceSearchForm)
 from zivinetz.models import (
-    Assessment, Assignment, Drudge, ExpenseReport, RegionalOffice,
+    Assessment, Assignment, Drudge, ExpenseReport, Group, RegionalOffice,
     ScopeStatement, Specification, JobReferenceTemplate, JobReference)
 from zivinetz.views.expenses import generate_expense_statistics_pdf
 
@@ -488,6 +488,12 @@ assignment_url = resource_url_fn(
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Assignment,),
 )
+group_url = resource_url_fn(
+    Group,
+    mixins=(ZivinetzMixin,),
+    decorators=(staff_member_required,),
+    deletion_cascade_allowed=(Group,),
+)
 expensereport_url = resource_url_fn(
     ExpenseReport,
     mixins=(ExpenseReportMixin,),
@@ -588,6 +594,22 @@ urlpatterns = [
             assignment_url(
                 'remove_expensereports', view=RemoveExpenseReportView),
         ])
+    ),
+    url(
+        r'^groups/',
+        include([
+            group_url(
+                'list',
+                url=r'^$',
+                paginate_by=50,
+                # search_form=AssignmentSearchForm,
+                # send_emails_selector='drudge__user__email',
+            ),
+            group_url('detail', url=r'^(?P<pk>\d+)/$'),
+            group_url('add', url=r'^add/$'),
+            group_url('edit'),
+            group_url('delete'),
+        ]),
     ),
     url(
         r'^expense_reports/',
