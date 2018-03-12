@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django import forms
 from django.db.models import Avg, Q
@@ -7,8 +7,9 @@ from django.utils.translation import ugettext_lazy as _
 from towel.forms import SearchForm, WarningsForm
 
 from zivinetz.models import (
-    Assessment, Assignment, Drudge, ExpenseReport,
-    JobReference, RegionalOffice, ScopeStatement, Specification)
+    Assessment, Assignment, Drudge, ExpenseReport, Group, GroupAssignment,
+    JobReference, RegionalOffice, ScopeStatement, Specification,
+)
 
 
 def add_last_assignment_and_mark(queryset):
@@ -261,3 +262,30 @@ class JobReferenceForm(forms.ModelForm):
     class Meta:
         model = JobReference
         fields = ('text',)
+
+
+class AssignDrudgesToGroupsForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        day = kwargs.pop('day', None) or date.today()
+        super().__init__(*args, **kwargs)
+
+        assignments = dict(GroupAssignment.objects.for_date(day).values_list(
+            'assignment', 'group',
+        ))
+        if not assignments:
+            assignments = dict(GroupAssignment.objects.for_date(
+                day - timedelta(days=7)
+            ).values_list(
+                'assignment', 'group',
+            ))
+
+        group_choices = [(g.id, str(g)) for g in Group.objects.active()]
+
+        for asg in Assignment.objects.for_date(day):
+            self.fields['asg_%s' % asg.id] = f = forms.ModelChoiceField(
+                label=asg,
+                queryset=Group.objects.active(),
+                initial=assignments.get(asg.id),
+                widget=forms.RadioSelect,
+            )
+            f.choices = group_choices

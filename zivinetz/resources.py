@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms
 from django.conf.urls import include, url
 from django.core.exceptions import PermissionDenied
@@ -22,7 +24,8 @@ from pdfdocument.utils import pdf_response
 from zivinetz.forms import (
     AssignmentSearchForm, SpecificationForm, DrudgeSearchForm, AssessmentForm,
     ExpenseReportSearchForm, EditExpenseReportForm, JobReferenceForm,
-    JobReferenceSearchForm)
+    JobReferenceSearchForm, AssignDrudgesToGroupsForm,
+)
 from zivinetz.models import (
     Assessment, Assignment, Drudge, ExpenseReport, Group, RegionalOffice,
     ScopeStatement, Specification, JobReferenceTemplate, JobReference)
@@ -452,6 +455,36 @@ class ExpenseReportPDFExportView(resources.ModelResourceView):
         return generate_expense_statistics_pdf(self.object_list)
 
 
+class AssignGroupsView(resources.ModelResourceView):
+    template_name_suffix = '_form'
+
+    def get(self, request, year, month, day):
+        try:
+            day = date(int(year), int(month), int(day))
+        except Exception as exc:
+            print(exc)
+            return redirect(self.url('list'))
+
+        form = AssignDrudgesToGroupsForm(day=day)
+        return self.render_to_response(self.get_context_data(
+            form=form,
+        ))
+
+    def post(self, request, year, month, day):
+        try:
+            day = date(int(year), int(month), int(day))
+        except Exception:
+            return redirect(self.url('list'))
+
+        form = AssignDrudgesToGroupsForm(request.POST, day=day)
+        if form.is_valid():
+            form.save()
+            return redirect(self.url('list'))
+        return self.render_to_response(self.get_context_data(
+            form=form,
+        ))
+
+
 regionaloffice_url = resource_url_fn(
     RegionalOffice,
     mixins=(ZivinetzMixin,),
@@ -604,6 +637,11 @@ urlpatterns = [
                 paginate_by=50,
                 # search_form=AssignmentSearchForm,
                 # send_emails_selector='drudge__user__email',
+            ),
+            group_url(
+                'assign',
+                view=AssignGroupsView,
+                url=r'^(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})/$',
             ),
             group_url('detail', url=r'^(?P<pk>\d+)/$'),
             group_url('add', url=r'^add/$'),

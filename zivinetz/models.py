@@ -1196,6 +1196,11 @@ class JobReference(models.Model):
         return reverse('zivinetz_reference_pdf', args=(self.pk,))
 
 
+class GroupQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(is_active=True)
+
+
 @model_resource_urls()
 class Group(models.Model):
     is_active = models.BooleanField(
@@ -1208,6 +1213,8 @@ class Group(models.Model):
     )
     ordering = models.IntegerField(_('ordering'), default=0)
 
+    objects = GroupQuerySet.as_manager()
+
     class Meta:
         ordering = ['ordering']
         verbose_name = _('group')
@@ -1215,6 +1222,14 @@ class Group(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class GroupAssignmentQuerySet(models.QuerySet):
+    def monday(self, day):
+        return day - timedelta(days=day.weekday())
+
+    def for_date(self, day):
+        return self.filter(week=self.monday(day))
 
 
 class GroupAssignment(models.Model):
@@ -1233,6 +1248,8 @@ class GroupAssignment(models.Model):
     week = models.DateField(
         _('week'),
     )
+
+    objects = GroupAssignmentQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('group assignment')
