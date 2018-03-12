@@ -1194,3 +1194,67 @@ class JobReference(models.Model):
 
     def pdf_url(self):
         return reverse('zivinetz_reference_pdf', args=(self.pk,))
+
+
+@model_resource_urls()
+class Group(models.Model):
+    is_active = models.BooleanField(
+        _('is active'),
+        default=True,
+    )
+    name = models.CharField(
+        _('name'),
+        max_length=100,
+    )
+    ordering = models.IntegerField(_('ordering'), default=0)
+
+    class Meta:
+        ordering = ['ordering']
+        verbose_name = _('group')
+        verbose_name_plural = _('groups')
+
+    def __str__(self):
+        return self.name
+
+
+class GroupAssignment(models.Model):
+    group = models.ForeignKey(
+        Group,
+        on_delete=models.CASCADE,
+        related_name='group_assignments',
+        verbose_name=_('group'),
+    )
+    assignment = models.ForeignKey(
+        Assignment,
+        on_delete=models.CASCADE,
+        related_name='group_assignments',
+        verbose_name=_('assignment'),
+    )
+    week = models.DateField(
+        _('week'),
+    )
+
+    class Meta:
+        verbose_name = _('group assignment')
+        verbose_name_plural = _('group assignments')
+
+    def __str__(self):
+        return '%s/%s: %s' % (
+            self.group,
+            self.assignment,
+            ' - '.join(
+                d.strftime('%d.%m.%Y') for d in self.date_range
+            ),
+        )
+
+    def save(self, *args, **kwargs):
+        self.week = self.week - timedelta(days=self.week.weekday())
+        super().save(*args, **kwargs)
+    save.alters_data = True
+
+    @property
+    def date_range(self):
+        return (
+            self.week,
+            self.week + timedelta(days=4),
+        )

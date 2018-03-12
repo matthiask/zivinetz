@@ -178,3 +178,15 @@ admin.site.register(
         if not f.one_to_many
     ],
 )
+
+admin.site.register(
+    models.Group,
+    list_display=('__str__', 'is_active', 'ordering'),
+    list_editable=('ordering',),
+)
+admin.site.register(
+    models.GroupAssignment,
+    list_display=('group', 'assignment', 'week'),
+    list_select_related=('group', 'assignment__drudge__user'),
+    raw_id_fields=('assignment',),
+)
