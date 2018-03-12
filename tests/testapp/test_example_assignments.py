@@ -10,7 +10,7 @@ from django.test import TestCase
 from zivinetz.models import AssignmentChange, CompensationSet, ScopeStatement
 from zivinetz.utils.holidays import get_public_holidays
 
-from testapp.tests import factories
+from testapp import factories
 
 
 class ExampleAssignmentsTestCase(TestCase):

@@ -2,7 +2,7 @@ from datetime import date
 
 from django.test import TestCase
 
-from testapp.tests import factories
+from testapp import factories
 
 from zivinetz.models import AssignmentChange
 

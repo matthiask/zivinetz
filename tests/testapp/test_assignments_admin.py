@@ -8,8 +8,8 @@ from django.test import TestCase
 
 from zivinetz.models import Assignment, Drudge, ExpenseReport
 
-from testapp.tests import factories
-from testapp.tests.utils import (
+from testapp import factories
+from testapp.utils import (
     admin_login, get_messages, model_to_postable_dict)
 
 

@@ -11,7 +11,7 @@ from django.test import TestCase
 
 from zivinetz.models import Assignment, AssignmentChange
 
-from testapp.tests import factories
+from testapp import factories
 
 
 class DrudgeViewsTestCase(TestCase):

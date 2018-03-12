@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from zivinetz.models import Assignment
 
-from testapp.tests import factories
+from testapp import factories
 
 
 class SchedulingTestCase(TestCase):

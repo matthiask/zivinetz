@@ -5,7 +5,7 @@ import itertools
 
 from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models import Max, Min, Q, Sum
+from django.db.models import Q, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import ugettext_lazy

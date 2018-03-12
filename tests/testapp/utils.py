@@ -4,7 +4,7 @@ from datetime import date, datetime
 
 from django.forms.models import model_to_dict
 
-from testapp.tests import factories
+from testapp import factories
 
 
 def model_to_postable_dict(instance):

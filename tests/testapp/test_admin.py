@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from datetime import date, timedelta
+import io
 
 from django.core import mail
 from django.test import TestCase
@@ -10,8 +11,8 @@ from django.urls import reverse
 
 from zivinetz.models import Assignment, Drudge, JobReference
 
-from testapp.tests import factories
-from testapp.tests.utils import admin_login
+from testapp import factories
+from testapp.utils import admin_login
 
 
 class AdminViewsTestCase(TestCase):
@@ -133,7 +134,8 @@ class AdminViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'div class="action-objects"', 1)
 
-        with open('requirements.txt') as fp:
+        with io.BytesIO(b'Django\n') as fp:
+            fp.name = 'requirements.txt'
             data.update({
                 'confirm': 1,
                 'subject': 'Hello and welcome',
