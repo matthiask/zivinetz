@@ -9,7 +9,6 @@ from django.dispatch import receiver
 from django.db import models
 from django.db.models import Q, signals
 from django.urls import reverse
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 
@@ -44,7 +43,6 @@ STATE_CHOICES = (
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class ScopeStatement(models.Model):
     is_active = models.BooleanField(_('is active'), default=True)
     eis_no = models.CharField(_('EIS No.'), unique=True, max_length=10)
@@ -86,7 +84,6 @@ class ScopeStatement(models.Model):
         )).strip()
 
 
-@python_2_unicode_compatible
 class DrudgeQuota(models.Model):
     scope_statement = models.ForeignKey(
         ScopeStatement,
@@ -125,7 +122,6 @@ class Choices(object):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class Specification(models.Model):
     ACCOMODATION = Choices((
         ('provided', _('provided')),
@@ -259,7 +255,6 @@ class CompensationSetManager(models.Manager):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class CompensationSet(models.Model):
     valid_from = models.DateField(_('valid from'), unique=True)
 
@@ -311,7 +306,6 @@ class CompensationSet(models.Model):
 
 
 @model_resource_urls(default='edit')
-@python_2_unicode_compatible
 class RegionalOffice(models.Model):
     name = models.CharField(_('name'), max_length=100)
     city = models.CharField(_('city'), max_length=100)
@@ -346,7 +340,6 @@ class DrudgeManager(SearchManager):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class Drudge(models.Model):
     STATES = [state[0] for state in STATE_CHOICES]
     STATE_CHOICES = zip(STATES, STATES)
@@ -467,7 +460,6 @@ class AssignmentManager(SearchManager):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class Assignment(models.Model):
     TENTATIVE = 10
     ARRANGED = 20
@@ -775,7 +767,6 @@ class Assignment(models.Model):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class AssignmentChange(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     assignment = models.ForeignKey(
@@ -895,7 +886,6 @@ class ExpenseReportManager(SearchManager):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class ExpenseReport(models.Model):
     PENDING = 10
     FILLED = 20
@@ -1071,7 +1061,6 @@ class ExpenseReport(models.Model):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class PublicHoliday(models.Model):
     name = models.CharField(_('name'), max_length=100)
     date = models.DateField(_('date'), unique=True)
@@ -1086,7 +1075,6 @@ class PublicHoliday(models.Model):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class CompanyHoliday(models.Model):
     date_from = models.DateField(_('date from'))
     date_until = models.DateField(_('date until'))
@@ -1110,7 +1098,6 @@ class CompanyHoliday(models.Model):
 
 
 @model_resource_urls(default='edit')
-@python_2_unicode_compatible
 class Assessment(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     created_by = models.ForeignKey(
@@ -1150,7 +1137,6 @@ class CodewordManager(models.Manager):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class Codeword(models.Model):
     created = models.DateTimeField(_('created'), default=datetime.now)
     key = models.CharField(_('key'), max_length=10, db_index=True)
@@ -1169,7 +1155,6 @@ class Codeword(models.Model):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class JobReferenceTemplate(models.Model):
     title = models.CharField(_('title'), max_length=100)
     text = models.TextField(_('text'))
@@ -1190,7 +1175,6 @@ class JobReferenceManager(SearchManager):
 
 
 @model_resource_urls()
-@python_2_unicode_compatible
 class JobReference(models.Model):
     assignment = models.ForeignKey(
         Assignment, verbose_name=_('assignment'), related_name='jobreferences',
