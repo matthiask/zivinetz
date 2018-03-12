@@ -8,7 +8,7 @@ class ModelBackend(ModelBackend):
     Authentication backend which knows how to handle e-mails or usernames
     """
 
-    def authenticate(self, username=None, password=None):
+    def authenticate(self, request, username=None, password=None):
         for user in User.objects.filter(
                 Q(username__iexact=username)
                 | Q(email__iexact=username)
