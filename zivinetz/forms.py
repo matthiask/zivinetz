@@ -275,22 +275,27 @@ class TableCellRadioSelect(forms.RadioSelect):
 
 class AssignDrudgesToGroupsForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        day = kwargs.pop('day', None) or date.today()
+        self.day = GroupAssignment.objects.monday(
+            kwargs.pop('day', None) or date.today())
+
         super().__init__(*args, **kwargs)
 
-        assignments = dict(GroupAssignment.objects.for_date(day).values_list(
-            'assignment', 'group',
-        ))
+        assignments = dict(
+            GroupAssignment.objects.for_date(self.day).values_list(
+                'assignment', 'group',
+            )
+        )
         if not assignments:
+            # Read defaults from last week
             assignments = dict(GroupAssignment.objects.for_date(
-                day - timedelta(days=7)
+                self.day - timedelta(days=7)
             ).values_list(
                 'assignment', 'group',
             ))
 
         self.group_choices = [(g.id, str(g)) for g in Group.objects.active()]
 
-        for asg in Assignment.objects.for_date(day):
+        for asg in Assignment.objects.for_date(self.day):
             self.fields['asg_%s' % asg.id] = f = forms.ModelChoiceField(
                 label=str(asg),
                 queryset=Group.objects.active(),
@@ -299,3 +304,19 @@ class AssignDrudgesToGroupsForm(forms.Form):
                 widget=TableCellRadioSelect,
             )
             f.choices = self.group_choices
+
+    def save(self):
+        for asg in Assignment.objects.for_date(self.day):
+            group = self.cleaned_data['asg_%s' % asg.id]
+
+            ga, created = GroupAssignment.objects.get_or_create(
+                assignment=asg,
+                week=self.day,
+                defaults={
+                    'group': group,
+                },
+            )
+
+            if not created:
+                ga.group = group
+                ga.save()

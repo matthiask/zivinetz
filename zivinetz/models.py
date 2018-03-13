@@ -1252,6 +1252,7 @@ class GroupAssignment(models.Model):
     objects = GroupAssignmentQuerySet.as_manager()
 
     class Meta:
+        unique_together = (('assignment', 'week'),)
         verbose_name = _('group assignment')
         verbose_name_plural = _('group assignments')
 
