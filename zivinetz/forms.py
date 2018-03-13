@@ -300,7 +300,6 @@ class AssignDrudgesToGroupsForm(forms.Form):
                 label=str(asg),
                 queryset=Group.objects.active(),
                 initial=assignments.get(asg.id),
-                # widget=forms.RadioSelect,
                 widget=TableCellRadioSelect,
             )
             f.choices = self.group_choices
@@ -309,14 +308,10 @@ class AssignDrudgesToGroupsForm(forms.Form):
         for asg in Assignment.objects.for_date(self.day):
             group = self.cleaned_data['asg_%s' % asg.id]
 
-            ga, created = GroupAssignment.objects.get_or_create(
+            GroupAssignment.objects.update_or_create(
                 assignment=asg,
                 week=self.day,
                 defaults={
                     'group': group,
                 },
             )
-
-            if not created:
-                ga.group = group
-                ga.save()
