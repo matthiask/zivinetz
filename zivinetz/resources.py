@@ -456,7 +456,7 @@ class ExpenseReportPDFExportView(resources.ModelResourceView):
 
 
 class AssignGroupsView(resources.ModelResourceView):
-    template_name_suffix = '_form'
+    template_name = 'zivinetz/assign_groups.html'
 
     def get_context_data(self, **kwargs):
         kwargs.setdefault('title', _('Assign to groups'))

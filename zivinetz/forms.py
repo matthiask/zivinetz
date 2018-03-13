@@ -264,6 +264,15 @@ class JobReferenceForm(forms.ModelForm):
         fields = ('text',)
 
 
+class TableCellRadioSelect(forms.RadioSelect):
+    template_name = 'zivinetz/table_cell_radio_select.html'
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context['wrap_label'] = False
+        return context
+
+
 class AssignDrudgesToGroupsForm(forms.Form):
     def __init__(self, *args, **kwargs):
         day = kwargs.pop('day', None) or date.today()
@@ -279,13 +288,14 @@ class AssignDrudgesToGroupsForm(forms.Form):
                 'assignment', 'group',
             ))
 
-        group_choices = [(g.id, str(g)) for g in Group.objects.active()]
+        self.group_choices = [(g.id, str(g)) for g in Group.objects.active()]
 
         for asg in Assignment.objects.for_date(day):
             self.fields['asg_%s' % asg.id] = f = forms.ModelChoiceField(
-                label=asg,
+                label=str(asg),
                 queryset=Group.objects.active(),
                 initial=assignments.get(asg.id),
-                widget=forms.RadioSelect,
+                # widget=forms.RadioSelect,
+                widget=TableCellRadioSelect,
             )
-            f.choices = group_choices
+            f.choices = self.group_choices
