@@ -458,6 +458,10 @@ class ExpenseReportPDFExportView(resources.ModelResourceView):
 class AssignGroupsView(resources.ModelResourceView):
     template_name_suffix = '_form'
 
+    def get_context_data(self, **kwargs):
+        kwargs.setdefault('title', _('Assign to groups'))
+        return super().get_context_data(**kwargs)
+
     def get(self, request, year, month, day):
         try:
             day = date(int(year), int(month), int(day))
