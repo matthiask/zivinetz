@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import date, timedelta
 from decimal import Decimal
 
@@ -1302,6 +1303,39 @@ class AbsenceManager(SearchManager):
         'internal_notes',
     )
 
+    def for_expense_report(self, report):
+        candidate_days = [
+            report.date_from + timedelta(days=i)
+            for i in range(0, (report.date_until - report.date_from).days)
+        ]
+
+        days = defaultdict(int)
+        reasons = defaultdict(list)
+
+        for absence in self.filter(
+                assignment_id=report.assignment_id,
+                days__overlap=candidate_days,
+        ):
+            in_range = [
+                day for day in sorted(absence.days) if day in candidate_days]
+            field = absence.REASON_TO_EXPENSE_REPORT[absence.reason]
+            days[field] += len(in_range)
+            parts = [absence.get_reason_display()]
+            if absence.internal_notes:
+                parts.append(' (%s)' % absence.internal_notes)
+            parts.append(': ')
+            parts.append(', '.join(
+                day.strftime('%a %d.%m.%y') for day in in_range))
+            reasons['%s_notes' % field].append(''.join(parts))
+
+        return {
+            **days,
+            **{
+                field: '\n'.join(reason)
+                for field, reason in reasons.items()
+            },
+        }
+
 
 @model_resource_urls()
 class Absence(models.Model):
@@ -1322,6 +1356,16 @@ class Absence(models.Model):
         (UNAUTHORIZED, _('unauthorized absence')),
         (COMPENSATION, _('compensation')),
     )
+
+    REASON_TO_EXPENSE_REPORT = {
+        APPROVED_VACATION: 'vacation_days',
+        APPROVED_HOLIDAY: 'holi_days',
+        SICK: 'sick_days',
+        MOTOR_SAW_COURSE: 'working_days',
+        ENVIRONMENT_COURSE: 'working_days',
+        UNAUTHORIZED: 'working_days',  # Correct? Probably not.
+        COMPENSATION: 'working_days',  # Correct? Probably not.
+    }
 
     assignment = models.ForeignKey(
         Assignment,

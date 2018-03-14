@@ -7,8 +7,9 @@ from django.utils.translation import ugettext_lazy as _
 from towel.forms import SearchForm, WarningsForm
 
 from zivinetz.models import (
-    Assessment, Assignment, Drudge, ExpenseReport, Group, GroupAssignment,
-    JobReference, RegionalOffice, ScopeStatement, Specification,
+    Absence, Assessment, Assignment, Drudge, ExpenseReport, Group,
+    GroupAssignment, JobReference, RegionalOffice, ScopeStatement,
+    Specification,
 )
 
 
@@ -214,6 +215,10 @@ class EditExpenseReportForm(forms.ModelForm, WarningsForm):
     class Meta:
         model = ExpenseReport
         exclude = ('assignment', 'total', 'calculated_total_days')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print(Absence.objects.for_expense_report(self.instance))
 
     def clean(self):
         data = super(EditExpenseReportForm, self).clean()
