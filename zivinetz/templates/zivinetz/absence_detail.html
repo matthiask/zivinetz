@@ -1,0 +1,20 @@
+{% extends "resources/object_detail.html" %}
+
+{% load i18n modelview_detail modelview_list %}
+
+{% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<table>
+{% for title, value in object|model_details:'assignment,created_at,created_by,reason,internal_notes' %}
+    <tr>
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value|default_if_none:"&ndash;" }}</td>
+    </tr>
+{% endfor %}
+<tr>
+  <th>{% trans 'days' %}</th>
+  <td>{{ object.pretty_days }}</td>
+</tr>
+</table>
+{% endblock %}
