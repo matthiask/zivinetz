@@ -79,6 +79,18 @@ class ExpenseReportsAdminViewsTestCase(TestCase):
             get_messages(response),
             ['Paid expense reports cannot be edited.'])
 
+        response = self.client.get(
+            report.urls.url('delete'),
+            follow=True)
+
+        self.assertRedirects(
+            response,
+            report.urls.url('detail'))
+
+        self.assertEqual(
+            get_messages(response),
+            ['Paid expense reports cannot be deleted.'])
+
     def test_expensereport_editing(self):
         report = self._create_report()
         self.assertAlmostEqual(report.total, Decimal('130.00'))
