@@ -77,7 +77,7 @@ class ExpenseReportsAdminViewsTestCase(TestCase):
 
         self.assertEqual(
             get_messages(response),
-            [])
+            ['Paid expense reports cannot be edited.'])
 
     def test_expensereport_editing(self):
         report = self._create_report()
