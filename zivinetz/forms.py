@@ -299,7 +299,7 @@ class AssignDrudgesToGroupsForm(forms.Form):
                 'specification__scope_statement',
                 'drudge__user',
         ):
-            self.fields['asg_%s' % asg.id] = f = forms.ModelChoiceField(
+            self.fields['asg_%s' % asg.id] = forms.ModelChoiceField(
                 label=str(asg),
                 queryset=Group.objects.active(),
                 initial=(
