@@ -1,0 +1,13 @@
+{% extends "resources/object_list.html" %}
+
+{% block content %}
+<nav>
+  <h3>
+    Gruppeneinteilung bearbeiten:
+    {% for title, day in view.weeks %}
+      <a href="{{ day|date:"Y-m-d" }}/">{{ title }}</a>{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  </h3>
+</nav>
+{{ block.super }}
+{% endblock %}

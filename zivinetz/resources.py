@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django import forms
 from django.conf.urls import include, url
@@ -28,9 +28,9 @@ from zivinetz.forms import (
     JobReferenceSearchForm, AssignDrudgesToGroupsForm,
 )
 from zivinetz.models import (
-    Assessment, Assignment, Drudge, ExpenseReport, Group, RegionalOffice,
-    ScopeStatement, Specification, JobReferenceTemplate, JobReference,
-    Absence,
+    Absence, Assessment, Assignment, Drudge, ExpenseReport, Group,
+    GroupAssignment, RegionalOffice, ScopeStatement, Specification,
+    JobReferenceTemplate, JobReference,
 )
 from zivinetz.views.expenses import generate_expense_statistics_pdf
 
@@ -396,6 +396,15 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
         return response
 
 
+class GroupMixin(ZivinetzMixin):
+    def weeks(self):
+        monday = GroupAssignment.objects.monday(date.today())
+        return [
+            (_('This week'), monday),
+            (_('Next week'), monday + timedelta(days=7)),
+        ]
+
+
 class AbsenceMixin(ZivinetzMixin):
     def get_form_class(self):
         request = self.request
@@ -571,7 +580,7 @@ assignment_url = resource_url_fn(
 )
 group_url = resource_url_fn(
     Group,
-    mixins=(ZivinetzMixin,),
+    mixins=(GroupMixin,),
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Group,),
 )
