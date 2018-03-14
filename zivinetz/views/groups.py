@@ -25,11 +25,12 @@ def create_groups_xlsx(day):
     ws = wb.active
 
     dark = NamedStyle('dark')
+    dark.font = Font(name='Calibri')
     dark.fill = PatternFill('solid', 'cccccc')
     wb.add_named_style(dark)
 
     darker = NamedStyle('darker')
-    darker.font = Font(bold=True)
+    darker.font = Font(name='Calibri', bold=True)
     darker.fill = PatternFill('solid', 'aaaaaa')
     wb.add_named_style(darker)
 
