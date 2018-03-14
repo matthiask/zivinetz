@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from decimal import Decimal
 
 from towel.managers import SearchManager
@@ -9,6 +9,7 @@ from django.dispatch import receiver
 from django.db import models
 from django.db.models import Q, signals
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 
@@ -482,7 +483,7 @@ class Assignment(models.Model):
         (DECLINED, _('declined')),
     )
 
-    created = models.DateTimeField(_('created'), default=datetime.now)
+    created = models.DateTimeField(_('created'), default=timezone.now)
     modified = models.DateTimeField(_('modified'), auto_now=True)
 
     specification = models.ForeignKey(
@@ -782,7 +783,7 @@ class Assignment(models.Model):
 
 @model_resource_urls()
 class AssignmentChange(models.Model):
-    created = models.DateTimeField(_('created'), default=datetime.now)
+    created = models.DateTimeField(_('created'), default=timezone.now)
     assignment = models.ForeignKey(
         Assignment, verbose_name=_('assignment'), blank=True, null=True,
         on_delete=models.SET_NULL)
@@ -1113,7 +1114,7 @@ class CompanyHoliday(models.Model):
 
 @model_resource_urls(default='edit')
 class Assessment(models.Model):
-    created = models.DateTimeField(_('created'), default=datetime.now)
+    created = models.DateTimeField(_('created'), default=timezone.now)
     created_by = models.ForeignKey(
         User, blank=True, null=True,
         on_delete=models.CASCADE, verbose_name=_('created by'))
@@ -1152,7 +1153,7 @@ class CodewordManager(models.Manager):
 
 @model_resource_urls()
 class Codeword(models.Model):
-    created = models.DateTimeField(_('created'), default=datetime.now)
+    created = models.DateTimeField(_('created'), default=timezone.now)
     key = models.CharField(_('key'), max_length=10, db_index=True)
     codeword = models.CharField(_('codeword'), max_length=20)
 
