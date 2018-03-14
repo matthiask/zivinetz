@@ -193,5 +193,5 @@ admin.site.register(
 admin.site.register(
     models.Absence,
     list_display=('assignment', 'created_by', 'reason', 'days'),
-    raw_id_fields=('assignment',),
+    raw_id_fields=('assignment', 'created_by'),
 )
