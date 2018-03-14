@@ -429,9 +429,20 @@ class AbsenceMixin(ZivinetzMixin):
 class ExpenseReportMixin(ZivinetzMixin):
     def allow_edit(self, object=None, silent=True):
         if object is not None and object.status >= object.PAID:
+            if not silent:
+                messages.error(
+                    self.request, _('Paid expense reports cannot be edited.'))
             return False
         return super(ExpenseReportMixin, self).allow_edit(
             object=object, silent=silent)
+
+    def allow_delete(self, object=None, silent=True):
+        if object is not None and object.status >= object.PAID:
+            if not silent:
+                messages.error(
+                    self.request, _('Paid expense reports cannot be deleted.'))
+            return False
+        return super().allow_edit(object=object, silent=silent)
 
     def get_form_class(self):
         if self.object:
