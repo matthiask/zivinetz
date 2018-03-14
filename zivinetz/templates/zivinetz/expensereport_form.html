@@ -15,13 +15,6 @@
 {% form_errors form formsets %}
 {% form_warnings form formsets %}
 
-<table>
-    {% if object %}
-    <tr>
-        <th>{% trans "assignment"|capfirst %}</th>
-        <td><a href="{{ object.assignment.get_absolute_url }}">{{ object.assignment }}</a></td>
-    </tr>
-    {% endif %}
     {% if form.assignment %}{% form_item form.assignment %}{% endif %}
     {% form_item form.date_from %}
     {% form_item form.date_until %}
@@ -29,12 +22,23 @@
     {% form_item form.status %}
     {% form_item form.specification %}
 
+<table>
+    {% if object %}
+    <tr>
+        <th>{% trans "assignment"|capfirst %}</th>
+        <td><a href="{{ object.assignment.get_absolute_url }}">{{ object.assignment }}</a></td>
+    </tr>
+    {% endif %}
     {% with field=form.working_days notes=form.working_days_notes %}
         <tr class="three">
             <th>{{ field.label_tag }}</th>
             <td>
                 {% form_item_plain field %}
                 {% form_item_plain notes %}
+            </td>
+            <td>
+              {{ form.absences.working_days }}<br>
+              {{ form.absences.working_days_notes|linebreaksbr }}
             </td>
         </tr>
     {% endwith %}
@@ -45,6 +49,10 @@
                 {% form_item_plain field %}
                 {% form_item_plain notes %}
             </td>
+            <td>
+              {{ form.absences.free_days }}<br>
+              {{ form.absences.free_days_notes|linebreaksbr }}
+            </td>
         </tr>
     {% endwith %}
     {% with field=form.sick_days notes=form.sick_days_notes %}
@@ -53,6 +61,10 @@
             <td>
                 {% form_item_plain field %}
                 {% form_item_plain notes %}
+            </td>
+            <td>
+              {{ form.absences.sick_days }}<br>
+              {{ form.absences.sick_days_notes|linebreaksbr }}
             </td>
         </tr>
     {% endwith %}
@@ -63,6 +75,10 @@
                 {% form_item_plain field %}
                 {% form_item_plain notes %}
             </td>
+            <td>
+              {{ form.absences.holi_days }}<br>
+              {{ form.absences.holi_days_notes|linebreaksbr }}
+            </td>
         </tr>
     {% endwith %}
     {% with field=form.forced_leave_days notes=form.forced_leave_days_notes %}
@@ -71,6 +87,10 @@
             <td>
                 {% form_item_plain field %}
                 {% form_item_plain notes %}
+            </td>
+            <td>
+              {{ form.absences.forced_leave_days }}<br>
+              {{ form.absences.forced_leave_days_notes|linebreaksbr }}
             </td>
         </tr>
     {% endwith %}
@@ -81,6 +101,7 @@
                 {% form_item_plain field %}
                 {% form_item_plain notes %}
             </td>
+            <td></td>
         </tr>
     {% endwith %}
     {% with field=form.transport_expenses notes=form.transport_expenses_notes %}
@@ -95,6 +116,7 @@
                     {% trans "Adopt for all following expense reports" %}
                 </label>
             </td>
+            <td></td>
         </tr>
     {% endwith %}
     {% with field=form.miscellaneous notes=form.miscellaneous_notes %}
@@ -104,6 +126,7 @@
                 {% form_item_plain field %}
                 {% form_item_plain notes %}
             </td>
+            <td></td>
         </tr>
     {% endwith %}
 </table>

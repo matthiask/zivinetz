@@ -218,7 +218,7 @@ class EditExpenseReportForm(forms.ModelForm, WarningsForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        print(Absence.objects.for_expense_report(self.instance))
+        self.absences = Absence.objects.for_expense_report(self.instance)
 
     def clean(self):
         data = super(EditExpenseReportForm, self).clean()
