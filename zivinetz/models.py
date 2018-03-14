@@ -501,6 +501,11 @@ class Assignment(models.Model):
         _('date until (extended)'), blank=True, null=True,
         help_text=_('Only fill out if assignment has been extended.'))
 
+    available_holi_days = models.PositiveIntegerField(
+        _('available holiday days'),
+        blank=True,
+        null=True,
+    )
     part_of_long_assignment = models.BooleanField(
         _('part of long assignment'), default=False)
 
