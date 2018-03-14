@@ -50,6 +50,13 @@ def create_groups_xlsx(day):
     ]):
         ws[c(0, i + 1)] = cell
         ws[c(day_column(5), i + 1)] = cell
+        if i < 2:
+            ws[c(0, i + 1)].alignment = center
+            ws[c(day_column(5), i + 1)].alignment = center
+
+    ws.column_dimensions[columns[0]].width = 20
+    ws.column_dimensions[columns[1]].width = 6
+    ws.column_dimensions[columns[day_column(5)]].width = 20
 
     for i in range(5):
         current = day + timedelta(days=i)
@@ -82,7 +89,7 @@ def create_groups_xlsx(day):
     ws.row_dimensions[3].height = 50
 
     def style_row(row, style):
-        for i in range(0, day_column(6)):
+        for i in range(0, day_column(5) + 1):
             ws[c(i, row)].style = style
 
     # ZIVIS line
@@ -103,9 +110,12 @@ def create_groups_xlsx(day):
 
         for assignment in assignments[group.id]:
             row += 1
-            ws[c(0, row)] = str(assignment.drudge)
+            ws[c(0, row)] = assignment.drudge.user.get_full_name()
+            ws.row_dimensions[row].height = 35
 
         # Skip some lines
-        row += max(4, 10 - len(assignments[group.id]))
+        for i in range(0, max(4, 10 - len(assignments[group.id]))):
+            row += 1
+            ws.row_dimensions[row].height = 30
 
     return wb
