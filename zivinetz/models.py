@@ -1411,7 +1411,8 @@ class Absence(models.Model):
         )
 
     def pretty_days(self):
-        return ', '.join(day.strftime('%a %d.%m.%y') for day in sorted(self.days))
+        return ', '.join(
+            day.strftime('%a %d.%m.%y') for day in sorted(self.days))
 
     def clean(self):
         outside = [
