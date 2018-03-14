@@ -1349,4 +1349,8 @@ class Absence(models.Model):
         verbose_name_plural = _('absences')
 
     def __str__(self):
-        return self.reason
+        return 'Absenz von %s von %s bis %s' % (
+            self.assignment.drudge.user.get_full_name(),
+            min(self.days),
+            max(self.days),
+        )
