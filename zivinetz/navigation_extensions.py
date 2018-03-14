@@ -17,6 +17,7 @@ class ZivinetzNavigationExtension(NavigationExtension):
                 (_('drudges'), 'admin/drudges/'),
                 (_('assignments'), 'admin/assignments/'),
                 (_('groups'), 'admin/groups/'),
+                (_('absences'), 'admin/absences/'),
                 (_('expense reports'), 'admin/expense_reports/'),
                 (_('regional offices'), 'admin/regional_offices/'),
                 (_('scope statements'), 'admin/scope_statements/'),

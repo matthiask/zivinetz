@@ -1,0 +1,19 @@
+{% extends "resources/object_form.html" %}
+
+{% block content %}{{ block.super }}
+
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_orange.css">
+<script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/de.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  flatpickr('#id_days', {
+    inline: true,
+    locale: 'de',
+    mode: 'multiple',
+    showMonth: 2,
+  });
+});
+</script>
+{% endblock %}

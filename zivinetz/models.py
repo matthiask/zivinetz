@@ -1294,6 +1294,7 @@ class GroupAssignment(models.Model):
         )
 
 
+@model_resource_urls()
 class Absence(models.Model):
     APPROVED_VACATION = 'approved-vacation'
     APPROVED_HOLIDAY = 'approved-holiday'

@@ -28,7 +28,9 @@ from zivinetz.forms import (
 )
 from zivinetz.models import (
     Assessment, Assignment, Drudge, ExpenseReport, Group, RegionalOffice,
-    ScopeStatement, Specification, JobReferenceTemplate, JobReference)
+    ScopeStatement, Specification, JobReferenceTemplate, JobReference,
+    Absence,
+)
 from zivinetz.views.expenses import generate_expense_statistics_pdf
 
 
@@ -393,6 +395,35 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
         return response
 
 
+class AbsenceMixin(ZivinetzMixin):
+    def get_form_class(self):
+        request = self.request
+
+        class ModelForm(forms.ModelForm):
+            assignment = forms.ModelChoiceField(
+                Assignment.objects.all(),
+                label=ugettext_lazy('assignment'),
+                widget=SelectWithPicker(model=Assignment, request=request),
+            )
+
+            class Meta:
+                model = self.model
+                fields = ('assignment', 'reason', 'internal_notes', 'days')
+                widgets = {
+                    'reason': forms.RadioSelect,
+                }
+
+            def save(self):
+                instance = super().save(commit=False)
+                instance.created_by = request.user
+                instance.save()
+                return instance
+
+            formfield_callback = towel_formfield_callback
+
+        return ModelForm
+
+
 class ExpenseReportMixin(ZivinetzMixin):
     def allow_edit(self, object=None, silent=True):
         if object is not None and object.status >= object.PAID:
@@ -531,6 +562,12 @@ group_url = resource_url_fn(
     decorators=(staff_member_required,),
     deletion_cascade_allowed=(Group,),
 )
+absence_url = resource_url_fn(
+    Absence,
+    mixins=(AbsenceMixin,),
+    decorators=(staff_member_required,),
+    deletion_cascade_allowed=(Absence,),
+)
 expensereport_url = resource_url_fn(
     ExpenseReport,
     mixins=(ExpenseReportMixin,),
@@ -651,6 +688,22 @@ urlpatterns = [
             group_url('add', url=r'^add/$'),
             group_url('edit'),
             group_url('delete'),
+        ]),
+    ),
+    url(
+        r'^absences/',
+        include([
+            absence_url(
+                'list',
+                url=r'^$',
+                paginate_by=50,
+                # search_form=AssignmentSearchForm,
+                # send_emails_selector='drudge__user__email',
+            ),
+            absence_url('detail', url=r'^(?P<pk>\d+)/$'),
+            absence_url('add', url=r'^add/$'),
+            absence_url('edit'),
+            absence_url('delete'),
         ]),
     ),
     url(
