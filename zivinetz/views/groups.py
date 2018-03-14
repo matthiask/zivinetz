@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from openpyxl import Workbook
-from openpyxl.styles import NamedStyle, Font, PatternFill
+from openpyxl.styles import Alignment, NamedStyle, Font, PatternFill
 
 from zivinetz.models import Group, GroupAssignment
 
@@ -24,11 +24,17 @@ def create_groups_xlsx(day):
     wb = Workbook()
     ws = wb.active
 
-    style = NamedStyle('heading')
-    style.font = Font(bold=True)
-    style.fill = PatternFill('solid', 'cccccc')
+    dark = NamedStyle('dark')
+    dark.fill = PatternFill('solid', 'cccccc')
+    wb.add_named_style(dark)
 
-    wb.add_named_style(style)
+    darker = NamedStyle('darker')
+    darker.font = Font(bold=True)
+    darker.fill = PatternFill('solid', 'aaaaaa')
+    wb.add_named_style(darker)
+
+    center = Alignment(horizontal='center', vertical='center')
+    vertical_text = Alignment(text_rotation=90)
 
     def day_column(weekday):
         return 2 + 9 * weekday
@@ -48,9 +54,33 @@ def create_groups_xlsx(day):
 
         ws[c(day_column(i), 0)] = current.strftime('%A')
         ws[c(day_column(i), 1)] = current.strftime('%d-%b-%y')
+        ws[c(day_column(i), 0)].alignment = center
+        ws[c(day_column(i), 1)].alignment = center
+        ws.merge_cells('%s:%s' % (
+            c(day_column(i), 0),
+            c(day_column(i + 1) - 1, 0),
+        ))
+        ws.merge_cells('%s:%s' % (
+            c(day_column(i), 1),
+            c(day_column(i + 1) - 1, 1),
+        ))
 
         ws[c(day_column(i), 2)] = 'Absenz'
         for j in range(1, 9):
             ws[c(day_column(i) + j, 2)] = '%s)' % j
+            if j % 2 == 0:
+                for k in range(2, 499):
+                    ws[c(day_column(i) + j, k)].style = 'dark'
+
+            ws[c(day_column(i) + j, 2)].alignment = vertical_text
+            ws.column_dimensions[columns[day_column(i) + j]].width = 4
+        ws[c(day_column(i), 2)].alignment = vertical_text
+        ws.column_dimensions[columns[day_column(i)]].width = 4
+
+    ws.row_dimensions[3].height = 50
+
+    for i in range(0, day_column(6)):
+        ws[c(i, 4)].style = 'darker'
+        ws[c(i, 5)].style = 'darker'
 
     return wb
