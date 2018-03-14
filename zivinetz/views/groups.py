@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import timedelta
 
 from openpyxl import Workbook
@@ -80,8 +81,31 @@ def create_groups_xlsx(day):
 
     ws.row_dimensions[3].height = 50
 
-    for i in range(0, day_column(6)):
-        ws[c(i, 4)].style = 'darker'
-        ws[c(i, 5)].style = 'darker'
+    def style_row(row, style):
+        for i in range(0, day_column(6)):
+            ws[c(i, row)].style = style
+
+    # ZIVIS line
+    style_row(5, 'darker')
+
+    assignments = defaultdict(list)
+    for ga in GroupAssignment.objects.filter(
+            week=day,
+    ).select_related('assignment__drudge__user'):
+        assignments[ga.group_id].append(ga.assignment)
+
+    row = 6
+    for group in Group.objects.active():
+        ws[c(0, row)] = group.name
+        style_row(row, 'darker')
+
+        # TODO courses (UNA/MSK)
+
+        for assignment in assignments[group.id]:
+            row += 1
+            ws[c(0, row)] = str(assignment.drudge)
+
+        # Skip some lines
+        row += max(4, 10 - len(assignments[group.id]))
 
     return wb
