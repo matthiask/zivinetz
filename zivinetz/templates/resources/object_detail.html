@@ -27,7 +27,7 @@
 {% for title, value in object|model_details %}
     <tr>
         <th>{{ title|capfirst }}</th>
-        <td>{{ value }}</td>
+        <td>{{ value|default_if_none:"&ndash;" }}</td>
     </tr>
 {% endfor %}
 </table>

@@ -295,11 +295,16 @@ class AssignDrudgesToGroupsForm(forms.Form):
 
         self.group_choices = [(g.id, str(g)) for g in Group.objects.active()]
 
-        for asg in Assignment.objects.for_date(self.day):
+        for asg in Assignment.objects.for_date(self.day).select_related(
+                'specification__scope_statement',
+        ):
             self.fields['asg_%s' % asg.id] = f = forms.ModelChoiceField(
                 label=str(asg),
                 queryset=Group.objects.active(),
-                initial=assignments.get(asg.id),
+                initial=(
+                    assignments.get(asg.id) or
+                    asg.specification.scope_statement.default_group_id
+                ),
                 widget=TableCellRadioSelect,
             )
             f.choices = self.group_choices

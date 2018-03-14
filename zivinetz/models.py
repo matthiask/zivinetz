@@ -68,6 +68,15 @@ class ScopeStatement(models.Model):
     work_location = models.CharField(
         _('work location'), max_length=100, blank=True)
 
+    default_group = models.ForeignKey(
+        'Group',
+        on_delete=models.SET_NULL,
+        verbose_name=_('default group'),
+        blank=True,
+        null=True,
+        related_name='+',
+    )
+
     class Meta:
         ordering = ['name']
         verbose_name = _('scope statement')
