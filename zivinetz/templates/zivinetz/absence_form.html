@@ -1,11 +1,13 @@
 {% extends "resources/object_form.html" %}
 
+{% load static %}
+
 {% block content %}{{ block.super }}
 
-<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/flatpickr.min.css">
-<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_orange.css">
-<script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
-<script src="https://npmcdn.com/flatpickr/dist/l10n/de.js"></script>
+<link rel="stylesheet" href="{% static 'zivinetz/flatpickr.min.css' %}">
+<link rel="stylesheet" href="{% static 'zivinetz/material_orange.css' %}">
+<script src="{% static 'zivinetz/flatpickr.min.js' %}"></script>
+<script src="{% static 'zivinetz/de.js' %}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   var element = document.querySelector('#id_days')
@@ -14,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     inline: true,
     locale: 'de',
     mode: 'multiple',
-    showMonths: 2,  // no effects yet at the time of writing :-(
+    showMonths: 2,
   });
 });
 </script>
