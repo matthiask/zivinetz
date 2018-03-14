@@ -1386,5 +1386,5 @@ class Absence(models.Model):
 
             if already + len(self.days) > self.assignment.available_holi_days:
                 raise ValidationError(_(
-                    'Not enough holiday days available. Only %s remain.'
+                    'Not enough holiday days available. Only %s remaining.'
                 ) % (self.assignment.available_holi_days - already))
