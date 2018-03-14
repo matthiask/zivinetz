@@ -6,6 +6,7 @@ from towel.resources.urls import model_resource_urls
 
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ValidationError
 from django.dispatch import receiver
 from django.db import models
 from django.db.models import Q, signals
@@ -1354,3 +1355,36 @@ class Absence(models.Model):
             min(self.days),
             max(self.days),
         )
+
+    def clean(self):
+        outside = [
+            day for day in self.days
+            if day < self.assignment.date_from or
+            day > self.assignment.determine_date_until()
+        ]
+        if outside:
+            raise ValidationError(_(
+                'Absence days outside duration of assignment: %s'
+            ) % (', '.join((str(day) for day in sorted(outside)))))
+
+        if self.reason == self.APPROVED_HOLIDAY:
+            if self.assignment.available_holi_days is None:
+                raise ValidationError(_(
+                    'Define available holiday days on assignment first.'
+                ))
+
+            already = sum(
+                (
+                    len(a.days) for a in
+                    self.assignment.absences.filter(
+                        Q(reason=self.APPROVED_HOLIDAY),
+                        ~Q(pk=self.pk)
+                    )
+                ),
+                0,
+            )
+
+            if already + len(self.days) > self.assignment.available_holi_days:
+                raise ValidationError(_(
+                    'Not enough holiday days available. Only %s remain.'
+                ) % (self.assignment.available_holi_days - already))
