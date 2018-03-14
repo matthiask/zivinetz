@@ -1295,6 +1295,14 @@ class GroupAssignment(models.Model):
         )
 
 
+class AbsenceManager(SearchManager):
+    search_fields = (
+        'assignment__drudge__user__first_name',
+        'assignment__drudge__user__last_name',
+        'internal_notes',
+    )
+
+
 @model_resource_urls()
 class Absence(models.Model):
     APPROVED_VACATION = 'approved-vacation'
@@ -1344,6 +1352,8 @@ class Absence(models.Model):
         verbose_name=_('days'),
     )
 
+    objects = AbsenceManager()
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = _('absence')
@@ -1355,6 +1365,9 @@ class Absence(models.Model):
             min(self.days),
             max(self.days),
         )
+
+    def pretty_days(self):
+        return ', '.join(day.strftime('%a %d.%m.%y') for day in sorted(self.days))
 
     def clean(self):
         outside = [

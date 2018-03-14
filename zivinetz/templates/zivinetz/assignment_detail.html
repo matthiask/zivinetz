@@ -59,6 +59,30 @@
         <span>{% trans "Remove pending reports" %}</span></a>
 </div>
 
+<h2>{% trans "absences" %}</h2>
+<table class="objects">
+  <thead>
+    <tr>
+      <th>{% trans "created" %}</th>
+      <th>{% trans "reason" %}</th>
+      <th>{% trans "notes" %}</th>
+      <th>{% trans "days" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for absence in object.absences.select_related %}
+    <tr>
+      <td>{{ absence.created_by }} / {{ absence.created_at }}</td>
+      <th>
+        <a href="{{ absence.get_absolute_url }}">{{ absence.get_reason_display }}</a>
+      </th>
+      <td>{{ absence.internal_notes|default:"&ndash;" }}</td>
+      <td>{{ absence.pretty_days }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
 <h2>{% trans "job references" %}</h2>
 <table>
 {% for reference in object.jobreferences.all %}

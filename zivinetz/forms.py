@@ -171,6 +171,14 @@ class AssignmentSearchForm(SearchForm):
         )
 
 
+class AbsenceSearchForm(SearchForm):
+    def queryset(self, model):
+        return super().queryset(model).select_related(
+            'assignment__drudge__user',
+            'created_by',
+        )
+
+
 class ExpenseReportSearchForm(SearchForm):
     default = {
         'assignment__status': (Assignment.ARRANGED, Assignment.MOBILIZED),

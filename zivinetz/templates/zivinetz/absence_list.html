@@ -1,0 +1,34 @@
+{% extends "resources/object_list.html" %}
+
+{% load i18n towel_batch_tags %}
+
+{% block objects %}
+<table class="objects">
+    <thead>
+        <tr>
+            {% if batch_form %}<td>
+                <input type="checkbox">
+            </td>{% endif %}
+            <th>{% trans "assignment"|capfirst %}</th>
+            <th>{% trans "created" %}</th>
+            <th>{% trans "reason" %}</th>
+            <th>{% trans "notes" %}</th>
+            <th>{% trans "days" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+        <tr>
+            {% if batch_form %}<td>{% batch_checkbox batch_form object.id %}</td>{% endif %}
+            <th><a href="{{ object.get_absolute_url }}">{{ object.assignment }}</a></th>
+            <td>{{ absence.created_by }} / {{ absence.created_at }}</td>
+            <th>
+              <a href="{{ absence.get_absolute_url }}">{{ absence.get_reason_display }}</a>
+            </th>
+            <td>{{ absence.internal_notes|default:"&ndash;" }}</td>
+            <td>{{ absence.pretty_days }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

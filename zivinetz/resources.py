@@ -23,6 +23,7 @@ from pdfdocument.utils import pdf_response
 
 from zivinetz.forms import (
     AssignmentSearchForm, SpecificationForm, DrudgeSearchForm, AssessmentForm,
+    AbsenceSearchForm,
     ExpenseReportSearchForm, EditExpenseReportForm, JobReferenceForm,
     JobReferenceSearchForm, AssignDrudgesToGroupsForm,
 )
@@ -697,7 +698,7 @@ urlpatterns = [
                 'list',
                 url=r'^$',
                 paginate_by=50,
-                # search_form=AssignmentSearchForm,
+                search_form=AbsenceSearchForm,
                 # send_emails_selector='drudge__user__email',
             ),
             absence_url('detail', url=r'^(?P<pk>\d+)/$'),
