@@ -189,3 +189,9 @@ admin.site.register(
     list_select_related=('group', 'assignment__drudge__user'),
     raw_id_fields=('assignment',),
 )
+
+admin.site.register(
+    models.Absence,
+    list_display=('assignment', 'created_by', 'reason', 'days'),
+    raw_id_fields=('assignment',),
+)

@@ -5,6 +5,7 @@ factory-boy
 FeinCMS
 pdfdocument
 Pillow
+psycopg2-binary
 PyPDF2
 pytz
 reportlab

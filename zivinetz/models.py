@@ -5,6 +5,7 @@ from towel.managers import SearchManager
 from towel.resources.urls import model_resource_urls
 
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
 from django.dispatch import receiver
 from django.db import models
 from django.db.models import Q, signals
@@ -1291,3 +1292,60 @@ class GroupAssignment(models.Model):
             self.week,
             self.week + timedelta(days=4),
         )
+
+
+class Absence(models.Model):
+    APPROVED_VACATION = 'approved-vacation'
+    APPROVED_HOLIDAY = 'approved-holiday'
+    SICK = 'sick'
+    MOTOR_SAW_COURSE = 'motor-saw-course'
+    ENVIRONMENT_COURSE = 'environment-course'
+    UNAUTHORIZED = 'unauthorized'
+    COMPENSATION = 'compensation'
+
+    REASON_CHOICES = (
+        (APPROVED_VACATION, _('approved vacation')),
+        (APPROVED_HOLIDAY, _('approved holiday')),
+        (SICK, _('sick')),
+        (MOTOR_SAW_COURSE, _('motor saw course')),
+        (ENVIRONMENT_COURSE, _('environment course')),
+        (UNAUTHORIZED, _('unauthorized absence')),
+        (COMPENSATION, _('compensation')),
+    )
+
+    assignment = models.ForeignKey(
+        Assignment,
+        on_delete=models.CASCADE,
+        related_name='absences',
+        verbose_name=_('assignment'),
+    )
+    created_at = models.DateTimeField(
+        _('created at'),
+        default=timezone.now,
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name=_('created by'),
+    )
+    reason = models.CharField(
+        _('reason'),
+        max_length=20,
+        choices=REASON_CHOICES,
+    )
+    internal_notes = models.TextField(
+        _('internal notes'),
+        blank=True,
+    )
+    days = ArrayField(
+        models.DateField(),
+        verbose_name=_('days'),
+    )
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = _('absence')
+        verbose_name_plural = _('absences')
+
+    def __str__(self):
+        return self.reason
