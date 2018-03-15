@@ -1,6 +1,9 @@
 from collections import defaultdict
 from datetime import timedelta
 
+from django.utils.formats import date_format
+from django.utils.translation import activate
+
 from openpyxl import Workbook
 from openpyxl.styles import (
     Alignment, Border, Font, NamedStyle, PatternFill, Side,
@@ -22,6 +25,8 @@ def c(column, row):
 
 
 def create_groups_xlsx(day):
+    activate('de')
+
     day = GroupAssignment.objects.monday(day)
     days = [day + timedelta(days=i) for i in range(5)]
 
@@ -59,8 +64,8 @@ def create_groups_xlsx(day):
         ws.row_dimensions[row + 1].height = height
 
     for i, cell in enumerate([
-            day.strftime('%B %y'),
-            day.strftime('Woche %W'),
+            date_format(day, 'F y'),
+            'Woche %s' % date_format(day, 'W'),
             'Auftragsnummer Arbeit',
             'LEITUNG',
             'ZIVIS',
@@ -76,8 +81,8 @@ def create_groups_xlsx(day):
     column_width(day_column(5), 20)
 
     for i, current in enumerate(days):
-        ws[c(day_column(i), 0)] = current.strftime('%A')
-        ws[c(day_column(i), 1)] = current.strftime('%d-%b-%y')
+        ws[c(day_column(i), 0)] = date_format(current, 'l')
+        ws[c(day_column(i), 1)] = date_format(current, 'd.m.y')
         ws[c(day_column(i), 0)].alignment = center
         ws[c(day_column(i), 1)].alignment = center
         ws.merge_cells('%s:%s' % (
@@ -142,8 +147,10 @@ def create_groups_xlsx(day):
             if assignment.date_from in days:
                 ws[c(1, row)] = 'NEU'
             else:
-                ws[c(1, row)] =\
-                    assignment.determine_date_until().strftime('%d.%m.%y')
+                ws[c(1, row)] = date_format(
+                    assignment.determine_date_until(),
+                    'd.m.y',
+                )
 
             for i, current in enumerate(days):
                 if current < assignment.date_from:
