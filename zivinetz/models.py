@@ -467,7 +467,6 @@ class AssignmentManager(SearchManager):
 
     def active_set(self, access, additional_ids=None):  # pragma: no cover
         q = Q(id__in=self.for_date())
-        # q = Q(id=0)
         if additional_ids:
             q |= Q(id__in=additional_ids)
         return self.filter(q)
@@ -1416,6 +1415,9 @@ class Absence(models.Model):
             day.strftime('%a %d.%m.%y') for day in sorted(self.days))
 
     def clean(self):
+        if not self.days:
+            return
+
         outside = [
             day for day in self.days
             if day < self.assignment.date_from or
