@@ -1449,3 +1449,13 @@ class Absence(models.Model):
                 raise ValidationError(_(
                     'Not enough holiday days available. Only %s remaining.'
                 ) % (self.assignment.available_holi_days - already))
+
+        overlapping = self.assignment.absences.filter(
+            Q(days__overlap=self.days),
+            ~Q(pk=self.pk),
+        ).select_related('assignment__drudge__user')
+        if overlapping:
+            raise ValidationError(_(
+                'Overlapping absences are not allowed, days already occupied'
+                ' by %s.'
+            ) % (', '.join(str(o) for o in overlapping)))
