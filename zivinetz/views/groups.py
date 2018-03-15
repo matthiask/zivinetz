@@ -19,6 +19,7 @@ def c(column, row):
     return '%s%s' % (columns[column], row + 1)
 
 
+
 def create_groups_xlsx(day):
     day = GroupAssignment.objects.monday(day)
 
@@ -41,6 +42,16 @@ def create_groups_xlsx(day):
     def day_column(weekday):
         return 2 + 9 * weekday
 
+    def style_row(row, style):
+        for i in range(0, day_column(5) + 1):
+            ws[c(i, row)].style = style
+
+    def column_width(column, width):
+        ws.column_dimensions[columns[column]].width = width
+
+    def row_height(row, height):
+        ws.row_dimensions[row + 1].height = height
+
     for i, cell in enumerate([
             day.strftime('%B %y'),
             day.strftime('Woche %W'),
@@ -54,9 +65,9 @@ def create_groups_xlsx(day):
             ws[c(0, i + 1)].alignment = center
             ws[c(day_column(5), i + 1)].alignment = center
 
-    ws.column_dimensions[columns[0]].width = 20
-    ws.column_dimensions[columns[1]].width = 6
-    ws.column_dimensions[columns[day_column(5)]].width = 20
+    column_width(0, 20)
+    column_width(1, 9)
+    column_width(day_column(5), 20)
 
     for i in range(5):
         current = day + timedelta(days=i)
@@ -82,15 +93,13 @@ def create_groups_xlsx(day):
                     ws[c(day_column(i) + j, k)].style = 'dark'
 
             ws[c(day_column(i) + j, 2)].alignment = vertical_text
-            ws.column_dimensions[columns[day_column(i) + j]].width = 4
+            column_width(day_column(i) + j, 4)
         ws[c(day_column(i), 2)].alignment = vertical_text
-        ws.column_dimensions[columns[day_column(i)]].width = 4
+        column_width(day_column(i), 4)
 
-    ws.row_dimensions[3].height = 50
-
-    def style_row(row, style):
-        for i in range(0, day_column(5) + 1):
-            ws[c(i, row)].style = style
+    row_height(2, 50)
+    row_height(3, 35)
+    row_height(4, 35)
 
     # ZIVIS line
     style_row(5, 'darker')
@@ -104,6 +113,7 @@ def create_groups_xlsx(day):
     row = 6
     for group in Group.objects.active():
         ws[c(0, row)] = group.name
+        ws[c(day_column(5), row)] = group.name
         style_row(row, 'darker')
 
         # TODO courses (UNA/MSK)
@@ -111,11 +121,15 @@ def create_groups_xlsx(day):
         for assignment in assignments[group.id]:
             row += 1
             ws[c(0, row)] = assignment.drudge.user.get_full_name()
-            ws.row_dimensions[row].height = 35
+            ws[c(1, row)] =\
+                assignment.determine_date_until().strftime('%d.%m.%y')
+            row_height(row, 35)
 
         # Skip some lines
-        for i in range(0, max(4, 10 - len(assignments[group.id]))):
+        for i in range(0, max(3, 10 - len(assignments[group.id]))):
             row += 1
-            ws.row_dimensions[row].height = 30
+            row_height(row, 35)
+
+        row += 1
 
     return wb
