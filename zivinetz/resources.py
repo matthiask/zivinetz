@@ -423,7 +423,6 @@ class AbsenceMixin(ZivinetzMixin):
                 fields = ('assignment', 'reason', 'internal_notes', 'days')
                 widgets = {
                     'reason': forms.RadioSelect,
-                    'internal_notes': forms.Textarea(attrs={'rows': 3}),
                 }
 
             def save(self):
