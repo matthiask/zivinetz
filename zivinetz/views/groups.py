@@ -146,6 +146,8 @@ def create_groups_xlsx(day):
             row_height(row, 35)
             if assignment.date_from in days:
                 ws[c(1, row)] = 'NEU'
+            elif assignment.determine_date_until() in days:
+                ws[c(1, row)] = 'ENDE'
             else:
                 ws[c(1, row)] = date_format(
                     assignment.determine_date_until(),
