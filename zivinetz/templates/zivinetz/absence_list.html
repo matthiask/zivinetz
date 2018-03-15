@@ -21,12 +21,12 @@
         <tr>
             {% if batch_form %}<td>{% batch_checkbox batch_form object.id %}</td>{% endif %}
             <th><a href="{{ object.get_absolute_url }}">{{ object.assignment }}</a></th>
-            <td>{{ absence.created_by }} / {{ absence.created_at }}</td>
+            <td>{{ object.created_by }} / {{ object.created_at }}</td>
             <th>
-              <a href="{{ absence.get_absolute_url }}">{{ absence.get_reason_display }}</a>
+              <a href="{{ object.get_absolute_url }}">{{ object.get_reason_display }}</a>
             </th>
-            <td>{{ absence.internal_notes|default:"&ndash;" }}</td>
-            <td>{{ absence.pretty_days }}</td>
+            <td>{{ object.internal_notes|default:"&ndash;" }}</td>
+            <td>{{ object.pretty_days }}</td>
         </tr>
     {% endfor %}
     </tbody>
