@@ -349,7 +349,7 @@ class DrudgeManager(SearchManager):
         q = Q(id=0)
         if additional_ids:
             q |= Q(id__in=additional_ids)
-        return self.filter(q)
+        return self.filter(q).select_related('user')
 
 
 @model_resource_urls()
@@ -469,7 +469,8 @@ class AssignmentManager(SearchManager):
         q = Q(id__in=self.for_date())
         if additional_ids:
             q |= Q(id__in=additional_ids)
-        return self.filter(q)
+        return self.filter(q).select_related(
+            'specification', 'drudge__user')
 
 
 @model_resource_urls()

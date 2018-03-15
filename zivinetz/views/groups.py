@@ -2,9 +2,11 @@ from collections import defaultdict
 from datetime import timedelta
 
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, NamedStyle, Font, PatternFill
+from openpyxl.styles import (
+    Alignment, Border, Font, NamedStyle, PatternFill, Side,
+)
 
-from zivinetz.models import Assignment, Group, GroupAssignment
+from zivinetz.models import Absence, Assignment, Group, GroupAssignment
 
 
 letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -21,6 +23,7 @@ def c(column, row):
 
 def create_groups_xlsx(day):
     day = GroupAssignment.objects.monday(day)
+    days = [day + timedelta(days=i) for i in range(5)]
 
     wb = Workbook()
     ws = wb.active
@@ -34,6 +37,10 @@ def create_groups_xlsx(day):
     darker.font = Font(name='Calibri', bold=True)
     darker.fill = PatternFill('solid', 'aaaaaa')
     wb.add_named_style(darker)
+
+    border = NamedStyle('borderLeft')
+    border.border = Border(left=Side(border_style='medium', color='00000000'))
+    wb.add_named_style(border)
 
     center = Alignment(horizontal='center', vertical='center')
     vertical_text = Alignment(text_rotation=90)
@@ -68,9 +75,7 @@ def create_groups_xlsx(day):
     column_width(1, 9)
     column_width(day_column(5), 20)
 
-    for i in range(5):
-        current = day + timedelta(days=i)
-
+    for i, current in enumerate(days):
         ws[c(day_column(i), 0)] = current.strftime('%A')
         ws[c(day_column(i), 1)] = current.strftime('%d-%b-%y')
         ws[c(day_column(i), 0)].alignment = center
@@ -85,6 +90,8 @@ def create_groups_xlsx(day):
         ))
 
         ws[c(day_column(i), 2)] = 'Absenz'
+        for k in range(2, 499):
+            ws[c(day_column(i), k)].style = 'borderLeft'
         for j in range(1, 9):
             ws[c(day_column(i) + j, 2)] = '%s)' % j
             if j % 2 == 0:
@@ -115,6 +122,11 @@ def create_groups_xlsx(day):
         pk__in=seen_assignments,
     ).select_related('drudge__user')
 
+    absences = defaultdict(dict)
+    for absence in Absence.objects.filter(days__overlap=days):
+        for day in absence.days:
+            absences[absence.assignment_id][day] = absence
+
     def add_group(row, group_name, assignments):
         ws[c(0, row)] = group_name
         ws[c(day_column(5), row)] = group_name
@@ -125,9 +137,21 @@ def create_groups_xlsx(day):
         for assignment in assignments:
             row += 1
             ws[c(0, row)] = assignment.drudge.user.get_full_name()
-            ws[c(1, row)] =\
-                assignment.determine_date_until().strftime('%d.%m.%y')
+            ws[c(day_column(5), row)] = assignment.drudge.user.get_full_name()
             row_height(row, 35)
+            if assignment.date_from in days:
+                ws[c(1, row)] = 'NEU'
+            else:
+                ws[c(1, row)] =\
+                    assignment.determine_date_until().strftime('%d.%m.%y')
+
+            for i, current in enumerate(days):
+                if current < assignment.date_from:
+                    ws[c(day_column(i), row)] = 'Vor Beginn'
+                elif current > assignment.determine_date_until():
+                    ws[c(day_column(i), row)] = 'Nach Ende'
+                elif current in absences[assignment.id]:
+                    ws[c(day_column(i), row)] = absences[assignment.id][current].get_reason_display()
 
         # Skip some lines
         for i in range(0, max(3, 10 - len(assignments))):
