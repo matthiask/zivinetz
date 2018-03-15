@@ -6,7 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMessage
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Template, Context
 from django.utils.translation import ugettext as _, ugettext_lazy
@@ -18,6 +18,7 @@ from towel.utils import safe_queryset_and
 
 from towel_foundation.widgets import SelectWithPicker
 
+from openpyxl.writer.excel import save_virtual_workbook
 from pdfdocument.document import cm
 from pdfdocument.utils import pdf_response
 
@@ -33,6 +34,7 @@ from zivinetz.models import (
     JobReferenceTemplate, JobReference,
 )
 from zivinetz.views.expenses import generate_expense_statistics_pdf
+from zivinetz.views.groups import create_groups_xlsx
 
 
 class LimitedPickerView(resources.PickerView):
@@ -521,6 +523,18 @@ class AssignGroupsView(resources.ModelResourceView):
         except Exception as exc:
             print(exc)
             return redirect(self.url('list'))
+
+        if request.GET.get('xlsx'):
+            response = HttpResponse(
+                save_virtual_workbook(create_groups_xlsx(day)),
+                content_type=(
+                    'application/vnd.openxmlformats-officedocument.'
+                    'spreadsheetml.sheet'),
+            )
+            response['Content-Disposition'] = 'attachment; filename="%s"' % (
+                'wochenrapport-%s.xlsx' % day.isoformat(),
+            )
+            return response
 
         form = AssignDrudgesToGroupsForm(day=day)
         return self.render_to_response(self.get_context_data(

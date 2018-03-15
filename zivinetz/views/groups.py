@@ -19,7 +19,6 @@ def c(column, row):
     return '%s%s' % (columns[column], row + 1)
 
 
-
 def create_groups_xlsx(day):
     day = GroupAssignment.objects.monday(day)
 

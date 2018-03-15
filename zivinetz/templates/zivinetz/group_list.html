@@ -3,9 +3,15 @@
 {% block content %}
 <nav>
   <h3>
-    Gruppeneinteilung bearbeiten:
+    Gruppeneinteilung:
     {% for title, day in view.weeks %}
       <a href="{{ day|date:"Y-m-d" }}/">{{ title }}</a>{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  </h3>
+  <h3>
+    Export:
+    {% for title, day in view.weeks %}
+      <a href="{{ day|date:"Y-m-d" }}/?xlsx=1">{{ title }}</a>{% if not forloop.last %},{% endif %}
     {% endfor %}
   </h3>
 </nav>
