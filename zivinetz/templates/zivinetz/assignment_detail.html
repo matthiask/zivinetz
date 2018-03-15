@@ -74,7 +74,7 @@
     <tr>
       <td>{{ absence.created_by }} / {{ absence.created_at }}</td>
       <th>
-        <a href="{{ absence.get_absolute_url }}">{{ absence.get_reason_display }}</a>
+        <a href="{{ absence.get_absolute_url }}">{{ absence.pretty_reason }}</a>
       </th>
       <td>{{ absence.internal_notes|default:"&ndash;" }}</td>
       <td>{{ absence.pretty_days }}</td>

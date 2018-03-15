@@ -1368,6 +1368,16 @@ class Absence(models.Model):
         COMPENSATION: 'working_days',  # Correct? Probably not.
     }
 
+    PRETTY_REASON = {
+        APPROVED_VACATION: 'Urlaub',
+        APPROVED_HOLIDAY: 'Ferien',
+        SICK: 'Krank',
+        MOTOR_SAW_COURSE: 'MSK',
+        ENVIRONMENT_COURSE: 'UNA',
+        UNAUTHORIZED: 'Unentschuldigt',
+        COMPENSATION: 'Kompensation',
+    }
+
     assignment = models.ForeignKey(
         Assignment,
         on_delete=models.CASCADE,
@@ -1414,6 +1424,12 @@ class Absence(models.Model):
     def pretty_days(self):
         return ', '.join(
             day.strftime('%a %d.%m.%y') for day in sorted(self.days))
+
+    def pretty_reason(self):
+        try:
+            return self.PRETTY_REASON[self.reason]
+        except KeyError:
+            return self.get_reason_display()
 
     def clean(self):
         if not self.days:

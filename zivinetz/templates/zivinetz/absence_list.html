@@ -23,7 +23,7 @@
             <th><a href="{{ object.get_absolute_url }}">{{ object.assignment }}</a></th>
             <td>{{ object.created_by }} / {{ object.created_at }}</td>
             <th>
-              <a href="{{ object.get_absolute_url }}">{{ object.get_reason_display }}</a>
+              <a href="{{ object.get_absolute_url }}">{{ object.pretty_reason }}</a>
             </th>
             <td>{{ object.internal_notes|default:"&ndash;" }}</td>
             <td>{{ object.pretty_days }}</td>

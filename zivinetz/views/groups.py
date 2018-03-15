@@ -158,10 +158,11 @@ def create_groups_xlsx(day):
                 elif current > assignment.determine_date_until():
                     ws[c(day_column(i), row)] = 'Nach Ende'
                 elif current in absences[assignment.id]:
-                    ws[c(day_column(i), row)] = absences[assignment.id][current].get_reason_display()
+                    ws[c(day_column(i), row)] =\
+                        absences[assignment.id][current].pretty_reason()
 
         # Skip some lines
-        for i in range(0, max(3, 10 - len(assignments))):
+        for i in range(0, max(3, 6 - len(assignments))):
             row += 1
             row_height(row, 35)
 
