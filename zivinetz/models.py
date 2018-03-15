@@ -466,7 +466,8 @@ class AssignmentManager(SearchManager):
         )
 
     def active_set(self, access, additional_ids=None):  # pragma: no cover
-        q = Q(id=0)
+        q = Q(id__in=self.for_date())
+        # q = Q(id=0)
         if additional_ids:
             q |= Q(id__in=additional_ids)
         return self.filter(q)
