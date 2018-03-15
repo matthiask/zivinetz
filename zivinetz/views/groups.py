@@ -4,7 +4,7 @@ from datetime import timedelta
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, NamedStyle, Font, PatternFill
 
-from zivinetz.models import Group, GroupAssignment
+from zivinetz.models import Assignment, Group, GroupAssignment
 
 
 letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -105,20 +105,25 @@ def create_groups_xlsx(day):
     style_row(5, 'darker')
 
     assignments = defaultdict(list)
+    seen_assignments = set()
     for ga in GroupAssignment.objects.filter(
             week=day,
     ).select_related('assignment__drudge__user'):
         assignments[ga.group_id].append(ga.assignment)
+        seen_assignments.add(ga.assignment_id)
 
-    row = 6
-    for group in Group.objects.active():
-        ws[c(0, row)] = group.name
-        ws[c(day_column(5), row)] = group.name
+    free_assignments = Assignment.objects.for_date(day).exclude(
+        pk__in=seen_assignments,
+    ).select_related('drudge__user')
+
+    def add_group(row, group_name, assignments):
+        ws[c(0, row)] = group_name
+        ws[c(day_column(5), row)] = group_name
         style_row(row, 'darker')
 
         # TODO courses (UNA/MSK)
 
-        for assignment in assignments[group.id]:
+        for assignment in assignments:
             row += 1
             ws[c(0, row)] = assignment.drudge.user.get_full_name()
             ws[c(1, row)] =\
@@ -126,10 +131,16 @@ def create_groups_xlsx(day):
             row_height(row, 35)
 
         # Skip some lines
-        for i in range(0, max(3, 10 - len(assignments[group.id]))):
+        for i in range(0, max(3, 10 - len(assignments))):
             row += 1
             row_height(row, 35)
 
         row += 1
+        return row
+
+    row = 6
+    for group in Group.objects.active():
+        row = add_group(row, group.name, assignments[group.id])
+    row = add_group(row, 'Nicht zugeteilt', free_assignments)
 
     return wb
