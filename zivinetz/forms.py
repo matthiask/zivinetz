@@ -312,7 +312,7 @@ class AssignDrudgesToGroupsForm(forms.Form):
                 'specification__scope_statement',
                 'drudge__user',
         ):
-            self.fields['asg_%s' % asg.id] = forms.ModelChoiceField(
+            self.fields['asg_%s' % asg.id] = f = forms.ModelChoiceField(
                 label=str(asg),
                 queryset=Group.objects.active(),
                 initial=(
@@ -322,6 +322,7 @@ class AssignDrudgesToGroupsForm(forms.Form):
                 widget=TableCellRadioSelect,
                 required=False,
             )
+            f.choices = self.group_choices
 
     def save(self):
         for asg in Assignment.objects.for_date(self.day):
