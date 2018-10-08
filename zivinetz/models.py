@@ -1410,7 +1410,7 @@ class Absence(models.Model):
     objects = AbsenceManager()
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-days']
         verbose_name = _('absence')
         verbose_name_plural = _('absences')
 
