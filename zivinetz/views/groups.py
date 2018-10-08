@@ -33,19 +33,55 @@ def create_groups_xlsx(day):
     wb = Workbook()
     ws = wb.active
 
+    thin_border = Side(border_style='thin', color='00000000')
+    medium_border = Side(border_style='medium', color='00000000')
+    font = Font(name='Calibri')
+
     dark = NamedStyle('dark')
-    dark.font = Font(name='Calibri')
+    dark.font = font
     dark.fill = PatternFill('solid', 'cccccc')
+    dark.border = Border(
+        top=thin_border, right=thin_border,
+        bottom=thin_border, left=thin_border,
+    )
     wb.add_named_style(dark)
 
     darker = NamedStyle('darker')
+    darker.border = Border(top=thin_border, bottom=thin_border)
     darker.font = Font(name='Calibri', bold=True)
     darker.fill = PatternFill('solid', 'aaaaaa')
     wb.add_named_style(darker)
 
-    border = NamedStyle('borderLeft')
-    border.border = Border(left=Side(border_style='medium', color='00000000'))
+    border = NamedStyle('borderThickLeft')
+    border.border = Border(
+        top=thin_border, right=thin_border, bottom=thin_border,
+        left=medium_border,
+    )
+    border.font = font
     wb.add_named_style(border)
+
+    border = NamedStyle('borderThickBottom')
+    border.border = Border(bottom=medium_border)
+    border.font = font
+    wb.add_named_style(border)
+
+    border = NamedStyle('borderThinLeft')
+    border.border = Border(left=thin_border)
+    border.font = font
+    wb.add_named_style(border)
+
+    border = NamedStyle('borderThinBottom')
+    border.border = Border(bottom=thin_border)
+    border.font = font
+    wb.add_named_style(border)
+
+    borderThin = NamedStyle('borderThin')
+    borderThin.border = Border(
+        top=thin_border, right=thin_border,
+        bottom=thin_border, left=thin_border,
+    )
+    borderThin.font = font
+    wb.add_named_style(borderThin)
 
     center = Alignment(horizontal='center', vertical='center')
     vertical_text = Alignment(text_rotation=90)
@@ -63,6 +99,9 @@ def create_groups_xlsx(day):
     def row_height(row, height):
         ws.row_dimensions[row + 1].height = height
 
+    ws[c(0, 1)].style = 'borderThickBottom'
+    ws[c(1, 1)].style = 'borderThickBottom'
+
     for i, cell in enumerate([
             date_format(day, 'F y'),
             'Woche %s' % date_format(day, 'W'),
@@ -72,17 +111,25 @@ def create_groups_xlsx(day):
     ]):
         ws[c(0, i + 1)] = cell
         ws[c(day_column(5), i + 1)] = cell
+
+        ws[c(0, i + 1)].style = 'borderThinBottom'
+        ws[c(1, i + 1)].style = 'borderThinBottom'
+
+        if i > 0:
+            ws[c(day_column(5), i + 1)].style = 'borderThin'
+
         if i < 2:
             ws[c(0, i + 1)].alignment = center
             ws[c(day_column(5), i + 1)].alignment = center
 
-    column_width(0, 20)
-    column_width(1, 9)
-    column_width(day_column(5), 20)
+    column_width(0, 35)
+    column_width(1, 15)
+    column_width(day_column(5), 35)
 
     for i, current in enumerate(days):
         ws[c(day_column(i), 0)] = date_format(current, 'l')
         ws[c(day_column(i), 1)] = date_format(current, 'd.m.y')
+        ws[c(day_column(i), 1)].style = 'borderThickBottom'
         ws[c(day_column(i), 0)].alignment = center
         ws[c(day_column(i), 1)].alignment = center
         ws.merge_cells('%s:%s' % (
@@ -96,21 +143,22 @@ def create_groups_xlsx(day):
 
         ws[c(day_column(i), 2)] = 'Absenz'
         for k in range(2, 499):
-            ws[c(day_column(i), k)].style = 'borderLeft'
+            ws[c(day_column(i), k)].style = 'borderThickLeft'
+            ws[c(day_column(i) + 1, k)].style = 'borderThin'
         for j in range(1, 9):
             ws[c(day_column(i) + j, 2)] = '%s)' % j
-            if j % 2 == 0:
-                for k in range(2, 499):
-                    ws[c(day_column(i) + j, k)].style = 'dark'
+            style = 'borderThin' if j % 2 else 'dark'
+            for k in range(2, 499):
+                ws[c(day_column(i) + j, k)].style = style
 
             ws[c(day_column(i) + j, 2)].alignment = vertical_text
-            column_width(day_column(i) + j, 4)
+            column_width(day_column(i) + j, 7)
         ws[c(day_column(i), 2)].alignment = vertical_text
-        column_width(day_column(i), 4)
+        column_width(day_column(i), 7)
 
-    row_height(2, 50)
-    row_height(3, 35)
-    row_height(4, 35)
+    row_height(2, 250)
+    row_height(3, 60)
+    row_height(4, 60)
 
     # ZIVIS line
     style_row(5, 'darker')
@@ -143,6 +191,11 @@ def create_groups_xlsx(day):
             row += 1
             ws[c(0, row)] = assignment.drudge.user.get_full_name()
             ws[c(day_column(5), row)] = assignment.drudge.user.get_full_name()
+
+            ws[c(0, row)].style = 'borderThinBottom'
+            ws[c(1, row)].style = 'borderThinBottom'
+            ws[c(day_column(5), row)].style = 'borderThinBottom'
+
             row_height(row, 35)
             if assignment.date_from in days:
                 ws[c(1, row)] = 'NEU'
@@ -167,6 +220,10 @@ def create_groups_xlsx(day):
         for i in range(0, max(3, 6 - len(assignments))):
             row += 1
             row_height(row, 35)
+
+            ws[c(0, row)].style = 'borderThinBottom'
+            ws[c(1, row)].style = 'borderThinBottom'
+            ws[c(day_column(5), row)].style = 'borderThinBottom'
 
         row += 1
         return row
