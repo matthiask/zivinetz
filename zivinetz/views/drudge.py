@@ -16,94 +16,101 @@ from zivinetz.views.decorators import drudge_required
 
 
 class AssignmentForm(forms.ModelForm):
-    codeword = forms.CharField(label=ugettext_lazy('Codeword'))
+    codeword = forms.CharField(label=ugettext_lazy("Codeword"))
 
     formfield_callback = towel_formfield_callback
 
     class Meta:
         model = Assignment
         fields = (
-            'specification', 'regional_office', 'date_from',
-            'date_until', 'part_of_long_assignment')
+            "specification",
+            "regional_office",
+            "date_from",
+            "date_until",
+            "part_of_long_assignment",
+        )
 
     def clean_codeword(self):
-        codeword = self.cleaned_data.get('codeword')
-        if codeword != Codeword.objects.word(key='einsatz'):
-            raise forms.ValidationError(_('Codeword is incorrect.'))
+        codeword = self.cleaned_data.get("codeword")
+        if codeword != Codeword.objects.word(key="einsatz"):
+            raise forms.ValidationError(_("Codeword is incorrect."))
         return codeword
 
     def clean(self):
         data = super(AssignmentForm, self).clean()
 
-        if data.get('date_from') and data.get('date_until'):
-            if (data['date_from'] > data['date_until']
-                    or data['date_from'] < date.today()):
-                raise forms.ValidationError(_('Date period is invalid.'))
+        if data.get("date_from") and data.get("date_until"):
+            if (
+                data["date_from"] > data["date_until"]
+                or data["date_from"] < date.today()
+            ):
+                raise forms.ValidationError(_("Date period is invalid."))
 
         return data
 
 
 @drudge_required
 def dashboard(request, drudge):
-    aform_initial = {
-        'regional_office': drudge.regional_office_id,
-    }
+    aform_initial = {"regional_office": drudge.regional_office_id}
 
     aform = AssignmentForm(initial=aform_initial)
 
-    if request.method == 'POST':
-        if 'assignment' in request.POST:
+    if request.method == "POST":
+        if "assignment" in request.POST:
             aform = AssignmentForm(request.POST)
             if aform.is_valid():
                 assignment = aform.save(commit=False)
                 assignment.drudge = drudge
                 assignment.save()
-                messages.success(
-                    request, _('Successfully saved new assignment.'))
+                messages.success(request, _("Successfully saved new assignment."))
 
                 return HttpResponseRedirect(request.path)
 
-    return render(request, 'zivinetz/drudge_dashboard.html', {
-        'drudge': drudge,
-
-        'assignment_form': aform,
-
-        'assignments': drudge.assignments.order_by('-date_from'),
-        'expense_reports': ExpenseReport.objects.filter(
-            assignment__drudge=drudge,
-            status__in=(ExpenseReport.FILLED, ExpenseReport.PAID),
-        ).order_by('-date_from'),
-    })
+    return render(
+        request,
+        "zivinetz/drudge_dashboard.html",
+        {
+            "drudge": drudge,
+            "assignment_form": aform,
+            "assignments": drudge.assignments.order_by("-date_from"),
+            "expense_reports": ExpenseReport.objects.filter(
+                assignment__drudge=drudge,
+                status__in=(ExpenseReport.FILLED, ExpenseReport.PAID),
+            ).order_by("-date_from"),
+        },
+    )
 
 
 class UserForm(forms.ModelForm):
     formfield_callback = towel_formfield_callback
-    error_css_class = 'error'
-    required_css_class = 'required'
+    error_css_class = "error"
+    required_css_class = "required"
 
-    first_name = forms.CharField(label=_('first name'))
-    last_name = forms.CharField(label=_('last name'))
+    first_name = forms.CharField(label=_("first name"))
+    last_name = forms.CharField(label=_("last name"))
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name')
+        fields = ("first_name", "last_name")
 
 
 class DrudgeForm(forms.ModelForm):
     formfield_callback = towel_formfield_callback
-    error_css_class = 'error'
-    required_css_class = 'required'
+    error_css_class = "error"
+    required_css_class = "required"
 
     environment_course = forms.NullBooleanField(
-        label=_('environment course'), required=True,
-        help_text=_('I have taken the environment course already.'))
+        label=_("environment course"),
+        required=True,
+        help_text=_("I have taken the environment course already."),
+    )
 
     class Meta:
         model = Drudge
-        exclude = ('user', 'internal_notes')
+        exclude = ("user", "internal_notes")
 
     def clean_bank_account(self):
-        value = self.cleaned_data.get('bank_account')
+        value = self.cleaned_data.get("bank_account")
         if value:
             try:
                 schwifty.IBAN(value)
@@ -112,9 +119,9 @@ class DrudgeForm(forms.ModelForm):
         return value
 
     def clean_environment_course(self):
-        value = self.cleaned_data.get('environment_course')
+        value = self.cleaned_data.get("environment_course")
         if value is None:
-            raise forms.ValidationError(_('Please select either yes or no.'))
+            raise forms.ValidationError(_("Please select either yes or no."))
         return value
 
 
@@ -125,7 +132,7 @@ def profile(request):
     except Drudge.DoesNotExist:
         drudge = None
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = DrudgeForm(request.POST, request.FILES, instance=drudge)
         form2 = UserForm(request.POST, request.FILES, instance=request.user)
 
@@ -136,17 +143,15 @@ def profile(request):
 
             form2.save()
 
-            messages.success(
-                request, _('Successfully saved profile information.'))
+            messages.success(request, _("Successfully saved profile information."))
 
             return HttpResponseRedirect(request.path)
     else:
         form = DrudgeForm(instance=drudge)
         form2 = UserForm(instance=request.user)
 
-    return render(request, 'zivinetz/drudge_profile.html', {
-        'object': drudge,
-        'form': form,
-        'form2': form2,
-        'title': _('Edit profile'),
-    })
+    return render(
+        request,
+        "zivinetz/drudge_profile.html",
+        {"object": drudge, "form": form, "form2": form2, "title": _("Edit profile")},
+    )

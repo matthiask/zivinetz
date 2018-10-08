@@ -10,9 +10,9 @@ class ModelBackend(ModelBackend):
 
     def authenticate(self, request, username=None, password=None):
         for user in User.objects.filter(
-                Q(username__iexact=username)
-                | Q(email__iexact=username)
-                | Q(drudge__zdp_no__iexact=username)
+            Q(username__iexact=username)
+            | Q(email__iexact=username)
+            | Q(drudge__zdp_no__iexact=username)
         ):
             if user.check_password(password):
                 return user

@@ -15,8 +15,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext as _
 
-from zivinetz.models import (
-    Assignment, ExpenseReport, JobReference, AssignmentChange)
+from zivinetz.models import Assignment, ExpenseReport, JobReference, AssignmentChange
 
 from reportlab.lib import colors
 
@@ -41,86 +40,67 @@ class AssignmentPDFStationery(object):
             self.page_2(canvas, pdfdocument)
 
     markers = {
-        'standard': (50, 105),
-        'trial': (76, 105),
-        'long_assignment': (106, 105),
-
+        "standard": (50, 105),
+        "trial": (76, 105),
+        "long_assignment": (106, 105),
         # 'working_time_fixed': (112, 60),
         # 'working_time_nightshift': (151, 59),
         # 'working_time_flexible': (112, 55),
         # 'working_time_weekend': (151, 55),
-
-        'vegetarianism': (113.5, 40),
-        'no_vegetarianism': (155, 40),
-
-        'pocket_money': (31, 167),
-
+        "vegetarianism": (113.5, 40),
+        "no_vegetarianism": (155, 40),
+        "pocket_money": (31, 167),
         # 'accomodation_working_compensated': (56, 230),
         # 'accomodation_working_provided': (85, 230),
         # 'accomodation_free_compensated': (113.5, 230),
         # 'accomodation_free_provided': (143, 230),
-
         # 'accomodation_used': (75, 251),
         # 'accomodation_notused': (113.5, 251),
-
-        'breakfast_working_at_company': (113, 218),
-        'breakfast_working_at_home': (75, 218),
-        'breakfast_working_external': (75, 218),
-
-        'breakfast_free_at_company': (178, 218),
-        'breakfast_free_at_home': (139, 218),
-        'breakfast_free_external': (0, 0),  # FIXME probably incorrect.
-
-        'lunch_working_at_company': (113, 213),
-        'lunch_working_at_home': (75, 213),
-        'lunch_working_external': (75, 213),
-
-        'lunch_free_at_company': (178, 213),
-        'lunch_free_at_home': (139, 213),
-        'lunch_free_external': (0, 0),  # FIXME
-
-        'supper_working_at_company': (113, 209),
-        'supper_working_at_home': (75, 209),
-        'supper_working_external': (75, 209),
-
-        'supper_free_at_company': (178, 209),
-        'supper_free_at_home': (139, 209),
-        'supper_free_external': (0, 0),  # FIXME
-
-        'accomodation_throughout': (182, 264),
-        'food_throughout': (182, 245),
-
-        'accomodation_not_throughout': (186, 264),
-        'food_not_throughout': (186, 245),
-
-        'drudge_renounce_accomodation_1': (186, 259.5),
-        'drudge_renounce_accomodation_2': (186, 250),
-
-        'public_transports': (31, 149),
-        'private_transport': (113.5, 149),
-        'special_tickets_yes': (182, 137),
-        'special_tickets_no': (186, 137),
-
-        'clothing_provided': (31, 111),
-        'clothing_compensated': (113.5, 111),
-
-        'arrangement_timely': (31, 108),
-        'arrangement_late': (31, 99),
-
-        'legalese_1': (186, 65),
-        'legalese_2': (186, 54),
-        'legalese_3': (186, 48.5),
+        "breakfast_working_at_company": (113, 218),
+        "breakfast_working_at_home": (75, 218),
+        "breakfast_working_external": (75, 218),
+        "breakfast_free_at_company": (178, 218),
+        "breakfast_free_at_home": (139, 218),
+        "breakfast_free_external": (0, 0),  # FIXME probably incorrect.
+        "lunch_working_at_company": (113, 213),
+        "lunch_working_at_home": (75, 213),
+        "lunch_working_external": (75, 213),
+        "lunch_free_at_company": (178, 213),
+        "lunch_free_at_home": (139, 213),
+        "lunch_free_external": (0, 0),  # FIXME
+        "supper_working_at_company": (113, 209),
+        "supper_working_at_home": (75, 209),
+        "supper_working_external": (75, 209),
+        "supper_free_at_company": (178, 209),
+        "supper_free_at_home": (139, 209),
+        "supper_free_external": (0, 0),  # FIXME
+        "accomodation_throughout": (182, 264),
+        "food_throughout": (182, 245),
+        "accomodation_not_throughout": (186, 264),
+        "food_not_throughout": (186, 245),
+        "drudge_renounce_accomodation_1": (186, 259.5),
+        "drudge_renounce_accomodation_2": (186, 250),
+        "public_transports": (31, 149),
+        "private_transport": (113.5, 149),
+        "special_tickets_yes": (182, 137),
+        "special_tickets_no": (186, 137),
+        "clothing_provided": (31, 111),
+        "clothing_compensated": (113.5, 111),
+        "arrangement_timely": (31, 108),
+        "arrangement_late": (31, 99),
+        "legalese_1": (186, 65),
+        "legalese_2": (186, 54),
+        "legalese_3": (186, 48.5),
     }
 
     def draw_marker(self, canvas, key):
-        canvas.setFont('Helvetica', 11)
-        canvas.drawString(
-            self.markers[key][0] * mm, self.markers[key][1] * mm, 'x')
+        canvas.setFont("Helvetica", 11)
+        canvas.drawString(self.markers[key][0] * mm, self.markers[key][1] * mm, "x")
 
     def _draw_all_markers(self, canvas):  # pragma: no cover
         canvas.setFillColorRGB(1, 0, 0)
         for key, pos in self.markers.items():
-            canvas.drawString(pos[0] * mm, pos[1] * mm, u'x %s' % key)
+            canvas.drawString(pos[0] * mm, pos[1] * mm, u"x %s" % key)
             # canvas.drawString(pos[0] * mm, pos[1] * mm, u'x')
 
     def page_1(self, canvas, pdfdocument):
@@ -142,7 +122,7 @@ class AssignmentPDFStationery(object):
         frame_2 = [
             drudge.zdp_no,
             drudge.user.first_name,
-            u'%s %s' % (drudge.zip_code, drudge.city),
+            u"%s %s" % (drudge.zip_code, drudge.city),
             drudge.mobile,
             drudge.user.email,
             drudge.education_occupation,
@@ -160,74 +140,62 @@ class AssignmentPDFStationery(object):
         ]
 
         frame_5 = [
-            '20995',
-            scope_statement.company_contact_name or 'Marco Sacchi',
-            scope_statement.company_address or 'Chlosterstrasse',
-            scope_statement.company_contact_phone or '044 533 11 44',
+            "20995",
+            scope_statement.company_contact_name or "Marco Sacchi",
+            scope_statement.company_address or "Chlosterstrasse",
+            scope_statement.company_contact_phone or "044 533 11 44",
         ]
 
-        frame_5a = [
-            '',
-            scope_statement.company_contact_function or u'Geschäftsleiter',
-        ]
+        frame_5a = ["", scope_statement.company_contact_function or u"Geschäftsleiter"]
 
         frame_6 = [
-            scope_statement.company_name or 'Verein Naturnetz',
-            scope_statement.company_contact_function or u'Geschäftsleiter',
-            scope_statement.company_contact_location or '8109 Kloster Fahr',
-            scope_statement.company_contact_email or 'ms@naturnetz.ch',
+            scope_statement.company_name or "Verein Naturnetz",
+            scope_statement.company_contact_function or u"Geschäftsleiter",
+            scope_statement.company_contact_location or "8109 Kloster Fahr",
+            scope_statement.company_contact_email or "ms@naturnetz.ch",
         ]
 
         frame_6a = [
-            scope_statement.company_contact_name or 'Marco Sacchi',
-            scope_statement.company_contact_phone or '044 533 11 44',
+            scope_statement.company_contact_name or "Marco Sacchi",
+            scope_statement.company_contact_phone or "044 533 11 44",
         ]
 
-        frame_7 = [
-            self.assignment.date_from.strftime('%d.%m.%Y'),
-        ]
+        frame_7 = [self.assignment.date_from.strftime("%d.%m.%Y")]
 
         frame_8 = [
-            scope_statement.work_location or 'Kloster Fahr, ganze Schweiz',
-            self.assignment.date_until.strftime('%d.%m.%Y'),
+            scope_statement.work_location or "Kloster Fahr, ganze Schweiz",
+            self.assignment.date_until.strftime("%d.%m.%Y"),
         ]
 
         frame_9 = [
-            u'%s %s' % (
+            u"%s %s"
+            % (
                 self.assignment.specification.scope_statement.eis_no,
                 self.assignment.specification.scope_statement.name,
-            ),
+            )
         ]
 
-        frame_10 = [
-            self.assignment.regional_office.city,
-        ]
+        frame_10 = [self.assignment.regional_office.city]
 
-        frame_11 = [
-        ]
+        frame_11 = []
 
         frames = [
             (frame_1, 63 * mm, 197 * mm, 6.9 * mm),
             (frame_2, 140 * mm, 197 * mm, 6.9 * mm),
-
             (frame_3, 63 * mm, 174 * mm, 11 * mm),
             (frame_4, 140 * mm, 174 * mm, 11 * mm),
-
             (frame_5, 63 * mm, 156 * mm, 7.2 * mm),
             (frame_6, 140 * mm, 156 * mm, 7.2 * mm),
-
             (frame_5a, 63 * mm, 138 * mm, 7.2 * mm),
             (frame_6a, 140 * mm, 138 * mm, 7.2 * mm),
-
             (frame_7, 63 * mm, 117 * mm, 7 * mm),
             (frame_8, 140 * mm, 117 * mm, 7.2 * mm),
-
             (frame_9, 87 * mm, 99 * mm, 7.4 * mm),
             (frame_10, 127 * mm, 268 * mm, 0),
             (frame_11, 63 * mm, 55 * mm, 8.5 * mm),
         ]
 
-        canvas.setFont('Helvetica', 9)
+        canvas.setFont("Helvetica", 9)
         for frame, x, y, line in frames:
             for i, text in enumerate(reversed(frame)):
                 canvas.drawString(x, y + i * line, text)
@@ -243,20 +211,20 @@ class AssignmentPDFStationery(object):
 
         if company_holiday:
             canvas.drawString(
-                120 * mm, 86 * mm,
-                company_holiday.date_from.strftime('%d.%m.%Y'))
+                120 * mm, 86 * mm, company_holiday.date_from.strftime("%d.%m.%Y")
+            )
             canvas.drawString(
-                165 * mm, 86 * mm,
-                company_holiday.date_until.strftime('%d.%m.%Y'))
+                165 * mm, 86 * mm, company_holiday.date_until.strftime("%d.%m.%Y")
+            )
 
         if False:
-            canvas.drawString(120 * mm, 86 * mm, '01.02.2003')
-            canvas.drawString(165 * mm, 86 * mm, '01.02.2003')
+            canvas.drawString(120 * mm, 86 * mm, "01.02.2003")
+            canvas.drawString(165 * mm, 86 * mm, "01.02.2003")
 
         if self.assignment.part_of_long_assignment:
-            self.draw_marker(canvas, 'long_assignment')
+            self.draw_marker(canvas, "long_assignment")
         else:
-            self.draw_marker(canvas, 'standard')
+            self.draw_marker(canvas, "standard")
 
         # self.draw_marker(canvas, 'working_time_fixed')
 
@@ -273,63 +241,65 @@ class AssignmentPDFStationery(object):
         # self.draw_marker(canvas, 'pocket_money')
 
         if spec.with_accomodation:
-            self.draw_marker(canvas, 'special_tickets_yes')
+            self.draw_marker(canvas, "special_tickets_yes")
         else:
-            self.draw_marker(canvas, 'special_tickets_no')
-            self.draw_marker(canvas, 'public_transports')
+            self.draw_marker(canvas, "special_tickets_no")
+            self.draw_marker(canvas, "public_transports")
 
         # for meal in ('accomodation', 'breakfast', 'lunch', 'supper'):
-        for meal in ('breakfast', 'lunch', 'supper'):
-            for day_type in ('working', 'free'):
-                marker = '%s_%s_%s' % (
+        for meal in ("breakfast", "lunch", "supper"):
+            for day_type in ("working", "free"):
+                marker = "%s_%s_%s" % (
                     meal,
                     day_type,
-                    getattr(spec, '%s_%s' % (meal, day_type)))
+                    getattr(spec, "%s_%s" % (meal, day_type)),
+                )
 
-                if marker.endswith('at_accomodation'):
+                if marker.endswith("at_accomodation"):
                     marker = marker.replace(
-                        'at_accomodation',
-                        spec.with_accomodation and 'at_company' or 'at_home')
-                elif marker.endswith('no_compensation'):
+                        "at_accomodation",
+                        spec.with_accomodation and "at_company" or "at_home",
+                    )
+                elif marker.endswith("no_compensation"):
                     # in this context, at_company is the same
                     # as no_compensation
-                    marker = marker.replace('no_compensation', 'at_company')
+                    marker = marker.replace("no_compensation", "at_company")
 
                 self.draw_marker(canvas, marker)
 
-        self.draw_marker(canvas, 'clothing_%s' % spec.clothing)
+        self.draw_marker(canvas, "clothing_%s" % spec.clothing)
 
         if spec.accomodation_throughout:
-            self.draw_marker(canvas, 'accomodation_throughout')
+            self.draw_marker(canvas, "accomodation_throughout")
         else:
-            self.draw_marker(canvas, 'accomodation_not_throughout')
+            self.draw_marker(canvas, "accomodation_not_throughout")
 
         if spec.with_accomodation:
-            self.draw_marker(canvas, 'drudge_renounce_accomodation_1')
-            self.draw_marker(canvas, 'drudge_renounce_accomodation_2')
+            self.draw_marker(canvas, "drudge_renounce_accomodation_1")
+            self.draw_marker(canvas, "drudge_renounce_accomodation_2")
 
         if spec.food_throughout:
-            self.draw_marker(canvas, 'food_throughout')
+            self.draw_marker(canvas, "food_throughout")
         else:
-            self.draw_marker(canvas, 'food_not_throughout')
+            self.draw_marker(canvas, "food_not_throughout")
 
         if drudge.vegetarianism:
-            canvas.drawString(55 * mm, 188 * mm, 'Vegetarisch')
+            canvas.drawString(55 * mm, 188 * mm, "Vegetarisch")
 
-        self.draw_marker(canvas, 'legalese_1')
-        self.draw_marker(canvas, 'legalese_2')
-        self.draw_marker(canvas, 'legalese_3')
+        self.draw_marker(canvas, "legalese_1")
+        self.draw_marker(canvas, "legalese_2")
+        self.draw_marker(canvas, "legalese_3")
 
 
 @login_required
 def assignment_pdf(request, assignment_id):
     assignment = get_object_or_404(
-        Assignment.objects.select_related('drudge__user'),
-        pk=assignment_id)
+        Assignment.objects.select_related("drudge__user"), pk=assignment_id
+    )
 
     if not request.user.is_staff:
         if assignment.drudge.user != request.user:
-            return HttpResponseForbidden('<h1>Access forbidden</h1>')
+            return HttpResponseForbidden("<h1>Access forbidden</h1>")
 
     result_writer = PdfFileWriter()
 
@@ -342,17 +312,17 @@ def assignment_pdf(request, assignment_id):
 
     scope_statement = assignment.specification.scope_statement
     address = [
-        scope_statement.company_name or u'Verein Naturnetz',
-        scope_statement.company_address or u'Chlosterstrasse',
-        scope_statement.company_contact_location or u'8109 Kloster Fahr',
+        scope_statement.company_name or u"Verein Naturnetz",
+        scope_statement.company_address or u"Chlosterstrasse",
+        scope_statement.company_contact_location or u"8109 Kloster Fahr",
     ]
 
     pdf.spacer(25 * mm)
-    pdf.table(
-        list(zip(address, address)), (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
+    pdf.table(list(zip(address, address)), (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
     pdf.spacer(30 * mm)
 
-    pdf.p_markup(u'''
+    pdf.p_markup(
+        u"""
 Lieber Zivi<br /><br />
 
 Vielen Dank fürs Erstellen deiner Einsatzvereinbarung! Du findest hier nun die
@@ -373,19 +343,16 @@ _________________________________________<br />
 %s, %s<br /><br />
 
 Wir freuen uns auf deinen Einsatz!
-''' % (
-        date.today().strftime('%d.%m.%Y'),
-        assignment.drudge.user.get_full_name(),
-    ))
+"""
+        % (date.today().strftime("%d.%m.%Y"), assignment.drudge.user.get_full_name())
+    )
     pdf.spacer(26 * mm)
 
-    address = u'\n'.join([
-        assignment.regional_office.name,
-        assignment.regional_office.address,
-    ]).replace('\r', '')
+    address = u"\n".join(
+        [assignment.regional_office.name, assignment.regional_office.address]
+    ).replace("\r", "")
 
-    pdf.table(
-        [(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
+    pdf.table([(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
 
     pdf.generate()
 
@@ -398,8 +365,7 @@ Wir freuen uns auf deinen Einsatz!
     pdf = PDFDocument(overlay)
 
     # pdf.show_boundaries = True
-    pdf.init_report(
-        page_fn=create_stationery_fn(AssignmentPDFStationery(assignment)))
+    pdf.init_report(page_fn=create_stationery_fn(AssignmentPDFStationery(assignment)))
 
     pdf.pagebreak()
     pdf.pagebreak()
@@ -407,11 +373,13 @@ Wir freuen uns auf deinen Einsatz!
     pdf.generate()
 
     # Merge the form and the overlay, and add everything to the output #######
-    eiv_reader = PdfFileReader(os.path.join(
-        os.path.dirname(os.path.dirname(__file__)),
-        'data',
-        'Einsatzvereinbarung.pdf',
-    ))
+    eiv_reader = PdfFileReader(
+        os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            "data",
+            "Einsatzvereinbarung.pdf",
+        )
+    )
     overlay_reader = PdfFileReader(overlay)
 
     for idx in range(2):
@@ -422,15 +390,16 @@ Wir freuen uns auf deinen Einsatz!
     # Add the conditions PDF if it exists ####################################
     if assignment.specification.conditions:
         conditions_reader = PdfFileReader(
-            assignment.specification.conditions.open('rb'))
+            assignment.specification.conditions.open("rb")
+        )
         for page in range(conditions_reader.getNumPages()):
             result_writer.addPage(conditions_reader.getPage(page))
 
     # Response! ##############################################################
-    response = HttpResponse(content_type='application/pdf')
+    response = HttpResponse(content_type="application/pdf")
     result_writer.write(response)
 
-    response['Content-Disposition'] = 'attachment; filename=eiv-%s.pdf' % (
+    response["Content-Disposition"] = "attachment; filename=eiv-%s.pdf" % (
         assignment.pk,
     )
     return response
@@ -439,83 +408,100 @@ Wir freuen uns auf deinen Einsatz!
 @login_required
 def expense_report_pdf(request, expense_report_id):
     report = get_object_or_404(
-        ExpenseReport.objects.select_related('assignment__drudge__user'),
-        pk=expense_report_id)
+        ExpenseReport.objects.select_related("assignment__drudge__user"),
+        pk=expense_report_id,
+    )
 
     if not request.user.is_staff:
         if report.assignment.drudge.user != request.user:
-            return HttpResponseForbidden('<h1>Access forbidden</h1>')
+            return HttpResponseForbidden("<h1>Access forbidden</h1>")
 
     table, additional, total = report.compensations()
 
     if not all((t is not None) for t in (table, additional, total)):
-        messages.error(request, _('No expense data, cannot generate report.'))
+        messages.error(request, _("No expense data, cannot generate report."))
         return redirect(report.assignment)
 
     assignment = report.assignment
     drudge = assignment.drudge
 
-    pdf, response = pdf_response('expense-report-%s' % report.pk)
+    pdf, response = pdf_response("expense-report-%s" % report.pk)
     pdf.init_report()
 
-    pdf.h1('Spesenrapport')
-    pdf.h2(
-        'Einsatzbetrieb 20995 - Naturnetz, Chlosterstrasse, 8109 Kloster Fahr')
+    pdf.h1("Spesenrapport")
+    pdf.h2("Einsatzbetrieb 20995 - Naturnetz, Chlosterstrasse, 8109 Kloster Fahr")
     pdf.spacer()
 
-    pdf.table([
-        (u'Pflichtenheft:', u'%s' % report.assignment.specification),
-        (u'Name, Vorname:', u'%s' % drudge.user.get_full_name()),
-        (u'Adresse:', u'%s, %s %s' % (
-            drudge.address, drudge.zip_code, drudge.city)),
-        (u'ZDP:', drudge.zdp_no),
-        (u'Gesamteinsatz:', u'%s - %s' % (
-            assignment.date_from.strftime('%d.%m.%Y'),
-            assignment.date_until.strftime('%d.%m.%Y'))),
-        (u'Meldeperiode:', u'%s - %s' % (
-            report.date_from.strftime('%d.%m.%Y'),
-            report.date_until.strftime('%d.%m.%Y'))),
-    ], (4 * cm, 12.4 * cm), pdf.style.tableLLR)
+    pdf.table(
+        [
+            (u"Pflichtenheft:", u"%s" % report.assignment.specification),
+            (u"Name, Vorname:", u"%s" % drudge.user.get_full_name()),
+            (
+                u"Adresse:",
+                u"%s, %s %s" % (drudge.address, drudge.zip_code, drudge.city),
+            ),
+            (u"ZDP:", drudge.zdp_no),
+            (
+                u"Gesamteinsatz:",
+                u"%s - %s"
+                % (
+                    assignment.date_from.strftime("%d.%m.%Y"),
+                    assignment.date_until.strftime("%d.%m.%Y"),
+                ),
+            ),
+            (
+                u"Meldeperiode:",
+                u"%s - %s"
+                % (
+                    report.date_from.strftime("%d.%m.%Y"),
+                    report.date_until.strftime("%d.%m.%Y"),
+                ),
+            ),
+        ],
+        (4 * cm, 12.4 * cm),
+        pdf.style.tableLLR,
+    )
 
     pdf.spacer()
 
     def notes(from_):
         return (
-            ('FONT', (0, from_), (-1, from_), 'Helvetica-Oblique', 8),
+            ("FONT", (0, from_), (-1, from_), "Helvetica-Oblique", 8),
             # ('LEFTPADDING', (0, from_), (-1, from_), 3 * mm),
         )
 
     pdf.table(
         table,
         (4 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm, 2.4 * cm),
-        pdf.style.tableHead + tuple(
-            reduce(operator.add, (notes(i) for i in range(2, 12, 2)))))
+        pdf.style.tableHead
+        + tuple(reduce(operator.add, (notes(i) for i in range(2, 12, 2)))),
+    )
     pdf.table(
         additional,
         (14 * cm, 2.4 * cm),
-        pdf.style.table + notes(1) + notes(3) + notes(5))
+        pdf.style.table + notes(1) + notes(3) + notes(5),
+    )
     pdf.spacer(1 * mm)
-    pdf.table([
-        (_('Total'), total),
-    ], (14 * cm, 2.4 * cm), pdf.style.tableHead)
+    pdf.table([(_("Total"), total)], (14 * cm, 2.4 * cm), pdf.style.tableHead)
 
     pdf.spacer()
 
-    pdf.table([
-        (_('bank account') + ':', drudge.bank_account),
-    ], (4 * cm, 12.4 * cm), pdf.style.tableLLR)
+    pdf.table(
+        [(_("bank account") + ":", drudge.bank_account)],
+        (4 * cm, 12.4 * cm),
+        pdf.style.tableLLR,
+    )
 
     pdf.bottom_table(
-        [
-            (_('Place, Date'), '', _('Jobholder'), '', _('Employer')),
-        ],
+        [(_("Place, Date"), "", _("Jobholder"), "", _("Employer"))],
         (44 * mm, 10 * mm, 50 * mm, 10 * mm, 50 * mm),
-        style=pdf.style.table + (
-            ('TOPPADDING', (0, 0), (-1, -1), 1 * mm),
-            ('LINEABOVE', (0, 0), (0, 0), 0.2, colors.black),
-            ('LINEABOVE', (2, 0), (2, 0), 0.2, colors.black),
-            ('LINEABOVE', (4, 0), (4, 0), 0.2, colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        style=pdf.style.table
+        + (
+            ("TOPPADDING", (0, 0), (-1, -1), 1 * mm),
+            ("LINEABOVE", (0, 0), (0, 0), 0.2, colors.black),
+            ("LINEABOVE", (2, 0), (2, 0), 0.2, colors.black),
+            ("LINEABOVE", (4, 0), (4, 0), 0.2, colors.black),
+            ("ALIGN", (0, 0), (-1, -1), "LEFT"),
         ),
     )
 
@@ -529,9 +515,9 @@ class NaturnetzStationery(object):
 
         try:
             canvas.drawImage(
-                os.path.join(
-                    settings.BASE_DIR, 'naturnetz', 'data', 'logo-new.jpg'),
-                x=16 * cm, y=24 * cm,
+                os.path.join(settings.BASE_DIR, "naturnetz", "data", "logo-new.jpg"),
+                x=16 * cm,
+                y=24 * cm,
                 width=177 * 0.5,
                 height=246 * 0.5,
             )
@@ -544,32 +530,32 @@ class NaturnetzStationery(object):
 @login_required
 def reference_pdf(request, reference_id):
     reference = get_object_or_404(
-        JobReference.objects.select_related('assignment__drudge__user'),
-        pk=reference_id)
+        JobReference.objects.select_related("assignment__drudge__user"), pk=reference_id
+    )
 
     if not request.user.is_staff:
         if reference.assignment.drudge.user != request.user:
-            return HttpResponseForbidden('<h1>Access forbidden</h1>')
+            return HttpResponseForbidden("<h1>Access forbidden</h1>")
 
     drudge = reference.assignment.drudge
 
-    pdf, response = pdf_response('reference-%s' % reference.pk)
+    pdf, response = pdf_response("reference-%s" % reference.pk)
     pdf.init_letter(page_fn=create_stationery_fn(NaturnetzStationery()))
 
     pdf.p(drudge.user.get_full_name())
     pdf.p(drudge.address)
-    pdf.p(u'%s %s' % (drudge.zip_code, drudge.city))
+    pdf.p(u"%s %s" % (drudge.zip_code, drudge.city))
     pdf.next_frame()
 
-    pdf.p('Kloster Fahr, %s' % reference.created.strftime('%d.%m.%Y'))
+    pdf.p("Kloster Fahr, %s" % reference.created.strftime("%d.%m.%Y"))
 
-    pdf.h1('ARBEITSZEUGNIS')
+    pdf.h1("ARBEITSZEUGNIS")
     pdf.spacer()
 
     pdf.p(reference.text)
 
     pdf.spacer(10 * mm)
-    pdf.p(u'Dr. Marco Sacchi\nGeschäftsführer')
+    pdf.p(u"Dr. Marco Sacchi\nGeschäftsführer")
 
     pdf.generate()
     return response
@@ -580,62 +566,49 @@ def course_list(request):
     earliest = date.today() - timedelta(days=7)
 
     assignments = Assignment.objects.filter(
-        Q(
-            environment_course_date__isnull=False,
-            environment_course_date__gte=earliest,
-        ) | Q(
-            motor_saw_course_date__isnull=False,
-            motor_saw_course_date__gte=earliest,
-        )
-    ).select_related(
-        'drudge__user',
-        'specification__scope_statement',
-    )
+        Q(environment_course_date__isnull=False, environment_course_date__gte=earliest)
+        | Q(motor_saw_course_date__isnull=False, motor_saw_course_date__gte=earliest)
+    ).select_related("drudge__user", "specification__scope_statement")
 
-    branches = set(assignments.values_list(
-        'specification__scope_statement__branch', flat=True))
-    branch = request.GET.get('branch')
+    branches = set(
+        assignments.values_list("specification__scope_statement__branch", flat=True)
+    )
+    branch = request.GET.get("branch")
     if branch in branches:
-        assignments = assignments.filter(
-            specification__scope_statement__branch=branch)
+        assignments = assignments.filter(specification__scope_statement__branch=branch)
 
     courses = []
     for assignment in assignments:
         if assignment.environment_course_date:
-            courses.append((
-                assignment.environment_course_date,
-                assignment,
-            ))
+            courses.append((assignment.environment_course_date, assignment))
         if assignment.motor_saw_course_date:
-            courses.append((
-                assignment.motor_saw_course_date,
-                assignment,
-            ))
+            courses.append((assignment.motor_saw_course_date, assignment))
 
-    return render(request, 'zivinetz/course_list.html', {
-        'course_list': sorted(
-            courses,
-            key=lambda row: (
-                row[0],
-                row[1].drudge.user.last_name,
-                row[1].drudge.user.first_name,
+    return render(
+        request,
+        "zivinetz/course_list.html",
+        {
+            "course_list": sorted(
+                courses,
+                key=lambda row: (
+                    row[0],
+                    row[1].drudge.user.last_name,
+                    row[1].drudge.user.first_name,
+                ),
             ),
-        ),
-        'branches': sorted(branches),
-    })
+            "branches": sorted(branches),
+        },
+    )
 
 
 @staff_member_required
 def assignmentchange_list(request):
     earliest = date.today() - timedelta(days=14)
 
-    changes = AssignmentChange.objects.filter(
-        created__gte=earliest,
-    ).select_related(
-        'assignment__drudge__user',
-        'assignment__specification__scope_statement'
+    changes = AssignmentChange.objects.filter(created__gte=earliest).select_related(
+        "assignment__drudge__user", "assignment__specification__scope_statement"
     )
 
-    return render(request, 'zivinetz/assignmentchange_list.html', {
-        'change_list': changes,
-    })
+    return render(
+        request, "zivinetz/assignmentchange_list.html", {"change_list": changes}
+    )

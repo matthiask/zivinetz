@@ -10,6 +10,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for assignment in Assignment.objects.all():
-            self.stdout.write('Assignment days for %s\n' % assignment)
+            self.stdout.write("Assignment days for %s\n" % assignment)
             self.stdout.write(pprint.pformat(assignment.assignment_days()))
             self.stdout.write(pprint.pformat(assignment.expenses()))

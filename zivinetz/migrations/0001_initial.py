@@ -13,372 +13,1241 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Assessment',
+            name="Assessment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(default=datetime.datetime.now, verbose_name='created')),
-                ('mark', models.IntegerField(blank=True, choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)], null=True, verbose_name='mark')),
-                ('comment', models.TextField(blank=True, verbose_name='comment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        default=datetime.datetime.now, verbose_name="created"
+                    ),
+                ),
+                (
+                    "mark",
+                    models.IntegerField(
+                        blank=True,
+                        choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)],
+                        null=True,
+                        verbose_name="mark",
+                    ),
+                ),
+                ("comment", models.TextField(blank=True, verbose_name="comment")),
             ],
             options={
-                'verbose_name': 'internal assessment',
-                'verbose_name_plural': 'internal assessments',
-                'ordering': ['-created'],
+                "verbose_name": "internal assessment",
+                "verbose_name_plural": "internal assessments",
+                "ordering": ["-created"],
             },
         ),
         migrations.CreateModel(
-            name='Assignment',
+            name="Assignment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(default=datetime.datetime.now, verbose_name='created')),
-                ('modified', models.DateTimeField(auto_now=True, verbose_name='modified')),
-                ('date_from', models.DateField(verbose_name='date from')),
-                ('date_until', models.DateField(verbose_name='date until')),
-                ('date_until_extension', models.DateField(blank=True, help_text='Only fill out if assignment has been extended.', null=True, verbose_name='date until (extended)')),
-                ('part_of_long_assignment', models.BooleanField(default=False, verbose_name='part of long assignment')),
-                ('status', models.IntegerField(choices=[(10, 'tentative'), (20, 'arranged'), (30, 'mobilized'), (40, 'declined')], default=10, verbose_name='status')),
-                ('arranged_on', models.DateField(blank=True, null=True, verbose_name='arranged on')),
-                ('mobilized_on', models.DateField(blank=True, null=True, verbose_name='mobilized on')),
-                ('environment_course_date', models.DateField(blank=True, null=True, verbose_name='environment course starting date')),
-                ('motor_saw_course_date', models.DateField(blank=True, null=True, verbose_name='motor saw course starting date')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        default=datetime.datetime.now, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    models.DateTimeField(auto_now=True, verbose_name="modified"),
+                ),
+                ("date_from", models.DateField(verbose_name="date from")),
+                ("date_until", models.DateField(verbose_name="date until")),
+                (
+                    "date_until_extension",
+                    models.DateField(
+                        blank=True,
+                        help_text="Only fill out if assignment has been extended.",
+                        null=True,
+                        verbose_name="date until (extended)",
+                    ),
+                ),
+                (
+                    "part_of_long_assignment",
+                    models.BooleanField(
+                        default=False, verbose_name="part of long assignment"
+                    ),
+                ),
+                (
+                    "status",
+                    models.IntegerField(
+                        choices=[
+                            (10, "tentative"),
+                            (20, "arranged"),
+                            (30, "mobilized"),
+                            (40, "declined"),
+                        ],
+                        default=10,
+                        verbose_name="status",
+                    ),
+                ),
+                (
+                    "arranged_on",
+                    models.DateField(blank=True, null=True, verbose_name="arranged on"),
+                ),
+                (
+                    "mobilized_on",
+                    models.DateField(
+                        blank=True, null=True, verbose_name="mobilized on"
+                    ),
+                ),
+                (
+                    "environment_course_date",
+                    models.DateField(
+                        blank=True,
+                        null=True,
+                        verbose_name="environment course starting date",
+                    ),
+                ),
+                (
+                    "motor_saw_course_date",
+                    models.DateField(
+                        blank=True,
+                        null=True,
+                        verbose_name="motor saw course starting date",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'assignment',
-                'verbose_name_plural': 'assignments',
-                'ordering': ['-date_from', '-date_until'],
+                "verbose_name": "assignment",
+                "verbose_name_plural": "assignments",
+                "ordering": ["-date_from", "-date_until"],
             },
         ),
         migrations.CreateModel(
-            name='AssignmentChange',
+            name="AssignmentChange",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(default=datetime.datetime.now, verbose_name='created')),
-                ('assignment_description', models.CharField(max_length=200, verbose_name='assignment description')),
-                ('changed_by', models.CharField(default=b'nobody', max_length=100, verbose_name='changed by')),
-                ('changes', models.TextField(blank=True, verbose_name='changes')),
-                ('assignment', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='zivinetz.Assignment', verbose_name='assignment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        default=datetime.datetime.now, verbose_name="created"
+                    ),
+                ),
+                (
+                    "assignment_description",
+                    models.CharField(
+                        max_length=200, verbose_name="assignment description"
+                    ),
+                ),
+                (
+                    "changed_by",
+                    models.CharField(
+                        default=b"nobody", max_length=100, verbose_name="changed by"
+                    ),
+                ),
+                ("changes", models.TextField(blank=True, verbose_name="changes")),
+                (
+                    "assignment",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="zivinetz.Assignment",
+                        verbose_name="assignment",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'assignment change',
-                'verbose_name_plural': 'assignment changes',
-                'ordering': ['created'],
+                "verbose_name": "assignment change",
+                "verbose_name_plural": "assignment changes",
+                "ordering": ["created"],
             },
         ),
         migrations.CreateModel(
-            name='Codeword',
+            name="Codeword",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(default=datetime.datetime.now, verbose_name='created')),
-                ('key', models.CharField(db_index=True, max_length=10, verbose_name='key')),
-                ('codeword', models.CharField(max_length=20, verbose_name='codeword')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        default=datetime.datetime.now, verbose_name="created"
+                    ),
+                ),
+                (
+                    "key",
+                    models.CharField(db_index=True, max_length=10, verbose_name="key"),
+                ),
+                ("codeword", models.CharField(max_length=20, verbose_name="codeword")),
             ],
             options={
-                'verbose_name': 'codeword',
-                'verbose_name_plural': 'codewords',
-                'get_latest_by': 'created',
-                'ordering': ['-created'],
+                "verbose_name": "codeword",
+                "verbose_name_plural": "codewords",
+                "get_latest_by": "created",
+                "ordering": ["-created"],
             },
         ),
         migrations.CreateModel(
-            name='CompanyHoliday',
+            name="CompanyHoliday",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_from', models.DateField(verbose_name='date from')),
-                ('date_until', models.DateField(verbose_name='date until')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date_from", models.DateField(verbose_name="date from")),
+                ("date_until", models.DateField(verbose_name="date until")),
             ],
             options={
-                'verbose_name': 'company holiday',
-                'verbose_name_plural': 'company holidays',
-                'ordering': ['date_from'],
+                "verbose_name": "company holiday",
+                "verbose_name_plural": "company holidays",
+                "ordering": ["date_from"],
             },
         ),
         migrations.CreateModel(
-            name='CompensationSet',
+            name="CompensationSet",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('valid_from', models.DateField(unique=True, verbose_name='valid from')),
-                ('spending_money', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='spending money')),
-                ('breakfast_at_accomodation', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='breakfast at accomodation')),
-                ('lunch_at_accomodation', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='lunch at accomodation')),
-                ('supper_at_accomodation', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='supper at accomodation')),
-                ('breakfast_external', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='external breakfast')),
-                ('lunch_external', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='external lunch')),
-                ('supper_external', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='external supper')),
-                ('accomodation_home', models.DecimalField(decimal_places=2, help_text='Daily compensation if drudge returns home for the night.', max_digits=10, verbose_name='accomodation')),
-                ('private_transport_per_km', models.DecimalField(decimal_places=2, help_text='Only applies if public transport use is not reasonable.', max_digits=10, verbose_name='private transport per km')),
-                ('clothing', models.DecimalField(decimal_places=6, help_text="Daily compensation for clothes if clothing isn't offered by the company.", max_digits=10, verbose_name='clothing')),
-                ('clothing_limit_per_assignment', models.DecimalField(decimal_places=2, help_text='Maximal compensation for clothing per assignment.', max_digits=10, verbose_name='clothing limit per assignment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "valid_from",
+                    models.DateField(unique=True, verbose_name="valid from"),
+                ),
+                (
+                    "spending_money",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=10, verbose_name="spending money"
+                    ),
+                ),
+                (
+                    "breakfast_at_accomodation",
+                    models.DecimalField(
+                        decimal_places=2,
+                        max_digits=10,
+                        verbose_name="breakfast at accomodation",
+                    ),
+                ),
+                (
+                    "lunch_at_accomodation",
+                    models.DecimalField(
+                        decimal_places=2,
+                        max_digits=10,
+                        verbose_name="lunch at accomodation",
+                    ),
+                ),
+                (
+                    "supper_at_accomodation",
+                    models.DecimalField(
+                        decimal_places=2,
+                        max_digits=10,
+                        verbose_name="supper at accomodation",
+                    ),
+                ),
+                (
+                    "breakfast_external",
+                    models.DecimalField(
+                        decimal_places=2,
+                        max_digits=10,
+                        verbose_name="external breakfast",
+                    ),
+                ),
+                (
+                    "lunch_external",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=10, verbose_name="external lunch"
+                    ),
+                ),
+                (
+                    "supper_external",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=10, verbose_name="external supper"
+                    ),
+                ),
+                (
+                    "accomodation_home",
+                    models.DecimalField(
+                        decimal_places=2,
+                        help_text="Daily compensation if drudge returns home for the night.",
+                        max_digits=10,
+                        verbose_name="accomodation",
+                    ),
+                ),
+                (
+                    "private_transport_per_km",
+                    models.DecimalField(
+                        decimal_places=2,
+                        help_text="Only applies if public transport use is not reasonable.",
+                        max_digits=10,
+                        verbose_name="private transport per km",
+                    ),
+                ),
+                (
+                    "clothing",
+                    models.DecimalField(
+                        decimal_places=6,
+                        help_text="Daily compensation for clothes if clothing isn't offered by the company.",
+                        max_digits=10,
+                        verbose_name="clothing",
+                    ),
+                ),
+                (
+                    "clothing_limit_per_assignment",
+                    models.DecimalField(
+                        decimal_places=2,
+                        help_text="Maximal compensation for clothing per assignment.",
+                        max_digits=10,
+                        verbose_name="clothing limit per assignment",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'compensation set',
-                'verbose_name_plural': 'compensation sets',
-                'ordering': ['-valid_from'],
+                "verbose_name": "compensation set",
+                "verbose_name_plural": "compensation sets",
+                "ordering": ["-valid_from"],
             },
         ),
         migrations.CreateModel(
-            name='Drudge',
+            name="Drudge",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('zdp_no', models.CharField(max_length=10, unique=True, verbose_name='ZDP No.')),
-                ('address', models.TextField(verbose_name='address')),
-                ('zip_code', models.CharField(max_length=10, verbose_name='ZIP code')),
-                ('city', models.CharField(max_length=100, verbose_name='city')),
-                ('date_of_birth', models.DateField(verbose_name='date of birth')),
-                ('place_of_citizenship_city', models.CharField(max_length=100, verbose_name='place of citizenship')),
-                ('place_of_citizenship_state', models.CharField(choices=[(b'AG', b'AG'), (b'AI', b'AI'), (b'AR', b'AR'), (b'BS', b'BS'), (b'BL', b'BL'), (b'BE', b'BE'), (b'FR', b'FR'), (b'GE', b'GE'), (b'GL', b'GL'), (b'GR', b'GR'), (b'JU', b'JU'), (b'LU', b'LU'), (b'NE', b'NE'), (b'NW', b'NW'), (b'OW', b'OW'), (b'SH', b'SH'), (b'SZ', b'SZ'), (b'SO', b'SO'), (b'SG', b'SG'), (b'TG', b'TG'), (b'TI', b'TI'), (b'UR', b'UR'), (b'VS', b'VS'), (b'VD', b'VD'), (b'ZG', b'ZG'), (b'ZH', b'ZH')], max_length=2, verbose_name='place of citizenship (canton)')),
-                ('phone_home', models.CharField(blank=True, max_length=20, verbose_name='phone (home)')),
-                ('phone_office', models.CharField(blank=True, max_length=20, verbose_name='phone (office)')),
-                ('mobile', models.CharField(blank=True, max_length=20, verbose_name='mobile')),
-                ('bank_account', models.CharField(help_text='Either enter your IBAN or your Swiss post account number.', max_length=100, verbose_name='bank account')),
-                ('health_insurance_company', models.CharField(blank=True, max_length=100, verbose_name='health insurance company')),
-                ('health_insurance_account', models.CharField(blank=True, max_length=100, verbose_name='health insurance account')),
-                ('education_occupation', models.TextField(blank=True, verbose_name='education / occupation')),
-                ('driving_license', models.BooleanField(default=False, verbose_name='driving license')),
-                ('general_abonnement', models.BooleanField(default=False, verbose_name='general abonnement')),
-                ('half_fare_card', models.BooleanField(default=False, verbose_name='half-fare card')),
-                ('other_card', models.CharField(blank=True, max_length=100, verbose_name='other card')),
-                ('vegetarianism', models.BooleanField(default=False, verbose_name='vegetarianism')),
-                ('environment_course', models.BooleanField(default=False, help_text='I have taken the environment course already.', verbose_name='environment course')),
-                ('motor_saw_course', models.CharField(blank=True, choices=[(b'2-day', '2 day course'), (b'5-day', '5 day course')], help_text='I have taken the denoted motor saw course already.', max_length=10, null=True, verbose_name='motor saw course')),
-                ('notes', models.TextField(blank=True, help_text='Allergies, vegetarianism, anything else we should be aware of?', verbose_name='notes')),
-                ('internal_notes', models.TextField(blank=True, help_text='This field is not visible to drudges.', verbose_name='internal notes')),
-                ('profile_image', models.ImageField(blank=True, null=True, upload_to=b'profile_images/', verbose_name='profile image')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "zdp_no",
+                    models.CharField(
+                        max_length=10, unique=True, verbose_name="ZDP No."
+                    ),
+                ),
+                ("address", models.TextField(verbose_name="address")),
+                ("zip_code", models.CharField(max_length=10, verbose_name="ZIP code")),
+                ("city", models.CharField(max_length=100, verbose_name="city")),
+                ("date_of_birth", models.DateField(verbose_name="date of birth")),
+                (
+                    "place_of_citizenship_city",
+                    models.CharField(
+                        max_length=100, verbose_name="place of citizenship"
+                    ),
+                ),
+                (
+                    "place_of_citizenship_state",
+                    models.CharField(
+                        choices=[
+                            (b"AG", b"AG"),
+                            (b"AI", b"AI"),
+                            (b"AR", b"AR"),
+                            (b"BS", b"BS"),
+                            (b"BL", b"BL"),
+                            (b"BE", b"BE"),
+                            (b"FR", b"FR"),
+                            (b"GE", b"GE"),
+                            (b"GL", b"GL"),
+                            (b"GR", b"GR"),
+                            (b"JU", b"JU"),
+                            (b"LU", b"LU"),
+                            (b"NE", b"NE"),
+                            (b"NW", b"NW"),
+                            (b"OW", b"OW"),
+                            (b"SH", b"SH"),
+                            (b"SZ", b"SZ"),
+                            (b"SO", b"SO"),
+                            (b"SG", b"SG"),
+                            (b"TG", b"TG"),
+                            (b"TI", b"TI"),
+                            (b"UR", b"UR"),
+                            (b"VS", b"VS"),
+                            (b"VD", b"VD"),
+                            (b"ZG", b"ZG"),
+                            (b"ZH", b"ZH"),
+                        ],
+                        max_length=2,
+                        verbose_name="place of citizenship (canton)",
+                    ),
+                ),
+                (
+                    "phone_home",
+                    models.CharField(
+                        blank=True, max_length=20, verbose_name="phone (home)"
+                    ),
+                ),
+                (
+                    "phone_office",
+                    models.CharField(
+                        blank=True, max_length=20, verbose_name="phone (office)"
+                    ),
+                ),
+                (
+                    "mobile",
+                    models.CharField(blank=True, max_length=20, verbose_name="mobile"),
+                ),
+                (
+                    "bank_account",
+                    models.CharField(
+                        help_text="Either enter your IBAN or your Swiss post account number.",
+                        max_length=100,
+                        verbose_name="bank account",
+                    ),
+                ),
+                (
+                    "health_insurance_company",
+                    models.CharField(
+                        blank=True,
+                        max_length=100,
+                        verbose_name="health insurance company",
+                    ),
+                ),
+                (
+                    "health_insurance_account",
+                    models.CharField(
+                        blank=True,
+                        max_length=100,
+                        verbose_name="health insurance account",
+                    ),
+                ),
+                (
+                    "education_occupation",
+                    models.TextField(blank=True, verbose_name="education / occupation"),
+                ),
+                (
+                    "driving_license",
+                    models.BooleanField(default=False, verbose_name="driving license"),
+                ),
+                (
+                    "general_abonnement",
+                    models.BooleanField(
+                        default=False, verbose_name="general abonnement"
+                    ),
+                ),
+                (
+                    "half_fare_card",
+                    models.BooleanField(default=False, verbose_name="half-fare card"),
+                ),
+                (
+                    "other_card",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="other card"
+                    ),
+                ),
+                (
+                    "vegetarianism",
+                    models.BooleanField(default=False, verbose_name="vegetarianism"),
+                ),
+                (
+                    "environment_course",
+                    models.BooleanField(
+                        default=False,
+                        help_text="I have taken the environment course already.",
+                        verbose_name="environment course",
+                    ),
+                ),
+                (
+                    "motor_saw_course",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            (b"2-day", "2 day course"),
+                            (b"5-day", "5 day course"),
+                        ],
+                        help_text="I have taken the denoted motor saw course already.",
+                        max_length=10,
+                        null=True,
+                        verbose_name="motor saw course",
+                    ),
+                ),
+                (
+                    "notes",
+                    models.TextField(
+                        blank=True,
+                        help_text="Allergies, vegetarianism, anything else we should be aware of?",
+                        verbose_name="notes",
+                    ),
+                ),
+                (
+                    "internal_notes",
+                    models.TextField(
+                        blank=True,
+                        help_text="This field is not visible to drudges.",
+                        verbose_name="internal notes",
+                    ),
+                ),
+                (
+                    "profile_image",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to=b"profile_images/",
+                        verbose_name="profile image",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'drudge',
-                'verbose_name_plural': 'drudges',
-                'ordering': ['user__last_name', 'user__first_name', 'zdp_no'],
+                "verbose_name": "drudge",
+                "verbose_name_plural": "drudges",
+                "ordering": ["user__last_name", "user__first_name", "zdp_no"],
             },
         ),
         migrations.CreateModel(
-            name='DrudgeQuota',
+            name="DrudgeQuota",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('week', models.DateField(verbose_name='week')),
-                ('quota', models.PositiveIntegerField(verbose_name='quota')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("week", models.DateField(verbose_name="week")),
+                ("quota", models.PositiveIntegerField(verbose_name="quota")),
             ],
             options={
-                'verbose_name': 'drudge quota',
-                'verbose_name_plural': 'drudge quotas',
+                "verbose_name": "drudge quota",
+                "verbose_name_plural": "drudge quotas",
             },
         ),
         migrations.CreateModel(
-            name='ExpenseReport',
+            name="ExpenseReport",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_from', models.DateField(verbose_name='date from')),
-                ('date_until', models.DateField(verbose_name='date until')),
-                ('report_no', models.CharField(blank=True, max_length=10, verbose_name='report no.')),
-                ('status', models.IntegerField(choices=[(10, 'pending'), (20, 'filled'), (30, 'paid')], default=10, verbose_name='status')),
-                ('working_days', models.PositiveIntegerField(verbose_name='working days')),
-                ('working_days_notes', models.CharField(blank=True, max_length=100, verbose_name='notes')),
-                ('free_days', models.PositiveIntegerField(verbose_name='free days')),
-                ('free_days_notes', models.CharField(blank=True, max_length=100, verbose_name='notes')),
-                ('sick_days', models.PositiveIntegerField(verbose_name='sick days')),
-                ('sick_days_notes', models.CharField(blank=True, max_length=100, verbose_name='notes')),
-                ('holi_days', models.PositiveIntegerField(help_text='These days are still countable towards the assignment total days.', verbose_name='holiday days')),
-                ('holi_days_notes', models.CharField(blank=True, max_length=100, verbose_name='notes')),
-                ('forced_leave_days', models.PositiveIntegerField(verbose_name='forced leave days')),
-                ('forced_leave_days_notes', models.CharField(blank=True, max_length=100, verbose_name='notes')),
-                ('calculated_total_days', models.PositiveIntegerField(default=0, help_text='This field is filled in automatically by the system and should not be changed.', verbose_name='calculated total days')),
-                ('clothing_expenses', models.DecimalField(decimal_places=2, default=Decimal('0.00'), max_digits=10, verbose_name='clothing expenses')),
-                ('clothing_expenses_notes', models.CharField(blank=True, max_length=100, verbose_name='notes')),
-                ('transport_expenses', models.DecimalField(decimal_places=2, default=Decimal('0.00'), max_digits=10, verbose_name='transport expenses')),
-                ('transport_expenses_notes', models.CharField(blank=True, max_length=100, verbose_name='notes')),
-                ('miscellaneous', models.DecimalField(decimal_places=2, default=Decimal('0.00'), max_digits=10, verbose_name='miscellaneous')),
-                ('miscellaneous_notes', models.CharField(blank=True, max_length=100, verbose_name='notes')),
-                ('total', models.DecimalField(decimal_places=2, default=0, max_digits=10, verbose_name='total')),
-                ('assignment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reports', to='zivinetz.Assignment', verbose_name='assignment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date_from", models.DateField(verbose_name="date from")),
+                ("date_until", models.DateField(verbose_name="date until")),
+                (
+                    "report_no",
+                    models.CharField(
+                        blank=True, max_length=10, verbose_name="report no."
+                    ),
+                ),
+                (
+                    "status",
+                    models.IntegerField(
+                        choices=[(10, "pending"), (20, "filled"), (30, "paid")],
+                        default=10,
+                        verbose_name="status",
+                    ),
+                ),
+                (
+                    "working_days",
+                    models.PositiveIntegerField(verbose_name="working days"),
+                ),
+                (
+                    "working_days_notes",
+                    models.CharField(blank=True, max_length=100, verbose_name="notes"),
+                ),
+                ("free_days", models.PositiveIntegerField(verbose_name="free days")),
+                (
+                    "free_days_notes",
+                    models.CharField(blank=True, max_length=100, verbose_name="notes"),
+                ),
+                ("sick_days", models.PositiveIntegerField(verbose_name="sick days")),
+                (
+                    "sick_days_notes",
+                    models.CharField(blank=True, max_length=100, verbose_name="notes"),
+                ),
+                (
+                    "holi_days",
+                    models.PositiveIntegerField(
+                        help_text="These days are still countable towards the assignment total days.",
+                        verbose_name="holiday days",
+                    ),
+                ),
+                (
+                    "holi_days_notes",
+                    models.CharField(blank=True, max_length=100, verbose_name="notes"),
+                ),
+                (
+                    "forced_leave_days",
+                    models.PositiveIntegerField(verbose_name="forced leave days"),
+                ),
+                (
+                    "forced_leave_days_notes",
+                    models.CharField(blank=True, max_length=100, verbose_name="notes"),
+                ),
+                (
+                    "calculated_total_days",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="This field is filled in automatically by the system and should not be changed.",
+                        verbose_name="calculated total days",
+                    ),
+                ),
+                (
+                    "clothing_expenses",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=Decimal("0.00"),
+                        max_digits=10,
+                        verbose_name="clothing expenses",
+                    ),
+                ),
+                (
+                    "clothing_expenses_notes",
+                    models.CharField(blank=True, max_length=100, verbose_name="notes"),
+                ),
+                (
+                    "transport_expenses",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=Decimal("0.00"),
+                        max_digits=10,
+                        verbose_name="transport expenses",
+                    ),
+                ),
+                (
+                    "transport_expenses_notes",
+                    models.CharField(blank=True, max_length=100, verbose_name="notes"),
+                ),
+                (
+                    "miscellaneous",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=Decimal("0.00"),
+                        max_digits=10,
+                        verbose_name="miscellaneous",
+                    ),
+                ),
+                (
+                    "miscellaneous_notes",
+                    models.CharField(blank=True, max_length=100, verbose_name="notes"),
+                ),
+                (
+                    "total",
+                    models.DecimalField(
+                        decimal_places=2, default=0, max_digits=10, verbose_name="total"
+                    ),
+                ),
+                (
+                    "assignment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reports",
+                        to="zivinetz.Assignment",
+                        verbose_name="assignment",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'expense report',
-                'verbose_name_plural': 'expense reports',
-                'ordering': ['assignment__drudge', 'date_from'],
+                "verbose_name": "expense report",
+                "verbose_name_plural": "expense reports",
+                "ordering": ["assignment__drudge", "date_from"],
             },
         ),
         migrations.CreateModel(
-            name='JobReference',
+            name="JobReference",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateField(verbose_name='created')),
-                ('text', models.TextField(verbose_name='text')),
-                ('assignment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='jobreferences', to='zivinetz.Assignment', verbose_name='assignment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateField(verbose_name="created")),
+                ("text", models.TextField(verbose_name="text")),
+                (
+                    "assignment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="jobreferences",
+                        to="zivinetz.Assignment",
+                        verbose_name="assignment",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'job reference',
-                'verbose_name_plural': 'job references',
-                'ordering': ['-created'],
+                "verbose_name": "job reference",
+                "verbose_name_plural": "job references",
+                "ordering": ["-created"],
             },
         ),
         migrations.CreateModel(
-            name='JobReferenceTemplate',
+            name="JobReferenceTemplate",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100, verbose_name='title')),
-                ('text', models.TextField(verbose_name='text')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100, verbose_name="title")),
+                ("text", models.TextField(verbose_name="text")),
             ],
             options={
-                'verbose_name': 'job reference template',
-                'verbose_name_plural': 'job reference templates',
-                'ordering': ['title'],
+                "verbose_name": "job reference template",
+                "verbose_name_plural": "job reference templates",
+                "ordering": ["title"],
             },
         ),
         migrations.CreateModel(
-            name='PublicHoliday',
+            name="PublicHoliday",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='name')),
-                ('date', models.DateField(unique=True, verbose_name='date')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="name")),
+                ("date", models.DateField(unique=True, verbose_name="date")),
             ],
             options={
-                'verbose_name': 'public holiday',
-                'verbose_name_plural': 'public holidays',
-                'ordering': ['date'],
+                "verbose_name": "public holiday",
+                "verbose_name_plural": "public holidays",
+                "ordering": ["date"],
             },
         ),
         migrations.CreateModel(
-            name='RegionalOffice',
+            name="RegionalOffice",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='name')),
-                ('city', models.CharField(max_length=100, verbose_name='city')),
-                ('address', models.TextField(blank=True, verbose_name='address')),
-                ('code', models.CharField(help_text='Short, unique identifier.', max_length=10, verbose_name='code')),
-                ('phone', models.CharField(blank=True, max_length=20, verbose_name='phone')),
-                ('fax', models.CharField(blank=True, max_length=20, verbose_name='fax')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="name")),
+                ("city", models.CharField(max_length=100, verbose_name="city")),
+                ("address", models.TextField(blank=True, verbose_name="address")),
+                (
+                    "code",
+                    models.CharField(
+                        help_text="Short, unique identifier.",
+                        max_length=10,
+                        verbose_name="code",
+                    ),
+                ),
+                (
+                    "phone",
+                    models.CharField(blank=True, max_length=20, verbose_name="phone"),
+                ),
+                (
+                    "fax",
+                    models.CharField(blank=True, max_length=20, verbose_name="fax"),
+                ),
             ],
             options={
-                'verbose_name': 'regional office',
-                'verbose_name_plural': 'regional offices',
-                'ordering': ['name'],
+                "verbose_name": "regional office",
+                "verbose_name_plural": "regional offices",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='ScopeStatement',
+            name="ScopeStatement",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_active', models.BooleanField(default=True, verbose_name='is active')),
-                ('eis_no', models.CharField(max_length=10, unique=True, verbose_name='EIS No.')),
-                ('name', models.CharField(max_length=100, verbose_name='name')),
-                ('branch', models.CharField(max_length=100, verbose_name='branch')),
-                ('company_name', models.CharField(blank=True, max_length=100, verbose_name='company name')),
-                ('company_address', models.CharField(blank=True, max_length=100, verbose_name='company address')),
-                ('company_zip_code', models.CharField(blank=True, max_length=10, verbose_name='company ZIP code')),
-                ('company_city', models.CharField(blank=True, max_length=100, verbose_name='company city')),
-                ('company_contact_name', models.CharField(blank=True, max_length=100, verbose_name='company contact name')),
-                ('company_contact_email', models.EmailField(blank=True, max_length=254, verbose_name='company contact email')),
-                ('company_contact_function', models.CharField(blank=True, max_length=100, verbose_name='company contact function')),
-                ('company_contact_phone', models.CharField(blank=True, max_length=100, verbose_name='company contact phone')),
-                ('work_location', models.CharField(blank=True, max_length=100, verbose_name='work location')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(default=True, verbose_name="is active"),
+                ),
+                (
+                    "eis_no",
+                    models.CharField(
+                        max_length=10, unique=True, verbose_name="EIS No."
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="name")),
+                ("branch", models.CharField(max_length=100, verbose_name="branch")),
+                (
+                    "company_name",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="company name"
+                    ),
+                ),
+                (
+                    "company_address",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="company address"
+                    ),
+                ),
+                (
+                    "company_zip_code",
+                    models.CharField(
+                        blank=True, max_length=10, verbose_name="company ZIP code"
+                    ),
+                ),
+                (
+                    "company_city",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="company city"
+                    ),
+                ),
+                (
+                    "company_contact_name",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="company contact name"
+                    ),
+                ),
+                (
+                    "company_contact_email",
+                    models.EmailField(
+                        blank=True, max_length=254, verbose_name="company contact email"
+                    ),
+                ),
+                (
+                    "company_contact_function",
+                    models.CharField(
+                        blank=True,
+                        max_length=100,
+                        verbose_name="company contact function",
+                    ),
+                ),
+                (
+                    "company_contact_phone",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="company contact phone"
+                    ),
+                ),
+                (
+                    "work_location",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="work location"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'scope statement',
-                'verbose_name_plural': 'scope statements',
-                'ordering': ['name'],
+                "verbose_name": "scope statement",
+                "verbose_name_plural": "scope statements",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='Specification',
+            name="Specification",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('with_accomodation', models.BooleanField(default=False, verbose_name='with accomodation')),
-                ('code', models.CharField(help_text='Short, unique code identifying this specification.', max_length=10, verbose_name='code')),
-                ('accomodation_working', models.CharField(choices=[(b'provided', 'provided'), (b'compensated', 'compensated')], default=b'provided', max_length=20, verbose_name='accomodation on working days')),
-                ('breakfast_working', models.CharField(choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')], default=b'no_compensation', max_length=20, verbose_name='breakfast on working days')),
-                ('lunch_working', models.CharField(choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')], default=b'no_compensation', max_length=20, verbose_name='lunch on working days')),
-                ('supper_working', models.CharField(choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')], default=b'no_compensation', max_length=20, verbose_name='supper on working days')),
-                ('accomodation_sick', models.CharField(choices=[(b'provided', 'provided'), (b'compensated', 'compensated')], default=b'provided', max_length=20, verbose_name='accomodation on sick days')),
-                ('breakfast_sick', models.CharField(choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')], default=b'no_compensation', max_length=20, verbose_name='breakfast on sick days')),
-                ('lunch_sick', models.CharField(choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')], default=b'no_compensation', max_length=20, verbose_name='lunch on sick days')),
-                ('supper_sick', models.CharField(choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')], default=b'no_compensation', max_length=20, verbose_name='supper on sick days')),
-                ('accomodation_free', models.CharField(choices=[(b'provided', 'provided'), (b'compensated', 'compensated')], default=b'provided', max_length=20, verbose_name='accomodation on free days')),
-                ('breakfast_free', models.CharField(choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')], default=b'no_compensation', max_length=20, verbose_name='breakfast on free days')),
-                ('lunch_free', models.CharField(choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')], default=b'no_compensation', max_length=20, verbose_name='lunch on free days')),
-                ('supper_free', models.CharField(choices=[(b'no_compensation', 'no compensation'), (b'at_accomodation', 'at accomodation'), (b'external', 'external')], default=b'no_compensation', max_length=20, verbose_name='supper on free days')),
-                ('clothing', models.CharField(choices=[(b'provided', 'provided'), (b'compensated', 'compensated')], default=b'provided', max_length=20, verbose_name='clothing')),
-                ('accomodation_throughout', models.BooleanField(default=False, help_text='Accomodation is offered throughout.', verbose_name='accomodation throughout')),
-                ('food_throughout', models.BooleanField(default=False, help_text='Food is offered throughout.', verbose_name='food throughout')),
-                ('conditions', models.FileField(blank=True, upload_to=b'conditions', verbose_name='conditions')),
-                ('ordering', models.IntegerField(default=0, verbose_name='ordering')),
-                ('scope_statement', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='specifications', to='zivinetz.ScopeStatement', verbose_name='scope statement')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "with_accomodation",
+                    models.BooleanField(
+                        default=False, verbose_name="with accomodation"
+                    ),
+                ),
+                (
+                    "code",
+                    models.CharField(
+                        help_text="Short, unique code identifying this specification.",
+                        max_length=10,
+                        verbose_name="code",
+                    ),
+                ),
+                (
+                    "accomodation_working",
+                    models.CharField(
+                        choices=[
+                            (b"provided", "provided"),
+                            (b"compensated", "compensated"),
+                        ],
+                        default=b"provided",
+                        max_length=20,
+                        verbose_name="accomodation on working days",
+                    ),
+                ),
+                (
+                    "breakfast_working",
+                    models.CharField(
+                        choices=[
+                            (b"no_compensation", "no compensation"),
+                            (b"at_accomodation", "at accomodation"),
+                            (b"external", "external"),
+                        ],
+                        default=b"no_compensation",
+                        max_length=20,
+                        verbose_name="breakfast on working days",
+                    ),
+                ),
+                (
+                    "lunch_working",
+                    models.CharField(
+                        choices=[
+                            (b"no_compensation", "no compensation"),
+                            (b"at_accomodation", "at accomodation"),
+                            (b"external", "external"),
+                        ],
+                        default=b"no_compensation",
+                        max_length=20,
+                        verbose_name="lunch on working days",
+                    ),
+                ),
+                (
+                    "supper_working",
+                    models.CharField(
+                        choices=[
+                            (b"no_compensation", "no compensation"),
+                            (b"at_accomodation", "at accomodation"),
+                            (b"external", "external"),
+                        ],
+                        default=b"no_compensation",
+                        max_length=20,
+                        verbose_name="supper on working days",
+                    ),
+                ),
+                (
+                    "accomodation_sick",
+                    models.CharField(
+                        choices=[
+                            (b"provided", "provided"),
+                            (b"compensated", "compensated"),
+                        ],
+                        default=b"provided",
+                        max_length=20,
+                        verbose_name="accomodation on sick days",
+                    ),
+                ),
+                (
+                    "breakfast_sick",
+                    models.CharField(
+                        choices=[
+                            (b"no_compensation", "no compensation"),
+                            (b"at_accomodation", "at accomodation"),
+                            (b"external", "external"),
+                        ],
+                        default=b"no_compensation",
+                        max_length=20,
+                        verbose_name="breakfast on sick days",
+                    ),
+                ),
+                (
+                    "lunch_sick",
+                    models.CharField(
+                        choices=[
+                            (b"no_compensation", "no compensation"),
+                            (b"at_accomodation", "at accomodation"),
+                            (b"external", "external"),
+                        ],
+                        default=b"no_compensation",
+                        max_length=20,
+                        verbose_name="lunch on sick days",
+                    ),
+                ),
+                (
+                    "supper_sick",
+                    models.CharField(
+                        choices=[
+                            (b"no_compensation", "no compensation"),
+                            (b"at_accomodation", "at accomodation"),
+                            (b"external", "external"),
+                        ],
+                        default=b"no_compensation",
+                        max_length=20,
+                        verbose_name="supper on sick days",
+                    ),
+                ),
+                (
+                    "accomodation_free",
+                    models.CharField(
+                        choices=[
+                            (b"provided", "provided"),
+                            (b"compensated", "compensated"),
+                        ],
+                        default=b"provided",
+                        max_length=20,
+                        verbose_name="accomodation on free days",
+                    ),
+                ),
+                (
+                    "breakfast_free",
+                    models.CharField(
+                        choices=[
+                            (b"no_compensation", "no compensation"),
+                            (b"at_accomodation", "at accomodation"),
+                            (b"external", "external"),
+                        ],
+                        default=b"no_compensation",
+                        max_length=20,
+                        verbose_name="breakfast on free days",
+                    ),
+                ),
+                (
+                    "lunch_free",
+                    models.CharField(
+                        choices=[
+                            (b"no_compensation", "no compensation"),
+                            (b"at_accomodation", "at accomodation"),
+                            (b"external", "external"),
+                        ],
+                        default=b"no_compensation",
+                        max_length=20,
+                        verbose_name="lunch on free days",
+                    ),
+                ),
+                (
+                    "supper_free",
+                    models.CharField(
+                        choices=[
+                            (b"no_compensation", "no compensation"),
+                            (b"at_accomodation", "at accomodation"),
+                            (b"external", "external"),
+                        ],
+                        default=b"no_compensation",
+                        max_length=20,
+                        verbose_name="supper on free days",
+                    ),
+                ),
+                (
+                    "clothing",
+                    models.CharField(
+                        choices=[
+                            (b"provided", "provided"),
+                            (b"compensated", "compensated"),
+                        ],
+                        default=b"provided",
+                        max_length=20,
+                        verbose_name="clothing",
+                    ),
+                ),
+                (
+                    "accomodation_throughout",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Accomodation is offered throughout.",
+                        verbose_name="accomodation throughout",
+                    ),
+                ),
+                (
+                    "food_throughout",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Food is offered throughout.",
+                        verbose_name="food throughout",
+                    ),
+                ),
+                (
+                    "conditions",
+                    models.FileField(
+                        blank=True, upload_to=b"conditions", verbose_name="conditions"
+                    ),
+                ),
+                ("ordering", models.IntegerField(default=0, verbose_name="ordering")),
+                (
+                    "scope_statement",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="specifications",
+                        to="zivinetz.ScopeStatement",
+                        verbose_name="scope statement",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'specification',
-                'verbose_name_plural': 'specifications',
-                'ordering': ['ordering', 'scope_statement', 'with_accomodation'],
+                "verbose_name": "specification",
+                "verbose_name_plural": "specifications",
+                "ordering": ["ordering", "scope_statement", "with_accomodation"],
             },
         ),
         migrations.CreateModel(
-            name='WaitList',
+            name="WaitList",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(default=datetime.datetime.now, verbose_name='created')),
-                ('assignment_date_from', models.DateField(verbose_name='available from')),
-                ('assignment_date_until', models.DateField(verbose_name='available until')),
-                ('assignment_duration', models.PositiveIntegerField(verbose_name='duration in days')),
-                ('notes', models.TextField(blank=True, verbose_name='notes')),
-                ('drudge', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='zivinetz.Drudge', verbose_name='drudge')),
-                ('specification', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='zivinetz.Specification', verbose_name='specification')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        default=datetime.datetime.now, verbose_name="created"
+                    ),
+                ),
+                (
+                    "assignment_date_from",
+                    models.DateField(verbose_name="available from"),
+                ),
+                (
+                    "assignment_date_until",
+                    models.DateField(verbose_name="available until"),
+                ),
+                (
+                    "assignment_duration",
+                    models.PositiveIntegerField(verbose_name="duration in days"),
+                ),
+                ("notes", models.TextField(blank=True, verbose_name="notes")),
+                (
+                    "drudge",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="zivinetz.Drudge",
+                        verbose_name="drudge",
+                    ),
+                ),
+                (
+                    "specification",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="zivinetz.Specification",
+                        verbose_name="specification",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'waitlist',
-                'verbose_name_plural': 'waitlist',
-                'ordering': ['created'],
+                "verbose_name": "waitlist",
+                "verbose_name_plural": "waitlist",
+                "ordering": ["created"],
             },
         ),
         migrations.AddField(
-            model_name='expensereport',
-            name='specification',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='zivinetz.Specification', verbose_name='specification'),
+            model_name="expensereport",
+            name="specification",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="zivinetz.Specification",
+                verbose_name="specification",
+            ),
         ),
         migrations.AddField(
-            model_name='drudgequota',
-            name='scope_statement',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='zivinetz.ScopeStatement', verbose_name='scope statement'),
+            model_name="drudgequota",
+            name="scope_statement",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="zivinetz.ScopeStatement",
+                verbose_name="scope statement",
+            ),
         ),
         migrations.AddField(
-            model_name='drudge',
-            name='regional_office',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='zivinetz.RegionalOffice', verbose_name='regional office'),
+            model_name="drudge",
+            name="regional_office",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="zivinetz.RegionalOffice",
+                verbose_name="regional office",
+            ),
         ),
         migrations.AddField(
-            model_name='drudge',
-            name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="drudge",
+            name="user",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='companyholiday',
-            name='applies_to',
-            field=models.ManyToManyField(related_name='company_holidays', to='zivinetz.ScopeStatement', verbose_name='applies to scope statements'),
+            model_name="companyholiday",
+            name="applies_to",
+            field=models.ManyToManyField(
+                related_name="company_holidays",
+                to="zivinetz.ScopeStatement",
+                verbose_name="applies to scope statements",
+            ),
         ),
         migrations.AddField(
-            model_name='assignment',
-            name='drudge',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='assignments', to='zivinetz.Drudge', verbose_name='drudge'),
+            model_name="assignment",
+            name="drudge",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="assignments",
+                to="zivinetz.Drudge",
+                verbose_name="drudge",
+            ),
         ),
         migrations.AddField(
-            model_name='assignment',
-            name='regional_office',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='zivinetz.RegionalOffice', verbose_name='regional office'),
+            model_name="assignment",
+            name="regional_office",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="zivinetz.RegionalOffice",
+                verbose_name="regional office",
+            ),
         ),
         migrations.AddField(
-            model_name='assignment',
-            name='specification',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='zivinetz.Specification', verbose_name='specification'),
+            model_name="assignment",
+            name="specification",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="zivinetz.Specification",
+                verbose_name="specification",
+            ),
         ),
         migrations.AddField(
-            model_name='assessment',
-            name='drudge',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='assessments', to='zivinetz.Drudge', verbose_name='drudge'),
+            model_name="assessment",
+            name="drudge",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="assessments",
+                to="zivinetz.Drudge",
+                verbose_name="drudge",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='specification',
-            unique_together=set([('scope_statement', 'with_accomodation')]),
+            name="specification",
+            unique_together=set([("scope_statement", "with_accomodation")]),
         ),
     ]

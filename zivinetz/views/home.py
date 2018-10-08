@@ -14,15 +14,14 @@ def home(request):
         drudge = None
 
     if request.user.is_staff:
-        return HttpResponseRedirect('admin/')
+        return HttpResponseRedirect("admin/")
 
     elif not drudge:
-        return redirect('drudge_profile')
+        return redirect("drudge_profile")
 
-    return redirect('drudge_dashboard')
+    return redirect("drudge_dashboard")
 
 
 @staff_member_required
 def admin(request):
-    return render(request, 'zivinetz/admin.html', {
-    })
+    return render(request, "zivinetz/admin.html", {})

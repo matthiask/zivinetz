@@ -11,6 +11,7 @@ import datetime
 # http://www.it-john.de/weblog/2010/apr/01/berechnung-von-feiertagen/         #
 # ----------------------------------------------------------------------------#
 
+
 class EasterDay(object):
 
     """
@@ -159,27 +160,29 @@ def get_public_holidays(year):
     easter = EasterDay(year).get_date()
 
     return {
-        datetime.date(year, 1, 1): u'Neujahr',
-        datetime.date(year, 1, 2): u'Berchtoldstag',
-        easter - datetime.timedelta(days=2): u'Karfreitag',
-        easter: u'Ostersonntag',
-        easter + datetime.timedelta(days=1): u'Ostermontag',
-        datetime.date(year, 5, 1): u'Tag der Arbeit',
-        easter + datetime.timedelta(days=39): u'Auffahrt',
-        easter + datetime.timedelta(days=49): u'Pfingstsonntag',
-        easter + datetime.timedelta(days=50): u'Pfingstmontag',
-        datetime.date(year, 8, 1): u'Nationalfeiertag',
-        datetime.date(year, 12, 25): u'Weihnachtstag',
-        datetime.date(year, 12, 26): u'Stephanstag',
+        datetime.date(year, 1, 1): u"Neujahr",
+        datetime.date(year, 1, 2): u"Berchtoldstag",
+        easter - datetime.timedelta(days=2): u"Karfreitag",
+        easter: u"Ostersonntag",
+        easter + datetime.timedelta(days=1): u"Ostermontag",
+        datetime.date(year, 5, 1): u"Tag der Arbeit",
+        easter + datetime.timedelta(days=39): u"Auffahrt",
+        easter + datetime.timedelta(days=49): u"Pfingstsonntag",
+        easter + datetime.timedelta(days=50): u"Pfingstmontag",
+        datetime.date(year, 8, 1): u"Nationalfeiertag",
+        datetime.date(year, 12, 25): u"Weihnachtstag",
+        datetime.date(year, 12, 26): u"Stephanstag",
     }
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     year = datetime.date.today().year
     for i in range(year, year + 3):
         days = get_public_holidays(i)
-        print('\n'.join(
-            '%s: %s' % (day.strftime('%d.%m.%Y'), name)
-            for day, name in sorted(days.items())
-        ))
+        print(
+            "\n".join(
+                "%s: %s" % (day.strftime("%d.%m.%Y"), name)
+                for day, name in sorted(days.items())
+            )
+        )
         print()

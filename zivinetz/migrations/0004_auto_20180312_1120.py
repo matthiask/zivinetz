@@ -5,14 +5,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('zivinetz', '0003_auto_20180307_1325'),
-    ]
+    dependencies = [("zivinetz", "0003_auto_20180307_1325")]
 
     operations = [
         migrations.AlterField(
-            model_name='drudge',
-            name='bank_account',
-            field=models.CharField(help_text='Enter your IBAN.', max_length=100, verbose_name='bank account'),
-        ),
+            model_name="drudge",
+            name="bank_account",
+            field=models.CharField(
+                help_text="Enter your IBAN.",
+                max_length=100,
+                verbose_name="bank account",
+            ),
+        )
     ]

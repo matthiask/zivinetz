@@ -18,10 +18,7 @@ def yield_dates(start, step, count):
 
 
 class QuotaForm(forms.Form):
-    quota = forms.IntegerField(
-        label=ugettext_lazy('quota'),
-        required=False,
-    )
+    quota = forms.IntegerField(label=ugettext_lazy("quota"), required=False)
 
 
 @staff_member_required
@@ -35,22 +32,22 @@ def quota_year(request, year):
 
     scope_statements = ScopeStatement.objects.filter(is_active=True)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         created = 0
         updated = 0
         deleted = 0
 
         for scope_statement in scope_statements:
             existing_quotas = {
-                quota.week: quota
-                for quota in scope_statement.drudgequota_set.all()
+                quota.week: quota for quota in scope_statement.drudgequota_set.all()
             }
             for day in dates:
                 try:
-                    value = int(request.POST['%s_%s-quota' % (
-                        scope_statement.id,
-                        day.strftime('%Y%m%d'),
-                    )])
+                    value = int(
+                        request.POST[
+                            "%s_%s-quota" % (scope_statement.id, day.strftime("%Y%m%d"))
+                        ]
+                    )
                 except (KeyError, TypeError, ValueError):
                     if day in existing_quotas:
                         existing_quotas[day].delete()
@@ -64,38 +61,32 @@ def quota_year(request, year):
                             updated += 1
                     else:
                         DrudgeQuota.objects.create(
-                            scope_statement=scope_statement,
-                            week=day,
-                            quota=value,
+                            scope_statement=scope_statement, week=day, quota=value
                         )
                         created += 1
 
         messages.success(
             request,
-            _('Created %(c)s, updated %(u)s, deleted %(d)s quotas') % {
-                'c': created,
-                'u': updated,
-                'd': deleted,
-            },
+            _("Created %(c)s, updated %(u)s, deleted %(d)s quotas")
+            % {"c": created, "u": updated, "d": deleted},
         )
-        return redirect('.')
+        return redirect(".")
 
     for scope_statement in scope_statements:
         forms = all_forms[scope_statement]
         existing_quotas = {
-            quota.week: quota.quota
-            for quota in scope_statement.drudgequota_set.all()
+            quota.week: quota.quota for quota in scope_statement.drudgequota_set.all()
         }
 
         for day in dates:
             form = QuotaForm(
-                initial={'quota': existing_quotas.get(day)},
-                prefix='%s_%s' % (scope_statement.id, day.strftime('%Y%m%d')),
+                initial={"quota": existing_quotas.get(day)},
+                prefix="%s_%s" % (scope_statement.id, day.strftime("%Y%m%d")),
             )
             forms[day] = form
 
-    return render(request, 'zivinetz/quota_year.html', {
-        'year': year,
-        'dates': dates,
-        'all_forms': dict(all_forms),
-    })
+    return render(
+        request,
+        "zivinetz/quota_year.html",
+        {"year": year, "dates": dates, "all_forms": dict(all_forms)},
+    )

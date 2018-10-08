@@ -11,53 +11,106 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('zivinetz', '0008_assignment_available_holi_days'),
+        ("zivinetz", "0008_assignment_available_holi_days"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Absence',
+            name="Absence",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now, verbose_name='created at')),
-                ('reason', models.CharField(choices=[('approved-vacation', 'approved vacation'), ('approved-holiday', 'approved holiday'), ('sick', 'sick'), ('motor-saw-course', 'motor saw course'), ('environment-course', 'environment course'), ('unauthorized', 'unauthorized absence'), ('compensation', 'compensation')], max_length=20, verbose_name='reason')),
-                ('internal_notes', models.TextField(blank=True, verbose_name='internal notes')),
-                ('days', django.contrib.postgres.fields.ArrayField(base_field=models.DateField(), size=None, verbose_name='days')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="created at"
+                    ),
+                ),
+                (
+                    "reason",
+                    models.CharField(
+                        choices=[
+                            ("approved-vacation", "approved vacation"),
+                            ("approved-holiday", "approved holiday"),
+                            ("sick", "sick"),
+                            ("motor-saw-course", "motor saw course"),
+                            ("environment-course", "environment course"),
+                            ("unauthorized", "unauthorized absence"),
+                            ("compensation", "compensation"),
+                        ],
+                        max_length=20,
+                        verbose_name="reason",
+                    ),
+                ),
+                (
+                    "internal_notes",
+                    models.TextField(blank=True, verbose_name="internal notes"),
+                ),
+                (
+                    "days",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.DateField(), size=None, verbose_name="days"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'absence',
-                'verbose_name_plural': 'absences',
-                'ordering': ['-created_at'],
+                "verbose_name": "absence",
+                "verbose_name_plural": "absences",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.AlterField(
-            model_name='assessment',
-            name='created',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created'),
+            model_name="assessment",
+            name="created",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created"
+            ),
         ),
         migrations.AlterField(
-            model_name='assignment',
-            name='created',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created'),
+            model_name="assignment",
+            name="created",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created"
+            ),
         ),
         migrations.AlterField(
-            model_name='assignmentchange',
-            name='created',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created'),
+            model_name="assignmentchange",
+            name="created",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created"
+            ),
         ),
         migrations.AlterField(
-            model_name='codeword',
-            name='created',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created'),
+            model_name="codeword",
+            name="created",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created"
+            ),
         ),
         migrations.AddField(
-            model_name='absence',
-            name='assignment',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='absences', to='zivinetz.Assignment', verbose_name='assignment'),
+            model_name="absence",
+            name="assignment",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="absences",
+                to="zivinetz.Assignment",
+                verbose_name="assignment",
+            ),
         ),
         migrations.AddField(
-            model_name='absence',
-            name='created_by',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            model_name="absence",
+            name="created_by",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="created by",
+            ),
         ),
     ]

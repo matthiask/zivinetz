@@ -9,18 +9,31 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('zivinetz', '0002_auto_20180306_1808'),
+        ("zivinetz", "0002_auto_20180306_1808"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='assessment',
-            name='assignment',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='assessments', to='zivinetz.Assignment', verbose_name='assignment'),
+            model_name="assessment",
+            name="assignment",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="assessments",
+                to="zivinetz.Assignment",
+                verbose_name="assignment",
+            ),
         ),
         migrations.AddField(
-            model_name='assessment',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            model_name="assessment",
+            name="created_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="created by",
+            ),
         ),
     ]

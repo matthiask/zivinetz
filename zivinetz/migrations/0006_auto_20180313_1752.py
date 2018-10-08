@@ -5,13 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('zivinetz', '0005_group_groupassignment'),
-    ]
+    dependencies = [("zivinetz", "0005_group_groupassignment")]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='groupassignment',
-            unique_together={('assignment', 'week')},
-        ),
+            name="groupassignment", unique_together={("assignment", "week")}
+        )
     ]

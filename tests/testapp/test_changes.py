@@ -31,9 +31,8 @@ class ChangesTestCase(TestCase):
 
         # Test the listing view.
         admin = factories.UserFactory.create(is_staff=True, is_superuser=True)
-        self.client.login(username=admin.username, password='test')
+        self.client.login(username=admin.username, password="test")
 
         self.assertContains(
-            self.client.get('/zivinetz/reporting/assignmentchanges/'),
-            'by unknown',
-            4)
+            self.client.get("/zivinetz/reporting/assignmentchanges/"), "by unknown", 4
+        )

@@ -10,6 +10,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for spec in Specification.objects.all():
-            self.stdout.write(u'%s\n' % spec)
+            self.stdout.write(u"%s\n" % spec)
             self.stdout.write(pprint.pformat(spec.compensation()))
-            self.stdout.write(u'\n')
+            self.stdout.write(u"\n")

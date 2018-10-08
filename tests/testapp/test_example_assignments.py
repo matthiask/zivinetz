@@ -17,14 +17,12 @@ class ExampleAssignmentsTestCase(TestCase):
     def test_assignment_factory(self):
         assignment = factories.AssignmentFactory.create()
 
-        self.assertEqual(
-            assignment.regional_office, assignment.drudge.regional_office)
-        self.assertEqual(
-            AssignmentChange.objects.count(), 1)
+        self.assertEqual(assignment.regional_office, assignment.drudge.regional_office)
+        self.assertEqual(AssignmentChange.objects.count(), 1)
 
         self.assertRaises(
-            CompensationSet.DoesNotExist,
-            assignment.generate_expensereports)
+            CompensationSet.DoesNotExist, assignment.generate_expensereports
+        )
 
         factories.CompensationSetFactory.create()
 
@@ -35,69 +33,57 @@ class ExampleAssignmentsTestCase(TestCase):
         factories.CompensationSetFactory.create()
         factories.CompensationSetFactory.create(
             valid_from=date(2000, 1, 1),
-            accomodation_home=Decimal('11.50'),
-
-            breakfast_at_accomodation=Decimal('3.50'),
-            lunch_at_accomodation=Decimal('10.00'),
-            supper_at_accomodation=Decimal('8.00'),
-
-            breakfast_external=Decimal('8.00'),
-            lunch_external=Decimal('19.00'),
-            supper_external=Decimal('15.00'),
+            accomodation_home=Decimal("11.50"),
+            breakfast_at_accomodation=Decimal("3.50"),
+            lunch_at_accomodation=Decimal("10.00"),
+            supper_at_accomodation=Decimal("8.00"),
+            breakfast_external=Decimal("8.00"),
+            lunch_external=Decimal("19.00"),
+            supper_external=Decimal("15.00"),
         )
 
     def _generate_pa_specification(self):
         return factories.SpecificationFactory(
-            scope_statement__eis_no='53378',
-            scope_statement__name='Projektadministration',
-
+            scope_statement__eis_no="53378",
+            scope_statement__name="Projektadministration",
             with_accomodation=False,
-            code='PA',
-
-            accomodation_working='compensated',
-            breakfast_working='at_accomodation',
-            lunch_working='external',
-            supper_working='at_accomodation',
-
-            accomodation_sick='compensated',
-            breakfast_sick='at_accomodation',
-            lunch_sick='at_accomodation',
-            supper_sick='at_accomodation',
-
-            accomodation_free='compensated',
-            breakfast_free='at_accomodation',
-            lunch_free='at_accomodation',
-            supper_free='at_accomodation',
-
-            clothing='compensated',
+            code="PA",
+            accomodation_working="compensated",
+            breakfast_working="at_accomodation",
+            lunch_working="external",
+            supper_working="at_accomodation",
+            accomodation_sick="compensated",
+            breakfast_sick="at_accomodation",
+            lunch_sick="at_accomodation",
+            supper_sick="at_accomodation",
+            accomodation_free="compensated",
+            breakfast_free="at_accomodation",
+            lunch_free="at_accomodation",
+            supper_free="at_accomodation",
+            clothing="compensated",
             accomodation_throughout=False,
             food_throughout=False,
         )
 
     def _generate_fu_specification(self):
         return factories.SpecificationFactory(
-            scope_statement__eis_no='53377',
-            scope_statement__name='Naturschutzgruppe Feld',
-
+            scope_statement__eis_no="53377",
+            scope_statement__name="Naturschutzgruppe Feld",
             with_accomodation=True,
-            code='F(U)',
-
-            accomodation_working='provided',
-            breakfast_working='no_compensation',
-            lunch_working='external',
-            supper_working='no_compensation',
-
-            accomodation_sick='provided',
-            breakfast_sick='no_compensation',
-            lunch_sick='no_compensation',
-            supper_sick='no_compensation',
-
-            accomodation_free='provided',
-            breakfast_free='no_compensation',
-            lunch_free='no_compensation',
-            supper_free='no_compensation',
-
-            clothing='compensated',
+            code="F(U)",
+            accomodation_working="provided",
+            breakfast_working="no_compensation",
+            lunch_working="external",
+            supper_working="no_compensation",
+            accomodation_sick="provided",
+            breakfast_sick="no_compensation",
+            lunch_sick="no_compensation",
+            supper_sick="no_compensation",
+            accomodation_free="provided",
+            breakfast_free="no_compensation",
+            lunch_free="no_compensation",
+            supper_free="no_compensation",
+            clothing="compensated",
             accomodation_throughout=True,
             food_throughout=False,
         )
@@ -119,54 +105,26 @@ class ExampleAssignmentsTestCase(TestCase):
         reports = list(assignment.reports.all())
         self.assertEqual(len(reports), 2)
 
-        self.assertEqual(
-            reports[0].date_from,
-            date(2014, 9, 8))
-        self.assertEqual(
-            reports[0].date_until,
-            date(2014, 9, 30))
+        self.assertEqual(reports[0].date_from, date(2014, 9, 8))
+        self.assertEqual(reports[0].date_until, date(2014, 9, 30))
 
-        self.assertEqual(
-            reports[1].date_from,
-            date(2014, 10, 1))
-        self.assertEqual(
-            reports[1].date_until,
-            date(2014, 10, 3))
+        self.assertEqual(reports[1].date_from, date(2014, 10, 1))
+        self.assertEqual(reports[1].date_until, date(2014, 10, 3))
 
-        self.assertEqual(
-            reports[0].total_days,
-            23)
-        self.assertEqual(
-            reports[1].total_days,
-            3)
+        self.assertEqual(reports[0].total_days, 23)
+        self.assertEqual(reports[1].total_days, 3)
 
-        self.assertEqual(
-            reports[0].working_days,
-            17)
-        self.assertEqual(
-            reports[1].working_days,
-            3)
+        self.assertEqual(reports[0].working_days, 17)
+        self.assertEqual(reports[1].working_days, 3)
 
-        self.assertEqual(
-            reports[0].free_days,
-            6)
-        self.assertEqual(
-            reports[1].free_days,
-            0)
+        self.assertEqual(reports[0].free_days, 6)
+        self.assertEqual(reports[1].free_days, 0)
 
-        self.assertAlmostEqual(
-            reports[0].clothing_expenses,
-            Decimal('52.90'))
-        self.assertAlmostEqual(
-            reports[1].clothing_expenses,
-            Decimal('6.90'))
+        self.assertAlmostEqual(reports[0].clothing_expenses, Decimal("52.90"))
+        self.assertAlmostEqual(reports[1].clothing_expenses, Decimal("6.90"))
 
-        self.assertAlmostEqual(
-            reports[0].total,
-            Decimal('742.90'))
-        self.assertAlmostEqual(
-            reports[1].total,
-            Decimal('96.90'))
+        self.assertAlmostEqual(reports[0].total, Decimal("742.90"))
+        self.assertAlmostEqual(reports[1].total, Decimal("96.90"))
 
     def test_assignment_266(self):
         # http://www.naturnetz.ch/zivildienst/zivinetz/admin/assignments/266/
@@ -187,8 +145,7 @@ class ExampleAssignmentsTestCase(TestCase):
         )
 
         cf = factories.CompanyHolidayFactory.create(
-            date_from=date(2010, 12, 25),
-            date_until=date(2011, 1, 2),
+            date_from=date(2010, 12, 25), date_until=date(2011, 1, 2)
         )
         cf.applies_to.set(ScopeStatement.objects.all())
 
@@ -208,28 +165,26 @@ class ExampleAssignmentsTestCase(TestCase):
         # reports[4].recalculate_total()
 
         def _assert_equal(attribute, list):
-            self.assertEqual(
-                [getattr(report, attribute) for report in reports],
-                list)
+            self.assertEqual([getattr(report, attribute) for report in reports], list)
 
-        _assert_equal('total_days', [9, 30, 31, 30, 31, 31, 18])
-        _assert_equal('working_days', [7, 20, 21, 22, 18, 21, 14])
-        _assert_equal('free_days', [2, 8, 10, 8, 8, 10, 4])
-        _assert_equal('sick_days', [0, 0, 0, 0, 0, 0, 0])
-        _assert_equal('holi_days', [0, 0, 0, 0, 5, 0, 0])
-        _assert_equal('forced_leave_days', [0, 2, 0, 0, 0, 0, 0])
+        _assert_equal("total_days", [9, 30, 31, 30, 31, 31, 18])
+        _assert_equal("working_days", [7, 20, 21, 22, 18, 21, 14])
+        _assert_equal("free_days", [2, 8, 10, 8, 8, 10, 4])
+        _assert_equal("sick_days", [0, 0, 0, 0, 0, 0, 0])
+        _assert_equal("holi_days", [0, 0, 0, 0, 5, 0, 0])
+        _assert_equal("forced_leave_days", [0, 2, 0, 0, 0, 0, 0])
 
         def _assert_almost_equal(attribute, list):
-            for pair in zip(
-                    [getattr(report, attribute) for report in reports],
-                    list):
+            for pair in zip([getattr(report, attribute) for report in reports], list):
                 self.assertAlmostEqual(*pair)
 
-        _assert_almost_equal('clothing_expenses', [
-            Decimal(s) for s in '20.7 69 71.3 69 10 0 0'.split()])
-        _assert_almost_equal('total', [
-            Decimal(s) for s in '425.7 1313 1438.3 1407 1350 1367 810'.split()
-        ])
+        _assert_almost_equal(
+            "clothing_expenses", [Decimal(s) for s in "20.7 69 71.3 69 10 0 0".split()]
+        )
+        _assert_almost_equal(
+            "total",
+            [Decimal(s) for s in "425.7 1313 1438.3 1407 1350 1367 810".split()],
+        )
 
     def test_assignment_811(self):
         # http://www.naturnetz.ch/zivildienst/zivinetz/admin/assignments/811/
@@ -250,8 +205,7 @@ class ExampleAssignmentsTestCase(TestCase):
         )
 
         cf = factories.CompanyHolidayFactory.create(
-            date_from=date(2012, 12, 22),
-            date_until=date(2013, 1, 13),
+            date_from=date(2012, 12, 22), date_until=date(2013, 1, 13)
         )
         cf.applies_to.set(ScopeStatement.objects.all())
 
@@ -264,7 +218,7 @@ class ExampleAssignmentsTestCase(TestCase):
         reports[1].working_days -= 2
 
         # Transports
-        reports[1].transport_expenses = Decimal('246.40')
+        reports[1].transport_expenses = Decimal("246.40")
 
         # Krank
         reports[2].sick_days += 4
@@ -279,7 +233,7 @@ class ExampleAssignmentsTestCase(TestCase):
         reports[3].working_days -= 2
 
         # Transports
-        reports[3].transport_expenses = Decimal('104.00')
+        reports[3].transport_expenses = Decimal("104.00")
 
         # Krank
         reports[4].sick_days += 1
@@ -292,7 +246,7 @@ class ExampleAssignmentsTestCase(TestCase):
         # reports[4].free_days -= 4
 
         # Transports
-        reports[4].transport_expenses = Decimal('16.10')
+        reports[4].transport_expenses = Decimal("16.10")
 
         # Krank
         reports[5].sick_days += 3
@@ -304,29 +258,29 @@ class ExampleAssignmentsTestCase(TestCase):
         # reports[5].free_days -= 4
 
         # Transports
-        reports[6].transport_expenses = Decimal('84.50')
+        reports[6].transport_expenses = Decimal("84.50")
 
         [report.recalculate_total() for report in reports]
 
         def _assert_equal(attribute, list):
-            self.assertEqual(
-                [getattr(report, attribute) for report in reports],
-                list)
+            self.assertEqual([getattr(report, attribute) for report in reports], list)
 
-        _assert_equal('total_days', [19, 30, 31, 30, 31, 31, 15])
-        _assert_equal('working_days', [15, 18, 14, 20, 14, 11, 11])
-        _assert_equal('free_days', [4, 10, 8, 8, 12, 10, 4])
-        _assert_equal('sick_days', [0, 2, 4, 0, 1, 3, 0])
-        _assert_equal('holi_days', [0, 0, 0, 0, 4, 4, 0])
-        _assert_equal('forced_leave_days', [0, 0, 5, 2, 0, 3, 0])
+        _assert_equal("total_days", [19, 30, 31, 30, 31, 31, 15])
+        _assert_equal("working_days", [15, 18, 14, 20, 14, 11, 11])
+        _assert_equal("free_days", [4, 10, 8, 8, 12, 10, 4])
+        _assert_equal("sick_days", [0, 2, 4, 0, 1, 3, 0])
+        _assert_equal("holi_days", [0, 0, 0, 0, 4, 4, 0])
+        _assert_equal("forced_leave_days", [0, 0, 5, 2, 0, 3, 0])
 
         def _assert_almost_equal(attribute, list):
             other = [getattr(report, attribute) for report in reports]
             for pair in zip(list, other):
                 self.assertAlmostEqual(*pair)
 
-        _assert_almost_equal('clothing_expenses', [
-            Decimal(s) for s in '43.7 69 71.3 56 0 0 0'.split()])
-        _assert_almost_equal('total', [
-            Decimal(s) for s in '273.7 627.4 327.3 480 297.1 239 258.5'.split()
-        ])
+        _assert_almost_equal(
+            "clothing_expenses", [Decimal(s) for s in "43.7 69 71.3 56 0 0 0".split()]
+        )
+        _assert_almost_equal(
+            "total",
+            [Decimal(s) for s in "273.7 627.4 327.3 480 297.1 239 258.5".split()],
+        )

@@ -6,36 +6,69 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('zivinetz', '0004_auto_20180312_1120'),
-    ]
+    dependencies = [("zivinetz", "0004_auto_20180312_1120")]
 
     operations = [
         migrations.CreateModel(
-            name='Group',
+            name="Group",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_active', models.BooleanField(default=True, verbose_name='is active')),
-                ('name', models.CharField(max_length=100, verbose_name='name')),
-                ('ordering', models.IntegerField(default=0, verbose_name='ordering')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(default=True, verbose_name="is active"),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="name")),
+                ("ordering", models.IntegerField(default=0, verbose_name="ordering")),
             ],
             options={
-                'ordering': ['ordering'],
-                'verbose_name_plural': 'groups',
-                'verbose_name': 'group',
+                "ordering": ["ordering"],
+                "verbose_name_plural": "groups",
+                "verbose_name": "group",
             },
         ),
         migrations.CreateModel(
-            name='GroupAssignment',
+            name="GroupAssignment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('week', models.DateField(verbose_name='week')),
-                ('assignment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='group_assignments', to='zivinetz.Assignment', verbose_name='assignment')),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='group_assignments', to='zivinetz.Group', verbose_name='group')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("week", models.DateField(verbose_name="week")),
+                (
+                    "assignment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="group_assignments",
+                        to="zivinetz.Assignment",
+                        verbose_name="assignment",
+                    ),
+                ),
+                (
+                    "group",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="group_assignments",
+                        to="zivinetz.Group",
+                        verbose_name="group",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'group assignments',
-                'verbose_name': 'group assignment',
+                "verbose_name_plural": "group assignments",
+                "verbose_name": "group assignment",
             },
         ),
     ]
