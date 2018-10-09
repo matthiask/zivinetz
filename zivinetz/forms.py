@@ -31,7 +31,7 @@ def add_last_assignment_and_mark(queryset):
     )
 
     for mark in marks:
-        drudges[mark["drudge"]].average_mark = mark["mark__avg"]
+        drudges[mark["drudge"]].average_mark = "%.2f" % mark["mark__avg"]
 
     for assignment in (
         Assignment.objects.select_related("specification__scope_statement")
