@@ -109,7 +109,7 @@ class AdminViewsTestCase(TestCase):
 
         # Internal assessments
         self.assertContains(response, "<td>&ndash;</td>", 5)
-        self.assertContains(response, "<td>3.5</td>", 1)
+        self.assertContains(response, "<td>3.50</td>", 1)
 
         # Batch mailing
         data = {"batchform": 1, "batch-action": "send_emails"}
