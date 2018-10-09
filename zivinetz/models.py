@@ -1376,13 +1376,13 @@ class Absence(models.Model):
     )
 
     REASON_TO_EXPENSE_REPORT = {
-        APPROVED_VACATION: "vacation_days",
+        APPROVED_VACATION: "forced_leave_days",
         APPROVED_HOLIDAY: "holi_days",
         SICK: "sick_days",
         MOTOR_SAW_COURSE: "working_days",
         ENVIRONMENT_COURSE: "working_days",
-        UNAUTHORIZED: "working_days",  # Correct? Probably not.
-        COMPENSATION: "working_days",  # Correct? Probably not.
+        UNAUTHORIZED: "working_days",  # TODO Correct? Probably not.
+        COMPENSATION: "working_days",  # TODO Correct? Probably not.
     }
 
     PRETTY_REASON = {
