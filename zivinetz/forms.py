@@ -310,6 +310,7 @@ class AssignDrudgesToGroupsForm(forms.Form):
         self.day = GroupAssignment.objects.monday(
             kwargs.pop("day", None) or date.today()
         )
+        self.scope_statement = kwargs.pop("scope_statement")
 
         super().__init__(*args, **kwargs)
 
@@ -328,7 +329,13 @@ class AssignDrudgesToGroupsForm(forms.Form):
 
         self.group_choices = [(g.id, str(g)) for g in Group.objects.active()]
 
-        for asg in Assignment.objects.for_date(self.day).select_related(
+        self.assignments = Assignment.objects.for_date(self.day)
+        if self.scope_statement:
+            self.assignments = self.assignments.filter(
+                specification__scope_statement=self.scope_statement
+            )
+
+        for asg in self.assignments.select_related(
             "specification__scope_statement", "drudge__user"
         ):
             self.fields["asg_%s" % asg.id] = f = forms.ModelChoiceField(
@@ -344,7 +351,7 @@ class AssignDrudgesToGroupsForm(forms.Form):
             f.choices = self.group_choices
 
     def save(self):
-        for asg in Assignment.objects.for_date(self.day):
+        for asg in self.assignments:
             group = self.cleaned_data["asg_%s" % asg.id]
 
             if group:

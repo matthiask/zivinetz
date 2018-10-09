@@ -13,6 +13,13 @@
 {% endblock %}
 
 {% block content %}
+<nav>
+  <a {% if not view.scope_statement %}style="font-weight:bold"{% endif %} href=".">Alle</a><br>
+  {% for s in scope_statements %}
+  <a {% if view.scope_statement == s %}style="font-weight:bold"{% endif %} href="?scope_statement={{ s.id }}">{{ s }}</a><br>
+  {% endfor %}
+</nav>
+
 <form method="post" action="{{ request.get_full_path|default:"." }}"
   enctype="multipart/form-data" class="form form-horizontal">
 {% csrf_token %}

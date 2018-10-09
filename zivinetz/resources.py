@@ -536,6 +536,9 @@ class AssignGroupsView(resources.ModelResourceView):
 
     def get_context_data(self, **kwargs):
         kwargs.setdefault("title", _("Assign to groups"))
+        kwargs.setdefault(
+            "scope_statements", ScopeStatement.objects.filter(is_active=True)
+        )
         return super().get_context_data(**kwargs)
 
     def get(self, request, year, month, day):
@@ -544,6 +547,16 @@ class AssignGroupsView(resources.ModelResourceView):
         except Exception as exc:
             print(exc)
             return redirect(self.url("list"))
+
+        self.scope_statement = None
+        if request.GET.get("scope_statement"):
+            try:
+                self.scope_statement = ScopeStatement.objects.get(
+                    is_active=True, pk=request.GET["scope_statement"]
+                )
+            except Exception as exc:
+                print(exc)
+                return redirect(self.url("list"))
 
         if request.GET.get("xlsx"):
             response = HttpResponse(
@@ -558,7 +571,7 @@ class AssignGroupsView(resources.ModelResourceView):
             )
             return response
 
-        form = AssignDrudgesToGroupsForm(day=day)
+        form = AssignDrudgesToGroupsForm(day=day, scope_statement=self.scope_statement)
         return self.render_to_response(self.get_context_data(form=form))
 
     def post(self, request, year, month, day):
@@ -567,7 +580,19 @@ class AssignGroupsView(resources.ModelResourceView):
         except Exception:
             return redirect(self.url("list"))
 
-        form = AssignDrudgesToGroupsForm(request.POST, day=day)
+        self.scope_statement = None
+        if request.GET.get("scope_statement"):
+            try:
+                self.scope_statement = ScopeStatement.objects.get(
+                    is_active=True, pk=request.GET["scope_statement"]
+                )
+            except Exception as exc:
+                print(exc)
+                return redirect(self.url("list"))
+
+        form = AssignDrudgesToGroupsForm(
+            request.POST, day=day, scope_statement=self.scope_statement
+        )
         if form.is_valid():
             form.save()
             return redirect(self.url("list"))
