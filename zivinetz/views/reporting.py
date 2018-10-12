@@ -140,7 +140,7 @@ class AssignmentPDFStationery(object):
         ]
 
         frame_5 = [
-            "20995",
+            scope_statement.branch_no,
             scope_statement.company_contact_name or "Marco Sacchi",
             scope_statement.company_address or "Chlosterstrasse",
             scope_statement.company_contact_phone or "044 533 11 44",
@@ -424,12 +424,22 @@ def expense_report_pdf(request, expense_report_id):
 
     assignment = report.assignment
     drudge = assignment.drudge
+    scope_statement = assignment.specification.scope_statement
 
     pdf, response = pdf_response("expense-report-%s" % report.pk)
     pdf.init_report()
 
     pdf.h1("Spesenrapport")
-    pdf.h2("Einsatzbetrieb 20995 - Naturnetz, Chlosterstrasse, 8109 Kloster Fahr")
+    pdf.h2(
+        "Einsatzbetrieb %s - %s, %s, %s %s"
+        % (
+            scope_statement.branch_no,
+            scope_statement.company_name,
+            scope_statement.company_address,
+            scope_statement.company_zip_code,
+            scope_statement.company_city,
+        )
+    )
     pdf.spacer()
 
     pdf.table(

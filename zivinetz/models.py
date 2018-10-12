@@ -51,6 +51,8 @@ class ScopeStatement(models.Model):
     is_active = models.BooleanField(_("is active"), default=True)
     eis_no = models.CharField(_("EIS No."), unique=True, max_length=10)
     name = models.CharField(_("name"), max_length=100)
+
+    branch_no = models.CharField(_("branch No."), max_length=10)
     branch = models.CharField(_("branch"), max_length=100)
 
     company_name = models.CharField(_("company name"), max_length=100, blank=True)
