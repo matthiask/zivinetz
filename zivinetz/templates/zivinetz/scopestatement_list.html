@@ -7,7 +7,6 @@
     <thead>
         <tr>
             <th>{% trans "is active"|capfirst %}</th>
-            <th>{% trans "EIS No."|capfirst %}</th>
             <th>{% trans "scope statement"|capfirst %}</th>
             <th>{% trans "branch"|capfirst %}</th>
             <th>{% trans "default group"|capfirst %}</th>
@@ -19,7 +18,6 @@
             <td>
                 <i class="fi-{{ object.is_active|yesno:'check,x' }}"></i>
             </td>
-            <td>{{ object.eis_no }}</td>
             <th><a href="{{ object.get_absolute_url }}">{{ object }}</a></th>
             <td>{{ object.branch }}</td>
             <td>{{ object.default_group|default:"&ndash;" }}</td>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-12 08:48+0200\n"
+"POT-Creation-Date: 2018-10-17 15:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,7 +104,7 @@ msgid "status"
 msgstr "Stato"
 
 #: forms.py:201 forms.py:271 models.py:87 models.py:100 models.py:147
-#: templates/zivinetz/scopestatement_list.html:11
+#: templates/zivinetz/scopestatement_list.html:10
 #: templates/zivinetz/specification_detail.html:10 views/scheduling.py:308
 msgid "scope statement"
 msgstr "Mansionario"
@@ -238,22 +238,22 @@ msgstr "Zurigo"
 msgid "is active"
 msgstr "è attivo"
 
-#: models.py:52 templates/zivinetz/scopestatement_list.html:10
-msgid "EIS No."
-msgstr "n°-EIS"
+#: models.py:52
+#, fuzzy
+#| msgid "scope statement"
+msgid "scope statement No."
+msgstr "Mansionario"
 
 #: models.py:53 models.py:333 models.py:1107 models.py:1263
 msgid "name"
 msgstr "Nome"
 
 #: models.py:55
-#, fuzzy
-#| msgid "branch"
-msgid "branch No."
-msgstr "Filiale"
+msgid "EIS No."
+msgstr "n°-EIS"
 
 #: models.py:56 templates/zivinetz/course_list.html:29
-#: templates/zivinetz/scopestatement_list.html:12
+#: templates/zivinetz/scopestatement_list.html:11
 msgid "branch"
 msgstr "Filiale"
 
@@ -293,7 +293,7 @@ msgstr "Telefono del contatto della filiale"
 msgid "work location"
 msgstr "Luogo di lavoro"
 
-#: models.py:79 templates/zivinetz/scopestatement_list.html:13
+#: models.py:79 templates/zivinetz/scopestatement_list.html:12
 msgid "default group"
 msgstr ""
 
@@ -1491,6 +1491,11 @@ msgstr "Dal"
 #: views/scheduling.py:323
 msgid "End date"
 msgstr "Al"
+
+#, fuzzy
+#~| msgid "branch"
+#~ msgid "branch No."
+#~ msgstr "Filiale"
 
 #~ msgid "Either enter your IBAN or your Swiss post account number."
 #~ msgstr "Inserisci IBAN o il numero di conto della posta"
