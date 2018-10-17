@@ -61,19 +61,19 @@ class AssignmentPDFStationery(object):
         "breakfast_working_external": (75, 218),
         "breakfast_free_at_company": (178, 218),
         "breakfast_free_at_home": (139, 218),
-        "breakfast_free_external": (0, 0),  # FIXME probably incorrect.
+        "breakfast_free_external": (139, 218),
         "lunch_working_at_company": (113, 213),
         "lunch_working_at_home": (75, 213),
         "lunch_working_external": (75, 213),
         "lunch_free_at_company": (178, 213),
         "lunch_free_at_home": (139, 213),
-        "lunch_free_external": (0, 0),  # FIXME
+        "lunch_free_external": (139, 213),
         "supper_working_at_company": (113, 209),
         "supper_working_at_home": (75, 209),
         "supper_working_external": (75, 209),
         "supper_free_at_company": (178, 209),
         "supper_free_at_home": (139, 209),
-        "supper_free_external": (0, 0),  # FIXME
+        "supper_free_external": (139, 209),
         "accomodation_throughout": (182, 264),
         "food_throughout": (182, 245),
         "accomodation_not_throughout": (186, 264),
