@@ -33,7 +33,12 @@ def create_groups_xlsx(day):
 
     thin_border = Side(border_style="thin", color="00000000")
     medium_border = Side(border_style="medium", color="00000000")
-    font = Font(name="Calibri")
+    font = Font(name="Calibri", size=14)
+
+    centered = NamedStyle("centered")
+    centered.font = font
+    centered.alignment = Alignment(horizontal="center", vertical="center")
+    wb.add_named_style(centered)
 
     dark = NamedStyle("dark")
     dark.font = font
@@ -45,7 +50,7 @@ def create_groups_xlsx(day):
 
     darker = NamedStyle("darker")
     darker.border = Border(top=thin_border, bottom=thin_border)
-    darker.font = Font(name="Calibri", bold=True)
+    darker.font = Font(name="Calibri", size=14, bold=True)
     darker.fill = PatternFill("solid", "aaaaaa")
     wb.add_named_style(darker)
 
@@ -78,7 +83,6 @@ def create_groups_xlsx(day):
     borderThin.font = font
     wb.add_named_style(borderThin)
 
-    center = Alignment(horizontal="center", vertical="center")
     vertical_text = Alignment(text_rotation=90)
 
     def day_column(weekday):
@@ -116,19 +120,26 @@ def create_groups_xlsx(day):
             ws[c(day_column(5), i + 1)].style = "borderThin"
 
         if i < 2:
-            ws[c(0, i + 1)].alignment = center
-            ws[c(day_column(5), i + 1)].alignment = center
+            ws[c(0, i + 1)].style = centered
+            ws[c(day_column(5), i + 1)].style = centered
 
     column_width(0, 35)
     column_width(1, 15)
     column_width(day_column(5), 35)
 
+    ws[c(0, 1)].style = "borderThickBottom"
+    ws[c(1, 1)].style = "borderThickBottom"
+    ws[c(0, 1)].alignment = centered.alignment
+    ws[c(1, 1)].alignment = centered.alignment
+    ws[c(0, 2)].style = "borderThinBottom"
+    ws[c(0, 2)].alignment = centered.alignment
+
     for i, current in enumerate(days):
         ws[c(day_column(i), 0)] = date_format(current, "l")
         ws[c(day_column(i), 1)] = date_format(current, "d.m.y")
+        ws[c(day_column(i), 0)].style = centered
         ws[c(day_column(i), 1)].style = "borderThickBottom"
-        ws[c(day_column(i), 0)].alignment = center
-        ws[c(day_column(i), 1)].alignment = center
+        ws[c(day_column(i), 1)].alignment = centered.alignment
         ws.merge_cells("%s:%s" % (c(day_column(i), 0), c(day_column(i + 1) - 1, 0)))
         ws.merge_cells("%s:%s" % (c(day_column(i), 1), c(day_column(i + 1) - 1, 1)))
 
