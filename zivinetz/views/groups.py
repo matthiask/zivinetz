@@ -54,6 +54,12 @@ def create_groups_xlsx(day):
     darker.fill = PatternFill("solid", "aaaaaa")
     wb.add_named_style(darker)
 
+    darker_border_left = NamedStyle("darkerBorderLeft")
+    darker_border_left.border = Border(top=thin_border, bottom=thin_border, left=medium_border)
+    darker_border_left.font = darker.font
+    darker_border_left.fill = darker.fill
+    wb.add_named_style(darker_border_left)
+
     border = NamedStyle("borderThickLeft")
     border.border = Border(
         top=thin_border, right=thin_border, bottom=thin_border, left=medium_border
@@ -89,8 +95,16 @@ def create_groups_xlsx(day):
         return 2 + 9 * weekday
 
     def style_row(row, style):
-        for i in range(0, day_column(5) + 1):
-            ws[c(i, row)].style = style
+        ws[c(0, row)].style = style
+        ws[c(1, row)].style = style
+        ws[c(day_column(5), row)].style = "darkerBorderLeft" if style == "darker" else style
+
+        for i in range(5):
+            for j in range(9):
+                ws[c(day_column(i) + j, row)].style = style
+
+            if style == "darker":
+                ws[c(day_column(i), row)].style = "darkerBorderLeft"
 
     def column_width(column, width):
         ws.column_dimensions[columns[column]].width = width
@@ -100,6 +114,7 @@ def create_groups_xlsx(day):
 
     ws[c(0, 1)].style = "borderThickBottom"
     ws[c(1, 1)].style = "borderThickBottom"
+    ws[c(day_column(5), 1)].style = "borderThickBottom"
 
     for i, cell in enumerate(
         [
@@ -117,7 +132,7 @@ def create_groups_xlsx(day):
         ws[c(1, i + 1)].style = "borderThinBottom"
 
         if i > 0:
-            ws[c(day_column(5), i + 1)].style = "borderThin"
+            ws[c(day_column(5), i + 1)].style = "borderThickLeft"
 
         if i < 2:
             ws[c(0, i + 1)].style = centered
@@ -133,6 +148,10 @@ def create_groups_xlsx(day):
     ws[c(1, 1)].alignment = centered.alignment
     ws[c(0, 2)].style = "borderThinBottom"
     ws[c(0, 2)].alignment = centered.alignment
+    ws[c(day_column(5), 1)].style = "borderThickBottom"
+    ws[c(day_column(5), 1)].alignment = centered.alignment
+    ws[c(day_column(5), 2)].style = "borderThickLeft"
+    ws[c(day_column(5), 2)].alignment = centered.alignment
 
     for i, current in enumerate(days):
         ws[c(day_column(i), 0)] = date_format(current, "l")
@@ -198,7 +217,7 @@ def create_groups_xlsx(day):
 
             ws[c(0, row)].style = "borderThinBottom"
             ws[c(1, row)].style = "borderThinBottom"
-            ws[c(day_column(5), row)].style = "borderThinBottom"
+            ws[c(day_column(5), row)].style = "borderThickLeft"
 
             row_height(row, 35)
             if assignment.date_from in days:
@@ -225,7 +244,7 @@ def create_groups_xlsx(day):
 
             ws[c(0, row)].style = "borderThinBottom"
             ws[c(1, row)].style = "borderThinBottom"
-            ws[c(day_column(5), row)].style = "borderThinBottom"
+            ws[c(day_column(5), row)].style = "borderThickLeft"
 
         row += 1
         return row
