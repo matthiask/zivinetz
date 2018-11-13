@@ -42,8 +42,6 @@ class Migration(migrations.Migration):
                             ("sick", "sick"),
                             ("motor-saw-course", "motor saw course"),
                             ("environment-course", "environment course"),
-                            ("unauthorized", "unauthorized absence"),
-                            ("compensation", "compensation"),
                         ],
                         max_length=20,
                         verbose_name="reason",
