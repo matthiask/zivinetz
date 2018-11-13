@@ -1364,8 +1364,6 @@ class Absence(models.Model):
     SICK = "sick"
     MOTOR_SAW_COURSE = "motor-saw-course"
     ENVIRONMENT_COURSE = "environment-course"
-    UNAUTHORIZED = "unauthorized"
-    COMPENSATION = "compensation"
 
     REASON_CHOICES = (
         (APPROVED_VACATION, _("approved vacation")),
@@ -1373,8 +1371,6 @@ class Absence(models.Model):
         (SICK, _("sick")),
         (MOTOR_SAW_COURSE, _("motor saw course")),
         (ENVIRONMENT_COURSE, _("environment course")),
-        (UNAUTHORIZED, _("unauthorized absence")),
-        (COMPENSATION, _("compensation")),
     )
 
     REASON_TO_EXPENSE_REPORT = {
@@ -1383,8 +1379,6 @@ class Absence(models.Model):
         SICK: "sick_days",
         MOTOR_SAW_COURSE: "working_days",
         ENVIRONMENT_COURSE: "working_days",
-        UNAUTHORIZED: "working_days",  # TODO Correct? Probably not.
-        COMPENSATION: "working_days",  # TODO Correct? Probably not.
     }
 
     PRETTY_REASON = {
@@ -1393,8 +1387,6 @@ class Absence(models.Model):
         SICK: "Krank",
         MOTOR_SAW_COURSE: "MSK",
         ENVIRONMENT_COURSE: "UNA",
-        UNAUTHORIZED: "Unentschuldigt",
-        COMPENSATION: "Kompensation",
     }
 
     assignment = models.ForeignKey(
