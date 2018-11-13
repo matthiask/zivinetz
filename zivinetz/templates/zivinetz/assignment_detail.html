@@ -44,9 +44,14 @@
                 </a>
             </th>
             <td>{{ object.specification.code }}</td>
-            {% for name, value in object|model_row:"total_days,working_days,free_days,sick_days,holi_days,forced_leave_days,status" %}
-                <td>{{ value }}</td>
-            {% endfor %}
+
+            <td>{{ object.total_days }}</td>
+            <td title="{{ object.working_days_notes|default:"Keine Notizen" }}">{{ object.working_days }}</td>
+            <td title="{{ object.free_days_notes|default:"Keine Notizen" }}">{{ object.free_days }}</td>
+            <td title="{{ object.sick_days_notes|default:"Keine Notizen" }}">{{ object.sick_days }}</td>
+            <td title="{{ object.holi_days_notes|default:"Keine Notizen" }}">{{ object.holi_days }}</td>
+            <td title="{{ object.forced_leave_days_notes|default:"Keine Notizen" }}">{{ object.forced_leave_days }}</td>
+            <td>{{ object.get_status_display }}</td>
             <td><a href="{{ object.pdf_url }}">PDF</a></td>
         </tr>
     {% endfor %}
