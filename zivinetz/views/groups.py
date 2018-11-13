@@ -55,7 +55,9 @@ def create_groups_xlsx(day):
     wb.add_named_style(darker)
 
     darker_border_left = NamedStyle("darkerBorderLeft")
-    darker_border_left.border = Border(top=thin_border, bottom=thin_border, left=medium_border)
+    darker_border_left.border = Border(
+        top=thin_border, bottom=thin_border, left=medium_border
+    )
     darker_border_left.font = darker.font
     darker_border_left.fill = darker.fill
     wb.add_named_style(darker_border_left)
@@ -97,7 +99,9 @@ def create_groups_xlsx(day):
     def style_row(row, style):
         ws[c(0, row)].style = style
         ws[c(1, row)].style = style
-        ws[c(day_column(5), row)].style = "darkerBorderLeft" if style == "darker" else style
+        ws[c(day_column(5), row)].style = (
+            "darkerBorderLeft" if style == "darker" else style
+        )
 
         for i in range(5):
             for j in range(9):
