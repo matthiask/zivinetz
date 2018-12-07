@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-17 15:25+0200\n"
+"POT-Creation-Date: 2018-12-07 08:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,7 +41,7 @@ msgstr "Giorni in malattia"
 msgid "free days"
 msgstr "Giorni liberi"
 
-#: admin.py:73 forms.py:127 models.py:88 navigation_extensions.py:22
+#: admin.py:73 forms.py:128 models.py:88 navigation_extensions.py:22
 msgid "scope statements"
 msgstr "mansionario"
 
@@ -58,42 +58,42 @@ msgstr "pasti presso l'alloggio"
 msgid "meals external"
 msgstr "Pasti esterni"
 
-#: forms.py:71 models.py:344 models.py:442 models.py:527
+#: forms.py:72 models.py:344 models.py:442 models.py:527
 msgid "regional office"
 msgstr "Centro regionale"
 
-#: forms.py:73
+#: forms.py:74
 msgid "only active"
 msgstr "Solo attivi"
 
-#: forms.py:75 models.py:433 models.py:1374
+#: forms.py:76 models.py:433 models.py:1372
 #: templates/zivinetz/drudge_list.html:31
 #: templates/zivinetz/scheduling.html:152 views/scheduling.py:329
 msgid "motor saw course"
 msgstr "Corso motosega"
 
-#: forms.py:79 models.py:421 templates/zivinetz/drudge_list.html:42
+#: forms.py:80 models.py:421 templates/zivinetz/drudge_list.html:42
 #: templates/zivinetz/scheduling.html:158 views/scheduling.py:337
 msgid "driving license"
 msgstr "Patente di guida"
 
-#: forms.py:131
+#: forms.py:132
 msgid "active on"
 msgstr "in impiego al"
 
-#: forms.py:137
+#: forms.py:138
 msgid "service between"
 msgstr "In impiego tra"
 
-#: forms.py:140
+#: forms.py:141
 msgid "Drudges in service any time between the following two dates."
 msgstr "Civilista in impiego in qualsiasi periodo tra le due seguenti date"
 
-#: forms.py:143
+#: forms.py:144
 msgid "and"
 msgstr "e"
 
-#: forms.py:149 forms.py:208 models.py:546 models.py:958
+#: forms.py:150 forms.py:209 models.py:546 models.py:958 resources.py:527
 #: templates/zivinetz/assignment_detail.html:34
 #: templates/zivinetz/assignment_list.html:16
 #: templates/zivinetz/drudge_dashboard.html:17
@@ -103,25 +103,25 @@ msgstr "e"
 msgid "status"
 msgstr "Stato"
 
-#: forms.py:201 forms.py:271 models.py:87 models.py:100 models.py:147
+#: forms.py:202 forms.py:273 models.py:87 models.py:100 models.py:147
 #: templates/zivinetz/scopestatement_list.html:10
 #: templates/zivinetz/specification_detail.html:10 views/scheduling.py:308
 msgid "scope statement"
 msgstr "Mansionario"
 
-#: forms.py:205
+#: forms.py:206
 msgid "assignment status"
 msgstr "Stato dell'impiego"
 
-#: forms.py:211 forms.py:275 models.py:530 models.py:954 models.py:1121
+#: forms.py:212 forms.py:277 models.py:530 models.py:954 models.py:1121
 msgid "date from"
 msgstr "Data dal"
 
-#: forms.py:216 forms.py:280 models.py:531 models.py:955 models.py:1122
+#: forms.py:217 forms.py:282 models.py:531 models.py:955 models.py:1122
 msgid "date until"
 msgstr "Data fino"
 
-#: forms.py:255
+#: forms.py:257
 #, python-format
 msgid ""
 "The number of days in this form (%(total)s) differs from the calculated "
@@ -624,7 +624,7 @@ msgstr "altri abbonamenti"
 msgid "vegetarianism"
 msgstr "vegetariano"
 
-#: models.py:428 models.py:1375 templates/zivinetz/drudge_list.html:37
+#: models.py:428 models.py:1373 templates/zivinetz/drudge_list.html:37
 #: views/drudge.py:103
 msgid "environment course"
 msgstr "corso sulla protezione dell'ambiente e della natura"
@@ -640,7 +640,7 @@ msgstr "ho già partecipato al corso con la motosega indicato."
 #: models.py:445 models.py:961 models.py:963 models.py:965 models.py:972
 #: models.py:974 models.py:988 models.py:995 models.py:1000
 #: templates/zivinetz/absence_list.html:15
-#: templates/zivinetz/assignment_detail.html:68
+#: templates/zivinetz/assignment_detail.html:73
 #: templates/zivinetz/drudge_detail.html:68
 msgid "notes"
 msgstr "osservazioni"
@@ -649,7 +649,7 @@ msgstr "osservazioni"
 msgid "Allergies, vegetarianism, anything else we should be aware of?"
 msgstr "Allergie, vegetariani, qualsiasi cosa che dovremmo ancora sapere?"
 
-#: models.py:452 models.py:1411 templates/zivinetz/drudge_detail.html:73
+#: models.py:452 models.py:1403 templates/zivinetz/drudge_detail.html:73
 msgid "internal notes"
 msgstr "osservazioni interne"
 
@@ -692,7 +692,7 @@ msgstr "declinato"
 
 #: models.py:514 models.py:812 models.py:1144 models.py:1194 models.py:1238
 #: templates/zivinetz/absence_list.html:13
-#: templates/zivinetz/assignment_detail.html:66
+#: templates/zivinetz/assignment_detail.html:71
 #: templates/zivinetz/assignment_list.html:15
 #: templates/zivinetz/assignmentchange_list.html:15
 #: templates/zivinetz/drudge_dashboard.html:16
@@ -741,7 +741,7 @@ msgid "motor saw course starting date"
 msgstr "data di inizio del corso con la motosega"
 
 #: models.py:560 models.py:815 models.py:950 models.py:1160 models.py:1234
-#: models.py:1296 models.py:1404 resources.py:439 resources.py:487
+#: models.py:1296 models.py:1396 resources.py:439 resources.py:487
 #: templates/zivinetz/absence_list.html:12
 #: templates/zivinetz/course_list.html:30
 #: templates/zivinetz/expensereport_detail.html:16
@@ -903,7 +903,7 @@ msgstr "ferie aziendali"
 msgid "company holidays"
 msgstr "ferie aziendali"
 
-#: models.py:1150 models.py:1408 templates/zivinetz/drudge_detail.html:121
+#: models.py:1150 models.py:1400 templates/zivinetz/drudge_detail.html:121
 #, fuzzy
 #| msgid "created"
 msgid "created by"
@@ -964,7 +964,7 @@ msgid "job reference"
 msgstr "attestato di lavoro"
 
 #: models.py:1244 navigation_extensions.py:24
-#: templates/zivinetz/assignment_detail.html:86
+#: templates/zivinetz/assignment_detail.html:91
 msgid "job references"
 msgstr "attestati di lavoro"
 
@@ -988,77 +988,67 @@ msgstr "impiego"
 msgid "group assignments"
 msgstr "solo impieghi"
 
-#: models.py:1371
+#: models.py:1369
 #, fuzzy
 #| msgid "vacation"
 msgid "approved vacation"
 msgstr "congedo"
 
-#: models.py:1372
+#: models.py:1370
 #, fuzzy
 #| msgid "public holiday"
 msgid "approved holiday"
 msgstr "giorno festivo"
 
-#: models.py:1373 templates/zivinetz/assignment_detail.html:31
+#: models.py:1371 templates/zivinetz/assignment_detail.html:31
 msgid "sick"
 msgstr "ammalato"
 
-#: models.py:1376
-msgid "unauthorized absence"
-msgstr ""
-
-#: models.py:1377
-#, fuzzy
-#| msgid "no compensation"
-msgid "compensation"
-msgstr "nessuna compensazione"
-
-#: models.py:1406
+#: models.py:1398
 #, fuzzy
 #| msgid "created"
 msgid "created at"
 msgstr "creato"
 
-#: models.py:1410 templates/zivinetz/absence_list.html:14
-#: templates/zivinetz/assignment_detail.html:67
+#: models.py:1402 templates/zivinetz/absence_list.html:14
+#: templates/zivinetz/assignment_detail.html:72
 msgid "reason"
 msgstr ""
 
-#: models.py:1412 templates/zivinetz/absence_detail.html:16
+#: models.py:1404 templates/zivinetz/absence_detail.html:16
 #: templates/zivinetz/absence_list.html:16
-#: templates/zivinetz/assignment_detail.html:69
+#: templates/zivinetz/assignment_detail.html:74
 #, fuzzy
 #| msgid "holidays"
 msgid "days"
 msgstr "vacanze"
 
-#: models.py:1418
+#: models.py:1410
 msgid "absence"
 msgstr ""
 
-#: models.py:1419 navigation_extensions.py:19
-#: templates/zivinetz/assignment_detail.html:62
+#: models.py:1411 navigation_extensions.py:19
+#: templates/zivinetz/assignment_detail.html:67
 msgid "absences"
 msgstr ""
 
-#: models.py:1449
+#: models.py:1441
 #, python-format
 msgid "Absence days outside duration of assignment: %s"
 msgstr ""
 
-#: models.py:1456
+#: models.py:1448
 #, fuzzy
 #| msgid "holiday days"
 msgid "Define available holiday days on assignment first."
 msgstr "giorni di vacanza"
 
-#: models.py:1471
+#: models.py:1463
 #, python-format
 msgid "Not enough holiday days available. Only %s remaining."
 msgstr ""
 
-#: models.py:1481
+#: models.py:1473
 #, python-format
 msgid "Overlapping absences are not allowed, days already occupied by %s."
 msgstr ""
@@ -1179,7 +1169,7 @@ msgstr "Nessun rapporto spese è stato creato. Sono già occupati tutti i mesi?"
 msgid "Successfully removed pending expense reports."
 msgstr "Rapporti spese pendenti eliminati con successo."
 
-#: resources.py:383 resources.py:526
+#: resources.py:383 resources.py:555
 msgid "The search query was invalid."
 msgstr "Il termine ricercato non è valido"
 
@@ -1207,7 +1197,19 @@ msgstr "Questo rapporto spese è già stato pagato."
 msgid "Paid expense reports cannot be deleted."
 msgstr "Questo rapporto spese è già stato pagato."
 
-#: resources.py:538
+#: resources.py:522 resources.py:539
+#, fuzzy
+#| msgid "status"
+msgid "Set status"
+msgstr "Stato"
+
+#: resources.py:534
+#, fuzzy, python-format
+#| msgid "Create reports"
+msgid "Updated %s reports."
+msgstr "Creare rapporti"
+
+#: resources.py:567
 msgid "Assign to groups"
 msgstr ""
 
@@ -1281,11 +1283,11 @@ msgstr "vacanze"
 msgid "vacation"
 msgstr "congedo"
 
-#: templates/zivinetz/assignment_detail.html:57
+#: templates/zivinetz/assignment_detail.html:62
 msgid "Create reports"
 msgstr "Creare rapporti"
 
-#: templates/zivinetz/assignment_detail.html:59
+#: templates/zivinetz/assignment_detail.html:64
 msgid "Remove pending reports"
 msgstr "Rimuovi rapporti pendenti"
 
@@ -1491,6 +1493,11 @@ msgstr "Dal"
 #: views/scheduling.py:323
 msgid "End date"
 msgstr "Al"
+
+#, fuzzy
+#~| msgid "no compensation"
+#~ msgid "compensation"
+#~ msgstr "nessuna compensazione"
 
 #, fuzzy
 #~| msgid "branch"

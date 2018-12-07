@@ -517,6 +517,36 @@ class ExpenseReportMixin(ZivinetzMixin):
             return redirect(self.object.urls.url("edit"))
         return redirect(self.object)
 
+    def get_batch_actions(self):
+        return super().get_batch_actions() + [
+            ("set_status", _("Set status"), self.set_status)
+        ]
+
+    def set_status(self, queryset):
+        class SetStatusForm(forms.Form):
+            status = forms.ChoiceField(
+                label=_("status"), choices=ExpenseReport.STATUS_CHOICES
+            )
+
+        form = SetStatusForm(
+            self.request.POST if "confirm" in self.request.POST else None
+        )
+        if form.is_valid():
+            count = queryset.update(status=form.cleaned_data["status"])
+            messages.success(self.request, _("Updated %s reports.") % count)
+            return queryset
+
+        self.template_name_suffix = "_action"
+        context = self.get_context_data(
+            title=_("Set status"),
+            form=form,
+            action_queryset=queryset,
+            action_hidden_fields=self.batch_action_hidden_fields(
+                queryset, [("batch-action", "set_status"), ("confirm", 1)]
+            ),
+        )
+        return self.render_to_response(context)
+
 
 class ExpenseReportPDFExportView(resources.ModelResourceView):
     def get(self, request):
