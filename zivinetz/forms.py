@@ -235,21 +235,6 @@ class EditExpenseReportForm(forms.ModelForm, WarningsForm):
     def __init__(self, *args, **kwargs):
         instance = kwargs.get("instance")
         self.absences = Absence.objects.for_expense_report(instance)
-
-        for field in ["free_days", "sick_days", "holi_days", "forced_leave_days"]:
-            if self.absences.get(field):
-                instance.working_days -= self.absences[field]
-                setattr(instance, field, self.absences[field])
-                notes = "{}_notes".format(field)
-                previous = getattr(instance, notes) or ""
-                setattr(
-                    instance,
-                    notes,
-                    "{}{}{}".format(
-                        previous, "; " if previous else "", self.absences[notes]
-                    ),
-                )
-
         super().__init__(*args, **kwargs)
 
     def clean(self):
