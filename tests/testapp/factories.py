@@ -7,6 +7,7 @@ from decimal import Decimal
 import factory
 import factory.fuzzy
 import random
+from factory.django import DjangoModelFactory
 
 from django.contrib.auth.models import User
 
@@ -27,7 +28,7 @@ from zivinetz.models import (
 )
 
 
-class ScopeStatementFactory(factory.DjangoModelFactory):
+class ScopeStatementFactory(DjangoModelFactory):
     eis_no = factory.Sequence(lambda n: "%06d" % n)
     name = "Naturschutzgruppe Feld"
 
@@ -45,14 +46,14 @@ class ScopeStatementFactory(factory.DjangoModelFactory):
         model = ScopeStatement
 
 
-class SpecificationFactory(factory.DjangoModelFactory):
+class SpecificationFactory(DjangoModelFactory):
     scope_statement = factory.SubFactory(ScopeStatementFactory)
 
     class Meta:
         model = Specification
 
 
-class CompensationSetFactory(factory.DjangoModelFactory):
+class CompensationSetFactory(DjangoModelFactory):
     valid_from = date(2011, 2, 1)
     spending_money = Decimal("5.00")
     accomodation_home = Decimal("5.00")
@@ -72,7 +73,7 @@ class CompensationSetFactory(factory.DjangoModelFactory):
         model = CompensationSet
 
 
-class RegionalOfficeFactory(factory.DjangoModelFactory):
+class RegionalOfficeFactory(DjangoModelFactory):
     name = factory.Iterator(
         [
             "Regionalzentrum Aarau",
@@ -97,7 +98,7 @@ class RegionalOfficeFactory(factory.DjangoModelFactory):
         django_get_or_create = ("code",)
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(DjangoModelFactory):
     first_name = factory.Sequence(lambda n: "Vorname %d" % n)
     last_name = factory.Sequence(lambda n: "Nachname %d" % n)
     email = factory.Sequence(lambda n: "mail%d@gmail.com" % n)
@@ -108,7 +109,7 @@ class UserFactory(factory.DjangoModelFactory):
         model = User
 
 
-class DrudgeFactory(factory.DjangoModelFactory):
+class DrudgeFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     zdp_no = factory.Sequence(lambda n: "%05d" % (n + 11000))
     address = "Whatever"
@@ -125,7 +126,7 @@ class DrudgeFactory(factory.DjangoModelFactory):
         model = Drudge
 
 
-class AssignmentFactory(factory.DjangoModelFactory):
+class AssignmentFactory(DjangoModelFactory):
     specification = factory.SubFactory(SpecificationFactory)
     drudge = factory.SubFactory(DrudgeFactory)
     regional_office = factory.SelfAttribute("drudge.regional_office")
@@ -140,7 +141,7 @@ class AssignmentFactory(factory.DjangoModelFactory):
         model = Assignment
 
 
-class ExpenseReportFactory(factory.DjangoModelFactory):
+class ExpenseReportFactory(DjangoModelFactory):
     assignment = factory.SubFactory(AssignmentFactory)
     specification = factory.SelfAttribute("assignment.specification")
 
@@ -148,24 +149,24 @@ class ExpenseReportFactory(factory.DjangoModelFactory):
         model = ExpenseReport
 
 
-class PublicHolidayFactory(factory.DjangoModelFactory):
+class PublicHolidayFactory(DjangoModelFactory):
     class Meta:
         model = PublicHoliday
 
 
-class CompanyHolidayFactory(factory.DjangoModelFactory):
+class CompanyHolidayFactory(DjangoModelFactory):
     class Meta:
         model = CompanyHoliday
 
 
-class AssessmentFactory(factory.DjangoModelFactory):
+class AssessmentFactory(DjangoModelFactory):
     drudge = factory.SubFactory(DrudgeFactory)
 
     class Meta:
         model = Assessment
 
 
-class CodewordFactory(factory.DjangoModelFactory):
+class CodewordFactory(DjangoModelFactory):
     key = factory.Iterator(["register", "einsatz"])
     codeword = factory.Iterator(["velo", "lustig"])
 
@@ -173,12 +174,12 @@ class CodewordFactory(factory.DjangoModelFactory):
         model = Codeword
 
 
-class JobReferenceTemplateFactory(factory.DjangoModelFactory):
+class JobReferenceTemplateFactory(DjangoModelFactory):
     class Meta:
         model = JobReferenceTemplate
 
 
-class JobReferenceFactory(factory.DjangoModelFactory):
+class JobReferenceFactory(DjangoModelFactory):
     assignment = factory.SubFactory(AssignmentFactory)
     created = factory.LazyAttribute(lambda o: date.today())
 
