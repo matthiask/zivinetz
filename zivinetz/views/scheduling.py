@@ -1,7 +1,7 @@
 import calendar
-from collections import defaultdict, OrderedDict
-from datetime import date, timedelta
 import itertools
+from collections import OrderedDict, defaultdict
+from datetime import date, timedelta
 
 from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy
 
 from towel.forms import SearchForm
 
-from zivinetz.models import Assignment, ScopeStatement, DrudgeQuota
+from zivinetz.models import Assignment, DrudgeQuota, ScopeStatement
 
 
 # Calendar week calculation according to ISO 8601

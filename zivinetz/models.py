@@ -2,18 +2,18 @@ from collections import defaultdict
 from datetime import date, timedelta
 from decimal import Decimal
 
-from towel.managers import SearchManager
-from towel.resources.urls import model_resource_urls
-
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
-from django.dispatch import receiver
 from django.db import models
 from django.db.models import Q, signals
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import ugettext, ugettext_lazy as _
+
+from towel.managers import SearchManager
+from towel.resources.urls import model_resource_urls
 
 
 STATE_CHOICES = (

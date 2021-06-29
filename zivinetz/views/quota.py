@@ -6,10 +6,10 @@ from datetime import date, timedelta
 from django import forms
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render, redirect
-from django.utils.translation import ugettext_lazy, ugettext as _
+from django.shortcuts import redirect, render
+from django.utils.translation import ugettext as _, ugettext_lazy
 
-from zivinetz.models import ScopeStatement, DrudgeQuota
+from zivinetz.models import DrudgeQuota, ScopeStatement
 
 
 def yield_dates(start, step, count):

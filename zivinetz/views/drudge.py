@@ -6,12 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.utils.translation import ugettext_lazy, ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 import schwifty
 from towel.forms import towel_formfield_callback
 
-from zivinetz.models import Drudge, ExpenseReport, Assignment, Codeword
+from zivinetz.models import Assignment, Codeword, Drudge, ExpenseReport
 from zivinetz.views.decorators import drudge_required
 
 

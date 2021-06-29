@@ -1,7 +1,10 @@
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
-from feincms.module.page.extensions.navigation import NavigationExtension, PagePretender
+from feincms.module.page.extensions.navigation import (
+    NavigationExtension,
+    PagePretender,
+)
 
 
 class ZivinetzNavigationExtension(NavigationExtension):

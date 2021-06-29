@@ -4,10 +4,10 @@ from decimal import Decimal
 
 from django.contrib.admin.views.decorators import staff_member_required
 
-from zivinetz.models import ExpenseReport
-
-from pdfdocument.document import PageTemplate, Frame, cm, mm
+from pdfdocument.document import Frame, PageTemplate, cm, mm
 from pdfdocument.utils import pdf_response
+
+from zivinetz.models import ExpenseReport
 
 
 @staff_member_required

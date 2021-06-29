@@ -1,8 +1,8 @@
 from django.test import TestCase
 
-from zivinetz.models import Assignment
-
 from testapp import factories
+
+from zivinetz.models import Assignment
 
 
 class SchedulingTestCase(TestCase):

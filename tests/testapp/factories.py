@@ -2,29 +2,30 @@
 
 from __future__ import unicode_literals
 
+import random
 from datetime import date, timedelta
 from decimal import Decimal
-import factory
-import factory.fuzzy
-import random
-from factory.django import DjangoModelFactory
 
 from django.contrib.auth.models import User
 
+import factory
+import factory.fuzzy
+from factory.django import DjangoModelFactory
+
 from zivinetz.models import (
+    Assessment,
+    Assignment,
+    Codeword,
+    CompanyHoliday,
+    CompensationSet,
+    Drudge,
+    ExpenseReport,
+    JobReference,
+    JobReferenceTemplate,
+    PublicHoliday,
+    RegionalOffice,
     ScopeStatement,
     Specification,
-    CompensationSet,
-    RegionalOffice,
-    Drudge,
-    Assignment,
-    ExpenseReport,
-    PublicHoliday,
-    CompanyHoliday,
-    Assessment,
-    Codeword,
-    JobReferenceTemplate,
-    JobReference,
 )
 
 

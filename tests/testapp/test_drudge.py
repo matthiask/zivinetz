@@ -2,16 +2,16 @@
 
 from __future__ import unicode_literals
 
-from datetime import date, timedelta
 import os
+from datetime import date, timedelta
 
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.test import TestCase
 
-from zivinetz.models import Assignment, AssignmentChange
-
 from testapp import factories
+
+from zivinetz.models import Assignment, AssignmentChange
 
 
 class DrudgeViewsTestCase(TestCase):

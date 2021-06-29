@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
 from django.views import generic
 
-from zivinetz.views import drudge, expenses, home, scheduling, reporting, quota
+from zivinetz.views import drudge, expenses, home, quota, reporting, scheduling
 
 
 urlpatterns = [

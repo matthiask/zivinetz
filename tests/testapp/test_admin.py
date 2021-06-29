@@ -2,17 +2,17 @@
 
 from __future__ import unicode_literals
 
-from datetime import date, timedelta
 import io
+from datetime import date, timedelta
 
 from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 
-from zivinetz.models import Assignment, Drudge, JobReference
-
 from testapp import factories
 from testapp.utils import admin_login
+
+from zivinetz.models import Assignment, Drudge, JobReference
 
 
 class AdminViewsTestCase(TestCase):
