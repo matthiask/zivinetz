@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-07 08:32+0100\n"
+"POT-Creation-Date: 2021-06-29 17:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,7 +66,7 @@ msgstr "Regionalzentrum"
 msgid "only active"
 msgstr "nur aktive"
 
-#: forms.py:76 models.py:433 models.py:1372
+#: forms.py:76 models.py:433 models.py:1374
 #: templates/zivinetz/drudge_list.html:31
 #: templates/zivinetz/scheduling.html:152 views/scheduling.py:329
 msgid "motor saw course"
@@ -93,7 +93,7 @@ msgstr "Zivis im Einsatz irgendwann zwischen den folgenden zwei Daten."
 msgid "and"
 msgstr "und"
 
-#: forms.py:150 forms.py:209 models.py:546 models.py:958 resources.py:527
+#: forms.py:150 forms.py:209 models.py:546 models.py:958 resources.py:528
 #: templates/zivinetz/assignment_detail.html:34
 #: templates/zivinetz/assignment_list.html:16
 #: templates/zivinetz/drudge_dashboard.html:17
@@ -622,7 +622,7 @@ msgstr "Anderes Abo"
 msgid "vegetarianism"
 msgstr "Vegetarier"
 
-#: models.py:428 models.py:1373 templates/zivinetz/drudge_list.html:37
+#: models.py:428 models.py:1375 templates/zivinetz/drudge_list.html:37
 #: views/drudge.py:103
 msgid "environment course"
 msgstr "Umweltkurs"
@@ -648,7 +648,7 @@ msgid "Allergies, vegetarianism, anything else we should be aware of?"
 msgstr ""
 "Allergien, vegetarische Ernährung, irgendwas was wir noch wissen sollten?"
 
-#: models.py:452 models.py:1403 templates/zivinetz/drudge_detail.html:73
+#: models.py:452 models.py:1411 templates/zivinetz/drudge_detail.html:73
 msgid "internal notes"
 msgstr "Interne Bemerkungen"
 
@@ -738,7 +738,7 @@ msgid "motor saw course starting date"
 msgstr "MSK Startdatum"
 
 #: models.py:560 models.py:815 models.py:950 models.py:1160 models.py:1234
-#: models.py:1296 models.py:1396 resources.py:439 resources.py:487
+#: models.py:1296 models.py:1404 resources.py:439 resources.py:487
 #: templates/zivinetz/absence_list.html:12
 #: templates/zivinetz/course_list.html:30
 #: templates/zivinetz/expensereport_detail.html:16
@@ -899,7 +899,7 @@ msgstr "Betriebsferien"
 msgid "company holidays"
 msgstr "Betriebsferien"
 
-#: models.py:1150 models.py:1400 templates/zivinetz/drudge_detail.html:121
+#: models.py:1150 models.py:1408 templates/zivinetz/drudge_detail.html:121
 msgid "created by"
 msgstr "erstellt von"
 
@@ -978,57 +978,65 @@ msgstr "Gruppenzuordnung"
 msgid "group assignments"
 msgstr "Gruppenzuordnungen"
 
-#: models.py:1369
+#: models.py:1371
 msgid "approved vacation"
 msgstr "bewilligter Urlaub"
 
-#: models.py:1370
+#: models.py:1372
 msgid "approved holiday"
 msgstr "bewilligter Ferientag"
 
-#: models.py:1371 templates/zivinetz/assignment_detail.html:31
+#: models.py:1373 templates/zivinetz/assignment_detail.html:31
 msgid "sick"
 msgstr "Krank"
 
-#: models.py:1398
+#: models.py:1376
+msgid "absenteeism"
+msgstr "Unentschuldigte Abwesenheit"
+
+#: models.py:1377
+msgid "missed working hours"
+msgstr "Verpasste Arbeitszeit"
+
+#: models.py:1406
 msgid "created at"
 msgstr "erstellt um"
 
-#: models.py:1402 templates/zivinetz/absence_list.html:14
+#: models.py:1410 templates/zivinetz/absence_list.html:14
 #: templates/zivinetz/assignment_detail.html:72
 msgid "reason"
 msgstr "Grund"
 
-#: models.py:1404 templates/zivinetz/absence_detail.html:16
+#: models.py:1412 templates/zivinetz/absence_detail.html:16
 #: templates/zivinetz/absence_list.html:16
 #: templates/zivinetz/assignment_detail.html:74
 msgid "days"
 msgstr "Tage"
 
-#: models.py:1410
+#: models.py:1418
 msgid "absence"
 msgstr "Absenz"
 
-#: models.py:1411 navigation_extensions.py:19
+#: models.py:1419 navigation_extensions.py:19
 #: templates/zivinetz/assignment_detail.html:67
 msgid "absences"
 msgstr "Absenzen"
 
-#: models.py:1441
+#: models.py:1449
 #, python-format
 msgid "Absence days outside duration of assignment: %s"
 msgstr "Absenztage ausserhalb des Zeitraums des Einsatzes: %s"
 
-#: models.py:1448
+#: models.py:1456
 msgid "Define available holiday days on assignment first."
 msgstr "Definiere zuerst die verfügbaren Ferientage beim Einsatz."
 
-#: models.py:1463
+#: models.py:1471
 #, python-format
 msgid "Not enough holiday days available. Only %s remaining."
 msgstr "Nicht genug Ferientage verfügbar, nur noch %s."
 
-#: models.py:1473
+#: models.py:1481
 #, python-format
 msgid "Overlapping absences are not allowed, days already occupied by %s."
 msgstr ""
@@ -1145,7 +1153,7 @@ msgstr "Keine Spesenrapporte erstellt, alle Monate schon besetzt?"
 msgid "Successfully removed pending expense reports."
 msgstr "Erfolgreich alle pendenten Spesenrapporte entfernt."
 
-#: resources.py:383 resources.py:555
+#: resources.py:383 resources.py:556
 msgid "The search query was invalid."
 msgstr "Die Suchanfrage war ungültig."
 
@@ -1165,16 +1173,16 @@ msgstr "Bezahlte Spesenrapporte können nicht bearbeitet werden."
 msgid "Paid expense reports cannot be deleted."
 msgstr "Bezahlte Spesenrapporte können nicht gelöscht werden."
 
-#: resources.py:522 resources.py:539
+#: resources.py:522 resources.py:541
 msgid "Set status"
 msgstr "Status setzen"
 
-#: resources.py:534
+#: resources.py:536
 #, python-format
 msgid "Updated %s reports."
 msgstr "%s Rapporte aktualisiert."
 
-#: resources.py:567
+#: resources.py:568
 msgid "Assign to groups"
 msgstr "In Gruppen einteilen"
 
