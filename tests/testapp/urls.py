@@ -1,15 +1,15 @@
-from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.http import HttpResponse
+from django.urls import include, path
 
 
 admin.autodiscover()
 
 
 urlpatterns = [
-    url(r"^admin/", admin.site.urls),
-    url(r"^$", lambda request: HttpResponse(repr(request.REQUEST))),
-    url(r"^accounts/", include("django.contrib.auth.urls")),
-    url(r"^zivinetz/", include("zivinetz.urls")),
+    path("admin/", admin.site.urls),
+    path("", lambda request: HttpResponse(repr(request.REQUEST))),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("zivinetz/", include("zivinetz.urls")),
 ] + staticfiles_urlpatterns()

@@ -111,7 +111,7 @@ def generate_expense_statistics_pdf(reports):
         line = [
             report.assignment.drudge.zdp_no,
             report.assignment.drudge.user.get_full_name(),
-            u"%s - %s"
+            "%s - %s"
             % (
                 report.date_from.strftime("%d.%m.%y"),
                 report.date_until.strftime("%d.%m.%y"),
@@ -149,7 +149,7 @@ def generate_expense_statistics_pdf(reports):
     totals = []
 
     for scope_statement, ss_data in data.items():
-        pdf.h2(u"%s" % scope_statement)
+        pdf.h2("%s" % scope_statement)
         complete = []
 
         for year_month, reports in ss_data.items():
@@ -161,7 +161,7 @@ def generate_expense_statistics_pdf(reports):
             pdf.spacer()
             complete.extend(reports)
 
-        totals.append(_add_sum(complete, u"%s" % scope_statement))
+        totals.append(_add_sum(complete, "%s" % scope_statement))
         pdf.pagebreak()
 
     pdf.h2("Zusammenfassung")

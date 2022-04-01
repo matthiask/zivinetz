@@ -1,7 +1,3 @@
-# coding=utf-8
-
-from __future__ import unicode_literals
-
 import os
 from datetime import date, timedelta
 
@@ -111,7 +107,7 @@ class DrudgeViewsTestCase(TestCase):
         self.assertEqual(response["content-type"], "application/pdf")
         self.assertEqual(
             response["content-disposition"],
-            "attachment; filename=eiv-%s.pdf" % (assignment.pk,),
+            f"attachment; filename=eiv-{assignment.pk}.pdf",
         )
         self.assertTrue(len(response.content))
 

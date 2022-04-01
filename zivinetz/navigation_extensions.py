@@ -1,5 +1,5 @@
 from django.utils.text import capfirst
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from feincms.module.page.extensions.navigation import (
     NavigationExtension,
@@ -33,7 +33,7 @@ class ZivinetzNavigationExtension(NavigationExtension):
         return [
             PagePretender(
                 title=capfirst(title),
-                url="%s%s" % (page.get_navigation_url(), url),
+                url=f"{page.get_navigation_url()}{url}",
                 level=page.level + 1,
                 tree_id=page.tree_id,
             )

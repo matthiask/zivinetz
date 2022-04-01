@@ -4,6 +4,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 DATABASES = {"default": {"ENGINE": "django.db.backends.postgresql", "NAME": "zivinetz"}}
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
     "django.contrib.auth",

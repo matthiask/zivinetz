@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from zivinetz import models
 
@@ -67,7 +67,7 @@ class CompanyHolidayAdmin(admin.ModelAdmin):
 
     def scope_statements(self, instance):
         return mark_safe(
-            u"<br>".join("%s" % object for object in instance.applies_to.all())
+            "<br>".join("%s" % object for object in instance.applies_to.all())
         )
 
     scope_statements.short_description = _("scope statements")

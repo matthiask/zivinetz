@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 
 from django import forms
-from django.conf.urls import include, url
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
@@ -9,7 +8,8 @@ from django.core.mail import EmailMessage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Context, Template
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.urls import include, path, re_path
+from django.utils.translation import gettext as _, gettext_lazy
 
 from openpyxl.writer.excel import save_virtual_workbook
 from pdfdocument.document import cm
@@ -52,12 +52,10 @@ from zivinetz.views.groups import create_groups_xlsx
 
 class LimitedPickerView(resources.PickerView):
     def get_context_data(self, object_list, **kwargs):
-        return super(LimitedPickerView, self).get_context_data(
-            object_list=object_list[:50], **kwargs
-        )
+        return super().get_context_data(object_list=object_list[:50], **kwargs)
 
 
-class ZivinetzMixin(object):
+class ZivinetzMixin:
     base_template = "zivinetz/base.html"
     deletion_cascade_allowed = ()
     send_emails_selector = None
@@ -76,7 +74,7 @@ class ZivinetzMixin(object):
 
     def allow_add(self, silent=True):
         return self.request.user.has_perm(
-            "{}.add_{}".format(self.model._meta.app_label, self.model._meta.model_name)
+            f"{self.model._meta.app_label}.add_{self.model._meta.model_name}"
         )
 
     def allow_edit(self, object=None, silent=True):
@@ -103,10 +101,10 @@ class ZivinetzMixin(object):
 
     def send_emails(self, queryset):
         class EmailForm(forms.Form):
-            subject = forms.CharField(label=ugettext_lazy("subject"))
-            body = forms.CharField(label=ugettext_lazy("body"), widget=forms.Textarea)
+            subject = forms.CharField(label=gettext_lazy("subject"))
+            body = forms.CharField(label=gettext_lazy("body"), widget=forms.Textarea)
             attachment = forms.FileField(
-                label=ugettext_lazy("attachment"), required=False
+                label=gettext_lazy("attachment"), required=False
             )
 
         if "confirm" in self.request.POST:
@@ -147,7 +145,7 @@ class ZivinetzMixin(object):
         return self.render_to_response(context)
 
     def get_batch_actions(self):
-        actions = super(ZivinetzMixin, self).get_batch_actions()
+        actions = super().get_batch_actions()
         if self.send_emails_selector:
             actions.append(("send_emails", _("Send emails"), self.send_emails))
         return actions
@@ -187,7 +185,7 @@ class DrudgeDetailView(resources.DetailView):
 
 class AssessmentMixin(ZivinetzMixin):
     def form_valid(self, form):
-        super(AssessmentMixin, self).form_valid(form)
+        super().form_valid(form)
         return redirect(self.object.drudge)
 
     def deletion_form_valid(self, form):
@@ -215,7 +213,7 @@ class JobReferenceFromTemplateView(resources.ModelResourceView):
             "last_name": assignment.drudge.user.last_name,
             "date_from": assignment.date_from.strftime("%d.%m.%Y"),
             "date_until": assignment.determine_date_until().strftime("%d.%m.%Y"),
-            "place_of_citizenship": u"%s %s"
+            "place_of_citizenship": "%s %s"
             % (
                 assignment.drudge.place_of_citizenship_city,
                 assignment.drudge.place_of_citizenship_state,
@@ -237,7 +235,7 @@ class JobReferenceFromTemplateView(resources.ModelResourceView):
 
 class AssignmentMixin(ZivinetzMixin):
     def get_form_class(self):
-        base_form = super(AssignmentMixin, self).get_form_class()
+        base_form = super().get_form_class()
         request = self.request
 
         class AssignmentForm(base_form, WarningsForm):
@@ -253,7 +251,7 @@ class AssignmentMixin(ZivinetzMixin):
                 exclude = ("created",)
 
             def clean(self):
-                data = super(AssignmentForm, self).clean()
+                data = super().clean()
 
                 if data.get("status") == Assignment.MOBILIZED:
                     if not data.get("mobilized_on"):
@@ -398,9 +396,9 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
             pdf.table(
                 [
                     (
-                        u"%s" % drudge,
+                        "%s" % drudge,
                         drudge.user.email,
-                        u"%s - %s"
+                        "%s - %s"
                         % (
                             assignment.date_from.strftime("%d.%m.%y"),
                             assignment.determine_date_until().strftime("%d.%m.%y"),
@@ -408,7 +406,7 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
                     ),
                     (drudge.phone_home, drudge.phone_office, drudge.mobile),
                     (
-                        u"%s, %s %s" % (drudge.address, drudge.zip_code, drudge.city),
+                        f"{drudge.address}, {drudge.zip_code} {drudge.city}",
                         "",
                         drudge.education_occupation,
                     ),
@@ -434,7 +432,7 @@ class AbsenceMixin(ZivinetzMixin):
         class ModelForm(forms.ModelForm):
             assignment = forms.ModelChoiceField(
                 Assignment.objects.all(),
-                label=ugettext_lazy("assignment"),
+                label=gettext_lazy("assignment"),
                 widget=SelectWithPicker(model=Assignment, request=request),
             )
 
@@ -462,7 +460,7 @@ class ExpenseReportMixin(ZivinetzMixin):
                     self.request, _("Paid expense reports cannot be edited.")
                 )
             return False
-        return super(ExpenseReportMixin, self).allow_edit(object=object, silent=silent)
+        return super().allow_edit(object=object, silent=silent)
 
     def allow_delete(self, object=None, silent=True):
         if object is not None and object.status >= object.PAID:
@@ -482,7 +480,7 @@ class ExpenseReportMixin(ZivinetzMixin):
         class ModelForm(forms.ModelForm):
             assignment = forms.ModelChoiceField(
                 Assignment.objects.all(),
-                label=ugettext_lazy("assignment"),
+                label=gettext_lazy("assignment"),
                 widget=SelectWithPicker(model=Assignment, request=request),
             )
 
@@ -594,7 +592,7 @@ class AssignGroupsView(resources.ModelResourceView):
                     "spreadsheetml.sheet"
                 ),
             )
-            response["Content-Disposition"] = 'attachment; filename="%s"' % (
+            response["Content-Disposition"] = 'attachment; filename="{}"'.format(
                 "wochenrapport-%s.xlsx" % day.isoformat(),
             )
             return response
@@ -690,22 +688,22 @@ jobreference_url = resource_url_fn(
 
 
 urlpatterns = [
-    url(
-        r"^regional_offices/",
+    path(
+        "regional_offices/",
         include(
             [
                 regionaloffice_url("list", url=r"^$"),
                 regionaloffice_url("add", url=r"^add/$"),
                 regionaloffice_url("edit"),
                 regionaloffice_url("delete"),
-                url(
+                re_path(
                     r"^\d+/$", lambda request: redirect("zivinetz_regionaloffice_list")
                 ),
             ]
         ),
     ),
-    url(
-        r"^scope_statements/",
+    path(
+        "scope_statements/",
         include(
             [
                 scopestatement_url("list", url=r"^$"),
@@ -716,8 +714,8 @@ urlpatterns = [
             ]
         ),
     ),
-    url(
-        r"^specifications/",
+    path(
+        "specifications/",
         include(
             [
                 specification_url("list", url="^$"),
@@ -728,8 +726,8 @@ urlpatterns = [
             ]
         ),
     ),
-    url(
-        r"^drudges/",
+    path(
+        "drudges/",
         include(
             [
                 drudge_url(
@@ -747,8 +745,8 @@ urlpatterns = [
             ]
         ),
     ),
-    url(
-        r"^assessment/",
+    path(
+        "assessment/",
         include(
             [
                 assessment_url("edit", form_class=AssessmentForm),
@@ -756,8 +754,8 @@ urlpatterns = [
             ]
         ),
     ),
-    url(
-        r"^assignments/",
+    path(
+        "assignments/",
         include(
             [
                 assignment_url(
@@ -778,8 +776,8 @@ urlpatterns = [
             ]
         ),
     ),
-    url(
-        r"^groups/",
+    path(
+        "groups/",
         include(
             [
                 group_url(
@@ -801,8 +799,8 @@ urlpatterns = [
             ]
         ),
     ),
-    url(
-        r"^absences/",
+    path(
+        "absences/",
         include(
             [
                 absence_url(
@@ -819,8 +817,8 @@ urlpatterns = [
             ]
         ),
     ),
-    url(
-        r"^expense_reports/",
+    path(
+        "expense_reports/",
         include(
             [
                 expensereport_url(
@@ -839,8 +837,8 @@ urlpatterns = [
             ]
         ),
     ),
-    url(
-        r"^jobreferences/",
+    path(
+        "jobreferences/",
         include(
             [
                 jobreference_url(

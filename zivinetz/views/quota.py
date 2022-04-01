@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 from collections import OrderedDict, defaultdict
 from datetime import date, timedelta
 
@@ -7,7 +5,7 @@ from django import forms
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import redirect, render
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import gettext as _, gettext_lazy
 
 from zivinetz.models import DrudgeQuota, ScopeStatement
 
@@ -18,7 +16,7 @@ def yield_dates(start, step, count):
 
 
 class QuotaForm(forms.Form):
-    quota = forms.IntegerField(label=ugettext_lazy("quota"), required=False)
+    quota = forms.IntegerField(label=gettext_lazy("quota"), required=False)
 
 
 @staff_member_required
@@ -45,7 +43,9 @@ def quota_year(request, year):
                 try:
                     value = int(
                         request.POST[
-                            "%s_%s-quota" % (scope_statement.id, day.strftime("%Y%m%d"))
+                            "{}_{}-quota".format(
+                                scope_statement.id, day.strftime("%Y%m%d")
+                            )
                         ]
                     )
                 except (KeyError, TypeError, ValueError):
@@ -81,7 +81,7 @@ def quota_year(request, year):
         for day in dates:
             form = QuotaForm(
                 initial={"quota": existing_quotas.get(day)},
-                prefix="%s_%s" % (scope_statement.id, day.strftime("%Y%m%d")),
+                prefix="{}_{}".format(scope_statement.id, day.strftime("%Y%m%d")),
             )
             forms[day] = form
 

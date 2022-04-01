@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import datetime
 
@@ -12,7 +11,7 @@ import datetime
 # ----------------------------------------------------------------------------#
 
 
-class EasterDay(object):
+class EasterDay:
 
     """
     Berechnung des Ostersonntages nach der Formel von Heiner Lichtenberg für
@@ -160,18 +159,18 @@ def get_public_holidays(year):
     easter = EasterDay(year).get_date()
 
     return {
-        datetime.date(year, 1, 1): u"Neujahr",
-        datetime.date(year, 1, 2): u"Berchtoldstag",
-        easter - datetime.timedelta(days=2): u"Karfreitag",
-        easter: u"Ostersonntag",
-        easter + datetime.timedelta(days=1): u"Ostermontag",
-        datetime.date(year, 5, 1): u"Tag der Arbeit",
-        easter + datetime.timedelta(days=39): u"Auffahrt",
-        easter + datetime.timedelta(days=49): u"Pfingstsonntag",
-        easter + datetime.timedelta(days=50): u"Pfingstmontag",
-        datetime.date(year, 8, 1): u"Nationalfeiertag",
-        datetime.date(year, 12, 25): u"Weihnachtstag",
-        datetime.date(year, 12, 26): u"Stephanstag",
+        datetime.date(year, 1, 1): "Neujahr",
+        datetime.date(year, 1, 2): "Berchtoldstag",
+        easter - datetime.timedelta(days=2): "Karfreitag",
+        easter: "Ostersonntag",
+        easter + datetime.timedelta(days=1): "Ostermontag",
+        datetime.date(year, 5, 1): "Tag der Arbeit",
+        easter + datetime.timedelta(days=39): "Auffahrt",
+        easter + datetime.timedelta(days=49): "Pfingstsonntag",
+        easter + datetime.timedelta(days=50): "Pfingstmontag",
+        datetime.date(year, 8, 1): "Nationalfeiertag",
+        datetime.date(year, 12, 25): "Weihnachtstag",
+        datetime.date(year, 12, 26): "Stephanstag",
     }
 
 
@@ -181,7 +180,7 @@ if __name__ == "__main__":
         days = get_public_holidays(i)
         print(
             "\n".join(
-                "%s: %s" % (day.strftime("%d.%m.%Y"), name)
+                "{}: {}".format(day.strftime("%d.%m.%Y"), name)
                 for day, name in sorted(days.items())
             )
         )

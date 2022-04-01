@@ -26,7 +26,7 @@ columns.update({i + 52: "B%s" % c for i, c in enumerate(letters)})
 
 def c(column, row):
     """Cell name for zero-indexed column/row combination"""
-    return "%s%s" % (columns[column], row + 1)
+    return f"{columns[column]}{row + 1}"
 
 
 def create_groups_xlsx(day):
@@ -170,8 +170,8 @@ def create_groups_xlsx(day):
         ws[c(day_column(i), 0)].style = centered
         ws[c(day_column(i), 1)].style = "borderThickBottom"
         ws[c(day_column(i), 1)].alignment = centered.alignment
-        ws.merge_cells("%s:%s" % (c(day_column(i), 0), c(day_column(i + 1) - 1, 0)))
-        ws.merge_cells("%s:%s" % (c(day_column(i), 1), c(day_column(i + 1) - 1, 1)))
+        ws.merge_cells(f"{c(day_column(i), 0)}:{c(day_column(i + 1) - 1, 0)}")
+        ws.merge_cells(f"{c(day_column(i), 1)}:{c(day_column(i + 1) - 1, 1)}")
 
         ws[c(day_column(i), 2)] = "Absenz"
         for k in range(2, 499):

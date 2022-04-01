@@ -1,5 +1,3 @@
-# coding=utf-8
-
 import operator
 import os
 from datetime import date, timedelta
@@ -13,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
@@ -29,7 +27,7 @@ from zivinetz.models import (
 )
 
 
-class AssignmentPDFStationery(object):
+class AssignmentPDFStationery:
     def __init__(self, assignment):
         self.assignment = assignment
 
@@ -103,7 +101,7 @@ class AssignmentPDFStationery(object):
     def _draw_all_markers(self, canvas):  # pragma: no cover
         canvas.setFillColorRGB(1, 0, 0)
         for key, pos in self.markers.items():
-            canvas.drawString(pos[0] * mm, pos[1] * mm, u"x %s" % key)
+            canvas.drawString(pos[0] * mm, pos[1] * mm, "x %s" % key)
             # canvas.drawString(pos[0] * mm, pos[1] * mm, u'x')
 
     def page_1(self, canvas, pdfdocument):
@@ -125,7 +123,7 @@ class AssignmentPDFStationery(object):
         frame_2 = [
             drudge.zdp_no,
             drudge.user.first_name,
-            u"%s %s" % (drudge.zip_code, drudge.city),
+            f"{drudge.zip_code} {drudge.city}",
             drudge.mobile,
             drudge.user.email,
             drudge.education_occupation,
@@ -149,11 +147,11 @@ class AssignmentPDFStationery(object):
             scope_statement.company_contact_phone or "044 533 11 44",
         ]
 
-        frame_5a = ["", scope_statement.company_contact_function or u"Geschäftsleiter"]
+        frame_5a = ["", scope_statement.company_contact_function or "Geschäftsleiter"]
 
         frame_6 = [
             scope_statement.company_name or "Verein Naturnetz",
-            scope_statement.company_contact_function or u"Geschäftsleiter",
+            scope_statement.company_contact_function or "Geschäftsleiter",
             scope_statement.company_contact_location or "8109 Kloster Fahr",
             scope_statement.company_contact_email or "ms@naturnetz.ch",
         ]
@@ -171,7 +169,7 @@ class AssignmentPDFStationery(object):
         ]
 
         frame_9 = [
-            u"%s %s"
+            "%s %s"
             % (
                 self.assignment.specification.scope_statement.eis_no,
                 self.assignment.specification.scope_statement.name,
@@ -252,10 +250,10 @@ class AssignmentPDFStationery(object):
         # for meal in ('accomodation', 'breakfast', 'lunch', 'supper'):
         for meal in ("breakfast", "lunch", "supper"):
             for day_type in ("working", "free"):
-                marker = "%s_%s_%s" % (
+                marker = "{}_{}_{}".format(
                     meal,
                     day_type,
-                    getattr(spec, "%s_%s" % (meal, day_type)),
+                    getattr(spec, f"{meal}_{day_type}"),
                 )
 
                 if marker.endswith("at_accomodation"):
@@ -315,9 +313,9 @@ def assignment_pdf(request, assignment_id):
 
     scope_statement = assignment.specification.scope_statement
     address = [
-        scope_statement.company_name or u"Verein Naturnetz",
-        scope_statement.company_address or u"Chlosterstrasse",
-        scope_statement.company_contact_location or u"8109 Kloster Fahr",
+        scope_statement.company_name or "Verein Naturnetz",
+        scope_statement.company_address or "Chlosterstrasse",
+        scope_statement.company_contact_location or "8109 Kloster Fahr",
     ]
 
     pdf.spacer(25 * mm)
@@ -325,7 +323,7 @@ def assignment_pdf(request, assignment_id):
     pdf.spacer(30 * mm)
 
     pdf.p_markup(
-        u"""
+        """
 Lieber Zivi<br /><br />
 
 Vielen Dank fürs Erstellen deiner Einsatzvereinbarung! Du findest hier nun die
@@ -351,7 +349,7 @@ Wir freuen uns auf deinen Einsatz!
     )
     pdf.spacer(26 * mm)
 
-    address = u"\n".join(
+    address = "\n".join(
         [assignment.regional_office.name, assignment.regional_office.address]
     ).replace("\r", "")
 
@@ -402,7 +400,7 @@ Wir freuen uns auf deinen Einsatz!
     response = HttpResponse(content_type="application/pdf")
     result_writer.write(response)
 
-    response["Content-Disposition"] = "attachment; filename=eiv-%s.pdf" % (
+    response["Content-Disposition"] = "attachment; filename=eiv-{}.pdf".format(
         assignment.pk,
     )
     return response
@@ -447,24 +445,24 @@ def expense_report_pdf(request, expense_report_id):
 
     pdf.table(
         [
-            (u"Pflichtenheft:", u"%s" % report.assignment.specification),
-            (u"Name, Vorname:", u"%s" % drudge.user.get_full_name()),
+            ("Pflichtenheft:", "%s" % report.assignment.specification),
+            ("Name, Vorname:", "%s" % drudge.user.get_full_name()),
             (
-                u"Adresse:",
-                u"%s, %s %s" % (drudge.address, drudge.zip_code, drudge.city),
+                "Adresse:",
+                f"{drudge.address}, {drudge.zip_code} {drudge.city}",
             ),
-            (u"ZDP:", drudge.zdp_no),
+            ("ZDP:", drudge.zdp_no),
             (
-                u"Gesamteinsatz:",
-                u"%s - %s"
+                "Gesamteinsatz:",
+                "%s - %s"
                 % (
                     assignment.date_from.strftime("%d.%m.%Y"),
                     assignment.date_until.strftime("%d.%m.%Y"),
                 ),
             ),
             (
-                u"Meldeperiode:",
-                u"%s - %s"
+                "Meldeperiode:",
+                "%s - %s"
                 % (
                     report.date_from.strftime("%d.%m.%Y"),
                     report.date_until.strftime("%d.%m.%Y"),
@@ -522,7 +520,7 @@ def expense_report_pdf(request, expense_report_id):
     return response
 
 
-class NaturnetzStationery(object):
+class NaturnetzStationery:
     def __call__(self, canvas, pdfdocument):
         canvas.saveState()
 
@@ -534,7 +532,7 @@ class NaturnetzStationery(object):
                 width=177 * 0.5,
                 height=246 * 0.5,
             )
-        except IOError:
+        except OSError:
             pass
 
         canvas.restoreState()
@@ -557,7 +555,7 @@ def reference_pdf(request, reference_id):
 
     pdf.p(drudge.user.get_full_name())
     pdf.p(drudge.address)
-    pdf.p(u"%s %s" % (drudge.zip_code, drudge.city))
+    pdf.p(f"{drudge.zip_code} {drudge.city}")
     pdf.next_frame()
 
     pdf.p("Kloster Fahr, %s" % reference.created.strftime("%d.%m.%Y"))
@@ -568,7 +566,7 @@ def reference_pdf(request, reference_id):
     pdf.p(reference.text)
 
     pdf.spacer(10 * mm)
-    pdf.p(u"Dr. Marco Sacchi\nGeschäftsführer")
+    pdf.p("Dr. Marco Sacchi\nGeschäftsführer")
 
     pdf.generate()
     return response

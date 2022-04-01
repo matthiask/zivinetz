@@ -10,7 +10,7 @@ from django.db.models import Q, signals
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _
 
 from towel.managers import SearchManager
 from towel.resources.urls import model_resource_urls
@@ -88,11 +88,11 @@ class ScopeStatement(models.Model):
         verbose_name_plural = _("scope statements")
 
     def __str__(self):
-        return u"%s (%s)" % (self.name, self.eis_no)
+        return f"{self.name} ({self.eis_no})"
 
     @property
     def company_contact_location(self):
-        return (u"%s %s" % (self.company_zip_code, self.company_city)).strip()
+        return (f"{self.company_zip_code} {self.company_city}").strip()
 
 
 class DrudgeQuota(models.Model):
@@ -110,7 +110,7 @@ class DrudgeQuota(models.Model):
         from zivinetz.views.scheduling import calendar_week
 
         year, week = calendar_week(self.week)
-        return u"%s: %s Zivis in KW%s %s" % (
+        return "{}: {} Zivis in KW{} {}".format(
             self.scope_statement.name,
             self.quota,
             week,
@@ -118,7 +118,7 @@ class DrudgeQuota(models.Model):
         )
 
 
-class Choices(object):
+class Choices:
     def __init__(self, choices):
         self.kwargs = {"max_length": 20, "choices": choices, "default": choices[0][0]}
         for key, value in choices:
@@ -198,12 +198,12 @@ class Specification(models.Model):
         verbose_name_plural = _("specifications")
 
     def __str__(self):
-        return u"%s - %s" % (
+        return "{} - {}".format(
             self.scope_statement,
             (
                 self.with_accomodation
-                and ugettext("with accomodation")
-                or ugettext("without accomodation")
+                and gettext("with accomodation")
+                or gettext("without accomodation")
             ),
         )
 
@@ -222,13 +222,13 @@ class Specification(models.Model):
                 compensation[key] = cset.accomodation_home
 
             for meal in ("breakfast", "lunch", "supper"):
-                key = "%s_%s" % (meal, day_type)
+                key = f"{meal}_{day_type}"
                 value = getattr(self, key)
 
                 if value == self.MEAL.no_compensation:
                     compensation[key] = Decimal("0.00")
                 else:
-                    compensation[key] = getattr(cset, "%s_%s" % (meal, value))
+                    compensation[key] = getattr(cset, f"{meal}_{value}")
 
         if self.clothing == self.CLOTHING.provided:
             compensation.update(
@@ -325,7 +325,7 @@ class CompensationSet(models.Model):
     objects = CompensationSetManager()
 
     def __str__(self):
-        return ugettext("compensation set, valid from %s") % self.valid_from
+        return gettext("compensation set, valid from %s") % self.valid_from
 
 
 @model_resource_urls(default="edit")
@@ -466,7 +466,7 @@ class Drudge(models.Model):
     objects = DrudgeManager()
 
     def __str__(self):
-        return u"%s %s (%s)" % (self.user.first_name, self.user.last_name, self.zdp_no)
+        return f"{self.user.first_name} {self.user.last_name} ({self.zdp_no})"
 
     def pretty_motor_saw_course(self):
         """for the scheduling table"""
@@ -563,7 +563,7 @@ class Assignment(models.Model):
     objects = AssignmentManager()
 
     def __str__(self):
-        return u"%s on %s (%s - %s)" % (
+        return "{} on {} ({} - {})".format(
             self.drudge,
             self.specification.code,
             self.date_from,
@@ -762,7 +762,7 @@ class Assignment(models.Model):
         return reverse("zivinetz_assignment_pdf", args=(self.pk,))
 
     def admin_pdf_url(self):
-        return u'<a href="%s">PDF</a>' % self.pdf_url()
+        return '<a href="%s">PDF</a>' % self.pdf_url()
 
     admin_pdf_url.allow_tags = True
     admin_pdf_url.short_description = "PDF"
@@ -858,7 +858,7 @@ def assignment_pre_save(sender, instance, **kwargs):
 
     changes = []
     if not original:
-        changes.append(ugettext("Assignment has been created."))
+        changes.append(gettext("Assignment has been created."))
     else:
         change_tracked_fields = [
             "specification",
@@ -884,7 +884,7 @@ def assignment_pre_save(sender, instance, **kwargs):
 
             field_instance = Assignment._meta.get_field(field)
             changes.append(
-                ugettext(
+                gettext(
                     "The value of `%(field)s` has been changed from"
                     " %(from)s to %(to)s."
                 )
@@ -899,9 +899,9 @@ def assignment_pre_save(sender, instance, **kwargs):
 
     instance._assignment_change = dict(
         assignment=instance,
-        assignment_description=u"%s" % instance,
+        assignment_description="%s" % instance,
         changed_by=request.user.get_full_name() if request else "unknown",
-        changes=u"\n".join(changes),
+        changes="\n".join(changes),
     )
 
 
@@ -917,9 +917,9 @@ def assignment_post_delete(sender, instance, **kwargs):
 
     AssignmentChange.objects.create(
         assignment=None,
-        assignment_description=u"%s" % instance,
+        assignment_description="%s" % instance,
         changed_by=request.user.get_full_name() if request else "unknown",
-        changes=ugettext("Assignment has been deleted."),
+        changes=gettext("Assignment has been deleted."),
     )
 
 
@@ -1013,7 +1013,7 @@ class ExpenseReport(models.Model):
     objects = ExpenseReportManager()
 
     def __str__(self):
-        return u"%s - %s" % (self.date_from, self.date_until)
+        return f"{self.date_from} - {self.date_until}"
 
     @property
     def total_days(self):
@@ -1056,44 +1056,44 @@ class ExpenseReport(models.Model):
                 compensation["supper_%s" % day_type],
             ]
 
-            return [u"%s %s" % (days, title)] + line + [sum(line) * days]
+            return [f"{days} {title}"] + line + [sum(line) * days]
 
         ret = [
             [
                 "",
-                ugettext("spending money"),
-                ugettext("accomodation"),
-                ugettext("breakfast"),
-                ugettext("lunch"),
-                ugettext("supper"),
-                ugettext("Total"),
+                gettext("spending money"),
+                gettext("accomodation"),
+                gettext("breakfast"),
+                gettext("lunch"),
+                gettext("supper"),
+                gettext("Total"),
             ]
         ]
 
-        ret.append(line(ugettext("working days"), "working", self.working_days))
+        ret.append(line(gettext("working days"), "working", self.working_days))
         ret.append([self.working_days_notes, "", "", "", "", "", ""])
-        ret.append(line(ugettext("free days"), "free", self.free_days))
+        ret.append(line(gettext("free days"), "free", self.free_days))
         ret.append([self.free_days_notes, "", "", "", "", "", ""])
-        ret.append(line(ugettext("sick days"), "sick", self.sick_days))
+        ret.append(line(gettext("sick days"), "sick", self.sick_days))
         ret.append([self.sick_days_notes, "", "", "", "", "", ""])
 
         # holiday counts as work
-        ret.append(line(ugettext("holiday days"), "free", self.holi_days))
+        ret.append(line(gettext("holiday days"), "free", self.holi_days))
         ret.append([self.holi_days_notes, "", "", "", "", "", ""])
 
         # forced leave counts zero
         ret.append(
-            [u"%s %s" % (self.forced_leave_days, ugettext("forced leave days"))]
+            ["{} {}".format(self.forced_leave_days, gettext("forced leave days"))]
             + [Decimal("0.00")] * 6
         )
         ret.append([self.forced_leave_days_notes, "", "", "", "", "", ""])
 
         additional = [
-            (ugettext("transport expenses"), self.transport_expenses),
+            (gettext("transport expenses"), self.transport_expenses),
             (self.transport_expenses_notes, ""),
-            (ugettext("clothing expenses"), self.clothing_expenses),
+            (gettext("clothing expenses"), self.clothing_expenses),
             (self.clothing_expenses_notes, ""),
-            (ugettext("miscellaneous"), self.miscellaneous),
+            (gettext("miscellaneous"), self.miscellaneous),
             (self.miscellaneous_notes, ""),
         ]
 
@@ -1113,7 +1113,7 @@ class PublicHoliday(models.Model):
         verbose_name_plural = _("public holidays")
 
     def __str__(self):
-        return u"%s (%s)" % (self.name, self.date)
+        return f"{self.name} ({self.date})"
 
 
 @model_resource_urls()
@@ -1133,7 +1133,7 @@ class CompanyHoliday(models.Model):
         verbose_name_plural = _("company holidays")
 
     def __str__(self):
-        return u"%s - %s" % (self.date_from, self.date_until)
+        return f"{self.date_from} - {self.date_until}"
 
     def is_contained(self, day):
         return self.date_from <= day <= self.date_until
@@ -1175,7 +1175,7 @@ class Assessment(models.Model):
         verbose_name_plural = _("internal assessments")
 
     def __str__(self):
-        return ugettext("Mark %(mark)s for %(drudge)s") % {
+        return gettext("Mark %(mark)s for %(drudge)s") % {
             "mark": self.mark or "-",
             "drudge": self.drudge,
         }
@@ -1186,7 +1186,7 @@ class CodewordManager(models.Manager):
         try:
             return self.filter(key=key).latest().codeword
         except self.model.DoesNotExist:
-            return u""
+            return ""
 
 
 @model_resource_urls()
@@ -1246,7 +1246,7 @@ class JobReference(models.Model):
     objects = JobReferenceManager()
 
     def __str__(self):
-        return u"%s: %s" % (self._meta.verbose_name, self.assignment)
+        return f"{self._meta.verbose_name}: {self.assignment}"
 
     def pdf_url(self):
         return reverse("zivinetz_reference_pdf", args=(self.pk,))
@@ -1305,7 +1305,7 @@ class GroupAssignment(models.Model):
         verbose_name_plural = _("group assignments")
 
     def __str__(self):
-        return "%s/%s: %s" % (
+        return "{}/{}: {}".format(
             self.group,
             self.assignment,
             " - ".join(d.strftime("%d.%m.%Y") for d in self.date_range),
@@ -1419,7 +1419,7 @@ class Absence(models.Model):
         verbose_name_plural = _("absences")
 
     def __str__(self):
-        return "Absenz von %s von %s bis %s" % (
+        return "Absenz von {} von {} bis {}".format(
             self.assignment.drudge.user.get_full_name(),
             min(self.days),
             max(self.days),
@@ -1447,7 +1447,7 @@ class Absence(models.Model):
         if outside:
             raise ValidationError(
                 _("Absence days outside duration of assignment: %s")
-                % (", ".join((str(day) for day in sorted(outside))))
+                % (", ".join(str(day) for day in sorted(outside)))
             )
 
         if self.reason == self.APPROVED_HOLIDAY:

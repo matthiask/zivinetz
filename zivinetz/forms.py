@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 from django import forms
 from django.db.models import Avg, Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from towel.forms import SearchForm, WarningsForm
 
@@ -22,7 +22,7 @@ from zivinetz.models import (
 
 
 def add_last_assignment_and_mark(queryset):
-    drudges = dict((d.id, d) for d in queryset)
+    drudges = {d.id: d for d in queryset}
     marks = (
         Assessment.objects.filter(drudge__in=drudges.keys())
         .order_by()
@@ -238,7 +238,7 @@ class EditExpenseReportForm(forms.ModelForm, WarningsForm):
         super().__init__(*args, **kwargs)
 
     def clean(self):
-        data = super(EditExpenseReportForm, self).clean()
+        data = super().clean()
 
         try:
             total_days = (

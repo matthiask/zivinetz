@@ -8,7 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from towel.forms import SearchForm
 
@@ -65,7 +65,7 @@ def daterange(start_date, end_date):
         yield start_date + timedelta(days=nr)
 
 
-class Scheduler(object):
+class Scheduler:
     def __init__(self, assignments, date_range):
         self.queryset = assignments
         self.date_range = date_range
@@ -129,7 +129,7 @@ class Scheduler(object):
                 title = None
                 if day in week_courses:
                     css += " c-%s" % week_courses[day][1].lower()
-                    title = "%s (Start: %s)" % (
+                    title = "{} (Start: {})".format(
                         week_courses[day][0],
                         week_courses[day][0].strftime("%A %d.%m."),
                     )
@@ -234,7 +234,7 @@ class Scheduler(object):
             (
                 "",
                 len(una_courses_per_week.get(day, ())),
-                u"\n".join(u"%s" % a for a in una_courses_per_week.get(day, ())),
+                "\n".join("%s" % a for a in una_courses_per_week.get(day, ())),
             )
             for day, week in filtered_days_per_drudge_and_week
         ]
@@ -305,36 +305,36 @@ class SchedulingSearchForm(SearchForm):
 
     specification__scope_statement = forms.ModelMultipleChoiceField(
         ScopeStatement.objects.all(),
-        label=ugettext_lazy("scope statement"),
+        label=gettext_lazy("scope statement"),
         required=False,
     )
     specification__with_accomodation = forms.NullBooleanField(
-        label=ugettext_lazy("with accomodation"), required=False
+        label=gettext_lazy("with accomodation"), required=False
     )
     status = forms.MultipleChoiceField(
-        choices=Assignment.STATUS_CHOICES, label=ugettext_lazy("status"), required=False
+        choices=Assignment.STATUS_CHOICES, label=gettext_lazy("status"), required=False
     )
     date_until__gte = forms.DateField(
-        label=ugettext_lazy("Start date"),
+        label=gettext_lazy("Start date"),
         required=False,
         widget=forms.DateInput(attrs={"class": "dateinput"}),
     )
     date_from__lte = forms.DateField(
-        label=ugettext_lazy("End date"),
+        label=gettext_lazy("End date"),
         required=False,
         widget=forms.DateInput(attrs={"class": "dateinput"}),
     )
 
     drudge__motor_saw_course = forms.MultipleChoiceField(
-        label=ugettext_lazy("motor saw course"),
+        label=gettext_lazy("motor saw course"),
         required=False,
         choices=(
-            ("2-day", ugettext_lazy("2 day course")),
-            ("5-day", ugettext_lazy("5 day course")),
+            ("2-day", gettext_lazy("2 day course")),
+            ("5-day", gettext_lazy("5 day course")),
         ),
     )
     drudge__driving_license = forms.NullBooleanField(
-        label=ugettext_lazy("driving license"), required=False
+        label=gettext_lazy("driving license"), required=False
     )
 
     def queryset(self):

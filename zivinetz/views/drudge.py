@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import gettext as _, gettext_lazy
 
 import schwifty
 from towel.forms import towel_formfield_callback
@@ -16,7 +16,7 @@ from zivinetz.views.decorators import drudge_required
 
 
 class AssignmentForm(forms.ModelForm):
-    codeword = forms.CharField(label=ugettext_lazy("Codeword"))
+    codeword = forms.CharField(label=gettext_lazy("Codeword"))
 
     formfield_callback = towel_formfield_callback
 
@@ -37,7 +37,7 @@ class AssignmentForm(forms.ModelForm):
         return codeword
 
     def clean(self):
-        data = super(AssignmentForm, self).clean()
+        data = super().clean()
 
         if data.get("date_from") and data.get("date_until"):
             if (
