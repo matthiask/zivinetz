@@ -41,82 +41,95 @@ class AssignmentPDFStationery:
             self.page_2(canvas, pdfdocument)
 
     markers = {
-        "standard": (50, 105),
-        "trial": (76, 105),
-        "long_assignment": (106, 105),
+        "standard": (54, 94),
+        "trial": (81.5, 94),
+        "long_assignment": (114, 94),
         # 'working_time_fixed': (112, 60),
         # 'working_time_nightshift': (151, 59),
         # 'working_time_flexible': (112, 55),
         # 'working_time_weekend': (151, 55),
-        "vegetarianism": (113.5, 40),
-        "no_vegetarianism": (155, 40),
-        "pocket_money": (31, 167),
+        # "vegetarianism": (113.5, 40),
+        # "no_vegetarianism": (155, 40),
+        # "pocket_money": (31, 167),
+
         # 'accomodation_working_compensated': (56, 230),
         # 'accomodation_working_provided': (85, 230),
         # 'accomodation_free_compensated': (113.5, 230),
         # 'accomodation_free_provided': (143, 230),
         # 'accomodation_used': (75, 251),
         # 'accomodation_notused': (113.5, 251),
+
         "breakfast_working_at_company": (113, 218),
-        "breakfast_working_at_home": (75, 218),
+        "breakfast_working_at_home": (93, 161),
         "breakfast_working_external": (75, 218),
+
         "breakfast_free_at_company": (178, 218),
         "breakfast_free_at_home": (139, 218),
         "breakfast_free_external": (139, 218),
+
         "lunch_working_at_company": (113, 213),
         "lunch_working_at_home": (75, 213),
         "lunch_working_external": (75, 213),
+
         "lunch_free_at_company": (178, 213),
         "lunch_free_at_home": (139, 213),
         "lunch_free_external": (139, 213),
+
         "supper_working_at_company": (113, 209),
         "supper_working_at_home": (75, 209),
         "supper_working_external": (75, 209),
+
         "supper_free_at_company": (178, 209),
         "supper_free_at_home": (139, 209),
         "supper_free_external": (139, 209),
-        "accomodation_throughout": (182, 264),
-        "food_throughout": (182, 245),
+
+        "accomodation_throughout": (31, 258),
         "accomodation_not_throughout": (186, 264),
-        "food_not_throughout": (186, 245),
-        "drudge_renounce_accomodation_1": (186, 259.5),
-        "drudge_renounce_accomodation_2": (186, 250),
-        "public_transports": (31, 149),
-        "private_transport": (113.5, 149),
+
+        "food_throughout": (31.5, 184),
+        "food_not_throughout": (31.5, 180),
+
+        "drudge_renounce_accomodation_1": (36, 244),
+        # "drudge_renounce_accomodation_2": (186, 250),
+
+        "public_transports": (31.5, 207),
+        "private_transport": (31.5, 202.5),
+
         "special_tickets_yes": (182, 137),
         "special_tickets_no": (186, 137),
-        "clothing_provided": (31, 111),
-        "clothing_compensated": (113.5, 111),
-        "arrangement_timely": (31, 108),
-        "arrangement_late": (31, 99),
-        "legalese_1": (186, 65),
-        "legalese_2": (186, 54),
-        "legalese_3": (186, 48.5),
+        "clothing_provided": (31, 126),
+        "clothing_compensated": (31, 121.5),
+
+        # "arrangement_timely": (31, 102),
+        # "arrangement_late": (31, 102),
+
+        "legalese_0": (176, 101),
+        "legalese_1": (185, 81),
+        "legalese_2": (185, 72),
+        "legalese_3": (185, 63),
     }
 
     def draw_marker(self, canvas, key):
-        canvas.setFont("Helvetica", 11)
+        canvas.setFont("Helvetica-Bold", 11)
         canvas.drawString(self.markers[key][0] * mm, self.markers[key][1] * mm, "x")
 
     def _draw_all_markers(self, canvas):  # pragma: no cover
         canvas.setFillColorRGB(1, 0, 0)
+        canvas.setFont("Helvetica-Bold", 11)
         for key, pos in self.markers.items():
-            canvas.drawString(pos[0] * mm, pos[1] * mm, "x %s" % key)
-            # canvas.drawString(pos[0] * mm, pos[1] * mm, u'x')
+            canvas.drawString(pos[0] * mm, pos[1] * mm, f"x {key}")
+            # canvas.drawString(pos[0] * mm, pos[1] * mm, 'x')
 
     def page_1(self, canvas, pdfdocument):
-        # self._draw_all_markers(canvas)
+        self._draw_all_markers(canvas)
         drudge = self.assignment.drudge
         scope_statement = self.assignment.specification.scope_statement
 
         frame_1 = [
             drudge.user.last_name,
             drudge.address,
-            drudge.phone_home,
-            # u'        ' + u', '.join((drudge.phone_home, drudge.mobile)),
-            # (drudge.date_of_birth
-            #     and drudge.date_of_birth.strftime('%d.%m.%Y') or u''),
-            drudge.bank_account,
+            " / ".join(phone for phone in (drudge.phone_home, drudge.mobile) if phone),
+            (drudge.date_of_birth and drudge.date_of_birth.strftime("%d.%m.%Y") or ""),
             drudge.health_insurance_company,
         ]
 
@@ -124,9 +137,9 @@ class AssignmentPDFStationery:
             drudge.zdp_no,
             drudge.user.first_name,
             f"{drudge.zip_code} {drudge.city}",
-            drudge.mobile,
             drudge.user.email,
-            drudge.education_occupation,
+            drudge.bank_account,
+            drudge.education_occupation.replace("\r", "").replace("\n", ", "),
             # drudge.health_insurance_account,
         ]
 
@@ -141,59 +154,64 @@ class AssignmentPDFStationery:
         ]
 
         frame_5 = [
-            scope_statement.branch_no,
-            scope_statement.company_contact_name or "Marco Sacchi",
+            "",
+            scope_statement.company_name or "Verein Naturnetz",
             scope_statement.company_address or "Chlosterstrasse",
+            "",
+            scope_statement.company_contact_name or "Marco Sacchi",
             scope_statement.company_contact_phone or "044 533 11 44",
         ]
 
-        frame_5a = ["", scope_statement.company_contact_function or "Geschäftsleiter"]
+        # frame_5a = ["", scope_statement.company_contact_function or "Geschäftsleiter"]
 
         frame_6 = [
-            scope_statement.company_name or "Verein Naturnetz",
-            scope_statement.company_contact_function or "Geschäftsleiter",
+            scope_statement.branch_no,
+            "",
             scope_statement.company_contact_location or "8109 Kloster Fahr",
+            "",
+            scope_statement.company_contact_function or "Geschäftsleiter",
             scope_statement.company_contact_email or "ms@naturnetz.ch",
         ]
 
-        frame_6a = [
-            scope_statement.company_contact_name or "Marco Sacchi",
-            scope_statement.company_contact_phone or "044 533 11 44",
-        ]
+        # frame_6a = [
+        #     scope_statement.company_contact_name or "Marco Sacchi",
+        #     scope_statement.company_contact_phone or "044 533 11 44",
+        # ]
 
-        frame_7 = [self.assignment.date_from.strftime("%d.%m.%Y")]
-
-        frame_8 = [
-            scope_statement.work_location or "Kloster Fahr, ganze Schweiz",
-            self.assignment.date_until.strftime("%d.%m.%Y"),
-        ]
-
-        frame_9 = [
+        frame_7 = [
             "%s %s"
             % (
                 self.assignment.specification.scope_statement.eis_no,
                 self.assignment.specification.scope_statement.name,
-            )
+            ),
+            self.assignment.date_from.strftime("%d.%m.%Y"),
         ]
 
-        frame_10 = [self.assignment.regional_office.city]
+        frame_8 = [
+            scope_statement.work_location or "Kloster Fahr, ganze Schweiz",
+            "",
+            self.assignment.date_until.strftime("%d.%m.%Y"),
+        ]
 
-        frame_11 = []
+        frame_9 = []
+
+        # frame_10 = [self.assignment.regional_office.city]
+        # frame_11 = []
 
         frames = [
-            (frame_1, 63 * mm, 197 * mm, 6.9 * mm),
-            (frame_2, 140 * mm, 197 * mm, 6.9 * mm),
-            (frame_3, 63 * mm, 174 * mm, 11 * mm),
-            (frame_4, 140 * mm, 174 * mm, 11 * mm),
-            (frame_5, 63 * mm, 156 * mm, 7.2 * mm),
-            (frame_6, 140 * mm, 156 * mm, 7.2 * mm),
-            (frame_5a, 63 * mm, 138 * mm, 7.2 * mm),
-            (frame_6a, 140 * mm, 138 * mm, 7.2 * mm),
-            (frame_7, 63 * mm, 117 * mm, 7 * mm),
-            (frame_8, 140 * mm, 117 * mm, 7.2 * mm),
+            (frame_1, 53 * mm, 190 * mm, 7 * mm),
+            (frame_2, 143 * mm, 190 * mm, 6.9 * mm),
+            # (frame_3, 63 * mm, 174 * mm, 11 * mm),
+            # (frame_4, 140 * mm, 174 * mm, 11 * mm),
+            (frame_5, 56 * mm, 143 * mm, 7 * mm),
+            (frame_6, 130 * mm, 143 * mm, 7 * mm),
+            # (frame_5a, 63 * mm, 138 * mm, 7.2 * mm),
+            # (frame_6a, 140 * mm, 138 * mm, 7.2 * mm),
+            (frame_7, 56 * mm, 116 * mm, 8 * mm),
+            (frame_8, 136 * mm, 116 * mm, 8 * mm),
             (frame_9, 87 * mm, 99 * mm, 7.4 * mm),
-            (frame_10, 127 * mm, 268 * mm, 0),
-            (frame_11, 63 * mm, 55 * mm, 8.5 * mm),
+            # (frame_10, 127 * mm, 268 * mm, 0),
+            # (frame_11, 63 * mm, 55 * mm, 8.5 * mm),
         ]
 
         canvas.setFont("Helvetica", 9)
@@ -235,7 +253,7 @@ class AssignmentPDFStationery:
         #     self.draw_marker(canvas, 'no_vegetarianism')
 
     def page_2(self, canvas, pdfdocument):
-        # self._draw_all_markers(canvas)
+        self._draw_all_markers(canvas)
         spec = self.assignment.specification
         drudge = self.assignment.drudge
 
@@ -277,16 +295,17 @@ class AssignmentPDFStationery:
 
         if spec.with_accomodation:
             self.draw_marker(canvas, "drudge_renounce_accomodation_1")
-            self.draw_marker(canvas, "drudge_renounce_accomodation_2")
+            # self.draw_marker(canvas, "drudge_renounce_accomodation_2")
 
         if spec.food_throughout:
             self.draw_marker(canvas, "food_throughout")
         else:
             self.draw_marker(canvas, "food_not_throughout")
 
-        if drudge.vegetarianism:
-            canvas.drawString(55 * mm, 188 * mm, "Vegetarisch")
+        # if drudge.vegetarianism:
+        #     canvas.drawString(55 * mm, 188 * mm, "Vegetarisch")
 
+        self.draw_marker(canvas, "legalese_0")
         self.draw_marker(canvas, "legalese_1")
         self.draw_marker(canvas, "legalese_2")
         self.draw_marker(canvas, "legalese_3")
