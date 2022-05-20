@@ -45,5 +45,5 @@ jobs:
 
         run: |
           mkdir -p tmp
-          coverage run ./manage.py test -v2
+          coverage run ./tests/manage.py test -v2
           coverage report -m
