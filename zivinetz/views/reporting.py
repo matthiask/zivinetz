@@ -58,44 +58,45 @@ class AssignmentPDFStationery:
         # 'accomodation_used': (75, 251),
         # 'accomodation_notused': (113.5, 251),
         #
-        "breakfast_working_at_company": (113, 218),
-        "breakfast_working_at_home": (93, 161),
-        "breakfast_working_external": (75, 218),
+        "breakfast_working_at_company": (93, 161),
+        "breakfast_working_at_home": (110, 161),
+        "breakfast_working_external": (110, 161),
         #
-        "breakfast_free_at_company": (178, 218),
-        "breakfast_free_at_home": (139, 218),
-        "breakfast_free_external": (139, 218),
+        "breakfast_free_at_company": (147.5, 161),
+        "breakfast_free_at_home": (165, 161),
+        "breakfast_free_external": (165, 161),
         #
-        "lunch_working_at_company": (113, 213),
-        "lunch_working_at_home": (75, 213),
-        "lunch_working_external": (75, 213),
+        "lunch_working_at_company": (93, 157),
+        "lunch_working_at_home": (110, 157),
+        "lunch_working_external": (110, 157),
         #
-        "lunch_free_at_company": (178, 213),
-        "lunch_free_at_home": (139, 213),
-        "lunch_free_external": (139, 213),
+        "lunch_free_at_company": (147.5, 157),
+        "lunch_free_at_home": (165, 157),
+        "lunch_free_external": (165, 157),
         #
-        "supper_working_at_company": (113, 209),
-        "supper_working_at_home": (75, 209),
-        "supper_working_external": (75, 209),
+        "supper_working_at_company": (93, 153),
+        "supper_working_at_home": (110, 153),
+        "supper_working_external": (110, 153),
         #
-        "supper_free_at_company": (178, 209),
-        "supper_free_at_home": (139, 209),
-        "supper_free_external": (139, 209),
+        "supper_free_at_company": (147.5, 153),
+        "supper_free_at_home": (165, 153),
+        "supper_free_external": (165, 153),
         #
         "accomodation_throughout": (31, 258),
-        "accomodation_not_throughout": (186, 264),
+        "accomodation_not_throughout": (100, 258),
         #
         "food_throughout": (31.5, 184),
         "food_not_throughout": (31.5, 180),
         #
+        "drudge_uses_accomodation": (36, 253),
         "drudge_renounce_accomodation_1": (36, 244),
         # "drudge_renounce_accomodation_2": (186, 250),
         #
         "public_transports": (31.5, 207),
         "private_transport": (31.5, 202.5),
         #
-        "special_tickets_yes": (182, 137),
-        "special_tickets_no": (186, 137),
+        "special_tickets_yes": (39, 249),
+        # "special_tickets_no": (186, 137),
         "clothing_provided": (31, 126),
         "clothing_compensated": (31, 121.5),
         #
@@ -117,16 +118,16 @@ class AssignmentPDFStationery:
         canvas.setFont("Helvetica-Bold", 11)
         for key, pos in self.markers.items():
             canvas.drawString(pos[0] * mm, pos[1] * mm, f"x {key}")
-            # canvas.drawString(pos[0] * mm, pos[1] * mm, 'x')
+            # canvas.drawString(pos[0] * mm, pos[1] * mm, "x")
 
     def page_1(self, canvas, pdfdocument):
-        self._draw_all_markers(canvas)
+        # self._draw_all_markers(canvas)
         drudge = self.assignment.drudge
         scope_statement = self.assignment.specification.scope_statement
 
         frame_1 = [
             drudge.user.last_name,
-            drudge.address,
+            drudge.address.replace("\r", "").replace("\n", " "),
             " / ".join(phone for phone in (drudge.phone_home, drudge.mobile) if phone),
             (drudge.date_of_birth and drudge.date_of_birth.strftime("%d.%m.%Y") or ""),
             drudge.health_insurance_company,
@@ -142,15 +143,8 @@ class AssignmentPDFStationery:
             # drudge.health_insurance_account,
         ]
 
-        frame_3 = [
-            # drudge.health_insurance_company,
-            # '',  # drudge.bank_account,
-        ]
-
-        frame_4 = [
-            # drudge.health_insurance_account,
-            # '',  # drudge.bank_account,
-        ]
+        # frame_3 = []
+        # frame_4 = []
 
         frame_5 = [
             "",
@@ -254,17 +248,10 @@ class AssignmentPDFStationery:
     def page_2(self, canvas, pdfdocument):
         self._draw_all_markers(canvas)
         spec = self.assignment.specification
-        drudge = self.assignment.drudge
+        # drudge = self.assignment.drudge
 
         # self.draw_marker(canvas, 'pocket_money')
 
-        if spec.with_accomodation:
-            self.draw_marker(canvas, "special_tickets_yes")
-        else:
-            self.draw_marker(canvas, "special_tickets_no")
-            self.draw_marker(canvas, "public_transports")
-
-        # for meal in ('accomodation', 'breakfast', 'lunch', 'supper'):
         for meal in ("breakfast", "lunch", "supper"):
             for day_type in ("working", "free"):
                 marker = "{}_{}_{}".format(
@@ -289,12 +276,15 @@ class AssignmentPDFStationery:
 
         if spec.accomodation_throughout:
             self.draw_marker(canvas, "accomodation_throughout")
-        else:
-            self.draw_marker(canvas, "accomodation_not_throughout")
 
-        if spec.with_accomodation:
-            self.draw_marker(canvas, "drudge_renounce_accomodation_1")
-            # self.draw_marker(canvas, "drudge_renounce_accomodation_2")
+            if spec.with_accomodation:
+                self.draw_marker(canvas, "drudge_uses_accomodation")
+                self.draw_marker(canvas, "special_tickets_yes")
+            else:
+                self.draw_marker(canvas, "drudge_renounce_accomodation_1")
+
+        if not spec.with_accomodation:
+            self.draw_marker(canvas, "public_transports")
 
         if spec.food_throughout:
             self.draw_marker(canvas, "food_throughout")
