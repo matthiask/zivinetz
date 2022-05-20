@@ -240,7 +240,7 @@ class AssignmentPDFStationery:
         #     self.draw_marker(canvas, 'no_vegetarianism')
 
     def page_2(self, canvas, pdfdocument):
-        self._draw_all_markers(canvas)
+        # self._draw_all_markers(canvas)
         spec = self.assignment.specification
         # drudge = self.assignment.drudge
 
