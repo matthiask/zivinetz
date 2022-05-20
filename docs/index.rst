@@ -17,7 +17,7 @@ Python-Module verwendet:
   `reportlab <http://www.reportlab.com/>`_
 - `FeinCMS <http://feincms.org>`_ für die Navigation
 
-Voraussetzung für den Betrieb des Zivinetz ist Python 2.7 und Django 1.7.
+Voraussetzung für den Betrieb des Zivinetz ist Python 3.10 und Django 4.0.
 
 Als Frontend-Framework wird `Foundation 4 <http://foundation.zurb.com>`_
 verwendet.

@@ -12,19 +12,13 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
-
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
 from pdfdocument.utils import pdf_response
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from reportlab.lib import colors
 
-from zivinetz.models import (
-    Assignment,
-    AssignmentChange,
-    ExpenseReport,
-    JobReference,
-)
+from zivinetz.models import Assignment, AssignmentChange, ExpenseReport, JobReference
 
 
 class AssignmentPDFStationery:

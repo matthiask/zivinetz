@@ -9,7 +9,6 @@ from django.db.models import Q, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy
-
 from towel.forms import SearchForm
 
 from zivinetz.models import Assignment, DrudgeQuota, ScopeStatement

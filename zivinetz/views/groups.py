@@ -3,16 +3,8 @@ from datetime import timedelta
 
 from django.utils.formats import date_format
 from django.utils.translation import activate
-
 from openpyxl import Workbook
-from openpyxl.styles import (
-    Alignment,
-    Border,
-    Font,
-    NamedStyle,
-    PatternFill,
-    Side,
-)
+from openpyxl.styles import Alignment, Border, Font, NamedStyle, PatternFill, Side
 
 from zivinetz.models import Absence, Assignment, Group, GroupAssignment
 

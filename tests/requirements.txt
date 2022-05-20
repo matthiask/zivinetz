@@ -1,5 +1,5 @@
 coverage
-Django<4
+Django
 django-mptt
 factory-boy
 FeinCMS

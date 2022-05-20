@@ -2,7 +2,6 @@ from datetime import date
 from decimal import Decimal
 
 from django.test import TestCase
-
 from testapp import factories
 
 from zivinetz.models import AssignmentChange, CompensationSet, ScopeStatement

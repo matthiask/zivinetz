@@ -1,5 +1,6 @@
 from datetime import date
 
+import schwifty
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -7,8 +8,6 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import gettext as _, gettext_lazy
-
-import schwifty
 from towel.forms import towel_formfield_callback
 
 from zivinetz.models import Assignment, Codeword, Drudge, ExpenseReport

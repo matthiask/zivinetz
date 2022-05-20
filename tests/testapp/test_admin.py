@@ -4,7 +4,6 @@ from datetime import date, timedelta
 from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
-
 from testapp import factories
 from testapp.utils import admin_login
 

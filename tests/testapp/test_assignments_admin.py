@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 
 from django.test import TestCase
-
 from testapp import factories
 from testapp.utils import admin_login, get_messages, model_to_postable_dict
 
@@ -39,7 +38,7 @@ class AssignmentsAdminViewsTestCase(TestCase):
         self.assertContains(
             self.client.get(
                 "/zivinetz/admin/assignments/"
-                "?service_between=%s&service_and=%s" % ("2000-01-01", "2020-01-01")
+                "?service_between=%s&service_and=%s" % ("2000-01-01", "2040-01-01")
             ),
             'class="batch"',
             10,

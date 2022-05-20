@@ -2,7 +2,6 @@ from datetime import date
 from decimal import Decimal
 
 from django.test import TestCase
-
 from testapp import factories
 from testapp.utils import admin_login, get_messages, model_to_postable_dict
 

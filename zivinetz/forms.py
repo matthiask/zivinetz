@@ -3,7 +3,6 @@ from datetime import date, timedelta
 from django import forms
 from django.db.models import Avg, Q
 from django.utils.translation import gettext_lazy as _
-
 from towel.forms import SearchForm, WarningsForm
 
 from zivinetz.models import (

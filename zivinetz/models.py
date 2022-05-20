@@ -11,7 +11,6 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy as _
-
 from towel.managers import SearchManager
 from towel.resources.urls import model_resource_urls
 

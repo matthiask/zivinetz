@@ -2,10 +2,9 @@ import random
 from datetime import date, timedelta
 from decimal import Decimal
 
-from django.contrib.auth.models import User
-
 import factory
 import factory.fuzzy
+from django.contrib.auth.models import User
 from factory.django import DjangoModelFactory
 
 from zivinetz.models import (
