@@ -13,3 +13,4 @@ reportlab
 schwifty
 towel
 towel-foundation
+speckenv

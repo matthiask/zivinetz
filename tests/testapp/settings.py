@@ -1,9 +1,16 @@
 import os
 
+from speckenv import env
+from speckenv_django import django_database_url
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.postgresql", "NAME": "zivinetz"}}
+DATABASES = {
+    "default": django_database_url(
+        env("DATABASE_URL", default="postgres://127.0.0.1:5432/zivinetz")
+    )
+}
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
