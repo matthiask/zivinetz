@@ -35,9 +35,9 @@ class AssignmentPDFStationery:
             self.page_2(canvas, pdfdocument)
 
     markers = {
-        "standard": (54, 94),
-        "trial": (81.5, 94),
-        "long_assignment": (114, 94),
+        "standard": (53.5, 94),
+        "trial": (81, 94),
+        "long_assignment": (113.5, 94),
         # 'working_time_fixed': (112, 60),
         # 'working_time_nightshift': (151, 59),
         # 'working_time_flexible': (112, 55),
@@ -82,14 +82,14 @@ class AssignmentPDFStationery:
         "food_throughout": (31.5, 184),
         "food_not_throughout": (31.5, 180),
         #
-        "drudge_uses_accomodation": (36, 253),
-        "drudge_renounce_accomodation_1": (36, 244),
+        "drudge_uses_accomodation": (35.5, 253),
+        "drudge_renounce_accomodation_1": (35.5, 243.5),
         # "drudge_renounce_accomodation_2": (186, 250),
         #
         "public_transports": (31.5, 207),
         "private_transport": (31.5, 202.5),
         #
-        "special_tickets_yes": (39, 249),
+        "special_tickets_yes": (39, 248.5),
         # "special_tickets_no": (186, 137),
         "clothing_provided": (31, 126),
         "clothing_compensated": (31, 121.5),
@@ -104,12 +104,12 @@ class AssignmentPDFStationery:
     }
 
     def draw_marker(self, canvas, key):
-        canvas.setFont("Helvetica-Bold", 11)
+        canvas.setFont("Helvetica-Bold", 14)
         canvas.drawString(self.markers[key][0] * mm, self.markers[key][1] * mm, "x")
 
     def _draw_all_markers(self, canvas):  # pragma: no cover
         canvas.setFillColorRGB(1, 0, 0)
-        canvas.setFont("Helvetica-Bold", 11)
+        canvas.setFont("Helvetica-Bold", 14)
         for key, pos in self.markers.items():
             canvas.drawString(pos[0] * mm, pos[1] * mm, f"x {key}")
             # canvas.drawString(pos[0] * mm, pos[1] * mm, "x")
