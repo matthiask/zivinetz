@@ -40,6 +40,7 @@ class DrudgeViewsTestCase(TestCase):
             "place_of_citizenship_state": "ZH",
             "bank_account": "GB29 NWBK 6016 1331 9268 19",
             "regional_office": factories.RegionalOfficeFactory.create().id,
+            "youth_association": "Anderer",
         }
 
         self.assertContains(

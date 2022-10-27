@@ -65,12 +65,11 @@ class CompanyHolidayAdmin(admin.ModelAdmin):
     list_display = ("date_from", "date_until", "scope_statements")
     save_as = True
 
+    @admin.display(description=_("scope statements"))
     def scope_statements(self, instance):
         return mark_safe(
             "<br>".join("%s" % object for object in instance.applies_to.all())
         )
-
-    scope_statements.short_description = _("scope statements")
 
 
 admin.site.register(

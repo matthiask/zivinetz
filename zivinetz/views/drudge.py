@@ -108,6 +108,13 @@ class DrudgeForm(forms.ModelForm):
         model = Drudge
         exclude = ("user", "internal_notes")
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["youth_association"].label = _(
+            "Bist du Mitglied in einem Jugendverband?"
+        )
+        self.fields["youth_association"].required = True
+
     def clean_bank_account(self):
         value = self.cleaned_data.get("bank_account")
         if value:

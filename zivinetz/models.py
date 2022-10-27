@@ -422,6 +422,18 @@ class Drudge(models.Model):
     half_fare_card = models.BooleanField(_("half-fare card"), default=False)
     other_card = models.CharField(_("other card"), max_length=100, blank=True)
     vegetarianism = models.BooleanField(_("vegetarianism"), default=False)
+    youth_association = models.CharField(
+        _("youth association"),
+        max_length=100,
+        blank=True,
+        choices=[
+            ("Pfadi", _("Pfadi")),
+            ("Cevi", _("Cevi")),
+            ("Jubla", _("Jubla")),
+            ("Anderer", _("Anderer")),
+            ("Keiner", _("Keiner")),
+        ],
+    )
 
     environment_course = models.BooleanField(
         _("environment course"),
