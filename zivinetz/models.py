@@ -421,7 +421,6 @@ class Drudge(models.Model):
     general_abonnement = models.BooleanField(_("general abonnement"), default=False)
     half_fare_card = models.BooleanField(_("half-fare card"), default=False)
     other_card = models.CharField(_("other card"), max_length=100, blank=True)
-    vegetarianism = models.BooleanField(_("vegetarianism"), default=False)
     youth_association = models.CharField(
         _("youth association"),
         max_length=100,
@@ -455,9 +454,7 @@ class Drudge(models.Model):
     notes = models.TextField(
         _("notes"),
         blank=True,
-        help_text=_(
-            "Allergies, vegetarianism, anything else we should be" " aware of?"
-        ),
+        help_text=_("Allergies, anything else we should be aware of?"),
     )
     internal_notes = models.TextField(
         _("internal notes"),
