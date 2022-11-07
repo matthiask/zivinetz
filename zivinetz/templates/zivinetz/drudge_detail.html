@@ -48,7 +48,7 @@
     <th>{% trans "place of citizenship" %}</th>
     <td>{{ object.place_of_citizenship_city }} {{ object.place_of_citizenship_state }}</td>
   </tr>
-  {% for title, value in object|model_details:"driving_license,general_abonnement,half_fare_card,other_card,environment_course,motor_saw_course,vegetarianism" %}
+  {% for title, value in object|model_details:"driving_license,general_abonnement,half_fare_card,other_card,environment_course,motor_saw_course,vegetarianism,youth_association" %}
     <tr>
       <th>{{ title|capfirst }}</th>
       <td>{{ value|default:"&ndash;" }}</td>

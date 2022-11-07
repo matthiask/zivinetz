@@ -623,10 +623,8 @@ msgid "vegetarianism"
 msgstr "Vegetarier"
 
 #: models.py:426
-#, fuzzy
-#| msgid "work location"
 msgid "youth association"
-msgstr "Arbeitsort"
+msgstr "Jugendverband"
 
 #: models.py:430
 msgid "Pfadi"
