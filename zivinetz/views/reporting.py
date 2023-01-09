@@ -15,7 +15,7 @@ from django.utils.translation import gettext as _
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
 from pdfdocument.utils import pdf_response
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from PyPDF2 import PdfReader, PdfWriter
 from reportlab.lib import colors
 
 from zivinetz.models import Assignment, AssignmentChange, ExpenseReport, JobReference
@@ -304,7 +304,7 @@ def assignment_pdf(request, assignment_id):
         if assignment.drudge.user != request.user:
             return HttpResponseForbidden("<h1>Access forbidden</h1>")
 
-    result_writer = PdfFileWriter()
+    result_writer = PdfWriter()
 
     # Generate the first page ################################################
     first_page = BytesIO()
@@ -360,8 +360,8 @@ Wir freuen uns auf deinen Einsatz!
     pdf.generate()
 
     # Add the first page to the output #######################################
-    first_page_reader = PdfFileReader(first_page)
-    result_writer.addPage(first_page_reader.getPage(0))
+    first_page_reader = PdfReader(first_page)
+    result_writer.add_page(first_page_reader.pages[0])
 
     # Generate the form ######################################################
     overlay = BytesIO()
@@ -376,27 +376,25 @@ Wir freuen uns auf deinen Einsatz!
     pdf.generate()
 
     # Merge the form and the overlay, and add everything to the output #######
-    eiv_reader = PdfFileReader(
+    eiv_reader = PdfReader(
         os.path.join(
             os.path.dirname(os.path.dirname(__file__)),
             "data",
             "Einsatzvereinbarung.pdf",
         )
     )
-    overlay_reader = PdfFileReader(overlay)
+    overlay_reader = PdfReader(overlay)
 
     for idx in range(2):
-        page = eiv_reader.getPage(idx)
-        page.mergePage(overlay_reader.getPage(idx))
-        result_writer.addPage(page)
+        page = eiv_reader.pages[idx]
+        page.merge_page(overlay_reader.pages[idx])
+        result_writer.add_page(page)
 
     # Add the conditions PDF if it exists ####################################
     if assignment.specification.conditions:
-        conditions_reader = PdfFileReader(
-            assignment.specification.conditions.open("rb")
-        )
+        conditions_reader = PdfReader(assignment.specification.conditions.open("rb"))
         for page in range(conditions_reader.getNumPages()):
-            result_writer.addPage(conditions_reader.getPage(page))
+            result_writer.add_page(conditions_reader.pages[page])
 
     # Response! ##############################################################
     response = HttpResponse(content_type="application/pdf")
