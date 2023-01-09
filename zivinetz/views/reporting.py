@@ -52,7 +52,7 @@ class AssignmentPDFStationery:
         # 'accomodation_used': (75, 251),
         # 'accomodation_notused': (113.5, 251),
         #
-        "breakfast_working_at_company": (93, 161),
+        "breakfast_working_at_company": (92, 161),
         "breakfast_working_at_home": (110, 161),
         "breakfast_working_external": (110, 161),
         #
@@ -60,7 +60,7 @@ class AssignmentPDFStationery:
         "breakfast_free_at_home": (165, 161),
         "breakfast_free_external": (165, 161),
         #
-        "lunch_working_at_company": (93, 157),
+        "lunch_working_at_company": (92, 157),
         "lunch_working_at_home": (110, 157),
         "lunch_working_external": (110, 157),
         #
@@ -68,39 +68,39 @@ class AssignmentPDFStationery:
         "lunch_free_at_home": (165, 157),
         "lunch_free_external": (165, 157),
         #
-        "supper_working_at_company": (93, 153),
-        "supper_working_at_home": (110, 153),
-        "supper_working_external": (110, 153),
+        "supper_working_at_company": (92, 152.5),
+        "supper_working_at_home": (110, 152.5),
+        "supper_working_external": (110, 152.5),
         #
-        "supper_free_at_company": (147.5, 153),
-        "supper_free_at_home": (165, 153),
-        "supper_free_external": (165, 153),
+        "supper_free_at_company": (147.5, 152.5),
+        "supper_free_at_home": (165, 152.5),
+        "supper_free_external": (165, 152.5),
         #
-        "accomodation_throughout": (31, 258),
+        "accomodation_throughout": (31, 257),
         "accomodation_not_throughout": (100, 258),
         #
-        "food_throughout": (31.5, 184),
-        "food_not_throughout": (31.5, 180),
+        "food_throughout": (31, 183),
+        "food_not_throughout": (31, 178.5),
         #
-        "drudge_uses_accomodation": (35.5, 253),
-        "drudge_renounce_accomodation_1": (35.5, 243.5),
+        "drudge_uses_accomodation": (35.5, 252.5),
+        "drudge_renounce_accomodation_1": (35.5, 243),
         # "drudge_renounce_accomodation_2": (186, 250),
         #
-        "public_transports": (31.5, 207),
-        "private_transport": (31.5, 202.5),
+        "public_transports": (31, 206.5),
+        "private_transport": (31, 201.5),
         #
         "special_tickets_yes": (39, 248.5),
         # "special_tickets_no": (186, 137),
-        "clothing_provided": (31, 126),
-        "clothing_compensated": (31, 121.5),
+        "clothing_provided": (31, 125),
+        "clothing_compensated": (31, 121),
         #
         # "arrangement_timely": (31, 102),
         # "arrangement_late": (31, 102),
         #
-        "legalese_0": (176, 101),
-        "legalese_1": (185, 81),
-        "legalese_2": (185, 72),
-        "legalese_3": (185, 63),
+        "legalese_0": (175.5, 101),
+        "legalese_1": (185, 80),
+        "legalese_2": (185, 71),
+        "legalese_3": (185, 62.5),
     }
 
     def draw_marker(self, canvas, key):
