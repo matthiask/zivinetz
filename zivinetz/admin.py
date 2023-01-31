@@ -98,7 +98,6 @@ admin.site.register(
             {
                 "fields": (
                     "valid_from",
-                    "spending_money",
                     "accomodation_home",
                     "private_transport_per_km",
                 )

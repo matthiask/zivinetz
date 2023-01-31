@@ -51,7 +51,6 @@ class SpecificationFactory(DjangoModelFactory):
 
 class CompensationSetFactory(DjangoModelFactory):
     valid_from = date(2011, 2, 1)
-    spending_money = Decimal("5.00")
     accomodation_home = Decimal("5.00")
     private_transport_per_km = Decimal("0.65")
     clothing = Decimal("2.30")

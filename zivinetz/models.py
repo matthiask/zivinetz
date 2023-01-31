@@ -206,10 +206,13 @@ class Specification(models.Model):
             ),
         )
 
+    def _spending_money_for_date(self, for_date):
+        return Decimal("5.00") if for_date < date(2023, 1, 1) else Decimal("7.50")
+
     def compensation(self, for_date=date.today):
         cset = CompensationSet.objects.for_date(for_date)
 
-        compensation = {"spending_money": cset.spending_money}
+        compensation = {"spending_money": self._spending_money_for_date(for_date)}
 
         for day_type in ("working", "sick", "free"):
             key = "accomodation_%s" % day_type
@@ -261,10 +264,6 @@ class CompensationSetManager(models.Manager):
 @model_resource_urls()
 class CompensationSet(models.Model):
     valid_from = models.DateField(_("valid from"), unique=True)
-
-    spending_money = models.DecimalField(
-        _("spending money"), max_digits=10, decimal_places=2
-    )
 
     breakfast_at_accomodation = models.DecimalField(
         _("breakfast at accomodation"), max_digits=10, decimal_places=2
