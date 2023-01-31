@@ -206,13 +206,11 @@ class Specification(models.Model):
             ),
         )
 
-    def _spending_money_for_date(self, for_date):
-        return Decimal("5.00") if for_date < date(2023, 1, 1) else Decimal("7.50")
-
     def compensation(self, for_date=date.today):
         cset = CompensationSet.objects.for_date(for_date)
 
-        compensation = {"spending_money": self._spending_money_for_date(for_date)}
+        # The spending_money default is only valid from 2023-01-01
+        compensation = {"spending_money": Decimal("7.50")}
 
         for day_type in ("working", "sick", "free"):
             key = "accomodation_%s" % day_type
@@ -1042,8 +1040,14 @@ class ExpenseReport(models.Model):
 
     def compensation_data(self, arranged_on=None):
         arranged_on = arranged_on or self.assignment.arranged_on
+        if not arranged_on:
+            return None
 
-        return self.specification.compensation(arranged_on) if arranged_on else None
+        return self.specification.compensation(arranged_on) | {
+            "spending_money": Decimal("5.00")
+            if self.date_from < date(2023, 1, 1)
+            else Decimal("7.50")
+        }
 
     def compensations(self):
         if not self.assignment.arranged_on:
