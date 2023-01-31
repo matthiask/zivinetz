@@ -15,7 +15,7 @@ from django.utils.translation import gettext as _
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
 from pdfdocument.utils import pdf_response
-from PyPDF2 import PdfReader, PdfWriter
+from pypdf import PdfReader, PdfWriter
 from reportlab.lib import colors
 
 from zivinetz.models import Assignment, AssignmentChange, ExpenseReport, JobReference
@@ -393,8 +393,8 @@ Wir freuen uns auf deinen Einsatz!
     # Add the conditions PDF if it exists ####################################
     if assignment.specification.conditions:
         conditions_reader = PdfReader(assignment.specification.conditions.open("rb"))
-        for page in range(conditions_reader.getNumPages()):
-            result_writer.add_page(conditions_reader.pages[page])
+        for page in conditions_reader.pages:
+            result_writer.add_page(page)
 
     # Response! ##############################################################
     response = HttpResponse(content_type="application/pdf")
