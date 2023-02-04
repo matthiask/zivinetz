@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("zivinetz", "0015_remove_drudge_vegetarianism_alter_drudge_notes"),
     ]

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("zivinetz", "0007_scopestatement_default_group")]
 
     operations = [

@@ -430,6 +430,30 @@ class Drudge(models.Model):
             ("Keiner", _("Keiner")),
         ],
     )
+    source = models.CharField(
+        "Wie hast du vom Naturnetz erfahren?",
+        max_length=100,
+        blank=True,
+        choices=[
+            (choice, choice)
+            for choice in [
+                "Instagram",
+                "Linkedin",
+                "Facebook",
+                "Freunde/Familie/Bekannte",
+                "Internetsuche",
+                "E-Zivi",
+                "Plakat/Flyer",
+                "Fahrzeug oder Einsatzgruppe gesehen",
+                "Anderes:",
+            ]
+        ],
+    )
+    source_other = models.CharField(
+        "Wie hast du vom Naturnetz erfahren?",
+        blank=True,
+        max_length=100,
+    )
 
     environment_course = models.BooleanField(
         _("environment course"),
@@ -688,7 +712,6 @@ class Assignment(models.Model):
                     day.month == self.date_until.month
                     and day.year == self.date_until.year
                 ):
-
                     extended_start = self.date_until + one_day
                     key = (
                         extended_start.year,

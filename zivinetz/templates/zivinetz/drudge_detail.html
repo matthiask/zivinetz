@@ -54,6 +54,10 @@
       <td>{{ value|default:"&ndash;" }}</td>
     </tr>
   {% endfor %}
+  <tr>
+    <th>Wie hast du vom Naturnetz erfahren?</th>
+    <td>{{ object.get_source_display|default:"&ndash;" }} {% if object.source_other %}({{ object.source_other }}){% endif %}</td>
+  </tr>
 </table>
 
 

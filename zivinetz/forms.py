@@ -38,7 +38,6 @@ def add_last_assignment_and_mark(queryset):
         .order_by("-date_from")
         .iterator()
     ):
-
         if assignment.drudge_id in drudges:
             drudges[assignment.drudge_id].last_assignment = assignment
             del drudges[assignment.drudge_id]

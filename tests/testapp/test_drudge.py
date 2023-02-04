@@ -41,6 +41,7 @@ class DrudgeViewsTestCase(TestCase):
             "bank_account": "GB29 NWBK 6016 1331 9268 19",
             "regional_office": factories.RegionalOfficeFactory.create().id,
             "youth_association": "Anderer",
+            "source": "Instagram",
         }
 
         self.assertContains(

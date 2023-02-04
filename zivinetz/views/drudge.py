@@ -114,6 +114,15 @@ class DrudgeForm(forms.ModelForm):
             "Bist du Mitglied in einem Jugendverband?"
         )
         self.fields["youth_association"].required = True
+        self.fields["source"].required = True
+
+    def clean(self):
+        data = super().clean()
+        if data.get("source") == "Anderes:" and not data.get("source_other"):
+            self.add_error(
+                "source_other", "Bitte angeben wenn du oben 'Anderes:' gewählt hast."
+            )
+        return data
 
     def clean_bank_account(self):
         value = self.cleaned_data.get("bank_account")

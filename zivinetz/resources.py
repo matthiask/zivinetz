@@ -278,7 +278,6 @@ class AssignmentMixin(ZivinetzMixin):
                     not data.get("drudge").motor_saw_course
                     and not data.get("motor_saw_course")
                 ):
-
                     raise forms.ValidationError(
                         _(
                             "Please also provide a value in the motor saw course"
