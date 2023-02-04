@@ -44,5 +44,12 @@ setup(
         "Topic :: Software Development :: Libraries :: Application Frameworks",
     ],
     zip_safe=False,
-    install_requires=["schwifty", "Pillow", "pypdf>=3.0", "towel", "towel-foundation"],
+    install_requires=[
+        "schwifty",
+        "Pillow",
+        "pypdf>=3.0",
+        "towel",
+        "towel-foundation",
+        "openpyxl>=3,<3.1",
+    ],
 )

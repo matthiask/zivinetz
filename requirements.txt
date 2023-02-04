@@ -4,7 +4,7 @@ django-mptt
 factory-boy
 FeinCMS
 pdfdocument
-openpyxl
+openpyxl<3.1
 Pillow
 psycopg2-binary
 pypdf
