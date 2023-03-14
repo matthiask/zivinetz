@@ -14,4 +14,6 @@ def job_reference_templates():
 
 @register.filter
 def mark_average(queryset):
-    return queryset.annotate(mark_average=Avg("assessments__mark"))
+    return queryset.annotate(mark_average=Avg("assessments__mark")).order_by(
+        "date_from", "date_until"
+    )
