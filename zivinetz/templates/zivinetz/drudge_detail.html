@@ -111,7 +111,7 @@
       <td title="{{ object.specification }}">{{ object.specification.code }}</td>
       <td>{{ object.created|date:"d.m.Y" }}</td>
       <td>{{ object.get_status_display }}</td>
-      <td>{{ object.mark_average|default:"&ndash;" }}</td>
+      <td>{{ object.mark_average|floatformat|default:"&ndash;" }}</td>
       <td>{{ object.admin_pdf_url|safe }}</td>
     </tr>
   {% endfor %}
