@@ -1,5 +1,5 @@
 /* batch form */
-;(function ($) {
+;(($) => {
   $(document.body).on("click", "[data-batch-action]", function () {
     var input = $('input[name="batch-action"]')
     input.val($(this).data("batch-action"))
@@ -30,39 +30,39 @@
 })(jQuery)
 
 /* search form */
-;(function ($) {
+;(($) => {
   var form = $(".form-search"),
     panel = form.find(".panel")
 
   if (!panel.length) return
 
-  $(".form-search").on("click", '[data-toggle="form"]', function () {
+  $(".form-search").on("click", '[data-toggle="form"]', () => {
     panel.toggle()
   })
   // give the layout engine some time to position everything
   // before hiding the panel.
-  setTimeout(function () {
+  setTimeout(() => {
     panel.hide()
     panel.css({ opacity: 1 })
   }, 10)
 })(jQuery)
 
 /* editLive */
-;(function ($) {
-  $(document.body).on("editLive", function (event, elem) {
+;(($) => {
+  $(document.body).on("editLive", (event, elem) => {
     if (elem.is(":checkbox"))
       /* TODO NOT text input. selects! */
       elem = elem.parent()
 
     elem.addClass("editlive-updated")
-    setTimeout(function () {
+    setTimeout(() => {
       elem.removeClass("editlive-updated")
     }, 2000)
   })
 })(jQuery)
 
 /* various tweaks */
-;(function ($) {
+;(($) => {
   Foundation.libs.reveal.settings.animation = "fade"
 
   $(document).foundation()
@@ -71,14 +71,14 @@
   $(document.body).append('<div id="spinner"></div>')
   var spinner = $("#spinner")
   spinner
-    .bind("ajaxSend", function (evt, jqxhr, settings) {
+    .bind("ajaxSend", (evt, jqxhr, settings) => {
       if (settings.type == "POST") {
         spinner.html("Saving...").show()
       } else {
         spinner.html("Loading...").show()
       }
     })
-    .bind("ajaxComplete", function () {
+    .bind("ajaxComplete", () => {
       spinner.hide()
     })
 })(jQuery)
