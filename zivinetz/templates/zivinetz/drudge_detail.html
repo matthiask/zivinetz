@@ -1,7 +1,7 @@
 {% extends "resources/object_detail.html" %}
 
 {% load i18n modelview_detail modelview_list towel_form_tags %}
-{% load feincms_thumbnail zivinetz_tags %}
+{% load zivinetz_tags %}
 
 {% block title %}{{ object }} - {{ verbose_name }} - {{ block.super }}{% endblock %}
 
@@ -80,7 +80,7 @@
 </table>
 
 {% if object.profile_image %}
-  <img src="{{ object.profile_image|thumbnail:"300x500" }}" alt="">
+  <img src="{{ object.profile_image.url }}" alt="" style="max-width:400px">
 {% endif %}
 
 <div class="buttons">

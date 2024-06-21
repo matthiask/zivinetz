@@ -1,8 +1,6 @@
 coverage
 Django<5.1
-django-mptt
 factory-boy
-FeinCMS
 pdfdocument
 openpyxl<3.1
 Pillow

@@ -1,14 +1,14 @@
 /* batch form */
 ;(($) => {
   $(document.body).on("click", "[data-batch-action]", function () {
-    var input = $('input[name="batch-action"]')
+    const input = $('input[name="batch-action"]')
     input.val($(this).data("batch-action"))
     input.parents("form").submit()
   })
 
   $(document.body).on("click", "input.batch:checkbox", function () {
-    var cb = $(this)
-    if (cb.prop("value") == "on") {
+    const cb = $(this)
+    if (cb.prop("value") === "on") {
       cb.closest("table")
         .find("tbody input.batch:checkbox")
         .prop("checked", cb.prop("checked"))
@@ -20,7 +20,7 @@
   })
 
   $(".objects thead input[type=checkbox]").bind("change", function () {
-    var cbs = $(".objects tbody input[type=checkbox]")
+    const cbs = $(".objects tbody input[type=checkbox]")
     if ($(this).prop("checked")) {
       cbs.prop("checked", "checked")
     } else {
@@ -31,8 +31,8 @@
 
 /* search form */
 ;(($) => {
-  var form = $(".form-search"),
-    panel = form.find(".panel")
+  const form = $(".form-search")
+  const panel = form.find(".panel")
 
   if (!panel.length) return
 
@@ -69,10 +69,10 @@
   $(document).towelFoundation()
 
   $(document.body).append('<div id="spinner"></div>')
-  var spinner = $("#spinner")
+  const spinner = $("#spinner")
   spinner
     .bind("ajaxSend", (evt, jqxhr, settings) => {
-      if (settings.type == "POST") {
+      if (settings.type === "POST") {
         spinner.html("Saving...").show()
       } else {
         spinner.html("Loading...").show()
