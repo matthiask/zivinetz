@@ -23,6 +23,7 @@ setup(
     package_data={
         "": ["*.html", "*.txt"],
         "zivinetz": [
+            "data/*.*",
             "locale/*/*/*.*",
             "static/zivinetz/*.*",
             "static/zivinetz/*/*.*",
