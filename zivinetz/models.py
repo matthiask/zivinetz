@@ -102,6 +102,7 @@ class DrudgeQuota(models.Model):
     quota = models.PositiveIntegerField(_("quota"))
 
     class Meta:
+        unique_together = [("scope_statement", "week")]
         verbose_name = _("drudge quota")
         verbose_name_plural = _("drudge quotas")
 
