@@ -15,15 +15,14 @@ def forwards(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('zivinetz', '0017_drudge_source_drudge_source_other'),
+        ("zivinetz", "0017_drudge_source_drudge_source_other"),
     ]
 
     operations = [
         migrations.RunPython(forwards),
         migrations.AlterUniqueTogether(
-            name='drudgequota',
-            unique_together={('scope_statement', 'week')},
+            name="drudgequota",
+            unique_together={("scope_statement", "week")},
         ),
     ]

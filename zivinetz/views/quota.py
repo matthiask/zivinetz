@@ -16,7 +16,9 @@ def yield_dates(start, step, count):
 
 
 class QuotaForm(forms.Form):
-    quota = forms.IntegerField(label=gettext_lazy("quota"), required=False, min_value=0, max_value=100)
+    quota = forms.IntegerField(
+        label=gettext_lazy("quota"), required=False, min_value=0, max_value=100
+    )
 
 
 @staff_member_required
