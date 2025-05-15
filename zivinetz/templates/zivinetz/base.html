@@ -104,8 +104,13 @@
   <div class="large-12 columns">
     {% block content %}{% endblock %}
     <hr>
-    <a href="{% url 'logout' %}">{% trans "Log out" %}</a> /
-    <a href="{% url 'password_change' %}">{% trans "Change password" %}</a>
+    <div class="account-buttons">
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="button">{% translate 'Log out' %}</button>
+      </form>
+      <a class="button" href="{% url 'password_change' %}">{% trans "Change password" %}</a>
+    </div>
   </div>
 </div>
 
