@@ -629,7 +629,7 @@ def assignmentchange_list(request):
     )
 
 
-@user_type_required(['dev_admin'])
+@user_type_required(["dev_admin"])
 def assignment_phone_list(request):
     """Generate a PDF phone list of assignments."""
     # Get the search form and apply its filters
@@ -639,22 +639,20 @@ def assignment_phone_list(request):
 
     # Get the filtered queryset using the search form's logic
     queryset = search_form.queryset(Assignment)
-    
+
     # Apply additional filters if needed
-    if request.GET.get('status'):
-        queryset = queryset.filter(status=request.GET.get('status'))
-    if request.GET.get('regional_office'):
-        queryset = queryset.filter(regional_office=request.GET.get('regional_office'))
-    if request.GET.get('specification'):
-        queryset = queryset.filter(specification=request.GET.get('specification'))
-    
+    if request.GET.get("status"):
+        queryset = queryset.filter(status=request.GET.get("status"))
+    if request.GET.get("regional_office"):
+        queryset = queryset.filter(regional_office=request.GET.get("regional_office"))
+    if request.GET.get("specification"):
+        queryset = queryset.filter(specification=request.GET.get("specification"))
+
     # Order by drudge name and date
     queryset = queryset.select_related(
-        'drudge',
-        'drudge__user',
-        'specification'
-    ).order_by('drudge__user__last_name', 'drudge__user__first_name', '-date_from')
-    
+        "drudge", "drudge__user", "specification"
+    ).order_by("drudge__user__last_name", "drudge__user__first_name", "-date_from")
+
     # Generate PDF
     pdf, response = pdf_response("assignment_list")
     pdf.init_report()
@@ -664,15 +662,15 @@ def assignment_phone_list(request):
     pdf.spacer()
 
     # Add date
-    current_time = datetime.now(pytz.timezone('Europe/Zurich'))
+    current_time = datetime.now(pytz.timezone("Europe/Zurich"))
     pdf.p(_("Generated on: %s") % current_time.strftime("%d.%m.%Y %H:%M"))
     pdf.spacer()
 
     # Add search parameters if any
-    if request.GET.get('s'):
+    if request.GET.get("s"):
         pdf.h2(_("Search Parameters"))
         for key, value in request.GET.items():
-            if key != 's' and value:
+            if key != "s" and value:
                 param_text = self.format_search_parameter(key, value)
                 pdf.p(param_text)
         pdf.spacer()
@@ -683,18 +681,24 @@ def assignment_phone_list(request):
         # If this is a new drudge, add drudge information
         if current_drudge != assignment.drudge:
             current_drudge = assignment.drudge
-            
+
             # Add drudge header
             pdf.h2(f"{current_drudge.user.last_name}, {current_drudge.user.first_name}")
-            
+
             # Add drudge details
-            pdf.table([
-                (_("ZDP No."), str(current_drudge.zdp_no)),
-                (_("Email"), current_drudge.user.email),
-                (_("Phone"), f"{current_drudge.phone_home or '-'} / {current_drudge.mobile or '-'}"),
-            ], (4 * cm, 12.4 * cm))
+            pdf.table(
+                [
+                    (_("ZDP No."), str(current_drudge.zdp_no)),
+                    (_("Email"), current_drudge.user.email),
+                    (
+                        _("Phone"),
+                        f"{current_drudge.phone_home or '-'} / {current_drudge.mobile or '-'}",
+                    ),
+                ],
+                (4 * cm, 12.4 * cm),
+            )
             pdf.spacer()
-            
+
             # Add course information
             courses = []
             if current_drudge.environment_course:
@@ -702,17 +706,26 @@ def assignment_phone_list(request):
             if current_drudge.motor_saw_course:
                 courses.append("Motorsägenkurs")
             if courses:
-                pdf.table([
-                    (_("Kurse"), ", ".join(courses)),
-                ], (4 * cm, 12.4 * cm))
+                pdf.table(
+                    [
+                        (_("Kurse"), ", ".join(courses)),
+                    ],
+                    (4 * cm, 12.4 * cm),
+                )
                 pdf.spacer()
-        
+
         # Add assignment information
-        pdf.table([
-            (_("Pflichtenheft"), assignment.specification.code),
-            (_("Date"), f"{assignment.date_from.strftime('%d.%m.%Y')} - {assignment.determine_date_until().strftime('%d.%m.%Y')}"),
-            (_("Status"), assignment.get_status_display()),
-        ], (4 * cm, 12.4 * cm))
+        pdf.table(
+            [
+                (_("Pflichtenheft"), assignment.specification.code),
+                (
+                    _("Date"),
+                    f"{assignment.date_from.strftime('%d.%m.%Y')} - {assignment.determine_date_until().strftime('%d.%m.%Y')}",
+                ),
+                (_("Status"), assignment.get_status_display()),
+            ],
+            (4 * cm, 12.4 * cm),
+        )
         pdf.spacer()
         pdf.hr_mini()
 

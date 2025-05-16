@@ -8,7 +8,7 @@
 <table class="objects">
     <thead>
         <tr>
-            
+
             {% if request.user|has_user_type:"user_plus,admin,dev_admin" %}
                 {% if batch_form %}
                     <td><input type="checkbox"></td>
@@ -26,7 +26,7 @@
                 <th>{% trans "average mark" %}</th>
             {% endif %}
             {% if request.user|has_user_type:"squad_leader" %}
-                <th>Profil</th> 
+                <th>Profil</th>
             {% endif %}
         </tr>
     </thead>

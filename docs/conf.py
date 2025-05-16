@@ -14,34 +14,34 @@ import os
 import sys
 
 # Add the project root to the path so autodoc can find the modules
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath(".."))
 
 # Project information
-project = 'Zivinetz'
-copyright = '2024, Matthias Kestenholz'
-author = 'Matthias Kestenholz'
-release = '1.0'
-version = '1.0'
+project = "Zivinetz"
+copyright = "2024, Matthias Kestenholz"
+author = "Matthias Kestenholz"
+release = "1.0"
+version = "1.0"
 
 # Extensions
 extensions = [
-    'sphinx.ext.autodoc',  # API documentation
-    'sphinx.ext.napoleon',  # Support for Google/NumPy-style docstrings
-    'sphinx.ext.viewcode',  # Add links to source code
-    'sphinx.ext.intersphinx',  # Link to other project's documentation
-    'sphinx_rtd_theme',  # Read The Docs theme
+    "sphinx.ext.autodoc",  # API documentation
+    "sphinx.ext.napoleon",  # Support for Google/NumPy-style docstrings
+    "sphinx.ext.viewcode",  # Add links to source code
+    "sphinx.ext.intersphinx",  # Link to other project's documentation
+    "sphinx_rtd_theme",  # Read The Docs theme
 ]
 
 # General configuration
-templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-source_suffix = '.rst'
-master_doc = 'index'
-language = 'de'  # Since your docs are in German
+templates_path = ["_templates"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+source_suffix = ".rst"
+master_doc = "index"
+language = "de"  # Since your docs are in German
 
 # HTML output
-html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
+html_theme = "sphinx_rtd_theme"
+html_static_path = ["_static"]
 
 # -- General configuration -----------------------------------------------------
 

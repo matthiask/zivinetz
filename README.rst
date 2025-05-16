@@ -7,8 +7,8 @@ A Django application for managing civil service personnel and assignments.
 Description
 -----------
 
-Zivinetz is a specialized management system designed to handle the administration 
-of civil service personnel (Zivildienstleistende) in Switzerland. It provides 
+Zivinetz is a specialized management system designed to handle the administration
+of civil service personnel (Zivildienstleistende) in Switzerland. It provides
 tools for scheduling, assignment tracking, and personnel management.
 
 

@@ -20,4 +20,4 @@ Verwendung
     scope = ScopeStatement.objects.create(
         eis_number='12345',
         # weitere Felder...
-    ) 
+    )

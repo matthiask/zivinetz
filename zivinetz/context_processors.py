@@ -4,10 +4,14 @@ from django.utils.text import capfirst
 
 def zivinetz(request):
     # Get user_type from userprofile
-    user_type = getattr(request.user.userprofile, 'user_type', None) if hasattr(request.user, 'userprofile') else None
+    user_type = (
+        getattr(request.user.userprofile, "user_type", None)
+        if hasattr(request.user, "userprofile")
+        else None
+    )
 
     if request.user.is_authenticated and request.user.is_staff:
-        if user_type in ['admin', 'dev_admin']:
+        if user_type in ["admin", "dev_admin"]:
             urls = [
                 (_("scheduling"), "/zivinetz/admin/scheduling/"),
                 (_("drudges"), "/zivinetz/admin/drudges/"),
@@ -21,7 +25,7 @@ def zivinetz(request):
                 (_("job references"), "/zivinetz/admin/jobreferences/"),
                 (_("reporting"), "/zivinetz/reporting/"),
             ]
-        elif user_type == 'user_plus':
+        elif user_type == "user_plus":
             # User plus sees everything except expense reports
             urls = [
                 (_("scheduling"), "/zivinetz/admin/scheduling/"),
@@ -35,7 +39,7 @@ def zivinetz(request):
                 (_("job references"), "/zivinetz/admin/jobreferences/"),
                 (_("reporting"), "/zivinetz/reporting/"),
             ]
-        elif user_type == 'squad_leader':
+        elif user_type == "squad_leader":
             # Squad leader sees limited admin functions
             urls = [
                 (_("drudges"), "/zivinetz/admin/drudges/"),
@@ -43,8 +47,8 @@ def zivinetz(request):
             ]
         else:
             urls = [
-            (_("dashboard"), "/zivinetz/dashboard/"),
-            (_("profile"), "/zivinetz/profile/"),
+                (_("dashboard"), "/zivinetz/dashboard/"),
+                (_("profile"), "/zivinetz/profile/"),
             ]
     else:
         urls = [
