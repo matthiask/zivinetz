@@ -438,22 +438,14 @@ class Drudge(models.Model):
         choices=[
             (choice, choice)
             for choice in [
-                "Instagram",
-                "Linkedin",
-                "Facebook",
+                "Social Media",
                 "Freunde/Familie/Bekannte",
                 "Internetsuche",
                 "E-Zivi",
                 "Plakat/Flyer",
                 "Fahrzeug oder Einsatzgruppe gesehen",
-                "Anderes:",
             ]
         ],
-    )
-    source_other = models.CharField(
-        "Wie hast du vom Naturnetz erfahren?",
-        blank=True,
-        max_length=100,
     )
 
     environment_course = models.BooleanField(
@@ -1518,3 +1510,19 @@ class Absence(models.Model):
                 )
                 % (", ".join(str(o) for o in overlapping))
             )
+
+
+class UserProfile(models.Model):
+    USER_TYPE_CHOICES = (
+        ('drudge', _('Drudge')),
+        ('squad_leader', _('Squad Leader')),
+        ('user_plus', _('User Plus')),
+        ('admin', _('Admin')),
+        ('dev_admin', _('DEV-Admin')),
+    )
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='drudge')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.get_user_type_display()}"

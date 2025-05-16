@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<style>
+    @page {
+        size: A4;
+        margin: 2cm;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 12pt;
+    }
+    h1 {
+        font-size: 18pt;
+        margin-bottom: 1cm;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1cm;
+    }
+    th, td {
+        padding: 0.3cm;
+        border: 1px solid #000;
+        text-align: left;
+    }
+    th {
+        background-color: #f0f0f0;
+    }
+    .no-phone {
+        color: #999;
+        font-style: italic;
+    }
+</style>
+
+<h1>{% trans "Phone List" %}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Phone" %}</th>
+            <th>{% trans "Specification" %}</th>
+            <th>{% trans "Date" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for assignment in assignments %}
+            <tr>
+                <td>{{ assignment.drudge.user.get_full_name }}</td>
+                <td>
+                    {% if assignment.drudge.phone %}
+                        {{ assignment.drudge.phone }}
+                    {% else %}
+                        <span class="no-phone">{% trans "No phone number" %}</span>
+                    {% endif %}
+                </td>
+                <td>{{ assignment.specification }}</td>
+                <td>{{ assignment.date_from|date:"d.m.Y" }} - {{ assignment.determine_date_until|date:"d.m.Y" }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} 

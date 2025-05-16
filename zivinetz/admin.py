@@ -1,8 +1,11 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from zivinetz import models
+from zivinetz.models import UserProfile
 
 
 class SpecificationInline(admin.StackedInline):
@@ -227,3 +230,27 @@ admin.site.register(
     list_display=("assignment", "created_by", "reason", "days"),
     raw_id_fields=("assignment", "created_by"),
 )
+
+admin.site.register(
+    UserProfile,
+    list_display=('user', 'user_type'),
+    list_filter=('user_type',),
+    search_fields=('user__username', 'user__first_name', 'user__last_name'),
+)
+
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+    can_delete = False
+
+class CustomUserAdmin(UserAdmin):
+    inlines = (UserProfileInline,)
+    
+    def get_user_type(self, obj):
+        return obj.userprofile.user_type if hasattr(obj, 'userprofile') else '-'
+    get_user_type.short_description = 'User Type'
+    
+    list_display = UserAdmin.list_display + ('get_user_type',)
+
+# Unregister the default UserAdmin and register our custom one
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)

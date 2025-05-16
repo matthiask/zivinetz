@@ -9,6 +9,7 @@ from pdfdocument.utils import pdf_response
 from zivinetz.models import ExpenseReport
 
 
+
 @staff_member_required
 def expense_statistics_pdf(request):
     return generate_expense_statistics_pdf(

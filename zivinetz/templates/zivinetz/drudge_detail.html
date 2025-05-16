@@ -8,58 +8,88 @@
 {% block content %}
 <table style="width:100%"><tr><td style="width:50%">
 
-<table>
-  <tr class="odd">
-    <th>{% trans "ZDP No." %}</th>
-    <td>{{ object.zdp_no }}</td>
-  </tr>
-  <tr class="even">
-    <th>Adresse</th>
-    <td>
-      {{ object.user.first_name }} {{ object.user.last_name }}<br />
-      {{ object.address|linebreaksbr }}<br />
-      {{ object.zip_code }} {{ object.city }}<br />
-    </td>
-  </tr>
-  {% for title, value in object.user|model_details:"email,is_active,last_login,date_joined" %}
-    <tr>
-      <th>{{ title|capfirst }}</th>
-      <td>{{ value|default:"&ndash;" }}</td>
+<!-- User Details Admin view -->
+{% if request.user|has_user_type:"user_plus,admin,dev_admin" %}
+  <table>
+    <tr class="odd">
+      <th>{% trans "ZDP No." %}</th>
+      <td>{{ object.zdp_no }}</td>
     </tr>
-  {% endfor %}
-  {% for title, value in object|model_details:"date_of_birth,phone_home,phone_office,mobile,regional_office" %}
-    <tr>
-      <th>{{ title|capfirst }}</th>
-      <td>{{ value|default:"&ndash;" }}</td>
+    <tr class="even">
+      <th>Adresse</th>
+      <td>
+        {{ object.user.first_name }} {{ object.user.last_name }}<br />
+        {{ object.address|linebreaksbr }}<br />
+        {{ object.zip_code }} {{ object.city }}<br />
+      </td>
     </tr>
-  {% endfor %}
-</table>
+    {% for title, value in object.user|model_details:"email,is_active,last_login,date_joined" %}
+      <tr>
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value|default:"&ndash;" }}</td>
+      </tr>
+    {% endfor %}
+    {% for title, value in object|model_details:"date_of_birth,phone_home,phone_office,mobile,regional_office" %}
+      <tr>
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value|default:"&ndash;" }}</td>
+      </tr>
+    {% endfor %}
+  </table>
 
-</td><td style="width:50%">
+  </td><td style="width:50%">
 
-<table>
-  {% for title, value in object|model_details:"bank_account,health_insurance_company,health_insurance_account" %}
-    <tr>
-      <th>{{ title|capfirst }}</th>
-      <td>{{ value|default:"&ndash;" }}</td>
+  <table>
+    {% for title, value in object|model_details:"bank_account,health_insurance_company,health_insurance_account" %}
+      <tr>
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value|default:"&ndash;" }}</td>
+      </tr>
+    {% endfor %}
+    <tr class="even">
+      <th>{% trans "place of citizenship" %}</th>
+      <td>{{ object.place_of_citizenship_city }} {{ object.place_of_citizenship_state }}</td>
     </tr>
-  {% endfor %}
-  <tr class="even">
-    <th>{% trans "place of citizenship" %}</th>
-    <td>{{ object.place_of_citizenship_city }} {{ object.place_of_citizenship_state }}</td>
-  </tr>
-  {% for title, value in object|model_details:"driving_license,general_abonnement,half_fare_card,other_card,environment_course,motor_saw_course,youth_association" %}
+    {% for title, value in object|model_details:"driving_license,general_abonnement,half_fare_card,other_card,environment_course,motor_saw_course,youth_association" %}
+      <tr>
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value|default:"&ndash;" }}</td>
+      </tr>
+    {% endfor %}
     <tr>
-      <th>{{ title|capfirst }}</th>
-      <td>{{ value|default:"&ndash;" }}</td>
+      <th>Wie hast du vom Naturnetz erfahren?</th>
+      <td>{{ object.get_source_display|default:"&ndash;" }}</td>
     </tr>
-  {% endfor %}
-  <tr>
-    <th>Wie hast du vom Naturnetz erfahren?</th>
-    <td>{{ object.get_source_display|default:"&ndash;" }} {% if object.source_other %}({{ object.source_other }}){% endif %}</td>
-  </tr>
-</table>
+  </table>
+{% endif %}
 
+<!-- User Details Squad_leader view -->
+{% if request.user|has_user_type:"squad_leader" %}
+  <table>
+    {% for title, value in object.user|model_details:"email" %}
+      <tr>
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value|default:"&ndash;" }}</td>
+      </tr>
+    {% endfor %}
+    {% for title, value in object|model_details:"phone_home,phone_office,mobile" %}
+      <tr>
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value|default:"&ndash;" }}</td>
+      </tr>
+    {% endfor %}
+    {% for title, value in object|model_details:"driving_license,general_abonnement,half_fare_card,other_card,environment_course,motor_saw_course" %}
+      <tr>
+        <th>{{ title|capfirst }}</th>
+        <td>{{ value|default:"&ndash;" }}</td>
+      </tr>
+    {% endfor %}
+    <tr>
+      <th>Wie hast du vom Naturnetz erfahren?</th>
+      <td>{{ object.get_source_display|default:"&ndash;" }}</td>
+    </tr>
+  </table>
+{% endif %}
 
 </td></tr>
 
@@ -83,40 +113,45 @@
   <img src="{{ object.profile_image.url }}" alt="" style="max-width:400px">
 {% endif %}
 
-<div class="buttons">
-  <a href="delete/" class="button"><span>{% trans "delete"|capfirst %}</span></a>
-  <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>
-</div>
+{% if request.user|has_user_type:"user_plus,admin" %}
+  <div class="buttons">
+    <a href="delete/" class="button"><span>{% trans "delete"|capfirst %}</span></a>
+    <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>
+  </div>
+{% endif %}
 
-<h2>{% trans "assignments" %}</h2>
-<table class="objects">
-  <thead>
-    <tr>
-      <th>{% trans "date period"|capfirst %}</th>
-      <th>{% trans "specification"|capfirst %}</th>
-      <th>{% trans "created"|capfirst %}</th>
-      <th>{% trans "status"|capfirst %}</th>
-      <th>{% trans "mark" %}</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for object in object.assignments.all|mark_average %}
-    <tr>
-      <th>
-        <a href="{{ object.get_absolute_url }}">
-          {{ object.date_from|date:"d.m.Y" }} - {{ object.determine_date_until|date:"d.m.Y" }}
-        </a>
-      </th>
-      <td title="{{ object.specification }}">{{ object.specification.code }}</td>
-      <td>{{ object.created|date:"d.m.Y" }}</td>
-      <td>{{ object.get_status_display }}</td>
-      <td>{{ object.mark_average|floatformat|default:"&ndash;" }}</td>
-      <td>{{ object.admin_pdf_url|safe }}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+
+{% if request.user|has_user_type:"user_plus,admin" %}
+  <h2>{% trans "assignments" %}</h2>
+  <table class="objects">
+    <thead>
+      <tr>
+        <th>{% trans "date period"|capfirst %}</th>
+        <th>{% trans "specification"|capfirst %}</th>
+        <th>{% trans "created"|capfirst %}</th>
+        <th>{% trans "status"|capfirst %}</th>
+        <th>{% trans "mark" %}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for object in object.assignments.all|mark_average %}
+      <tr>
+        <th>
+          <a href="{{ object.get_absolute_url }}">
+            {{ object.date_from|date:"d.m.Y" }} - {{ object.determine_date_until|date:"d.m.Y" }}
+          </a>
+        </th>
+        <td title="{{ object.specification }}">{{ object.specification.code }}</td>
+        <td>{{ object.created|date:"d.m.Y" }}</td>
+        <td>{{ object.get_status_display }}</td>
+        <td>{{ object.mark_average|floatformat|default:"&ndash;" }}</td>
+        <td>{{ object.admin_pdf_url|safe }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
 
 <h2>{% trans "internal assessments" %}</h2>
 <table>

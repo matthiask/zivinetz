@@ -1,5 +1,46 @@
-Welcome to zivinetz's documentation!
+Willkommen zur Zivinetz-Dokumentation
 ====================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Inhalt:
+
+   installation
+   getting_started
+   models/index
+   api/index
+   deployment
+   changelog
+
+Über Zivinetz
+------------
+
+Zivinetz ist ein Django-basiertes System zur Verwaltung von Zivildiensteinsätzen.
+
+Technische Voraussetzungen
+-------------------------
+
+* Python 3.10+
+* Django 4.0+
+
+Verwendete Bibliotheken
+----------------------
+
+* `Towel <https://github.com/matthiask/towel/>`_
+* `towel-foundation <https://github.com/matthiask/towel-foundation/>`_
+* `PDFDocument <https://github.com/matthiask/pdfdocument/>`_
+* `reportlab <http://www.reportlab.com/>`_
+* `FeinCMS <http://feincms.org>`_
+* `Foundation 4 <http://foundation.zurb.com>`_
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Module:
+
+   models/scope_statement
+   models/drudge
+   models/assignment
+   models/compensation
 
 Zivinetz
 --------

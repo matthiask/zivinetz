@@ -69,7 +69,10 @@ class DrudgeSearchForm(SearchForm):
     regional_office = forms.ModelChoiceField(
         RegionalOffice.objects.all(), label=_("regional office"), required=False
     )
-    only_active = forms.BooleanField(label=_("only active"), required=False)
+    only_active = forms.BooleanField(
+        label=_("only active"), 
+        required=False,
+        )
     motor_saw_course = forms.MultipleChoiceField(
         label=_("motor saw course"),
         required=False,
@@ -77,8 +80,21 @@ class DrudgeSearchForm(SearchForm):
     )
     driving_license = forms.NullBooleanField(label=_("driving license"), required=False)
 
+    def __init__(self, *args, **kwargs):
+        # Get request before calling super()
+        self.request = kwargs.get('request')  # Use get() instead of pop()
+        super().__init__(*args, **kwargs)
+        
+        if self.request and self.request.user.userprofile.user_type == 'squad_leader':
+            self.fields['only_active'].initial = True
+            self.fields['only_active'].widget = forms.HiddenInput()
+
     def queryset(self, model):
         query, data = self.query_data()
+
+        if self.request and self.request.user.userprofile.user_type == 'squad_leader':
+            data['only_active'] = data.get('only_active') or True
+
         queryset = self.apply_filters(
             model.objects.search(query), data, exclude=("only_active",)
         )
@@ -148,8 +164,22 @@ class AssignmentSearchForm(SearchForm):
         choices=Assignment.STATUS_CHOICES, label=_("status"), required=False
     )
 
+    def __init__(self, *args, **kwargs):
+        # Get request before calling super()
+        self.request = kwargs.get('request')  # Use get() instead of pop()
+        super().__init__(*args, **kwargs)
+        
+        if self.request and self.request.user.userprofile.user_type == 'squad_leader':
+            self.fields['active_on'].initial = date.today()
+            self.fields['active_on'].widget = forms.HiddenInput()
+
     def queryset(self, model):
         query, data = self.query_data()
+        
+        # Force active_on filter for squad leaders
+        if self.request and self.request.user.userprofile.user_type == 'squad_leader':
+            data['active_on'] = data.get('active_on') or date.today()
+
         queryset = model.objects.search(query)
         queryset = self.apply_filters(
             queryset, data, exclude=("active_on", "service_between", "service_and")

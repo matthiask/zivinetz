@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 
+from django.core.exceptions import PermissionDenied
+
 from zivinetz.models import Drudge
 
 
@@ -25,3 +27,14 @@ def drudge_required(view_func):
         return view_func(request, *args, **kwargs)
 
     return login_required(_fn)
+
+def user_type_required(allowed_types):
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+            if not hasattr(request.user, 'userprofile') or \
+               request.user.userprofile.user_type not in allowed_types:
+                raise PermissionDenied
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator

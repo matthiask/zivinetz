@@ -2,65 +2,107 @@
 
 {% load i18n towel_batch_tags %}
 
+{% load zivinetz_tags %}
+
 {% block objects %}
 <table class="objects">
     <thead>
         <tr>
-            {% if batch_form %}<td>
-                <input type="checkbox">
-            </td>{% endif %}
-            <th>{% trans "ZDP No."|capfirst %}</th>
+            
+            {% if request.user|has_user_type:"user_plus,admin,dev_admin" %}
+                {% if batch_form %}
+                    <td><input type="checkbox"></td>
+                {% endif %}
+                <th>{% trans "ZDP No."|capfirst %}</th>
+            {% endif %}
             <th>{% trans "first name"|capfirst %}</th>
             <th>{% trans "last name"|capfirst %}</th>
-            <th colspan="3">{% trans "courses"|capfirst %}</th>
-            <th>
-                {% trans "education / occupation"|capfirst %}<br>
-                {% trans "last assignment" %}
-            </th>
-            <th>{% trans "average mark" %}</th>
+            {% if request.user|has_user_type:"user_plus,admin,dev_admin" %}
+                <th colspan="3">{% trans "courses"|capfirst %}</th>
+                <th>
+                    {% trans "education / occupation"|capfirst %}<br>
+                    {% trans "last assignment" %}
+                </th>
+                <th>{% trans "average mark" %}</th>
+            {% endif %}
+            {% if request.user|has_user_type:"squad_leader" %}
+                <th>Profil</th> 
+            {% endif %}
         </tr>
     </thead>
     <tbody>
     {% for object in object_list %}
         <tr>
-            {% if batch_form %}<td>{% batch_checkbox batch_form object.id %}</td>{% endif %}
-            <th><a href="{{ object.get_absolute_url }}">{{ object.zdp_no }}</a></th>
+            {% if request.user|has_user_type:"user_plus,admin,dev_admin" %}
+                {% if batch_form %}
+                    <td><input type="checkbox" name="batch" value="{{ object.pk }}"></td>
+                {% endif %}
+                <td>{{ object.zdp_no }}</td>
+            {% endif %}
             <td>{{ object.user.first_name }}</td>
             <td>{{ object.user.last_name }}</td>
-            <td style="white-space:nowrap">
-                <span title="{% trans "motor saw course" %}">
-                    {{ object.pretty_motor_saw_course }}
-                </span>
-            </td>
-            <td>
-                {% if object.environment_course %}
-                    <span title="{% trans "environment course"|capfirst %}">ENV</span>
-                {% endif %}
-            </td>
-            <td>
-                {% if object.driving_license %}
-                    <span title="{% trans "driving license"|capfirst %}">FA</span>
-                {% endif %}
-            </td>
-            <td>
-            <div
-                style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;width:300px"
-                title="{{ object.education_occupation }}"
-                >
-                {{ object.education_occupation|default:"&ndash;" }}<br>
-                {% if object.last_assignment %}
-                    <a href="{{ object.last_assignment.get_absolute_url }}">
-                        {{ object.last_assignment.specification.code }}
-                        ({{ object.last_assignment.date_from|date:"d.m.Y" }} -
-                        {{ object.last_assignment.determine_date_until|date:"d.m.Y" }}),
-                        {{ object.last_assignment.get_status_display }}
-                    </a>
-                {% else %}&ndash;{% endif %}
-            </div>
-            </td>
-            <td>{{ object.average_mark|default:"&ndash;" }}</td>
+            {% if request.user|has_user_type:"user_plus,admin, dev_admin" %}
+                <td style="white-space:nowrap">
+                    <span title="{% trans "motor saw course" %}">
+                        {{ object.pretty_motor_saw_course }}
+                    </span>
+                </td>
+                <td>
+                    {% if object.environment_course %}
+                        <span title="{% trans "environment course"|capfirst %}">ENV</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if object.driving_license %}
+                        <span title="{% trans "driving license"|capfirst %}">FA</span>
+                    {% endif %}
+                </td>
+                <td>
+                <div
+                    style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;width:300px"
+                    title="{{ object.education_occupation }}"
+                    >
+                    {{ object.education_occupation|default:"&ndash;" }}<br>
+                    {% if object.last_assignment %}
+                        <a href="{{ object.last_assignment.get_absolute_url }}">
+                            {{ object.last_assignment.specification.code }}
+                            ({{ object.last_assignment.date_from|date:"d.m.Y" }} -
+                            {{ object.last_assignment.determine_date_until|date:"d.m.Y" }}),
+                            {{ object.last_assignment.get_status_display }}
+                        </a>
+                    {% else %}&ndash;{% endif %}
+                </div>
+                </td>
+                <td>{{ object.average_mark|default:"&ndash;" }}</td>
+            {% endif %}
+            {% if request.user|has_user_type:"squad_leader" %}
+                <td><a href="{{ object.get_absolute_url }}">Profil</a></td>
+            {% endif %}
         </tr>
     {% endfor %}
     </tbody>
+    <tfoot>
+        <tr><td colspan="{% if request.user|has_user_type:'user_plus,admin,dev_admin' %}10{% else %}3{% endif %}">
+            {% if request.user|has_user_type:'dev_admin' %}
+                <button id="exportcsv" type="button">{% trans "Export CSV" %}</button>
+                <button id="exportpdf" type="button">{% trans "Export PDF" %}</button>
+            {% endif %}
+        </td></tr>
+    </tfoot>
 </table>
+
+<style type="text/css">
+#exportpdf, #exportcsv { float: right !important; margin: 15px 0 0 15px !important; }
+</style>
+
+<script type="text/javascript">
+onReady.push(function($) {
+    $('#exportpdf').bind('click', function() {
+        window.location.href = '{% url "drudge_export" %}' + '?' + $('.form-search').serialize();
+    });
+    $('#exportcsv').bind('click', function() {
+        window.location.href = '{% url "drudge_export_csv" %}' + '?' + $('.form-search').serialize();
+    });
+});
+</script>
 {% endblock %}

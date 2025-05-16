@@ -42,6 +42,12 @@
           {% if search_form %}
             <form method="get" action="{{ list_url|default:"." }}"
                 class="form-search right">
+              {% if "assignments" in list_url and request.user.userprofile.user_type == 'squad_leader' %}
+                <input type="hidden" name="active_on" value="{{ today|date:'Y-m-d' }}">
+              {% endif %}
+              {% if "drudges" in list_url and request.user.userprofile.user_type == 'squad_leader' %}
+                <input type="hidden" name="only_active" value="1">
+              {% endif %}
               <input type="hidden" name="s" value="1">
               {% for field in search_form.fields_iterator %}
                 {% if forloop.first %}
@@ -104,14 +110,17 @@
   <div class="large-12 columns">
     {% block content %}{% endblock %}
     <hr>
-    <div class="account-buttons">
-      <form method="post" action="{% url 'logout' %}">
+    <form method="post" action="{% url 'logout' %}" style="display: inline;">
         {% csrf_token %}
-        <button type="submit" class="button">{% translate 'Log out' %}</button>
-      </form>
-      <a class="button" href="{% url 'password_change' %}">{% trans "Change password" %}</a>
-    </div>
+        <button type="submit" style="background: none; border: none; padding: 0; color: #008CBA; cursor: pointer;">{% trans "Log out" %}</button>
+    </form> /
+    <a href="{% url 'password_change' %}">{% trans "Change password" %}</a>
   </div>
+  {% if request.user.is_staff and request.user.userprofile.user_type != 'squad_leader'%}
+    <div class="large-12 columns text-right">
+      <a href="{% url 'admin:index' %}" class="button">{% trans "Admin" %}</a>
+    </div>
+  {% endif %}
 </div>
 
 {% endblock %}

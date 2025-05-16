@@ -11,7 +11,7 @@ def read(filename):
 
 setup(
     name="zivinetz",
-    version=__import__("zivinetz").__version__,
+    version="0.1.0",
     description="App for managing civil service drudges.",
     long_description=read("README.rst"),
     author="Matthias Kestenholz",
