@@ -11,13 +11,14 @@ from django.template import Context, Template
 from django.urls import include, path, re_path
 from django.utils.translation import gettext as _, gettext_lazy
 from openpyxl.writer.excel import save_virtual_workbook
-from pdfdocument.document import cm
+from pdfdocument.document import cm, PDFDocument
 from pdfdocument.utils import pdf_response
 from towel import resources
 from towel.forms import WarningsForm, towel_formfield_callback
 from towel.resources.urls import resource_url_fn
 from towel.utils import safe_queryset_and
 from towel_foundation.widgets import SelectWithPicker
+from django.utils.decorators import method_decorator
 
 from zivinetz.forms import (
     AbsenceSearchForm,
@@ -47,6 +48,7 @@ from zivinetz.models import (
 )
 from zivinetz.views.expenses import generate_expense_statistics_pdf
 from zivinetz.views.groups import create_groups_xlsx
+from zivinetz.views.decorators import user_type_required
 
 
 class LimitedPickerView(resources.PickerView):
@@ -255,10 +257,7 @@ class AssignmentMixin(ZivinetzMixin):
                 if data.get("status") == Assignment.MOBILIZED:
                     if not data.get("mobilized_on"):
                         raise forms.ValidationError(
-                            _(
-                                "Mobilized on date must be set when status is"
-                                " mobilized."
-                            )
+                            _("Mobilized on date must be set when status is mobilized.")
                         )
 
                 if (
@@ -380,6 +379,17 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
             self.object_list, search_form.queryset(self.model)
         )
 
+        # Filter assignments based on user type
+        user_type = request.user.userprofile.user_type
+        if user_type == "squad_leader":
+            # Squad leaders only see active assignments
+            self.object_list = self.object_list.filter(
+                status__in=(Assignment.ARRANGED, Assignment.MOBILIZED)
+            )
+        elif user_type == "drudge":
+            # Drudges only see their own assignments
+            self.object_list = self.object_list.filter(drudge__user=request.user)
+
         pdf, response = pdf_response("phones")
         pdf.init_report()
 
@@ -391,11 +401,18 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
                 pdf.h2("%s" % assignment.specification)
                 specification = assignment.specification
 
+            # Only show email for admin, dev_admin and user_plus
+            email = (
+                drudge.user.email
+                if user_type in ["admin", "dev_admin", "user_plus"]
+                else ""
+            )
+
             pdf.table(
                 [
                     (
                         "%s" % drudge,
-                        drudge.user.email,
+                        email,
                         "%s - %s"
                         % (
                             assignment.date_from.strftime("%d.%m.%y"),
@@ -404,9 +421,13 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
                     ),
                     (drudge.phone_home, drudge.phone_office, drudge.mobile),
                     (
-                        f"{drudge.address}, {drudge.zip_code} {drudge.city}",
+                        f"{drudge.address}, {drudge.zip_code} {drudge.city}"
+                        if user_type in ["admin", "dev_admin", "user_plus"]
+                        else "",
                         "",
-                        drudge.education_occupation,
+                        drudge.education_occupation
+                        if user_type in ["admin", "dev_admin", "user_plus"]
+                        else "",
                     ),
                 ],
                 (6.4 * cm, 5 * cm, 5 * cm),
@@ -556,6 +577,10 @@ class ExpenseReportPDFExportView(resources.ModelResourceView):
 
 
 class AssignGroupsView(resources.ModelResourceView):
+    @method_decorator(user_type_required(["admin", "user_plus", "dev_admin"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "zivinetz/assign_groups.html"
 
     def get_context_data(self, **kwargs):
@@ -586,8 +611,7 @@ class AssignGroupsView(resources.ModelResourceView):
             response = HttpResponse(
                 save_virtual_workbook(create_groups_xlsx(day)),
                 content_type=(
-                    "application/vnd.openxmlformats-officedocument."
-                    "spreadsheetml.sheet"
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 ),
             )
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(

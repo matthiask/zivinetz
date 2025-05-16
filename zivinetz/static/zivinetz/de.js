@@ -32,12 +32,12 @@
         const n = e && e.__esModule ? () => e.default : () => e
         return t.d(n, "a", n), n
       }),
-      (t.o = (e, n) => Object.prototype.hasOwnProperty.call(e, n)),
+      (t.o = (e, n) => Object.hasOwn(e, n)),
       (t.p = ""),
       t((t.s = "cDhT"))
     )
   })({
-    cDhT: (e, n, t) => {
+    cDhT: (_e, n, t) => {
       t.r(n), t.d(n, "German", () => o)
       const r =
         "undefined" !== typeof window && void 0 !== window.flatpickr
