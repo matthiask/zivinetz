@@ -41,11 +41,6 @@ def zivinetz(request):
                 (_("drudges"), "/zivinetz/admin/drudges/"),
                 (_("assignments"), "/zivinetz/admin/assignments/"),
             ]
-        else:
-            urls = [
-            (_("dashboard"), "/zivinetz/dashboard/"),
-            (_("profile"), "/zivinetz/profile/"),
-            ]
     else:
         urls = [
             (_("dashboard"), "/zivinetz/dashboard/"),
