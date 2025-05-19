@@ -171,7 +171,7 @@ class AdminViewsTestCase(TestCase):
         url = drudge.urls.url("picker")
         self.assertRedirects(
             self.client.get(url),
-            "/admin/login/" "?next=/zivinetz/admin/drudges/picker/",
+            "/admin/login/?next=/zivinetz/admin/drudges/picker/",
         )
 
         admin_login(self)
