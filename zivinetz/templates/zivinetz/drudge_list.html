@@ -41,7 +41,7 @@
             {% endif %}
             <td>{{ object.user.first_name }}</td>
             <td>{{ object.user.last_name }}</td>
-            {% if request.user|has_user_type:"user_plus,admin, dev_admin" %}
+            {% if request.user|has_user_type:"user_plus,admin,dev_admin" %}
                 <td style="white-space:nowrap">
                     <span title="{% trans "motor saw course" %}">
                         {{ object.pretty_motor_saw_course }}
