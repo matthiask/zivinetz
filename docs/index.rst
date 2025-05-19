@@ -1,5 +1,5 @@
 Willkommen zur Zivinetz-Dokumentation
-====================================
+=====================================
 
 .. toctree::
    :maxdepth: 2
