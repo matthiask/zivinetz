@@ -17,13 +17,12 @@ Installation
 
 1. Ensure you have Python 3.x and pip installed
 2. Install the Naturnetz platform and its dependencies
-3. Set up Zivinetz with Naturnetz as editable dependency:
+3. Initialize the Zivinetz submodule::
 
 .. code-block:: bash
 
     # In the Naturnetz root directory
-    uv pip uninstall zivinetz
-    uv pip install -e ../zivinetz/
+    git submodule update --init
 
 Development Setup
 ---------------
