@@ -87,7 +87,7 @@ class DrudgeSearchForm(SearchForm):
         
         if self.request and self.request.user.userprofile.user_type == 'squad_leader':
             self.fields['only_active'].initial = True
-            self.fields['only_active'].widget = forms.HiddenInput()
+            self.fields.pop('only_active')
 
     def queryset(self, model):
         query, data = self.query_data()
@@ -171,7 +171,7 @@ class AssignmentSearchForm(SearchForm):
         
         if self.request and self.request.user.userprofile.user_type == 'squad_leader':
             self.fields['active_on'].initial = date.today()
-            self.fields['active_on'].widget = forms.HiddenInput()
+            self.fields.pop('only_active')
 
     def queryset(self, model):
         query, data = self.query_data()
