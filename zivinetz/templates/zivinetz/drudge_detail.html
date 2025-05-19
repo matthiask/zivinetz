@@ -61,10 +61,7 @@
       <td>{{ object.get_source_display|default:"&ndash;" }}</td>
     </tr>
   </table>
-{% endif %}
-
-<!-- User Details Squad_leader view -->
-{% if request.user|has_user_type:"squad_leader" %}
+{% elif request.user|has_user_type:"squad_leader" %}
   <table>
     {% for title, value in object.user|model_details:"email" %}
       <tr>

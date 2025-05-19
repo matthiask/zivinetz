@@ -166,7 +166,7 @@ class AssignmentSearchForm(SearchForm):
 
     def __init__(self, *args, **kwargs):
         # Get request before calling super()
-        self.request = kwargs.get('request')  # Use get() instead of pop()
+        self.request = kwargs.get('request')
         super().__init__(*args, **kwargs)
         
         if self.request and self.request.user.userprofile.user_type == 'squad_leader':
