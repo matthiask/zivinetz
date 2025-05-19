@@ -38,9 +38,7 @@ def user_type_required(allowed_types):
                 if request.user.userprofile.user_type not in allowed_types:
                     raise PermissionDenied
             except ObjectDoesNotExist:
-                messages.error(
-                    request, _("Please complete your profile first.")
-                )
+                messages.error(request, _("Please complete your profile first."))
                 return redirect("user_profile")
             return view_func(request, *args, **kwargs)
 

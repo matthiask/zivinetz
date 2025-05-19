@@ -31,41 +31,33 @@ from zivinetz.forms import DrudgeSearchForm, AssignmentSearchForm
 
 class AssignmentExportSearchForm(forms.Form):
     status = forms.ChoiceField(
-        choices=Assignment.STATUS_CHOICES,
-        required=False,
-        label=_("Status")
+        choices=Assignment.STATUS_CHOICES, required=False, label=_("Status")
     )
     regional_office = forms.ModelChoiceField(
         queryset=RegionalOffice.objects.all(),
         required=False,
-        label=_("Regional Office")
+        label=_("Regional Office"),
     )
     specification = forms.ModelChoiceField(
-        queryset=Assignment.objects.values_list('specification', flat=True).distinct(),
+        queryset=Assignment.objects.values_list("specification", flat=True).distinct(),
         required=False,
-        label=_("Specification")
+        label=_("Specification"),
     )
 
 
 class DrudgeExportSearchForm(forms.Form):
     status = forms.ChoiceField(
-        choices=Drudge.STATE_CHOICES,
-        required=False,
-        label=_("Status")
+        choices=Drudge.STATE_CHOICES, required=False, label=_("Status")
     )
     regional_office = forms.ModelChoiceField(
         queryset=RegionalOffice.objects.all(),
         required=False,
-        label=_("Regional Office")
+        label=_("Regional Office"),
     )
     environment_course = forms.BooleanField(
-        required=False,
-        label=_("Environment Course")
+        required=False, label=_("Environment Course")
     )
-    motor_saw_course = forms.BooleanField(
-        required=False,
-        label=_("Motor Saw Course")
-    )
+    motor_saw_course = forms.BooleanField(required=False, label=_("Motor Saw Course"))
 
 
 class AssignmentForm(forms.ModelForm):
@@ -242,17 +234,21 @@ class AssignmentExportBaseView(BaseView):
 
         # Get the filtered queryset using the search form's logic
         queryset = search_form.queryset(Assignment)
-        
+
         # Apply additional filters using the export search form
         export_form = AssignmentExportSearchForm(self.request.GET)
         if export_form.is_valid():
-            if export_form.cleaned_data.get('status'):
-                queryset = queryset.filter(status=export_form.cleaned_data['status'])
-            if export_form.cleaned_data.get('regional_office'):
-                queryset = queryset.filter(regional_office=export_form.cleaned_data['regional_office'])
-            if export_form.cleaned_data.get('specification'):
-                queryset = queryset.filter(specification=export_form.cleaned_data['specification'])
-            
+            if export_form.cleaned_data.get("status"):
+                queryset = queryset.filter(status=export_form.cleaned_data["status"])
+            if export_form.cleaned_data.get("regional_office"):
+                queryset = queryset.filter(
+                    regional_office=export_form.cleaned_data["regional_office"]
+                )
+            if export_form.cleaned_data.get("specification"):
+                queryset = queryset.filter(
+                    specification=export_form.cleaned_data["specification"]
+                )
+
         return queryset
 
     def check_permissions(self, request):
@@ -465,19 +461,25 @@ class DrudgePDFExportView(BaseView):
 
         # Get the filtered queryset using the search form's logic
         queryset = search_form.queryset(Drudge)
-        
+
         # Apply additional filters using the export search form
         export_form = DrudgeExportSearchForm(self.request.GET)
         if export_form.is_valid():
-            if export_form.cleaned_data.get('status'):
-                queryset = queryset.filter(status=export_form.cleaned_data['status'])
-            if export_form.cleaned_data.get('regional_office'):
-                queryset = queryset.filter(regional_office=export_form.cleaned_data['regional_office'])
-            if export_form.cleaned_data.get('environment_course') is not None:
-                queryset = queryset.filter(environment_course=export_form.cleaned_data['environment_course'])
-            if export_form.cleaned_data.get('motor_saw_course') is not None:
-                queryset = queryset.filter(motor_saw_course=export_form.cleaned_data['motor_saw_course'])
-            
+            if export_form.cleaned_data.get("status"):
+                queryset = queryset.filter(status=export_form.cleaned_data["status"])
+            if export_form.cleaned_data.get("regional_office"):
+                queryset = queryset.filter(
+                    regional_office=export_form.cleaned_data["regional_office"]
+                )
+            if export_form.cleaned_data.get("environment_course") is not None:
+                queryset = queryset.filter(
+                    environment_course=export_form.cleaned_data["environment_course"]
+                )
+            if export_form.cleaned_data.get("motor_saw_course") is not None:
+                queryset = queryset.filter(
+                    motor_saw_course=export_form.cleaned_data["motor_saw_course"]
+                )
+
         return queryset
 
     def get_active_status(self, drudge):
@@ -600,7 +602,9 @@ class DrudgePDFExportView(BaseView):
         # Add date
         p.setFont(font_name, 10)
         current_time = timezone.now
-        p.drawString(margin, y, _("Generiert am: %s") % current_time.strftime("%d.%m.%Y %H:%M"))
+        p.drawString(
+            margin, y, _("Generiert am: %s") % current_time.strftime("%d.%m.%Y %H:%M")
+        )
         y -= line_height * 2
 
         # Add search parameters if any
@@ -816,19 +820,25 @@ class DrudgeCSVExportView(BaseView):
 
         # Get the filtered queryset using the search form's logic
         queryset = search_form.queryset(Drudge)
-        
+
         # Apply additional filters using the export search form
         export_form = DrudgeExportSearchForm(self.request.GET)
         if export_form.is_valid():
-            if export_form.cleaned_data.get('status'):
-                queryset = queryset.filter(status=export_form.cleaned_data['status'])
-            if export_form.cleaned_data.get('regional_office'):
-                queryset = queryset.filter(regional_office=export_form.cleaned_data['regional_office'])
-            if export_form.cleaned_data.get('environment_course') is not None:
-                queryset = queryset.filter(environment_course=export_form.cleaned_data['environment_course'])
-            if export_form.cleaned_data.get('motor_saw_course') is not None:
-                queryset = queryset.filter(motor_saw_course=export_form.cleaned_data['motor_saw_course'])
-            
+            if export_form.cleaned_data.get("status"):
+                queryset = queryset.filter(status=export_form.cleaned_data["status"])
+            if export_form.cleaned_data.get("regional_office"):
+                queryset = queryset.filter(
+                    regional_office=export_form.cleaned_data["regional_office"]
+                )
+            if export_form.cleaned_data.get("environment_course") is not None:
+                queryset = queryset.filter(
+                    environment_course=export_form.cleaned_data["environment_course"]
+                )
+            if export_form.cleaned_data.get("motor_saw_course") is not None:
+                queryset = queryset.filter(
+                    motor_saw_course=export_form.cleaned_data["motor_saw_course"]
+                )
+
         return queryset
 
     def get_active_status(self, drudge):

@@ -84,10 +84,10 @@ class DrudgeSearchForm(SearchForm):
         # Get request before calling super()
         self.request = kwargs.get("request")  # Use get() instead of pop()
         super().__init__(*args, **kwargs)
-        
-        if self.request and self.request.user.userprofile.user_type == 'squad_leader':
-            self.fields['only_active'].initial = True
-            self.fields.pop('only_active')
+
+        if self.request and self.request.user.userprofile.user_type == "squad_leader":
+            self.fields["only_active"].initial = True
+            self.fields.pop("only_active")
 
     def queryset(self, model):
         query, data = self.query_data()
@@ -166,12 +166,12 @@ class AssignmentSearchForm(SearchForm):
 
     def __init__(self, *args, **kwargs):
         # Get request before calling super()
-        self.request = kwargs.get('request')
+        self.request = kwargs.get("request")
         super().__init__(*args, **kwargs)
-        
-        if self.request and self.request.user.userprofile.user_type == 'squad_leader':
-            self.fields['active_on'].initial = date.today()
-            self.fields.pop('only_active')
+
+        if self.request and self.request.user.userprofile.user_type == "squad_leader":
+            self.fields["active_on"].initial = date.today()
+            self.fields.pop("only_active")
 
     def queryset(self, model):
         query, data = self.query_data()
