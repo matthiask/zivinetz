@@ -1,6 +1,5 @@
 import operator
 import os
-import zoneinfo
 
 from datetime import date, timedelta, datetime
 from functools import reduce
@@ -14,6 +13,7 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
+from django.utils import timezone
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
 from pdfdocument.utils import pdf_response
@@ -664,8 +664,8 @@ def assignment_phone_list(request):
     pdf.h1(_("Assignment List"))
     pdf.spacer()
 
-    # Add date
-    current_time = datetime.now(zoneinfo.ZoneInfo('Europe/Zurich'))
+    # Add date (django.utils.timezone)
+    current_time = timezone.now
     pdf.p(_("Generated on: %s") % current_time.strftime("%d.%m.%Y %H:%M"))
     pdf.spacer()
 
