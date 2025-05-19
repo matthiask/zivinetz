@@ -29,6 +29,7 @@ def drudge_required(view_func):
 
     return login_required(_fn)
 
+
 def user_type_required(allowed_types):
     def decorator(view_func):
         @wraps(view_func)
@@ -42,5 +43,7 @@ def user_type_required(allowed_types):
                 )
                 return redirect("user_profile")
             return view_func(request, *args, **kwargs)
+
         return wrapper
+
     return decorator

@@ -303,8 +303,7 @@ class CompensationSet(models.Model):
         max_digits=10,
         decimal_places=6,
         help_text=_(
-            "Daily compensation for clothes if clothing isn't"
-            " offered by the company."
+            "Daily compensation for clothes if clothing isn't offered by the company."
         ),
     )
     clothing_limit_per_assignment = models.DecimalField(
@@ -906,8 +905,7 @@ def assignment_pre_save(sender, instance, **kwargs):
             field_instance = Assignment._meta.get_field(field)
             changes.append(
                 gettext(
-                    "The value of `%(field)s` has been changed from"
-                    " %(from)s to %(to)s."
+                    "The value of `%(field)s` has been changed from %(from)s to %(to)s."
                 )
                 % {
                     "field": field_instance.verbose_name,
@@ -987,7 +985,7 @@ class ExpenseReport(models.Model):
     holi_days = models.PositiveIntegerField(
         _("holiday days"),
         help_text=_(
-            "These days are still countable towards the assignment" " total days."
+            "These days are still countable towards the assignment total days."
         ),
     )
     holi_days_notes = models.CharField(_("notes"), max_length=100, blank=True)
@@ -1504,25 +1502,24 @@ class Absence(models.Model):
         ).select_related("assignment__drudge__user")
         if overlapping:
             raise ValidationError(
-                _(
-                    "Overlapping absences are not allowed, days already occupied"
-                    " by %s."
-                )
+                _("Overlapping absences are not allowed, days already occupied by %s.")
                 % (", ".join(str(o) for o in overlapping))
             )
 
 
 class UserProfile(models.Model):
     USER_TYPE_CHOICES = (
-        ('drudge', _('Drudge')),
-        ('squad_leader', _('Squad Leader')),
-        ('user_plus', _('User Plus')),
-        ('admin', _('Admin')),
-        ('dev_admin', _('DEV-Admin')),
+        ("drudge", _("Drudge")),
+        ("squad_leader", _("Squad Leader")),
+        ("user_plus", _("User Plus")),
+        ("admin", _("Admin")),
+        ("dev_admin", _("DEV-Admin")),
     )
-    
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='drudge')
+    user_type = models.CharField(
+        max_length=20, choices=USER_TYPE_CHOICES, default="drudge"
+    )
 
     def __str__(self):
         return f"{self.user.username} - {self.get_user_type_display()}"

@@ -233,23 +233,26 @@ admin.site.register(
 
 admin.site.register(
     UserProfile,
-    list_display=('user', 'user_type'),
-    list_filter=('user_type',),
-    search_fields=('user__username', 'user__first_name', 'user__last_name'),
+    list_display=("user", "user_type"),
+    list_filter=("user_type",),
+    search_fields=("user__username", "user__first_name", "user__last_name"),
 )
+
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
 
+
 class CustomUserAdmin(UserAdmin):
     inlines = (UserProfileInline,)
-    
+
+    @admin.display(description="User Type")
     def get_user_type(self, obj):
-        return obj.userprofile.user_type if hasattr(obj, 'userprofile') else '-'
-    get_user_type.short_description = 'User Type'
-    
-    list_display = UserAdmin.list_display + ('get_user_type',)
+        return obj.userprofile.user_type if hasattr(obj, "userprofile") else "-"
+
+    list_display = UserAdmin.list_display + ("get_user_type",)
+
 
 # Unregister the default UserAdmin and register our custom one
 admin.site.unregister(User)

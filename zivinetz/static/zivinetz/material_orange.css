@@ -62,7 +62,9 @@
   .flatpickr-days
   .dayContainer:nth-child(n + 2)
   .flatpickr-day.inRange:nth-child(7n + 1) {
-  box-shadow: -2px 0 0 #e6e6e6, 5px 0 0 #e6e6e6;
+  box-shadow:
+    -2px 0 0 #e6e6e6,
+    5px 0 0 #e6e6e6;
 }
 .flatpickr-calendar.hasWeeks {
   width: auto;
@@ -536,7 +538,9 @@ span.flatpickr-weekday {
 }
 .flatpickr-day.inRange {
   border-radius: 0;
-  box-shadow: -5px 0 0 #e2e2e2, 5px 0 0 #e2e2e2;
+  box-shadow:
+    -5px 0 0 #e2e2e2,
+    5px 0 0 #e2e2e2;
 }
 .flatpickr-day.disabled,
 .flatpickr-day.disabled:hover,
@@ -557,7 +561,9 @@ span.flatpickr-weekday {
 }
 .flatpickr-day.week.selected {
   border-radius: 0;
-  box-shadow: -5px 0 0 #ff8a65, 5px 0 0 #ff8a65;
+  box-shadow:
+    -5px 0 0 #ff8a65,
+    5px 0 0 #ff8a65;
 }
 .rangeMode .flatpickr-day {
   margin-top: 1px;

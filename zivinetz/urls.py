@@ -5,7 +5,7 @@ from zivinetz.views.drudge import (
     DrudgePDFExportView,
     DrudgeCSVExportView,
     AssignmentPDFExportView,
-    AssignmentCSVExportView
+    AssignmentCSVExportView,
 )
 from zivinetz.views.decorators import user_type_required
 
@@ -22,7 +22,6 @@ urlpatterns = [
     path("admin/scheduling/", admin_required(scheduling.scheduling)),
     path("admin/scheduling/quotas/<int:year>/", admin_required(quota.quota_year)),
     path("admin/", include("zivinetz.resources")),
-    
     # Resource-based PDF URLs
     path("assignments/<int:pk>/pdf/", admin_required(reporting.assignment_pdf), 
          name="zivinetz_assignment_pdf"),

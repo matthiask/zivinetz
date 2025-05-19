@@ -237,7 +237,8 @@ class JobReferenceFromTemplateView(resources.ModelResourceView):
 class AssignmentMixin(ZivinetzMixin):
     def get_form_class(self):
         base_form = super().get_form_class()
-        request = self.request   
+        request = self.request
+
         class AssignmentForm(base_form, WarningsForm):
             motor_saw_course = forms.ChoiceField(
                 label=_("Set motor saw course field on drudge to"),
@@ -256,10 +257,7 @@ class AssignmentMixin(ZivinetzMixin):
                 if data.get("status") == Assignment.MOBILIZED:
                     if not data.get("mobilized_on"):
                         raise forms.ValidationError(
-                            _(
-                                "Mobilized on date must be set when status is"
-                                " mobilized."
-                            )
+                            _("Mobilized on date must be set when status is mobilized.")
                         )
 
                 if (
@@ -287,9 +285,8 @@ class AssignmentMixin(ZivinetzMixin):
                     )
 
                 return data
-        return AssignmentForm
-        
 
+        return AssignmentForm
 
     def form_valid(self, form):
         self.object = form.save()
@@ -381,15 +378,15 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
         self.object_list = safe_queryset_and(
             self.object_list, search_form.queryset(self.model)
         )
-        
+
         # Filter assignments based on user type
         user_type = request.user.userprofile.user_type
-        if user_type == 'squad_leader':
+        if user_type == "squad_leader":
             # Squad leaders only see active assignments
             self.object_list = self.object_list.filter(
                 status__in=(Assignment.ARRANGED, Assignment.MOBILIZED)
             )
-        elif user_type == 'drudge':
+        elif user_type == "drudge":
             # Drudges only see their own assignments
             self.object_list = self.object_list.filter(drudge__user=request.user)
 
@@ -405,7 +402,11 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
                 specification = assignment.specification
 
             # Only show email for admin, dev_admin and user_plus
-            email = drudge.user.email if user_type in ['admin', 'dev_admin', 'user_plus'] else ""
+            email = (
+                drudge.user.email
+                if user_type in ["admin", "dev_admin", "user_plus"]
+                else ""
+            )
 
             pdf.table(
                 [
@@ -420,9 +421,13 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
                     ),
                     (drudge.phone_home, drudge.phone_office, drudge.mobile),
                     (
-                        f"{drudge.address}, {drudge.zip_code} {drudge.city}" if user_type in ['admin', 'dev_admin', 'user_plus'] else "",
+                        f"{drudge.address}, {drudge.zip_code} {drudge.city}"
+                        if user_type in ["admin", "dev_admin", "user_plus"]
+                        else "",
                         "",
-                        drudge.education_occupation if user_type in ['admin', 'dev_admin', 'user_plus'] else "",
+                        drudge.education_occupation
+                        if user_type in ["admin", "dev_admin", "user_plus"]
+                        else "",
                     ),
                 ],
                 (6.4 * cm, 5 * cm, 5 * cm),
@@ -572,7 +577,7 @@ class ExpenseReportPDFExportView(resources.ModelResourceView):
 
 
 class AssignGroupsView(resources.ModelResourceView):
-    @method_decorator(user_type_required(['admin', 'user_plus', 'dev_admin']))
+    @method_decorator(user_type_required(["admin", "user_plus", "dev_admin"]))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -606,8 +611,7 @@ class AssignGroupsView(resources.ModelResourceView):
             response = HttpResponse(
                 save_virtual_workbook(create_groups_xlsx(day)),
                 content_type=(
-                    "application/vnd.openxmlformats-officedocument."
-                    "spreadsheetml.sheet"
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 ),
             )
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(
