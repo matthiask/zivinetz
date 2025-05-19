@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 
 from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist
 
 from zivinetz.models import Drudge
 
@@ -32,9 +33,14 @@ def user_type_required(allowed_types):
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
-            if not hasattr(request.user, 'userprofile') or \
-               request.user.userprofile.user_type not in allowed_types:
-                raise PermissionDenied
+            try:
+                if request.user.userprofile.user_type not in allowed_types:
+                    raise PermissionDenied
+            except ObjectDoesNotExist:
+                messages.error(
+                    request, _("Please complete your profile first.")
+                )
+                return redirect("user_profile")
             return view_func(request, *args, **kwargs)
         return wrapper
     return decorator
