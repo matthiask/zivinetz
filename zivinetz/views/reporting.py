@@ -1,5 +1,7 @@
 import operator
 import os
+import zoneinfo
+
 from datetime import date, timedelta, datetime
 from functools import reduce
 from io import BytesIO
@@ -18,7 +20,6 @@ from pdfdocument.utils import pdf_response
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib import colors
 from django.template.loader import render_to_string
-import pytz
 
 from zivinetz.models import Assignment, AssignmentChange, ExpenseReport, JobReference
 from zivinetz.views.decorators import user_type_required
@@ -664,7 +665,7 @@ def assignment_phone_list(request):
     pdf.spacer()
 
     # Add date
-    current_time = datetime.now(pytz.timezone('Europe/Zurich'))
+    current_time = datetime.now(zoneinfo.ZoneInfo('Europe/Zurich'))
     pdf.p(_("Generated on: %s") % current_time.strftime("%d.%m.%Y %H:%M"))
     pdf.spacer()
 
