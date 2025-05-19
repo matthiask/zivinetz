@@ -1,10 +1,14 @@
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import capfirst
+from .models import UserProfile
 
 
 def zivinetz(request):
     # Get user_type from userprofile
-    user_type = getattr(request.user.userprofile, 'user_type', None) if hasattr(request.user, 'userprofile') else None
+    try:
+        user_type = request.user.userprofile.user_type
+    except UserProfile.DoesNotExist:
+        user_type = None
 
     if request.user.is_authenticated and request.user.is_staff:
         if user_type in ['admin', 'dev_admin']:
