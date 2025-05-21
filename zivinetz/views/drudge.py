@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 import csv
 
 import schwifty
@@ -12,16 +12,15 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidde
 from django.shortcuts import render
 from django.utils.translation import gettext as _, gettext_lazy
 from towel.forms import towel_formfield_callback
-from django.template.loader import render_to_string
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from io import BytesIO
-from django.db.models import Avg
 from django.conf import settings
 import os
+from pdfdocument.utils import pdf_response
 
 from zivinetz.models import Assignment, Codeword, Drudge, ExpenseReport, RegionalOffice
 from zivinetz.views.decorators import drudge_required

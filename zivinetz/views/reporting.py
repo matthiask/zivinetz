@@ -1,7 +1,7 @@
 import operator
 import os
 
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 from functools import reduce
 from io import BytesIO
 
@@ -19,7 +19,6 @@ from pdfdocument.elements import create_stationery_fn
 from pdfdocument.utils import pdf_response
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib import colors
-from django.template.loader import render_to_string
 
 from zivinetz.models import Assignment, AssignmentChange, ExpenseReport, JobReference
 from zivinetz.views.decorators import user_type_required
@@ -630,6 +629,18 @@ def assignmentchange_list(request):
     )
 
 
+def format_search_parameter(key, value):
+    """Format a search parameter for display."""
+    if key == 'status':
+        return _("Status: %s") % value
+    elif key == 'regional_office':
+        return _("Regional Office: %s") % value
+    elif key == 'specification':
+        return _("Specification: %s") % value
+    else:
+        return _("%s: %s") % (key, value)
+
+
 @user_type_required(["dev_admin"])
 def assignment_phone_list(request):
     """Generate a PDF phone list of assignments."""
@@ -672,7 +683,7 @@ def assignment_phone_list(request):
         pdf.h2(_("Search Parameters"))
         for key, value in request.GET.items():
             if key != "s" and value:
-                param_text = self.format_search_parameter(key, value)
+                param_text = format_search_parameter(key, value)
                 pdf.p(param_text)
         pdf.spacer()
 

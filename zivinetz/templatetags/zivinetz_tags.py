@@ -1,6 +1,5 @@
 from django import template
 from django.db.models import Avg
-from django.template.defaultfilters import stringfilter
 
 from zivinetz.models import JobReferenceTemplate
 

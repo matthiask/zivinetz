@@ -11,7 +11,6 @@ from django.template import Context, Template
 from django.urls import include, path, re_path
 from django.utils.translation import gettext as _, gettext_lazy
 from openpyxl.writer.excel import save_virtual_workbook
-from pdfdocument.document import cm, PDFDocument
 from pdfdocument.utils import pdf_response
 from towel import resources
 from towel.forms import WarningsForm, towel_formfield_callback
