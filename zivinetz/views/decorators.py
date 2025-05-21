@@ -35,13 +35,13 @@ def user_type_required(allowed_types):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
             try:
-                if request.user.userprofile.user_type not in allowed_types:
+                if hasattr(request.user, 'userprofile') and request.user.userprofile.user_type not in allowed_types:
                     raise PermissionDenied
             except ObjectDoesNotExist:
                 messages.error(
                     request, _("Please complete your profile first.")
                 )
-                return redirect("user_profile")
+                return redirect("drudge_profile")
             return view_func(request, *args, **kwargs)
 
         return wrapper
