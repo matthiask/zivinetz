@@ -631,11 +631,11 @@ def assignmentchange_list(request):
 
 def format_search_parameter(key, value):
     """Format a search parameter for display."""
-    if key == 'status':
+    if key == "status":
         return _("Status: %s") % value
-    elif key == 'regional_office':
+    elif key == "regional_office":
         return _("Regional Office: %s") % value
-    elif key == 'specification':
+    elif key == "specification":
         return _("Specification: %s") % value
     else:
         return _("%s: %s") % (key, value)
