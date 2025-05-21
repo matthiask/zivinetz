@@ -12,6 +12,7 @@ from django.urls import include, path, re_path
 from django.utils.translation import gettext as _, gettext_lazy
 from openpyxl.writer.excel import save_virtual_workbook
 from pdfdocument.utils import pdf_response
+from pdfdocument.document import cm
 from towel import resources
 from towel.forms import WarningsForm, towel_formfield_callback
 from towel.resources.urls import resource_url_fn
