@@ -26,15 +26,15 @@ div.sphinxsidebar {
   color: white;
 }
 
+div.sphinxsidebar a {
+  color: #aaa;
+}
+
 div.sphinxsidebar h3,
 div.sphinxsidebar h4,
 div.sphinxsidebar p,
 div.sphinxsidebar h3 a {
   color: white;
-}
-
-div.sphinxsidebar a {
-  color: #aaa;
 }
 
 div.sphinxsidebar p.logo {

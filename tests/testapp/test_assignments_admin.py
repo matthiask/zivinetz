@@ -165,8 +165,7 @@ class AssignmentsAdminViewsTestCase(TestCase):
             get_messages(response),
             [
                 "The assignment has been successfully saved.",
-                "The drudge is now registered as having visited"
-                " the motor saw course.",
+                "The drudge is now registered as having visited the motor saw course.",
             ],
         )
 

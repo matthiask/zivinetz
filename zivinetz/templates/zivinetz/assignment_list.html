@@ -1,50 +1,83 @@
+{# Extends the base object list template which provides common layout and functionality #}
 {% extends "resources/object_list.html" %}
 
-{% load i18n towel_batch_tags %}
+{# Load necessary template tags for internationalization and batch processing #}
+{% load i18n towel_batch_tags zivinetz_tags %}
 
+{# Main block for displaying the list of assignments #}
 {% block objects %}
+{# Create a table to display assignments in a structured format #}
 <table class="objects">
     <thead>
         <tr>
+            {# Add checkbox column for batch operations if batch_form is available #}
             {% if batch_form %}<td>
                 <input type="checkbox">
             </td>{% endif %}
+            {# Table headers with translated column names #}
             <th>{% trans "date period"|capfirst %}</th>
             <th>{% trans "drudge"|capfirst %}</th>
             <th>{% trans "specification"|capfirst %}</th>
             <th>{% trans "created"|capfirst %}</th>
             <th>{% trans "status"|capfirst %}</th>
-            <th></th>
+            <th></th>  {# Empty header for PDF link column #}
         </tr>
     </thead>
     <tbody>
+    {# Iterate through all assignments in the object_list #}
     {% for object in object_list %}
         <tr>
+            {# Batch operation checkbox for each row if batch processing is enabled #}
             {% if batch_form %}<td>{% batch_checkbox batch_form object.id %}</td>{% endif %}
+            {# Assignment date period with link to detail view #}
             <th>
                 <a href="{{ object.get_absolute_url }}">
                     {{ object.date_from|date:"d.m.Y" }} - {{ object.determine_date_until|date:"d.m.Y" }}
                 </a>
             </th>
+            {# Display associated drudge (civil service worker) #}
             <td>{{ object.drudge }}</td>
+            {# Display specification code with full specification as tooltip #}
             <td title="{{ object.specification }}">{{ object.specification.code }}</td>
+            {# Creation date of the assignment #}
             <td>{{ object.created|date:"d.m.Y" }}</td>
+            {# Current status of the assignment #}
             <td>{{ object.get_status_display }}</td>
+            {# PDF link for administrative purposes #}
             <td>{{ object.admin_pdf_url|safe }}</td>
         </tr>
     {% endfor %}
     </tbody>
+    {# Footer with export functionality #}
     <tfoot>
         <tr><td colspan="7">
-            <button id="exportpdf" type="button">{% trans "Phone list" %}</button>
+            {% if request.user|has_user_type:"admin,dev_admin,user_plus,squad_leader" %}
+                <button id="exportphone" type="button">{% trans "Phone list" %}</button>
+            {% endif %}
+            {% if request.user|has_user_type:"dev_admin" %}
+                <button id="exportcsv" type="button">{% trans "Export CSV" %}</button>
+                <button id="exportpdf" type="button">{% trans "Export PDF" %}</button>
+            {% endif %}
         </td></tr>
     </tfoot>
 </table>
-<style type="text/css">#exportpdf { float: right !important; margin: 15px 0 0 0 !important; }</style>
+
+{# CSS styling for the export buttons #}
+<style type="text/css">
+#exportphone, #exportpdf, #exportcsv { float: right !important; margin: 15px 0 0 15px !important; }
+</style>
+
+{# JavaScript for handling PDF export functionality #}
 <script type="text/javascript">
 onReady.push(function($) {
+    $('#exportphone').bind('click', function() {
+        window.location.href = '{% url "assignment_export" %}' + '?' + $('.form-search').serialize();
+    });
     $('#exportpdf').bind('click', function() {
-        window.location.href = 'pdf/?' + $('.form-search').serialize();
+        window.location.href = '{% url "zivinetz_assignment_phone_list" %}?' + $('.form-search').serialize();
+    });
+    $('#exportcsv').bind('click', function() {
+        window.location.href = '{% url "assignment_export_csv" %}' + '?' + $('.form-search').serialize();
     });
 });
 </script>
