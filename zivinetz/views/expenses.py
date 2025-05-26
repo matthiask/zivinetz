@@ -100,8 +100,7 @@ def generate_expense_statistics_pdf(reports):
             return sum(compensation[k] for k in keys.split())
 
         tpl = (
-            "spending_money accomodation_%(t)s breakfast_%(t)s lunch_%(t)s"
-            " supper_%(t)s"
+            "spending_money accomodation_%(t)s breakfast_%(t)s lunch_%(t)s supper_%(t)s"
         )
         working_day = add(tpl % {"t": "working"})
         free_day = add(tpl % {"t": "free"})

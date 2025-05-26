@@ -255,10 +255,7 @@ class AssignmentMixin(ZivinetzMixin):
                 if data.get("status") == Assignment.MOBILIZED:
                     if not data.get("mobilized_on"):
                         raise forms.ValidationError(
-                            _(
-                                "Mobilized on date must be set when status is"
-                                " mobilized."
-                            )
+                            _("Mobilized on date must be set when status is mobilized.")
                         )
 
                 if (
@@ -586,8 +583,7 @@ class AssignGroupsView(resources.ModelResourceView):
             response = HttpResponse(
                 save_virtual_workbook(create_groups_xlsx(day)),
                 content_type=(
-                    "application/vnd.openxmlformats-officedocument."
-                    "spreadsheetml.sheet"
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 ),
             )
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(

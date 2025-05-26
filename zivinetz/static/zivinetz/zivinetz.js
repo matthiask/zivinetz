@@ -30,6 +30,7 @@
 })(jQuery)
 
 /* search form */
+
 ;(($) => {
   const form = $(".form-search")
   const panel = form.find(".panel")
@@ -48,8 +49,9 @@
 })(jQuery)
 
 /* editLive */
+
 ;(($) => {
-  $(document.body).on("editLive", (event, elem) => {
+  $(document.body).on("editLive", (_event, elem) => {
     if (elem.is(":checkbox"))
       /* TODO NOT text input. selects! */
       elem = elem.parent()
@@ -62,6 +64,7 @@
 })(jQuery)
 
 /* various tweaks */
+
 ;(($) => {
   Foundation.libs.reveal.settings.animation = "fade"
 
@@ -71,7 +74,7 @@
   $(document.body).append('<div id="spinner"></div>')
   const spinner = $("#spinner")
   spinner
-    .bind("ajaxSend", (evt, jqxhr, settings) => {
+    .bind("ajaxSend", (_evt, _jqxhr, settings) => {
       if (settings.type === "POST") {
         spinner.html("Saving...").show()
       } else {
