@@ -29,10 +29,11 @@
         "useOptionalChain": "off"
       },
       "suspicious": {
-        "noAssignInExpressions": "off"
+        "noAssignInExpressions": "off",
+        "noDuplicateProperties": "warn"
       },
       "style": {
-        "noParameterAssign": "error",
+        "noParameterAssign": "warn",
         "useAsConstAssertion": "error",
         "useDefaultParameterLast": "error",
         "useEnumInitializers": "error",
@@ -41,6 +42,7 @@
         "useSingleVarDeclarator": "error",
         "noUnusedTemplateLiteral": "error",
         "useNumberNamespace": "error",
+        "noDescendingSpecificity": "warn",
         "noInferrableTypes": "error",
         "noUselessElse": "error",
         "noCommaOperator": "off"
