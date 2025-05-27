@@ -384,7 +384,9 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
         try:
             user_type = request.user.userprofile.user_type
         except User.userprofile.RelatedObjectDoesNotExist:
-            messages.error(request, _("User profile not found. Please contact an administrator."))
+            messages.error(
+                request, _("User profile not found. Please contact an administrator.")
+            )
             return redirect("zivinetz_assignment_list")
 
         if user_type == "squad_leader":

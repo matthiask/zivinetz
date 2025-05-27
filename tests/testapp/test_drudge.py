@@ -24,7 +24,7 @@ class DrudgeViewsTestCase(TestCase):
         self.client.login(username=user.username, password="test")
 
         # Create UserProfile for the test user
-        UserProfile.objects.create(user=user, user_type='drudge')
+        UserProfile.objects.create(user=user, user_type="drudge")
 
         self.assertRedirects(self.client.get("/zivinetz/"), "/zivinetz/profile/")
         self.assertRedirects(
@@ -53,7 +53,6 @@ class DrudgeViewsTestCase(TestCase):
         )
 
         data["environment_course"] = "2"  # Yes.
-
 
         response = self.client.post("/zivinetz/profile/", data)
         self.assertRedirects(response, "/zivinetz/profile/")

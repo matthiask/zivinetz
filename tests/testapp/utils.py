@@ -24,5 +24,5 @@ def admin_login(testcase):
     if not getattr(testcase, "admin", None):
         testcase.admin = factories.UserFactory.create(is_staff=True, is_superuser=True)
         # Create UserProfile with admin type
-        UserProfile.objects.create(user=testcase.admin, user_type='admin')
+        UserProfile.objects.create(user=testcase.admin, user_type="admin")
     testcase.client.force_login(testcase.admin)
