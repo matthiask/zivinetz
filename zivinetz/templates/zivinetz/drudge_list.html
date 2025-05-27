@@ -8,7 +8,6 @@
 <table class="objects">
     <thead>
         <tr>
-
             {% if request.user|has_user_type:"user_plus,admin,dev_admin" %}
                 {% if batch_form %}
                     <td><input type="checkbox"></td>
@@ -35,7 +34,7 @@
         <tr>
             {% if request.user|has_user_type:"user_plus,admin,dev_admin" %}
                 {% if batch_form %}
-                    <td><input type="checkbox" name="batch" value="{{ object.pk }}"></td>
+                    <td>{% batch_checkbox batch_form object.id %}</td>
                 {% endif %}
                 <td>{{ object.zdp_no }}</td>
             {% endif %}

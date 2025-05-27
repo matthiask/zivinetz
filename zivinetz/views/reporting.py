@@ -299,9 +299,9 @@ class AssignmentPDFStationery:
 
 
 @login_required
-def assignment_pdf(request, assignment_id):
+def assignment_pdf(request, pk):
     assignment = get_object_or_404(
-        Assignment.objects.select_related("drudge__user"), pk=assignment_id
+        Assignment.objects.select_related("drudge__user"), pk=pk
     )
 
     if not request.user.is_staff:
@@ -411,10 +411,10 @@ Wir freuen uns auf deinen Einsatz!
 
 
 @login_required
-def expense_report_pdf(request, expense_report_id):
+def expense_report_pdf(request, pk):
     report = get_object_or_404(
         ExpenseReport.objects.select_related("assignment__drudge__user"),
-        pk=expense_report_id,
+        pk=pk,
     )
 
     if not request.user.is_staff:
@@ -543,9 +543,9 @@ class NaturnetzStationery:
 
 
 @login_required
-def reference_pdf(request, reference_id):
+def reference_pdf(request, pk):
     reference = get_object_or_404(
-        JobReference.objects.select_related("assignment__drudge__user"), pk=reference_id
+        JobReference.objects.select_related("assignment__drudge__user"), pk=pk
     )
 
     if not request.user.is_staff:

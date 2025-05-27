@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from django import forms
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
 from django.http import HttpResponse, HttpResponseRedirect
@@ -380,7 +381,12 @@ class PhonenumberPDFExportView(resources.ModelResourceView):
         )
 
         # Filter assignments based on user type
-        user_type = request.user.userprofile.user_type
+        try:
+            user_type = request.user.userprofile.user_type
+        except User.userprofile.RelatedObjectDoesNotExist:
+            messages.error(request, _("User profile not found. Please contact an administrator."))
+            return redirect("zivinetz_assignment_list")
+
         if user_type == "squad_leader":
             # Squad leaders only see active assignments
             self.object_list = self.object_list.filter(

@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 from django.test import TestCase
 from testapp import factories
 
-from zivinetz.models import Assignment, AssignmentChange
+from zivinetz.models import Assignment, AssignmentChange, UserProfile
 
 
 class DrudgeViewsTestCase(TestCase):
@@ -22,6 +22,9 @@ class DrudgeViewsTestCase(TestCase):
 
         user = factories.UserFactory.create()
         self.client.login(username=user.username, password="test")
+
+        # Create UserProfile for the test user
+        UserProfile.objects.create(user=user, user_type='drudge')
 
         self.assertRedirects(self.client.get("/zivinetz/"), "/zivinetz/profile/")
         self.assertRedirects(
@@ -41,7 +44,7 @@ class DrudgeViewsTestCase(TestCase):
             "bank_account": "GB29 NWBK 6016 1331 9268 19",
             "regional_office": factories.RegionalOfficeFactory.create().id,
             "youth_association": "Anderer",
-            "source": "Instagram",
+            "source": "Social Media",
         }
 
         self.assertContains(
@@ -50,6 +53,7 @@ class DrudgeViewsTestCase(TestCase):
         )
 
         data["environment_course"] = "2"  # Yes.
+
 
         response = self.client.post("/zivinetz/profile/", data)
         self.assertRedirects(response, "/zivinetz/profile/")
