@@ -30,6 +30,7 @@
 })(jQuery)
 
 /* search form */
+
 ;(($) => {
   const form = $(".form-search")
   const panel = form.find(".panel")
@@ -48,6 +49,7 @@
 })(jQuery)
 
 /* editLive */
+
 ;(($) => {
   $(document.body).on("editLive", (_event, elem) => {
     if (elem.is(":checkbox"))
@@ -62,6 +64,7 @@
 })(jQuery)
 
 /* various tweaks */
+
 ;(($) => {
   Foundation.libs.reveal.settings.animation = "fade"
 
