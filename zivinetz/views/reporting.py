@@ -1,6 +1,5 @@
 import operator
 import os
-
 from datetime import date, timedelta
 from functools import reduce
 from io import BytesIO
@@ -12,17 +11,17 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.translation import gettext as _
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from pdfdocument.document import PDFDocument, cm, mm
 from pdfdocument.elements import create_stationery_fn
 from pdfdocument.utils import pdf_response
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib import colors
 
+from zivinetz.forms import AssignmentSearchForm
 from zivinetz.models import Assignment, AssignmentChange, ExpenseReport, JobReference
 from zivinetz.views.decorators import user_type_required
-from zivinetz.forms import AssignmentSearchForm
 
 
 class AssignmentPDFStationery:
@@ -355,9 +354,10 @@ Wir freuen uns auf deinen Einsatz!
     )
     pdf.spacer(26 * mm)
 
-    address = "\n".join(
-        [assignment.regional_office.name, assignment.regional_office.address]
-    ).replace("\r", "")
+    address = "\n".join([
+        assignment.regional_office.name,
+        assignment.regional_office.address,
+    ]).replace("\r", "")
 
     pdf.table([(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
 
@@ -404,9 +404,7 @@ Wir freuen uns auf deinen Einsatz!
     response = HttpResponse(content_type="application/pdf")
     result_writer.write(response)
 
-    response["Content-Disposition"] = "attachment; filename=eiv-{}.pdf".format(
-        assignment.pk,
-    )
+    response["Content-Disposition"] = f"attachment; filename=eiv-{assignment.pk}.pdf"
     return response
 
 
@@ -633,12 +631,11 @@ def format_search_parameter(key, value):
     """Format a search parameter for display."""
     if key == "status":
         return _("Status: %s") % value
-    elif key == "regional_office":
+    if key == "regional_office":
         return _("Regional Office: %s") % value
-    elif key == "specification":
+    if key == "specification":
         return _("Specification: %s") % value
-    else:
-        return _("%s: %s") % (key, value)
+    return _("%s: %s") % (key, value)
 
 
 @user_type_required(["dev_admin"])
@@ -674,7 +671,7 @@ def assignment_phone_list(request):
     pdf.spacer()
 
     # Add date (django.utils.timezone)
-    current_time = timezone.now
+    current_time = timezone.now()
     pdf.p(_("Generated on: %s") % current_time.strftime("%d.%m.%Y %H:%M"))
     pdf.spacer()
 
