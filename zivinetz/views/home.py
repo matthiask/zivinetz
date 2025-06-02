@@ -16,7 +16,7 @@ def home(request):
     if request.user.is_staff:
         return HttpResponseRedirect("admin/")
 
-    elif not drudge:
+    if not drudge:
         return redirect("drudge_profile")
 
     return redirect("drudge_dashboard")

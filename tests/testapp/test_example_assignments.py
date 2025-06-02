@@ -2,8 +2,8 @@ from datetime import date
 from decimal import Decimal
 
 from django.test import TestCase
-from testapp import factories
 
+from testapp import factories
 from zivinetz.models import AssignmentChange, CompensationSet, ScopeStatement
 from zivinetz.utils.holidays import get_public_holidays
 

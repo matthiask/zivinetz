@@ -1,31 +1,30 @@
-from datetime import date
 import csv
+import os
+from datetime import date
+from io import BytesIO
 
 import schwifty
-
-from django.utils import timezone
 from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render
+from django.utils import timezone
 from django.utils.translation import gettext as _, gettext_lazy
-from towel.forms import towel_formfield_callback
-from reportlab.pdfgen import canvas
+from pdfdocument.utils import pdf_response
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from io import BytesIO
-from django.conf import settings
-import os
-from pdfdocument.utils import pdf_response
+from reportlab.pdfgen import canvas
+from towel.forms import towel_formfield_callback
 
+from zivinetz.forms import AssignmentSearchForm, DrudgeSearchForm
 from zivinetz.models import Assignment, Codeword, Drudge, ExpenseReport, RegionalOffice
-from zivinetz.views.decorators import drudge_required
 from zivinetz.views.base import BaseView
-from zivinetz.forms import DrudgeSearchForm, AssignmentSearchForm
+from zivinetz.views.decorators import drudge_required
 
 
 class AssignmentExportSearchForm(forms.Form):
@@ -303,7 +302,7 @@ class AssignmentPDFExportView(AssignmentExportBaseView):
         pdf.spacer()
 
         # Add date
-        current_time = timezone.now
+        current_time = timezone.now()
         pdf.p(_("Generated on: %s") % current_time.strftime("%d.%m.%Y %H:%M"))
         pdf.spacer()
 
@@ -502,7 +501,7 @@ class DrudgePDFExportView(BaseView):
 
     def format_search_parameter(self, key, value):
         """Format search parameters for display in German."""
-        from zivinetz.models import RegionalOffice, Assignment
+        from zivinetz.models import Assignment, RegionalOffice
 
         # Map of parameter keys to German labels
         param_labels = {
@@ -524,7 +523,7 @@ class DrudgePDFExportView(BaseView):
         if key == "status":
             status_map = dict(Assignment.STATUS_CHOICES)
             return f"{label}: {status_map.get(value, value)}"
-        elif key == "regional_office":
+        if key == "regional_office":
             try:
                 office = RegionalOffice.objects.get(id=value)
                 return f"{label}: {office.name}"
@@ -533,7 +532,7 @@ class DrudgePDFExportView(BaseView):
         elif key in ["environment_course", "motor_saw_course"]:
             if value == "True":
                 return f"{label}: Ja"
-            elif value == "False":
+            if value == "False":
                 return f"{label}: Nein"
             return f"{label}: {value}"
         elif key == "only_active":
@@ -600,7 +599,7 @@ class DrudgePDFExportView(BaseView):
 
         # Add date
         p.setFont(font_name, 10)
-        current_time = timezone.now
+        current_time = timezone.now()
         p.drawString(
             margin, y, _("Generiert am: %s") % current_time.strftime("%d.%m.%Y %H:%M")
         )
@@ -882,20 +881,18 @@ class DrudgeCSVExportView(BaseView):
         writer = csv.writer(response)
 
         # Write header row
-        writer.writerow(
-            [
-                _("ZDP-Nr."),
-                _("Nachname"),
-                _("Vorname"),
-                _("Status"),
-                _("Regionalstelle"),
-                _("Umweltkurs"),
-                _("Motorsägenkurs"),
-                _("Bildung/Beruf"),
-                _("Durchschnittsnote"),
-                _("Alle Einsätze"),
-            ]
-        )
+        writer.writerow([
+            _("ZDP-Nr."),
+            _("Nachname"),
+            _("Vorname"),
+            _("Status"),
+            _("Regionalstelle"),
+            _("Umweltkurs"),
+            _("Motorsägenkurs"),
+            _("Bildung/Beruf"),
+            _("Durchschnittsnote"),
+            _("Alle Einsätze"),
+        ])
 
         # Write data rows
         for drudge in queryset:
@@ -931,19 +928,17 @@ class DrudgeCSVExportView(BaseView):
             assignments_str = "; ".join(assignments_list) if assignments_list else "-"
 
             # Write row
-            writer.writerow(
-                [
-                    drudge.zdp_no,
-                    drudge.user.last_name,
-                    drudge.user.first_name,
-                    self.get_active_status(drudge),
-                    drudge.regional_office.name if drudge.regional_office else "-",
-                    "Ja" if drudge.environment_course else "Nein",
-                    "Ja" if drudge.motor_saw_course else "Nein",
-                    drudge.education_occupation or "-",
-                    str(avg_mark) if avg_mark is not None else "-",
-                    assignments_str,
-                ]
-            )
+            writer.writerow([
+                drudge.zdp_no,
+                drudge.user.last_name,
+                drudge.user.first_name,
+                self.get_active_status(drudge),
+                drudge.regional_office.name if drudge.regional_office else "-",
+                "Ja" if drudge.environment_course else "Nein",
+                "Ja" if drudge.motor_saw_course else "Nein",
+                drudge.education_occupation or "-",
+                str(avg_mark) if avg_mark is not None else "-",
+                assignments_str,
+            ])
 
         return response

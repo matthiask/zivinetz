@@ -4,9 +4,9 @@ from datetime import date, timedelta
 from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
+
 from testapp import factories
 from testapp.utils import admin_login
-
 from zivinetz.models import Assignment, Drudge, JobReference
 
 
@@ -117,14 +117,12 @@ class AdminViewsTestCase(TestCase):
 
         with io.BytesIO(b"Django\n") as fp:
             fp.name = "requirements.txt"
-            data.update(
-                {
-                    "confirm": 1,
-                    "subject": "Hello and welcome",
-                    "body": "Whatever\nYes.",
-                    "attachment": fp,
-                }
-            )
+            data.update({
+                "confirm": 1,
+                "subject": "Hello and welcome",
+                "body": "Whatever\nYes.",
+                "attachment": fp,
+            })
 
             response = self.client.post("/zivinetz/admin/drudges/", data)
 

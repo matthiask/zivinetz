@@ -13,6 +13,7 @@
 import os
 import sys
 
+
 # Add the project root to the path so autodoc can find the modules
 sys.path.insert(0, os.path.abspath(".."))
 

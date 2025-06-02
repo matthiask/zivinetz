@@ -32,9 +32,8 @@ def _has_53_weeks(year):
     if calendar.isleap(year):
         # Year begins on a wednesday
         return first.day == 2
-    else:
-        # Year begins on a thursday
-        return first.day == 1
+    # Year begins on a thursday
+    return first.day == 1
 
 
 def calendar_week(day):
@@ -120,8 +119,7 @@ class Scheduler:
             new_cw = calendar_week(day)
             if new_cw == cw:
                 continue
-            else:
-                cw = new_cw
+            cw = new_cw
 
             if date_from <= day <= date_until:
                 css = "a"
@@ -197,19 +195,17 @@ class Scheduler:
             if assignment.drudge not in assignments_dict:
                 assignments_dict[assignment.drudge] = []
 
-            assignments_dict[assignment.drudge].append(
-                (
-                    assignment,
-                    self._schedule_assignment(
-                        assignment.date_from,
-                        assignment.determine_date_until(),
-                        {
-                            assignment.motor_saw_course_date: "MSK",
-                            assignment.environment_course_date: "UNA",
-                        },
-                    ),
-                )
-            )
+            assignments_dict[assignment.drudge].append((
+                assignment,
+                self._schedule_assignment(
+                    assignment.date_from,
+                    assignment.determine_date_until(),
+                    {
+                        assignment.motor_saw_course_date: "MSK",
+                        assignment.environment_course_date: "UNA",
+                    },
+                ),
+            ))
 
         # linearize assignments, but still give precedence to drudge
         assignments = list(itertools.chain.from_iterable(assignments_dict.values()))

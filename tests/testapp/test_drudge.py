@@ -4,8 +4,8 @@ from datetime import date, timedelta
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.test import TestCase
-from testapp import factories
 
+from testapp import factories
 from zivinetz.models import Assignment, AssignmentChange, UserProfile
 
 

@@ -1,6 +1,6 @@
 from django.test import TestCase
-from testapp import factories
 
+from testapp import factories
 from zivinetz.models import Assignment
 
 

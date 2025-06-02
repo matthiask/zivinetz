@@ -1,13 +1,15 @@
-from django.urls import path, include
+from django.urls import include, path
 from django.views import generic
+
 from zivinetz.views import drudge, expenses, home, quota, reporting, scheduling
-from zivinetz.views.drudge import (
-    DrudgePDFExportView,
-    DrudgeCSVExportView,
-    AssignmentPDFExportView,
-    AssignmentCSVExportView,
-)
 from zivinetz.views.decorators import user_type_required
+from zivinetz.views.drudge import (
+    AssignmentCSVExportView,
+    AssignmentPDFExportView,
+    DrudgeCSVExportView,
+    DrudgePDFExportView,
+)
+
 
 # Define commonly used decorators
 admin_required = user_type_required(["admin", "user_plus", "dev_admin"])

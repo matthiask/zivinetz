@@ -110,12 +110,7 @@ class DrudgeQuota(models.Model):
         from zivinetz.views.scheduling import calendar_week
 
         year, week = calendar_week(self.week)
-        return "{}: {} Zivis in KW{} {}".format(
-            self.scope_statement.name,
-            self.quota,
-            week,
-            year,
-        )
+        return f"{self.scope_statement.name}: {self.quota} Zivis in KW{week} {year}"
 
 
 class Choices:
@@ -127,17 +122,16 @@ class Choices:
 
 @model_resource_urls()
 class Specification(models.Model):
-    ACCOMODATION = Choices(
-        (("provided", _("provided")), ("compensated", _("compensated")))
-    )
+    ACCOMODATION = Choices((
+        ("provided", _("provided")),
+        ("compensated", _("compensated")),
+    ))
 
-    MEAL = Choices(
-        (
-            ("no_compensation", _("no compensation")),
-            ("at_accomodation", _("at accomodation")),
-            ("external", _("external")),
-        )
-    )
+    MEAL = Choices((
+        ("no_compensation", _("no compensation")),
+        ("at_accomodation", _("at accomodation")),
+        ("external", _("external")),
+    ))
 
     CLOTHING = Choices((("provided", _("provided")), ("compensated", _("compensated"))))
 
@@ -232,26 +226,22 @@ class Specification(models.Model):
                     compensation[key] = getattr(cset, f"{meal}_{value}")
 
         if self.clothing == self.CLOTHING.provided:
-            compensation.update(
-                {
-                    "clothing": Decimal("0.00"),
-                    "clothing_limit_per_assignment": Decimal("0.00"),
-                }
-            )
+            compensation.update({
+                "clothing": Decimal("0.00"),
+                "clothing_limit_per_assignment": Decimal("0.00"),
+            })
         else:
-            compensation.update(
-                {
-                    "clothing": cset.clothing,
-                    "clothing_limit_per_assignment": cset.clothing_limit_per_assignment,
-                }
-            )
+            compensation.update({
+                "clothing": cset.clothing,
+                "clothing_limit_per_assignment": cset.clothing_limit_per_assignment,
+            })
 
         return compensation
 
 
 class CompensationSetManager(models.Manager):
     def for_date(self, for_date=date.today):
-        if hasattr(for_date, "__call__"):
+        if callable(for_date):
             for_date = for_date()
 
         try:
@@ -584,12 +574,7 @@ class Assignment(models.Model):
     objects = AssignmentManager()
 
     def __str__(self):
-        return "{} on {} ({} - {})".format(
-            self.drudge,
-            self.specification.code,
-            self.date_from,
-            self.determine_date_until(),
-        )
+        return f"{self.drudge} on {self.specification.code} ({self.date_from} - {self.determine_date_until()})"
 
     def determine_date_until(self):
         return self.date_until_extension or self.date_until
@@ -863,7 +848,7 @@ def get_request():
             code = frame.f_code
             if code.co_varnames[:1] == ("request",):
                 return frame.f_locals["request"]
-            elif code.co_varnames[:2] == ("self", "request"):
+            if code.co_varnames[:2] == ("self", "request"):
                 return frame.f_locals["request"]
     finally:
         del frame
@@ -1357,7 +1342,7 @@ class AbsenceManager(SearchManager):
     def for_expense_report(self, report):
         candidate_days = [
             report.date_from + timedelta(days=i)
-            for i in range(0, (report.date_until - report.date_from).days)
+            for i in range((report.date_until - report.date_from).days)
         ]
 
         days = defaultdict(int)
@@ -1444,11 +1429,7 @@ class Absence(models.Model):
         verbose_name_plural = _("absences")
 
     def __str__(self):
-        return "Absenz von {} von {} bis {}".format(
-            self.assignment.drudge.user.get_full_name(),
-            min(self.days),
-            max(self.days),
-        )
+        return f"Absenz von {self.assignment.drudge.user.get_full_name()} von {min(self.days)} bis {max(self.days)}"
 
     def pretty_days(self):
         return ", ".join(day.strftime("%a %d.%m.%y") for day in sorted(self.days))

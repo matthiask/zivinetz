@@ -10,16 +10,16 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Context, Template
 from django.urls import include, path, re_path
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _, gettext_lazy
 from openpyxl.writer.excel import save_virtual_workbook
-from pdfdocument.utils import pdf_response
 from pdfdocument.document import cm
+from pdfdocument.utils import pdf_response
 from towel import resources
 from towel.forms import WarningsForm, towel_formfield_callback
 from towel.resources.urls import resource_url_fn
 from towel.utils import safe_queryset_and
 from towel_foundation.widgets import SelectWithPicker
-from django.utils.decorators import method_decorator
 
 from zivinetz.forms import (
     AbsenceSearchForm,
@@ -47,9 +47,9 @@ from zivinetz.models import (
     ScopeStatement,
     Specification,
 )
+from zivinetz.views.decorators import user_type_required
 from zivinetz.views.expenses import generate_expense_statistics_pdf
 from zivinetz.views.groups import create_groups_xlsx
-from zivinetz.views.decorators import user_type_required
 
 
 class LimitedPickerView(resources.PickerView):
@@ -81,16 +81,12 @@ class ZivinetzMixin:
 
     def allow_edit(self, object=None, silent=True):
         return self.request.user.has_perm(
-            "{}.change_{}".format(
-                self.model._meta.app_label, self.model._meta.model_name
-            )
+            f"{self.model._meta.app_label}.change_{self.model._meta.model_name}"
         )
 
     def allow_delete(self, object=None, silent=True):
         if not self.request.user.has_perm(
-            "{}.delete_{}".format(
-                self.model._meta.app_label, self.model._meta.model_name
-            )
+            f"{self.model._meta.app_label}.delete_{self.model._meta.model_name}"
         ):
             return False
 
@@ -720,172 +716,150 @@ jobreference_url = resource_url_fn(
 urlpatterns = [
     path(
         "regional_offices/",
-        include(
-            [
-                regionaloffice_url("list", url=r"^$"),
-                regionaloffice_url("add", url=r"^add/$"),
-                regionaloffice_url("edit"),
-                regionaloffice_url("delete"),
-                re_path(
-                    r"^\d+/$", lambda request: redirect("zivinetz_regionaloffice_list")
-                ),
-            ]
-        ),
+        include([
+            regionaloffice_url("list", url=r"^$"),
+            regionaloffice_url("add", url=r"^add/$"),
+            regionaloffice_url("edit"),
+            regionaloffice_url("delete"),
+            re_path(
+                r"^\d+/$", lambda request: redirect("zivinetz_regionaloffice_list")
+            ),
+        ]),
     ),
     path(
         "scope_statements/",
-        include(
-            [
-                scopestatement_url("list", url=r"^$"),
-                scopestatement_url("detail", url=r"^(?P<pk>\d+)/$"),
-                scopestatement_url("add", url=r"^add/$"),
-                scopestatement_url("edit"),
-                scopestatement_url("delete"),
-            ]
-        ),
+        include([
+            scopestatement_url("list", url=r"^$"),
+            scopestatement_url("detail", url=r"^(?P<pk>\d+)/$"),
+            scopestatement_url("add", url=r"^add/$"),
+            scopestatement_url("edit"),
+            scopestatement_url("delete"),
+        ]),
     ),
     path(
         "specifications/",
-        include(
-            [
-                specification_url("list", url="^$"),
-                specification_url("detail", url=r"^(?P<pk>\d+)/$"),
-                specification_url("add", url=r"^add/$", form_class=SpecificationForm),
-                specification_url("edit", form_class=SpecificationForm),
-                specification_url("delete"),
-            ]
-        ),
+        include([
+            specification_url("list", url="^$"),
+            specification_url("detail", url=r"^(?P<pk>\d+)/$"),
+            specification_url("add", url=r"^add/$", form_class=SpecificationForm),
+            specification_url("edit", form_class=SpecificationForm),
+            specification_url("delete"),
+        ]),
     ),
     path(
         "drudges/",
-        include(
-            [
-                drudge_url(
-                    "list",
-                    url=r"^$",
-                    paginate_by=50,
-                    search_form=DrudgeSearchForm,
-                    send_emails_selector="user__email",
-                ),
-                drudge_url("picker", view=LimitedPickerView, url=r"^picker/$"),
-                drudge_url("detail", view=DrudgeDetailView, url=r"^(?P<pk>\d+)/$"),
-                drudge_url("add", url=r"^add/$"),
-                drudge_url("edit"),
-                drudge_url("delete"),
-            ]
-        ),
+        include([
+            drudge_url(
+                "list",
+                url=r"^$",
+                paginate_by=50,
+                search_form=DrudgeSearchForm,
+                send_emails_selector="user__email",
+            ),
+            drudge_url("picker", view=LimitedPickerView, url=r"^picker/$"),
+            drudge_url("detail", view=DrudgeDetailView, url=r"^(?P<pk>\d+)/$"),
+            drudge_url("add", url=r"^add/$"),
+            drudge_url("edit"),
+            drudge_url("delete"),
+        ]),
     ),
     path(
         "assessment/",
-        include(
-            [
-                assessment_url("edit", form_class=AssessmentForm),
-                assessment_url("delete"),
-            ]
-        ),
+        include([
+            assessment_url("edit", form_class=AssessmentForm),
+            assessment_url("delete"),
+        ]),
     ),
     path(
         "assignments/",
-        include(
-            [
-                assignment_url(
-                    "list",
-                    url=r"^$",
-                    paginate_by=50,
-                    search_form=AssignmentSearchForm,
-                    send_emails_selector="drudge__user__email",
-                ),
-                assignment_url("picker", view=LimitedPickerView, url=r"^picker/$"),
-                assignment_url("pdf", view=PhonenumberPDFExportView, url=r"^pdf/$"),
-                assignment_url("detail", url=r"^(?P<pk>\d+)/$"),
-                assignment_url("add", url=r"^add/$"),
-                assignment_url("edit"),
-                assignment_url("delete"),
-                assignment_url("create_expensereports", view=CreateExpenseReportView),
-                assignment_url("remove_expensereports", view=RemoveExpenseReportView),
-            ]
-        ),
+        include([
+            assignment_url(
+                "list",
+                url=r"^$",
+                paginate_by=50,
+                search_form=AssignmentSearchForm,
+                send_emails_selector="drudge__user__email",
+            ),
+            assignment_url("picker", view=LimitedPickerView, url=r"^picker/$"),
+            assignment_url("pdf", view=PhonenumberPDFExportView, url=r"^pdf/$"),
+            assignment_url("detail", url=r"^(?P<pk>\d+)/$"),
+            assignment_url("add", url=r"^add/$"),
+            assignment_url("edit"),
+            assignment_url("delete"),
+            assignment_url("create_expensereports", view=CreateExpenseReportView),
+            assignment_url("remove_expensereports", view=RemoveExpenseReportView),
+        ]),
     ),
     path(
         "groups/",
-        include(
-            [
-                group_url(
-                    "list",
-                    url=r"^$",
-                    paginate_by=50,
-                    # search_form=AssignmentSearchForm,
-                    # send_emails_selector='drudge__user__email',
-                ),
-                group_url(
-                    "assign",
-                    view=AssignGroupsView,
-                    url=r"^(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})/$",
-                ),
-                group_url("detail", url=r"^(?P<pk>\d+)/$"),
-                group_url("add", url=r"^add/$"),
-                group_url("edit"),
-                group_url("delete"),
-            ]
-        ),
+        include([
+            group_url(
+                "list",
+                url=r"^$",
+                paginate_by=50,
+                # search_form=AssignmentSearchForm,
+                # send_emails_selector='drudge__user__email',
+            ),
+            group_url(
+                "assign",
+                view=AssignGroupsView,
+                url=r"^(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})/$",
+            ),
+            group_url("detail", url=r"^(?P<pk>\d+)/$"),
+            group_url("add", url=r"^add/$"),
+            group_url("edit"),
+            group_url("delete"),
+        ]),
     ),
     path(
         "absences/",
-        include(
-            [
-                absence_url(
-                    "list",
-                    url=r"^$",
-                    paginate_by=50,
-                    search_form=AbsenceSearchForm,
-                    # send_emails_selector='drudge__user__email',
-                ),
-                absence_url("detail", url=r"^(?P<pk>\d+)/$"),
-                absence_url("add", url=r"^add/$"),
-                absence_url("edit"),
-                absence_url("delete"),
-            ]
-        ),
+        include([
+            absence_url(
+                "list",
+                url=r"^$",
+                paginate_by=50,
+                search_form=AbsenceSearchForm,
+                # send_emails_selector='drudge__user__email',
+            ),
+            absence_url("detail", url=r"^(?P<pk>\d+)/$"),
+            absence_url("add", url=r"^add/$"),
+            absence_url("edit"),
+            absence_url("delete"),
+        ]),
     ),
     path(
         "expense_reports/",
-        include(
-            [
-                expensereport_url(
-                    "list",
-                    url=r"^$",
-                    paginate_by=50,
-                    search_form=ExpenseReportSearchForm,
-                ),
-                expensereport_url(
-                    "pdf", view=ExpenseReportPDFExportView, url=r"^pdf/$"
-                ),
-                expensereport_url("detail", url=r"^(?P<pk>\d+)/$"),
-                expensereport_url("add", url=r"^add/$"),
-                expensereport_url("edit"),
-                expensereport_url("delete"),
-            ]
-        ),
+        include([
+            expensereport_url(
+                "list",
+                url=r"^$",
+                paginate_by=50,
+                search_form=ExpenseReportSearchForm,
+            ),
+            expensereport_url("pdf", view=ExpenseReportPDFExportView, url=r"^pdf/$"),
+            expensereport_url("detail", url=r"^(?P<pk>\d+)/$"),
+            expensereport_url("add", url=r"^add/$"),
+            expensereport_url("edit"),
+            expensereport_url("delete"),
+        ]),
     ),
     path(
         "jobreferences/",
-        include(
-            [
-                jobreference_url(
-                    "list",
-                    url=r"^$",
-                    paginate_by=50,
-                    search_form=JobReferenceSearchForm,
-                ),
-                jobreference_url("detail", url=r"^(?P<pk>\d+)/$"),
-                jobreference_url("edit", form_class=JobReferenceForm),
-                jobreference_url("delete"),
-                jobreference_url(
-                    "from_template",
-                    view=JobReferenceFromTemplateView,
-                    url=r"^(\d+)/(\d+)/$",
-                ),
-            ]
-        ),
+        include([
+            jobreference_url(
+                "list",
+                url=r"^$",
+                paginate_by=50,
+                search_form=JobReferenceSearchForm,
+            ),
+            jobreference_url("detail", url=r"^(?P<pk>\d+)/$"),
+            jobreference_url("edit", form_class=JobReferenceForm),
+            jobreference_url("delete"),
+            jobreference_url(
+                "from_template",
+                view=JobReferenceFromTemplateView,
+                url=r"^(\d+)/(\d+)/$",
+            ),
+        ]),
     ),
 ]

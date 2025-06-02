@@ -2,11 +2,9 @@ from functools import wraps
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.shortcuts import redirect
 from django.utils.translation import gettext as _
-
-from django.core.exceptions import PermissionDenied
-from django.core.exceptions import ObjectDoesNotExist
 
 from zivinetz.models import Drudge
 
