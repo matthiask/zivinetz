@@ -37,6 +37,7 @@ def user_type_required(allowed_types):
                     hasattr(request.user, "userprofile")
                     and request.user.userprofile.user_type not in allowed_types
                 ):
+                    print(request.user.userprofile.user_type, allowed_types)
                     raise PermissionDenied
             except ObjectDoesNotExist:
                 messages.error(request, _("Please complete your profile first."))

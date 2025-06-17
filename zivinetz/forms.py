@@ -175,6 +175,8 @@ class AssignmentSearchForm(SearchForm):
     def __init__(self, *args, **kwargs):
         # Get request before calling super()
         self.request = kwargs.get("request")
+        if self.request is None:
+            raise ValueError("request parameter is required")
         super().__init__(*args, **kwargs)
 
         if (
@@ -183,7 +185,8 @@ class AssignmentSearchForm(SearchForm):
             and self.request.user.userprofile.user_type == "squad_leader"
         ):
             self.fields["active_on"].initial = date.today()
-            self.fields.pop("only_active")
+            if "only_active" in self.fields:
+                self.fields.pop("only_active")
 
     def queryset(self, model):
         query, data = self.query_data()

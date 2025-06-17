@@ -304,6 +304,7 @@ def assignment_pdf(request, pk):
     )
 
     if not request.user.is_staff:
+        logger.info("TEST   ________________________________________________________________________________________________")
         if assignment.drudge.user != request.user:
             return HttpResponseForbidden("<h1>Access forbidden</h1>")
 
