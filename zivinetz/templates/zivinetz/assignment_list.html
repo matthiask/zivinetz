@@ -44,7 +44,9 @@
             {# Current status of the assignment #}
             <td>{{ object.get_status_display }}</td>
             {# PDF link for administrative purposes #}
-            <td>{{ object.admin_pdf_url|safe }}</td>
+            {% if request.user|has_user_type:"admin,dev_admin,user_plus" %}
+                <td>{{ object.admin_pdf_url|safe }}</td>
+            {% endif %}
         </tr>
     {% endfor %}
     </tbody>
