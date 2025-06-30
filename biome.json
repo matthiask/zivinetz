@@ -1,10 +1,9 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.0-beta.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "off" } } },
   "formatter": {
     "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2
+    "useEditorconfig": true
   },
   "javascript": {
     "formatter": {
@@ -13,9 +12,7 @@
   },
   "css": {
     "formatter": {
-      "enabled": true,
-      "indentStyle": "space",
-      "indentWidth": 2
+      "enabled": true
     },
     "linter": {
       "enabled": true
@@ -26,26 +23,15 @@
     "rules": {
       "complexity": {
         "noForEach": "off",
-        "useOptionalChain": "off"
+        "useOptionalChain": "off",
+        "noCommaOperator": "off"
       },
       "suspicious": {
         "noAssignInExpressions": "off",
         "noDuplicateProperties": "warn"
       },
       "style": {
-        "noParameterAssign": "warn",
-        "useAsConstAssertion": "error",
-        "useDefaultParameterLast": "error",
-        "useEnumInitializers": "error",
-        "useSelfClosingElements": "error",
-        "useConst": "error",
-        "useSingleVarDeclarator": "error",
-        "noUnusedTemplateLiteral": "error",
-        "useNumberNamespace": "error",
-        "noDescendingSpecificity": "warn",
-        "noInferrableTypes": "error",
-        "noUselessElse": "error",
-        "noCommaOperator": "off"
+        "noParameterAssign": "warn"
       }
     }
   }
