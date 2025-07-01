@@ -398,12 +398,14 @@ Wir freuen uns auf deinen Einsatz!
 
     # Add the conditions PDF if it exists ####################################
     if assignment.specification.conditions:
-        #conditions_reader = PdfReader(assignment.specification.conditions.open("rb"))
-        #for page in conditions_reader.pages:
+        # conditions_reader = PdfReader(assignment.specification.conditions.open("rb"))
+        # for page in conditions_reader.pages:
         #    result_writer.add_page(page)
 
         try:
-            conditions_reader = PdfReader(assignment.specification.conditions.open("rb"))
+            conditions_reader = PdfReader(
+                assignment.specification.conditions.open("rb")
+            )
             for page in conditions_reader.pages:
                 result_writer.add_page(page)
         except Exception as e:
