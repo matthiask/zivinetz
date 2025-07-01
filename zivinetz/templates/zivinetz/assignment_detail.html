@@ -19,50 +19,53 @@
     <a href="edit/"class="button"><span>{% trans "edit"|capfirst %}</span></a>
 </div>
 
-<h2>{% trans "expense reports" %}</h2>
-<table class="objects">
-    <thead>
-        <tr>
-            <th>{% trans "object"|capfirst %}</th>
-            <th>{% trans "specification"|capfirst %}</th>
-            <th>{% trans "total days"|capfirst %}</th>
-            <th>{% trans "working"|capfirst %}</th>
-            <th>{% trans "free"|capfirst %}</th>
-            <th>{% trans "sick"|capfirst %}</th>
-            <th>{% trans "holidays"|capfirst %}</th>
-            <th>{% trans "vacation"|capfirst %}</th>
-            <th>{% trans "status"|capfirst %}</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for object in object.reports.select_related %}
-        <tr>
-            <th>
-                <a href="{{ object.get_absolute_url }}">
-                    {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
-                </a>
-            </th>
-            <td>{{ object.specification.code }}</td>
+{% if request.user|has_user_type:"admin,dev_admin,user_plus" %}
+  <h2>{% trans "expense reports" %}</h2>
+  <table class="objects">
+      <thead>
+          <tr>
+              <th>{% trans "object"|capfirst %}</th>
+              <th>{% trans "specification"|capfirst %}</th>
+              <th>{% trans "total days"|capfirst %}</th>
+              <th>{% trans "working"|capfirst %}</th>
+              <th>{% trans "free"|capfirst %}</th>
+              <th>{% trans "sick"|capfirst %}</th>
+              <th>{% trans "holidays"|capfirst %}</th>
+              <th>{% trans "vacation"|capfirst %}</th>
+              <th>{% trans "status"|capfirst %}</th>
+              <th></th>
+          </tr>
+      </thead>
+      <tbody>
+      {% for object in object.reports.select_related %}
+          <tr>
+              <th>
+                  <a href="{{ object.get_absolute_url }}">
+                      {{ object.date_from|date:"d.m.Y" }} - {{ object.date_until|date:"d.m.Y" }}
+                  </a>
+              </th>
+              <td>{{ object.specification.code }}</td>
+            
+              <td>{{ object.total_days }}</td>
+              <td title="{{ object.working_days_notes|default:"Keine Notizen" }}">{{ object.working_days }}</td>
+              <td title="{{ object.free_days_notes|default:"Keine Notizen" }}">{{ object.free_days }}</td>
+              <td title="{{ object.sick_days_notes|default:"Keine Notizen" }}">{{ object.sick_days }}</td>
+              <td title="{{ object.holi_days_notes|default:"Keine Notizen" }}">{{ object.holi_days }}</td>
+              <td title="{{ object.forced_leave_days_notes|default:"Keine Notizen" }}">{{ object.forced_leave_days }}</td>
+              <td>{{ object.get_status_display }}</td>
+              <td><a href="{{ object.pdf_url }}">PDF</a></td>
+          </tr>
+      {% endfor %}
+      </tbody>
+  </table>
+  <div class="buttons">
+      <a href="create_expensereports/" class="button">
+          <span>{% trans "Create reports" %}</span></a>
+      <a href="remove_expensereports/" class="button">
+          <span>{% trans "Remove pending reports" %}</span></a>
+  </div>
+{% endif %}
 
-            <td>{{ object.total_days }}</td>
-            <td title="{{ object.working_days_notes|default:"Keine Notizen" }}">{{ object.working_days }}</td>
-            <td title="{{ object.free_days_notes|default:"Keine Notizen" }}">{{ object.free_days }}</td>
-            <td title="{{ object.sick_days_notes|default:"Keine Notizen" }}">{{ object.sick_days }}</td>
-            <td title="{{ object.holi_days_notes|default:"Keine Notizen" }}">{{ object.holi_days }}</td>
-            <td title="{{ object.forced_leave_days_notes|default:"Keine Notizen" }}">{{ object.forced_leave_days }}</td>
-            <td>{{ object.get_status_display }}</td>
-            <td><a href="{{ object.pdf_url }}">PDF</a></td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-<div class="buttons">
-    <a href="create_expensereports/" class="button">
-        <span>{% trans "Create reports" %}</span></a>
-    <a href="remove_expensereports/" class="button">
-        <span>{% trans "Remove pending reports" %}</span></a>
-</div>
 
 <h2>{% trans "absences" %}</h2>
 <table class="objects">
