@@ -10,6 +10,8 @@ def zivinetz(request):
     except (AttributeError, UserProfile.DoesNotExist):
         user_type = None
 
+    urls = []
+
     if request.user.is_authenticated and request.user.is_staff:
         if user_type in ["admin", "dev_admin"]:
             urls = [
