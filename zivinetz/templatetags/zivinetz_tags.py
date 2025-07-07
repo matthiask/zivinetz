@@ -32,8 +32,8 @@ def has_user_type(user, user_types):
         user_type = user.userprofile.user_type
         allowed_types = [ut.strip() for ut in user_types.split(",")]
 
-        # Special case for admin and dev_admin
-        if user_type in ("admin", "dev_admin"):
+        # Special case for dev_admin
+        if user_type == "dev_admin":
             return True
 
         return user_type in allowed_types
