@@ -12,7 +12,7 @@ from zivinetz.views.drudge import (
 
 
 # Define commonly used decorators
-admin_required = user_type_required(["admin", "user_plus", "dev_admin"])
+admin_required = user_type_required(["admin", "user_plus", "dev_admin", "squad_leader"])
 admin_dev_admin_required = user_type_required(["admin", "dev_admin"])
 dev_admin_required = user_type_required(["dev_admin"])
 
@@ -27,18 +27,18 @@ urlpatterns = [
     # Resource-based PDF URLs
     path(
         "assignments/<int:pk>/pdf/",
-        admin_required(reporting.assignment_pdf),
+        reporting.assignment_pdf,
         name="zivinetz_assignment_pdf",
+    ),
+    path(
+        "expense_reports/<int:pk>/pdf/",
+        reporting.expense_report_pdf,
+        name="zivinetz_expensereport_pdf",
     ),
     path(
         "assignments/phone-list/",
         admin_required(reporting.assignment_phone_list),
         name="zivinetz_assignment_phone_list",
-    ),
-    path(
-        "expense_reports/<int:pk>/pdf/",
-        admin_dev_admin_required(reporting.expense_report_pdf),
-        name="zivinetz_expensereport_pdf",
     ),
     path(
         "references/<int:pk>/pdf/",

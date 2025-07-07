@@ -24,9 +24,7 @@
                 </th>
                 <th>{% trans "average mark" %}</th>
             {% endif %}
-            {% if request.user|has_user_type:"squad_leader" %}
-                <th>Profil</th>
-            {% endif %}
+            <th>Profil</th>
         </tr>
     </thead>
     <tbody>
@@ -74,9 +72,7 @@
                 </td>
                 <td>{{ object.average_mark|default:"&ndash;" }}</td>
             {% endif %}
-            {% if request.user|has_user_type:"squad_leader" %}
-                <td><a href="{{ object.get_absolute_url }}">Profil</a></td>
-            {% endif %}
+            <td><a href="{{ object.get_absolute_url }}">Profil</a></td>
         </tr>
     {% endfor %}
     </tbody>
