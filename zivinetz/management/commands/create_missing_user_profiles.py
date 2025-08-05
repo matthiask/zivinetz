@@ -4,12 +4,12 @@ from zivinetz.models import UserProfile
 
 
 class Command(BaseCommand):
-    help = 'Create UserProfile objects for users who do not have one'
+    help = "Create UserProfile objects for users who do not have one"
 
     def handle(self, *args, **options):
         created_count = 0
         skipped_count = 0
-        
+
         for user in User.objects.all():
             # Skip if user already has a profile
             if UserProfile.objects.filter(user=user).exists():
@@ -27,16 +27,16 @@ class Command(BaseCommand):
             # Create the UserProfile
             UserProfile.objects.create(user=user, user_type=user_type)
             created_count += 1
-            
+
             self.stdout.write(
                 self.style.SUCCESS(
-                    f'Created UserProfile for {user.username} with type: {user_type}'
+                    f"Created UserProfile for {user.username} with type: {user_type}"
                 )
             )
 
         self.stdout.write(
             self.style.SUCCESS(
-                f'Successfully created {created_count} UserProfile objects. '
-                f'Skipped {skipped_count} users who already had profiles.'
+                f"Successfully created {created_count} UserProfile objects. "
+                f"Skipped {skipped_count} users who already had profiles."
             )
-        ) 
+        )
