@@ -653,7 +653,7 @@ def format_search_parameter(key, value):
 
 @user_type_required(["dev_admin"])
 def assignment_phone_list(request):
-    """Generate a PDF phone list of assignments."""
+    """Generate a PDF list of assignments."""
     # Get the search form and apply its filters
     search_form = AssignmentSearchForm(request.GET, request=request)
     if not search_form.is_valid():
@@ -703,7 +703,6 @@ def assignment_phone_list(request):
         # If this is a new drudge, add drudge information
         if current_drudge != assignment.drudge:
             current_drudge = assignment.drudge
-
             # Add drudge header
             pdf.h2(f"{current_drudge.user.last_name}, {current_drudge.user.first_name}")
 
@@ -711,11 +710,17 @@ def assignment_phone_list(request):
             pdf.table(
                 [
                     (_("ZDP No."), str(current_drudge.zdp_no)),
+                    (_("Adresse"), f"{current_drudge.address}, {current_drudge.zip_code} {current_drudge.city}"),
                     (_("Email"), current_drudge.user.email),
+                    (_("Geburtsdatum"), current_drudge.date_of_birth.strftime("%d.%m.%Y")),
                     (
                         _("Phone"),
                         f"{current_drudge.phone_home or '-'} / {current_drudge.mobile or '-'}",
                     ),
+                    (_("Ausbildung / Beruf"), current_drudge.education_occupation),
+                    (_("Führerausweis"), f"{current_drudge.driving_license or '-'}"),
+                    (_("Generalabonnement"), f"{current_drudge.general_abonnement or '-'}"),
+                    (_("Halbtax"), f"{current_drudge.half_fare_card or '-'}"),
                 ],
                 (4 * cm, 12.4 * cm),
             )
@@ -723,6 +728,7 @@ def assignment_phone_list(request):
 
             # Add course information
             courses = []
+            source_value = assignment.drudge.source or "-"
             if current_drudge.environment_course:
                 courses.append("Umweltkurs")
             if current_drudge.motor_saw_course:
@@ -745,6 +751,7 @@ def assignment_phone_list(request):
                     f"{assignment.date_from.strftime('%d.%m.%Y')} - {assignment.determine_date_until().strftime('%d.%m.%Y')}",
                 ),
                 (_("Status"), assignment.get_status_display()),
+                (_("Quelle"), source_value),
             ],
             (4 * cm, 12.4 * cm),
         )
