@@ -710,16 +710,25 @@ def assignment_phone_list(request):
             pdf.table(
                 [
                     (_("ZDP No."), str(current_drudge.zdp_no)),
-                    (_("Adresse"), f"{current_drudge.address}, {current_drudge.zip_code} {current_drudge.city}"),
+                    (
+                        _("Adresse"),
+                        f"{current_drudge.address}, {current_drudge.zip_code} {current_drudge.city}",
+                    ),
                     (_("Email"), current_drudge.user.email),
-                    (_("Geburtsdatum"), current_drudge.date_of_birth.strftime("%d.%m.%Y")),
+                    (
+                        _("Geburtsdatum"),
+                        current_drudge.date_of_birth.strftime("%d.%m.%Y"),
+                    ),
                     (
                         _("Phone"),
                         f"{current_drudge.phone_home or '-'} / {current_drudge.mobile or '-'}",
                     ),
                     (_("Ausbildung / Beruf"), current_drudge.education_occupation),
                     (_("Führerausweis"), f"{current_drudge.driving_license or '-'}"),
-                    (_("Generalabonnement"), f"{current_drudge.general_abonnement or '-'}"),
+                    (
+                        _("Generalabonnement"),
+                        f"{current_drudge.general_abonnement or '-'}",
+                    ),
                     (_("Halbtax"), f"{current_drudge.half_fare_card or '-'}"),
                 ],
                 (4 * cm, 12.4 * cm),

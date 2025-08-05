@@ -55,7 +55,9 @@ class DrudgeExportSearchForm(forms.Form):
     environment_course = forms.NullBooleanField(
         required=False, label=_("Environment Course")
     )
-    motor_saw_course = forms.NullBooleanField(required=False, label=_("Motor Saw Course"))
+    motor_saw_course = forms.NullBooleanField(
+        required=False, label=_("Motor Saw Course")
+    )
 
 
 class AssignmentForm(forms.ModelForm):
@@ -408,7 +410,7 @@ class AssignmentCSVExportView(AssignmentExportBaseView):
             _("Datum von"),
             _("Datum bis"),
             _("Status"),
-            _("Quelle")
+            _("Quelle"),
         ]
 
     def format_row(self, assignment):
@@ -434,19 +436,19 @@ class AssignmentCSVExportView(AssignmentExportBaseView):
             self.format_date(assignment.date_from),
             self.format_date(assignment.determine_date_until()),
             assignment.get_status_display(),
-            assignment.drudge.source
+            assignment.drudge.source,
         ]
 
 
 class DrudgePDFExportView(BaseView):
-    #Generate a PDF export of drudges.
+    # Generate a PDF export of drudges.
 
     model = Drudge
     template_name = "zivinetz/drudge_list.html"
 
     @staticmethod
     def draw_wrapped_text(p, text, x, y, max_width, font_name, font_size):
-        #Draw text with word wrapping.#
+        # Draw text with word wrapping.#
         if not text:
             return y - 0.5 * cm
 
@@ -500,10 +502,14 @@ class DrudgePDFExportView(BaseView):
                 motor_saw_value = export_form.cleaned_data["motor_saw_course"]
                 if motor_saw_value is True:
                     # Filter for drudges who have any motor saw course
-                    queryset = queryset.filter(motor_saw_course__isnull=False).exclude(motor_saw_course="")
+                    queryset = queryset.filter(motor_saw_course__isnull=False).exclude(
+                        motor_saw_course=""
+                    )
                 elif motor_saw_value is False:
                     # Filter for drudges who have no motor saw course
-                    queryset = queryset.filter(motor_saw_course__isnull=True) | queryset.filter(motor_saw_course="")
+                    queryset = queryset.filter(
+                        motor_saw_course__isnull=True
+                    ) | queryset.filter(motor_saw_course="")
         return queryset
 
     def get_active_status(self, drudge):
