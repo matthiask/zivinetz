@@ -52,10 +52,12 @@ class DrudgeExportSearchForm(forms.Form):
         required=False,
         label=_("Regional Office"),
     )
-    environment_course = forms.BooleanField(
+    environment_course = forms.NullBooleanField(
         required=False, label=_("Environment Course")
     )
-    motor_saw_course = forms.BooleanField(required=False, label=_("Motor Saw Course"))
+    motor_saw_course = forms.NullBooleanField(
+        required=False, label=_("Motor Saw Course")
+    )
 
 
 class AssignmentForm(forms.ModelForm):
@@ -350,6 +352,7 @@ class AssignmentPDFExportView(AssignmentExportBaseView):
                     f"{self.format_date(assignment.date_from)} - {self.format_date(assignment.determine_date_until())}",
                 ),
                 (_("Status"), assignment.get_status_display()),
+                (_("Quelle"), assignment.drudge.source),
             ],
             (4 * cm, 12.4 * cm),
         )
@@ -390,15 +393,24 @@ class AssignmentCSVExportView(AssignmentExportBaseView):
             _("ZDP-Nr."),
             _("Nachname"),
             _("Vorname"),
+            _("Adresse"),
+            _("PLZ"),
+            _("Ort"),
             _("E-Mail"),
             _("Telefon"),
             _("Mobile"),
+            _("Geburtsdatum"),
+            _("Ausbildung / Beruf"),
+            _("Führerausweis"),
+            _("Generalabonnement"),
+            _("Halbtax"),
             _("Umweltkurs"),
             _("Motorsägenkurs"),
             _("Pflichtenheft"),
             _("Datum von"),
             _("Datum bis"),
             _("Status"),
+            _("Quelle"),
         ]
 
     def format_row(self, assignment):
@@ -407,25 +419,36 @@ class AssignmentCSVExportView(AssignmentExportBaseView):
             assignment.drudge.zdp_no,
             assignment.drudge.user.last_name,
             assignment.drudge.user.first_name,
+            assignment.drudge.address,
+            assignment.drudge.zip_code,
+            assignment.drudge.city,
             assignment.drudge.user.email,
             assignment.drudge.phone_home or "-",
             assignment.drudge.mobile or "-",
+            assignment.drudge.date_of_birth.strftime("%d.%m.%Y"),
+            assignment.drudge.education_occupation,
+            "Ja" if assignment.drudge.driving_license else "Nein",
+            "Ja" if assignment.drudge.general_abonnement else "Nein",
+            "Ja" if assignment.drudge.half_fare_card else "Nein",
             "Ja" if assignment.drudge.environment_course else "Nein",
             "Ja" if assignment.drudge.motor_saw_course else "Nein",
             assignment.specification.code,
             self.format_date(assignment.date_from),
             self.format_date(assignment.determine_date_until()),
             assignment.get_status_display(),
+            assignment.drudge.source,
         ]
 
 
 class DrudgePDFExportView(BaseView):
+    # Generate a PDF export of drudges.
+
     model = Drudge
     template_name = "zivinetz/drudge_list.html"
 
     @staticmethod
     def draw_wrapped_text(p, text, x, y, max_width, font_name, font_size):
-        """Draw text with word wrapping."""
+        # Draw text with word wrapping.#
         if not text:
             return y - 0.5 * cm
 
@@ -474,10 +497,19 @@ class DrudgePDFExportView(BaseView):
                     environment_course=export_form.cleaned_data["environment_course"]
                 )
             if export_form.cleaned_data.get("motor_saw_course") is not None:
-                queryset = queryset.filter(
-                    motor_saw_course=export_form.cleaned_data["motor_saw_course"]
-                )
-
+                # For motor_saw_course, we need to handle the boolean conversion
+                # since the model field is a CharField but we're filtering as boolean
+                motor_saw_value = export_form.cleaned_data["motor_saw_course"]
+                if motor_saw_value is True:
+                    # Filter for drudges who have any motor saw course
+                    queryset = queryset.filter(motor_saw_course__isnull=False).exclude(
+                        motor_saw_course=""
+                    )
+                elif motor_saw_value is False:
+                    # Filter for drudges who have no motor saw course
+                    queryset = queryset.filter(
+                        motor_saw_course__isnull=True
+                    ) | queryset.filter(motor_saw_course="")
         return queryset
 
     def get_active_status(self, drudge):
