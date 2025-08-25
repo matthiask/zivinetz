@@ -56,7 +56,7 @@
   .flatpickr-days
   .dayContainer:nth-child(n + 1)
   .flatpickr-day.inRange:nth-child(7n + 7) {
-  box-shadow: none !important;
+  box-shadow: none;
 }
 .flatpickr-calendar.multiMonth
   .flatpickr-days
