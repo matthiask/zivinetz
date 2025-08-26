@@ -23,6 +23,7 @@
     "rules": {
       "complexity": {
         "noForEach": "off",
+        "noImportantStyles": "off",
         "useOptionalChain": "off",
         "noCommaOperator": "off"
       },
