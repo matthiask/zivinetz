@@ -354,12 +354,10 @@ Wir freuen uns auf deinen Einsatz!
     )
     pdf.spacer(26 * mm)
 
-    address = "\n".join(
-        [
-            assignment.regional_office.name,
-            assignment.regional_office.address,
-        ]
-    ).replace("\r", "")
+    address = "\n".join([
+        assignment.regional_office.name,
+        assignment.regional_office.address,
+    ]).replace("\r", "")
 
     pdf.table([(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
 
@@ -411,7 +409,6 @@ Wir freuen uns auf deinen Einsatz!
         except Exception as e:
             # Log the error but continue without the conditions PDF
             print(f"Error loading conditions PDF: {e}")
-            pass
 
     # Response! ##############################################################
     response = HttpResponse(content_type="application/pdf")

@@ -913,20 +913,18 @@ class DrudgeCSVExportView(BaseView):
         writer = csv.writer(response)
 
         # Write header row
-        writer.writerow(
-            [
-                _("ZDP-Nr."),
-                _("Nachname"),
-                _("Vorname"),
-                _("Status"),
-                _("Regionalstelle"),
-                _("Umweltkurs"),
-                _("Motorsägenkurs"),
-                _("Bildung/Beruf"),
-                _("Durchschnittsnote"),
-                _("Alle Einsätze"),
-            ]
-        )
+        writer.writerow([
+            _("ZDP-Nr."),
+            _("Nachname"),
+            _("Vorname"),
+            _("Status"),
+            _("Regionalstelle"),
+            _("Umweltkurs"),
+            _("Motorsägenkurs"),
+            _("Bildung/Beruf"),
+            _("Durchschnittsnote"),
+            _("Alle Einsätze"),
+        ])
 
         # Write data rows
         for drudge in queryset:
@@ -962,19 +960,17 @@ class DrudgeCSVExportView(BaseView):
             assignments_str = "; ".join(assignments_list) if assignments_list else "-"
 
             # Write row
-            writer.writerow(
-                [
-                    drudge.zdp_no,
-                    drudge.user.last_name,
-                    drudge.user.first_name,
-                    self.get_active_status(drudge),
-                    drudge.regional_office.name if drudge.regional_office else "-",
-                    "Ja" if drudge.environment_course else "Nein",
-                    "Ja" if drudge.motor_saw_course else "Nein",
-                    drudge.education_occupation or "-",
-                    str(avg_mark) if avg_mark is not None else "-",
-                    assignments_str,
-                ]
-            )
+            writer.writerow([
+                drudge.zdp_no,
+                drudge.user.last_name,
+                drudge.user.first_name,
+                self.get_active_status(drudge),
+                drudge.regional_office.name if drudge.regional_office else "-",
+                "Ja" if drudge.environment_course else "Nein",
+                "Ja" if drudge.motor_saw_course else "Nein",
+                drudge.education_occupation or "-",
+                str(avg_mark) if avg_mark is not None else "-",
+                assignments_str,
+            ])
 
         return response

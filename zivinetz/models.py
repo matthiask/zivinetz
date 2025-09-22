@@ -122,20 +122,16 @@ class Choices:
 
 @model_resource_urls()
 class Specification(models.Model):
-    ACCOMODATION = Choices(
-        (
-            ("provided", _("provided")),
-            ("compensated", _("compensated")),
-        )
-    )
+    ACCOMODATION = Choices((
+        ("provided", _("provided")),
+        ("compensated", _("compensated")),
+    ))
 
-    MEAL = Choices(
-        (
-            ("no_compensation", _("no compensation")),
-            ("at_accomodation", _("at accomodation")),
-            ("external", _("external")),
-        )
-    )
+    MEAL = Choices((
+        ("no_compensation", _("no compensation")),
+        ("at_accomodation", _("at accomodation")),
+        ("external", _("external")),
+    ))
 
     CLOTHING = Choices((("provided", _("provided")), ("compensated", _("compensated"))))
 
@@ -230,19 +226,15 @@ class Specification(models.Model):
                     compensation[key] = getattr(cset, f"{meal}_{value}")
 
         if self.clothing == self.CLOTHING.provided:
-            compensation.update(
-                {
-                    "clothing": Decimal("0.00"),
-                    "clothing_limit_per_assignment": Decimal("0.00"),
-                }
-            )
+            compensation.update({
+                "clothing": Decimal("0.00"),
+                "clothing_limit_per_assignment": Decimal("0.00"),
+            })
         else:
-            compensation.update(
-                {
-                    "clothing": cset.clothing,
-                    "clothing_limit_per_assignment": cset.clothing_limit_per_assignment,
-                }
-            )
+            compensation.update({
+                "clothing": cset.clothing,
+                "clothing_limit_per_assignment": cset.clothing_limit_per_assignment,
+            })
 
         return compensation
 

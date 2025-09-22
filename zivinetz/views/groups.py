@@ -119,15 +119,13 @@ def create_groups_xlsx(day):
     ws[c(1, 1)].style = "borderThickBottom"
     ws[c(day_column(5), 1)].style = "borderThickBottom"
 
-    for i, cell in enumerate(
-        [
-            date_format(day, "F y"),
-            "Woche %s" % date_format(day, "W"),
-            "Auftragsnummer Arbeit",
-            "LEITUNG",
-            "ZIVIS",
-        ]
-    ):
+    for i, cell in enumerate([
+        date_format(day, "F y"),
+        "Woche %s" % date_format(day, "W"),
+        "Auftragsnummer Arbeit",
+        "LEITUNG",
+        "ZIVIS",
+    ]):
         ws[c(0, i + 1)] = cell
         ws[c(day_column(5), i + 1)] = cell
 
