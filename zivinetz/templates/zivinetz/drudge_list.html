@@ -34,7 +34,7 @@
                 {% if batch_form %}
                     <td>{% batch_checkbox batch_form object.id %}</td>
                 {% endif %}
-                <td>{{ object.zdp_no }}</td>
+                <th><a href="{{ object.get_absolute_url }}">{{ object.zdp_no }}</a></th>
             {% endif %}
             <td>{{ object.user.first_name }}</td>
             <td>{{ object.user.last_name }}</td>
