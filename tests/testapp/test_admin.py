@@ -117,12 +117,14 @@ class AdminViewsTestCase(TestCase):
 
         with io.BytesIO(b"Django\n") as fp:
             fp.name = "requirements.txt"
-            data.update({
-                "confirm": 1,
-                "subject": "Hello and welcome",
-                "body": "Whatever\nYes.",
-                "attachment": fp,
-            })
+            data.update(
+                {
+                    "confirm": 1,
+                    "subject": "Hello and welcome",
+                    "body": "Whatever\nYes.",
+                    "attachment": fp,
+                }
+            )
 
             response = self.client.post("/zivinetz/admin/drudges/", data)
 
