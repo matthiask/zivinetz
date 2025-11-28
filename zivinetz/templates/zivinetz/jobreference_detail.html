@@ -6,7 +6,7 @@
 
 {% block content %}
 <table>
-{% for title, value in object|model_details:"assignment,created" %}
+{% for title, value in object|model_details:"assignment,created,author_location,author_full_name,author_function" %}
     <tr>
         <th>{{ title|capfirst }}</th>
         <td>{{ value }}</td>

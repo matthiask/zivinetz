@@ -42,6 +42,7 @@ from zivinetz.models import (
     Group,
     GroupAssignment,
     JobReference,
+    JobReferenceAuthor,
     JobReferenceTemplate,
     RegionalOffice,
     ScopeStatement,
@@ -222,6 +223,11 @@ class JobReferenceFromTemplateView(resources.ModelResourceView):
             ctx["birth_date"] = assignment.drudge.date_of_birth.strftime("%d.%m.%Y")
         else:
             ctx["birth_date"] = "-" * 10
+
+        if author := JobReferenceAuthor.objects.filter(user=request.user).first():
+            instance.author_location = author.location
+            instance.author_full_name = author.full_name
+            instance.author_function = author.function
 
         instance.text = template.render(Context(ctx))
         instance.save()

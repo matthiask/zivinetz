@@ -1237,6 +1237,27 @@ class JobReferenceManager(SearchManager):
     ]
 
 
+class JobReferenceAuthor(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        limit_choices_to={"is_staff": True},
+    )
+    location = models.CharField(_("location"), max_length=100)
+    full_name = models.CharField(_("full name"), max_length=100)
+    function = models.CharField(_("function"), max_length=100)
+
+    class Meta:
+        ordering = ["full_name"]
+        verbose_name = _("job reference author")
+        verbose_name_plural = _("job reference authors")
+
+    def __str__(self):
+        return f"{self.full_name}, {self.function}, {self.location}"
+
+
 @model_resource_urls()
 class JobReference(models.Model):
     assignment = models.ForeignKey(
@@ -1247,6 +1268,10 @@ class JobReference(models.Model):
     )
     created = models.DateField(_("created"))
     text = models.TextField(_("text"))
+
+    author_location = models.CharField(_("location"), max_length=100)
+    author_full_name = models.CharField(_("full name"), max_length=100)
+    author_function = models.CharField(_("function"), max_length=100)
 
     class Meta:
         ordering = ["-created"]

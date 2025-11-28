@@ -342,7 +342,13 @@ class JobReferenceSearchForm(SearchForm):
 class JobReferenceForm(forms.ModelForm):
     class Meta:
         model = JobReference
-        fields = ("text",)
+        fields = (
+            "created",
+            "text",
+            "author_location",
+            "author_full_name",
+            "author_function",
+        )
 
 
 class TableCellRadioSelect(forms.RadioSelect):

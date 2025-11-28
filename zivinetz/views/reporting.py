@@ -570,7 +570,7 @@ def reference_pdf(request, pk):
     pdf.p(f"{drudge.zip_code} {drudge.city}")
     pdf.next_frame()
 
-    pdf.p("Kloster Fahr, %s" % reference.created.strftime("%d.%m.%Y"))
+    pdf.p(f"{reference.author_location}, {reference.created.strftime('%d.%m.%Y')}")
 
     pdf.h1("ARBEITSZEUGNIS")
     pdf.spacer()
@@ -578,7 +578,7 @@ def reference_pdf(request, pk):
     pdf.p(reference.text)
 
     pdf.spacer(10 * mm)
-    pdf.p("Dr. Marco Sacchi\nGeschäftsführer")
+    pdf.p(f"{reference.author_full_name}\n{reference.author_function}")
 
     pdf.generate()
     return response
@@ -645,7 +645,7 @@ def format_search_parameter(key, value):
         return _("Regional Office: %s") % value
     if key == "specification":
         return _("Specification: %s") % value
-    return _("%s: %s") % (key, value)
+    return "%s: %s" % (key, value)
 
 
 @user_type_required(["dev_admin"])

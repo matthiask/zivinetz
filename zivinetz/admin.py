@@ -190,6 +190,8 @@ admin.site.register(
 
 admin.site.register(models.JobReferenceTemplate)
 
+admin.site.register(models.JobReferenceAuthor)
+
 admin.site.register(
     models.JobReference,
     list_display=("assignment", "created"),
