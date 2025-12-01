@@ -354,10 +354,12 @@ Wir freuen uns auf deinen Einsatz!
     )
     pdf.spacer(26 * mm)
 
-    address = "\n".join([
-        assignment.regional_office.name,
-        assignment.regional_office.address,
-    ]).replace("\r", "")
+    address = "\n".join(
+        [
+            assignment.regional_office.name,
+            assignment.regional_office.address,
+        ]
+    ).replace("\r", "")
 
     pdf.table([(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
 
