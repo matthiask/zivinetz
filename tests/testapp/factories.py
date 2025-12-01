@@ -69,19 +69,23 @@ class CompensationSetFactory(DjangoModelFactory):
 
 
 class RegionalOfficeFactory(DjangoModelFactory):
-    name = factory.Iterator([
-        "Regionalzentrum Aarau",
-        "Regionalzentrum Luzern",
-        "Regionalzentrum Rueti/ZH",
-        "Regionalzentrum Thun",
-    ])
+    name = factory.Iterator(
+        [
+            "Regionalzentrum Aarau",
+            "Regionalzentrum Luzern",
+            "Regionalzentrum Rueti/ZH",
+            "Regionalzentrum Thun",
+        ]
+    )
     city = factory.Iterator(["Aarau", "Luzern", "Rueti/ZH", "Thun"])
-    address = factory.Iterator([
-        "Zivildienst\nBahnhofstrasse 29\n5000 Aarau",
-        "Zivildienst\nAlpenstrasse 6\nPostfach 6583\n6000 Luzern 6",
-        "Zivildienst\nSpitalstrasse 31\n8630 Rueti/ZH",
-        "Zivildienst\nMalerweg 6\n3600 Thun",
-    ])
+    address = factory.Iterator(
+        [
+            "Zivildienst\nBahnhofstrasse 29\n5000 Aarau",
+            "Zivildienst\nAlpenstrasse 6\nPostfach 6583\n6000 Luzern 6",
+            "Zivildienst\nSpitalstrasse 31\n8630 Rueti/ZH",
+            "Zivildienst\nMalerweg 6\n3600 Thun",
+        ]
+    )
     code = factory.Iterator(["A", "L", "R", "T"])
 
     class Meta:
