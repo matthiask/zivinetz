@@ -19,24 +19,26 @@ def expense_statistics_pdf(request):
 def generate_expense_statistics_pdf(reports):
     pdf, response = pdf_response("expense-statistics")
 
-    pdf.doc.addPageTemplates([
-        PageTemplate(
-            id="First",
-            frames=[
-                Frame(
-                    0.5 * cm,
-                    0.5 * cm,
-                    19.8 * cm,
-                    28.5 * cm,
-                    showBoundary=0,
-                    leftPadding=0,
-                    rightPadding=0,
-                    topPadding=0,
-                    bottomPadding=0,
-                )
-            ],
-        )
-    ])
+    pdf.doc.addPageTemplates(
+        [
+            PageTemplate(
+                id="First",
+                frames=[
+                    Frame(
+                        0.5 * cm,
+                        0.5 * cm,
+                        19.8 * cm,
+                        28.5 * cm,
+                        showBoundary=0,
+                        leftPadding=0,
+                        rightPadding=0,
+                        topPadding=0,
+                        bottomPadding=0,
+                    )
+                ],
+            )
+        ]
+    )
     pdf.generate_style(font_size=6)
 
     pdf.h1("Spesenstatistik")
