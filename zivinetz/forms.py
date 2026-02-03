@@ -23,7 +23,8 @@ from zivinetz.models import (
 def add_last_assignment_and_mark(queryset):
     drudges = {d.id: d for d in queryset}
     marks = (
-        Assessment.objects.filter(drudge__in=drudges.keys())
+        Assessment.objects
+        .filter(drudge__in=drudges.keys())
         .order_by()
         .values("drudge")
         .annotate(Avg("mark"))
@@ -34,7 +35,8 @@ def add_last_assignment_and_mark(queryset):
             drudges[mark["drudge"]].average_mark = "%.2f" % mark["mark__avg"]
 
     for assignment in (
-        Assignment.objects.select_related("specification__scope_statement")
+        Assignment.objects
+        .select_related("specification__scope_statement")
         .order_by("-date_from")
         .iterator()
     ):
@@ -109,13 +111,15 @@ class DrudgeSearchForm(SearchForm):
 
         if data.get("only_active"):
             queryset = queryset.filter(
-                id__in=Assignment.objects.for_date()
+                id__in=Assignment.objects
+                .for_date()
                 .filter(status__in=(Assignment.ARRANGED, Assignment.MOBILIZED))
                 .values("drudge")
             )
 
         return (
-            self.apply_ordering(queryset, data.get("o"))
+            self
+            .apply_ordering(queryset, data.get("o"))
             .transform(add_last_assignment_and_mark)
             .select_related("user")
         )

@@ -195,19 +195,17 @@ class Scheduler:
             if assignment.drudge not in assignments_dict:
                 assignments_dict[assignment.drudge] = []
 
-            assignments_dict[assignment.drudge].append(
-                (
-                    assignment,
-                    self._schedule_assignment(
-                        assignment.date_from,
-                        assignment.determine_date_until(),
-                        {
-                            assignment.motor_saw_course_date: "MSK",
-                            assignment.environment_course_date: "UNA",
-                        },
-                    ),
-                )
-            )
+            assignments_dict[assignment.drudge].append((
+                assignment,
+                self._schedule_assignment(
+                    assignment.date_from,
+                    assignment.determine_date_until(),
+                    {
+                        assignment.motor_saw_course_date: "MSK",
+                        assignment.environment_course_date: "UNA",
+                    },
+                ),
+            ))
 
         # linearize assignments, but still give precedence to drudge
         assignments = list(itertools.chain.from_iterable(assignments_dict.values()))
@@ -295,8 +293,9 @@ def _monday(day):
 class SchedulingSearchForm(SearchForm):
     default = {
         "date_until__gte": lambda request: _monday(date.today()),
-        "date_from__lte": lambda request: _monday(date.today())
-        + timedelta(days=35 * 7 + 4),
+        "date_from__lte": lambda request: (
+            _monday(date.today()) + timedelta(days=35 * 7 + 4)
+        ),
         "status": (Assignment.TENTATIVE, Assignment.ARRANGED, Assignment.MOBILIZED),
     }
 

@@ -261,7 +261,8 @@ class AssignmentExportBaseView(BaseView):
         """Prepare the data for export."""
         # Get filtered queryset with prefetched related data
         return (
-            self.get_queryset()
+            self
+            .get_queryset()
             .select_related("drudge", "drudge__user", "specification")
             .order_by(
                 "drudge__user__last_name", "drudge__user__first_name", "-date_from"
@@ -590,7 +591,8 @@ class DrudgePDFExportView(BaseView):
 
         # Get filtered queryset with prefetched related data
         queryset = (
-            self.get_queryset()
+            self
+            .get_queryset()
             .select_related("user", "regional_office")
             .prefetch_related(
                 "assignments", "assignments__specification", "assignments__assessments"
@@ -898,7 +900,8 @@ class DrudgeCSVExportView(BaseView):
 
         # Get filtered queryset with prefetched related data
         queryset = (
-            self.get_queryset()
+            self
+            .get_queryset()
             .select_related("user", "regional_office")
             .prefetch_related(
                 "assignments", "assignments__specification", "assignments__assessments"
@@ -913,20 +916,18 @@ class DrudgeCSVExportView(BaseView):
         writer = csv.writer(response)
 
         # Write header row
-        writer.writerow(
-            [
-                _("ZDP-Nr."),
-                _("Nachname"),
-                _("Vorname"),
-                _("Status"),
-                _("Regionalstelle"),
-                _("Umweltkurs"),
-                _("Motorsägenkurs"),
-                _("Bildung/Beruf"),
-                _("Durchschnittsnote"),
-                _("Alle Einsätze"),
-            ]
-        )
+        writer.writerow([
+            _("ZDP-Nr."),
+            _("Nachname"),
+            _("Vorname"),
+            _("Status"),
+            _("Regionalstelle"),
+            _("Umweltkurs"),
+            _("Motorsägenkurs"),
+            _("Bildung/Beruf"),
+            _("Durchschnittsnote"),
+            _("Alle Einsätze"),
+        ])
 
         # Write data rows
         for drudge in queryset:
@@ -962,19 +963,17 @@ class DrudgeCSVExportView(BaseView):
             assignments_str = "; ".join(assignments_list) if assignments_list else "-"
 
             # Write row
-            writer.writerow(
-                [
-                    drudge.zdp_no,
-                    drudge.user.last_name,
-                    drudge.user.first_name,
-                    self.get_active_status(drudge),
-                    drudge.regional_office.name if drudge.regional_office else "-",
-                    "Ja" if drudge.environment_course else "Nein",
-                    "Ja" if drudge.motor_saw_course else "Nein",
-                    drudge.education_occupation or "-",
-                    str(avg_mark) if avg_mark is not None else "-",
-                    assignments_str,
-                ]
-            )
+            writer.writerow([
+                drudge.zdp_no,
+                drudge.user.last_name,
+                drudge.user.first_name,
+                self.get_active_status(drudge),
+                drudge.regional_office.name if drudge.regional_office else "-",
+                "Ja" if drudge.environment_course else "Nein",
+                "Ja" if drudge.motor_saw_course else "Nein",
+                drudge.education_occupation or "-",
+                str(avg_mark) if avg_mark is not None else "-",
+                assignments_str,
+            ])
 
         return response
