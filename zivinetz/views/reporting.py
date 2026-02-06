@@ -518,8 +518,8 @@ def expense_report_pdf(request, pk):
     pdf.bottom_table(
         [(_("Place, Date"), "", _("Jobholder"), "", _("Employer"))],
         (44 * mm, 10 * mm, 50 * mm, 10 * mm, 50 * mm),
-        style=pdf.style.table
-        + (
+        style=(
+            *pdf.style.table,
             ("TOPPADDING", (0, 0), (-1, -1), 1 * mm),
             ("LINEABOVE", (0, 0), (0, 0), 0.2, colors.black),
             ("LINEABOVE", (2, 0), (2, 0), 0.2, colors.black),

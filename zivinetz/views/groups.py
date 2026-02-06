@@ -11,7 +11,7 @@ from zivinetz.models import Absence, Assignment, Group, GroupAssignment
 
 letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 columns = {}
-columns.update({i: c for i, c in enumerate(letters)})
+columns.update(dict(enumerate(letters)))
 columns.update({i + 26: "A%s" % c for i, c in enumerate(letters)})
 columns.update({i + 52: "B%s" % c for i, c in enumerate(letters)})
 
@@ -240,7 +240,7 @@ def create_groups_xlsx(day):
                     ].pretty_reason()
 
         # Skip some lines
-        for i in range(max(3, 6 - len(assignments))):
+        for _i in range(max(3, 6 - len(assignments))):
             row += 1
             row_height(row, 35)
 

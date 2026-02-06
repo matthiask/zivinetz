@@ -94,7 +94,7 @@ def generate_expense_statistics_pdf(reports):
             if not compensation:
                 continue
 
-        def add(keys):
+        def add(keys, compensation=compensation):
             return sum(compensation[k] for k in keys.split())
 
         tpl = (
@@ -152,7 +152,7 @@ def generate_expense_statistics_pdf(reports):
             title = date(year_month[0], year_month[1], 1).strftime("%B %Y")
             pdf.h3(title)
             pdf.spacer(2 * mm)
-            pdf.table([table_head] + reports, table_cols, pdf.style.tableHead)
+            pdf.table([table_head, *reports], table_cols, pdf.style.tableHead)
             _add_sum(reports, title)
             pdf.spacer()
             complete.extend(reports)
@@ -161,7 +161,7 @@ def generate_expense_statistics_pdf(reports):
         pdf.pagebreak()
 
     pdf.h2("Zusammenfassung")
-    pdf.table([table_head] + totals, table_cols, pdf.style.tableHead)
+    pdf.table([table_head, *totals], table_cols, pdf.style.tableHead)
     _add_sum(totals, "Total")
 
     pdf.generate()

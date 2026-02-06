@@ -72,7 +72,7 @@ class AdminViewsTestCase(TestCase):
     def test_drudge_list(self):
         admin_login(self)
 
-        for i in range(5):
+        for _i in range(5):
             factories.DrudgeFactory.create()
 
         response = self.client.get("/zivinetz/admin/drudges/")
@@ -163,7 +163,7 @@ class AdminViewsTestCase(TestCase):
 
     def test_drudge_picker(self):
         drudge = factories.DrudgeFactory.create()
-        for i in range(60):
+        for _i in range(60):
             factories.DrudgeFactory.create(regional_office=drudge.regional_office)
 
         url = drudge.urls.url("picker")

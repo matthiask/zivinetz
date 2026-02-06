@@ -1,3 +1,4 @@
+import inspect
 from collections import defaultdict
 from datetime import date, timedelta
 from decimal import Decimal
@@ -116,7 +117,7 @@ class DrudgeQuota(models.Model):
 class Choices:
     def __init__(self, choices):
         self.kwargs = {"max_length": 20, "choices": choices, "default": choices[0][0]}
-        for key, value in choices:
+        for key, _value in choices:
             setattr(self, key, key)
 
 
@@ -246,8 +247,8 @@ class CompensationSetManager(models.Manager):
 
         try:
             return self.filter(valid_from__lte=for_date).order_by("-valid_from")[0]
-        except IndexError:
-            raise self.model.DoesNotExist
+        except IndexError as exc:
+            raise self.model.DoesNotExist from exc
 
 
 @model_resource_urls()
@@ -303,12 +304,12 @@ class CompensationSet(models.Model):
         help_text=_("Maximal compensation for clothing per assignment."),
     )
 
+    objects = CompensationSetManager()
+
     class Meta:
         ordering = ["-valid_from"]
         verbose_name = _("compensation set")
         verbose_name_plural = _("compensation sets")
-
-    objects = CompensationSetManager()
 
     def __str__(self):
         return gettext("compensation set, valid from %s") % self.valid_from
@@ -447,7 +448,7 @@ class Drudge(models.Model):
         max_length=10,
         choices=MOTOR_SAW_COURSE_CHOICES,
         blank=True,
-        null=True,
+        default="",
         help_text=_("I have taken the denoted motor saw course already."),
     )
 
@@ -469,12 +470,12 @@ class Drudge(models.Model):
         _("profile image"), blank=True, null=True, upload_to="profile_images/"
     )
 
+    objects = DrudgeManager()
+
     class Meta:
         ordering = ["user__last_name", "user__first_name", "zdp_no"]
         verbose_name = _("drudge")
         verbose_name_plural = _("drudges")
-
-    objects = DrudgeManager()
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} ({self.zdp_no})"
@@ -566,12 +567,12 @@ class Assignment(models.Model):
         _("motor saw course starting date"), blank=True, null=True
     )
 
+    objects = AssignmentManager()
+
     class Meta:
         ordering = ["-date_from", "-date_until"]
         verbose_name = _("assignment")
         verbose_name_plural = _("assignments")
-
-    objects = AssignmentManager()
 
     def __str__(self):
         return f"{self.drudge} on {self.specification.code} ({self.date_from} - {self.determine_date_until()})"
@@ -839,8 +840,6 @@ class AssignmentChange(models.Model):
 
 def get_request():
     """Walk up the stack, return the nearest first argument named "request"."""
-    import inspect
-
     frame = None
     try:
         for f in inspect.stack()[1:]:
@@ -901,12 +900,12 @@ def assignment_pre_save(sender, instance, **kwargs):
 
     request = get_request()
 
-    instance._assignment_change = dict(
-        assignment=instance,
-        assignment_description="%s" % instance,
-        changed_by=request.user.get_full_name() if request else "unknown",
-        changes="\n".join(changes),
-    )
+    instance._assignment_change = {
+        "assignment": instance,
+        "assignment_description": "%s" % instance,
+        "changed_by": request.user.get_full_name() if request else "unknown",
+        "changes": "\n".join(changes),
+    }
 
 
 @receiver(signals.post_save, sender=Assignment)
@@ -1009,12 +1008,12 @@ class ExpenseReport(models.Model):
         Specification, verbose_name=_("specification"), on_delete=models.CASCADE
     )
 
+    objects = ExpenseReportManager()
+
     class Meta:
         ordering = ["assignment__drudge", "date_from"]
         verbose_name = _("expense report")
         verbose_name_plural = _("expense reports")
-
-    objects = ExpenseReportManager()
 
     def __str__(self):
         return f"{self.date_from} - {self.date_until}"
@@ -1032,7 +1031,7 @@ class ExpenseReport(models.Model):
     def pdf_url(self):
         return reverse("zivinetz_expensereport_pdf", args=(self.pk,))
 
-    def recalculate_total(self, save=True):
+    def recalculate_total(self, *, save=True):
         _n1, _n2, self.total = self.compensations()
         if save:
             self.save()
@@ -1066,7 +1065,7 @@ class ExpenseReport(models.Model):
                 compensation["supper_%s" % day_type],
             ]
 
-            return [f"{days} {title}"] + line + [sum(line) * days]
+            return [f"{days} {title}", *line, sum(line) * days]
 
         ret = [
             [
@@ -1205,13 +1204,13 @@ class Codeword(models.Model):
     key = models.CharField(_("key"), max_length=10, db_index=True)
     codeword = models.CharField(_("codeword"), max_length=20)
 
+    objects = CodewordManager()
+
     class Meta:
         get_latest_by = "created"
         ordering = ["-created"]
         verbose_name = _("codeword")
         verbose_name_plural = _("codewords")
-
-    objects = CodewordManager()
 
     def __str__(self):
         return self.codeword
@@ -1273,12 +1272,12 @@ class JobReference(models.Model):
     author_full_name = models.CharField(_("full name"), max_length=100)
     author_function = models.CharField(_("function"), max_length=100)
 
+    objects = JobReferenceManager()
+
     class Meta:
         ordering = ["-created"]
         verbose_name = _("job reference")
         verbose_name_plural = _("job references")
-
-    objects = JobReferenceManager()
 
     def __str__(self):
         return f"{self._meta.verbose_name}: {self.assignment}"

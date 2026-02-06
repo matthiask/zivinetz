@@ -12,4 +12,5 @@ urlpatterns = [
     path("", lambda request: HttpResponse(repr(request.REQUEST))),
     path("accounts/", include("django.contrib.auth.urls")),
     path("zivinetz/", include("zivinetz.urls")),
-] + staticfiles_urlpatterns()
+    *staticfiles_urlpatterns(),
+]

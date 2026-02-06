@@ -11,7 +11,7 @@ class AssignmentsAdminViewsTestCase(TestCase):
     def test_assignment_list(self):
         admin_login(self)
 
-        for i in range(10):
+        for _i in range(10):
             factories.AssignmentFactory.create()
 
         response = self.client.get("/zivinetz/admin/assignments/")
@@ -121,8 +121,10 @@ class AssignmentsAdminViewsTestCase(TestCase):
             get_messages(response),
             [
                 "The assignment has been successfully saved.",
-                "The drudge is now registered as having visited"
-                " the environment course.",
+                (
+                    "The drudge is now registered as having visited"
+                    " the environment course."
+                ),
             ],
         )
 
@@ -208,9 +210,11 @@ class AssignmentsAdminViewsTestCase(TestCase):
             get_messages(response),
             [
                 "The assignment has been successfully saved.",
-                "The extended until date has been changed. Please check"
-                " whether you need to generate additional expense"
-                " reports.",
+                (
+                    "The extended until date has been changed. Please check"
+                    " whether you need to generate additional expense"
+                    " reports."
+                ),
             ],
         )
 

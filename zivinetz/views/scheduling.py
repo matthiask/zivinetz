@@ -56,6 +56,8 @@ def calendar_week(day):
         # Otherwise, it is already week one of the next year
         return (day.year + 1, 1)
 
+    raise Exception(f"Unexpected week number {week} for {day}")
+
 
 def daterange(start_date, end_date):
     """Iterate over a range of dates (includes the end_date)"""
@@ -94,7 +96,7 @@ class Scheduler:
             this_monday = _monday(date.today())
 
             while True:
-                ret.append((monday,) + calendar_week(monday) + (monday == this_monday,))
+                ret.append((monday, *calendar_week(monday), monday == this_monday))
 
                 monday += timedelta(days=7)
                 if monday > self.date_until:
@@ -104,10 +106,11 @@ class Scheduler:
 
         return ret
 
-    def _schedule_assignment(self, date_from, date_until, courses={}):
+    def _schedule_assignment(self, date_from, date_until, courses=None):
         weeks = []
         cw = None
         inside = False
+        courses = {} if courses is None else courses
 
         # Not all courses start on a monday, but we have to normalize
         # dates to monday otherwise we wont find them while scheduling.

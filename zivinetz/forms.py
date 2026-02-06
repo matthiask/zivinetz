@@ -140,11 +140,11 @@ class AssessmentForm(forms.ModelForm):
         self.fields["assignment"].queryset = assignments
         if assignments and not self.data:
             try:
-                self.fields["assignment"].initial = [
+                self.fields["assignment"].initial = next(
                     assignment.id
                     for assignment in assignments
                     if assignment.date_from < date.today()
-                ][0]
+                )
             except IndexError:
                 pass
 

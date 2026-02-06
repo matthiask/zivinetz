@@ -28,8 +28,7 @@ class EasterDay:
         K(X) = X div 100
         """
 
-        k = self.year // 100
-        return k
+        return self.year // 100
 
     def get_m(self):
         """
@@ -38,8 +37,7 @@ class EasterDay:
         """
 
         k = self.get_k()
-        m = 15 + (3 * k + 3) // 4 - (8 * k + 13) // 25
-        return m
+        return 15 + (3 * k + 3) // 4 - (8 * k + 13) // 25
 
     def get_s(self):
         """
@@ -48,8 +46,7 @@ class EasterDay:
         """
 
         k = self.get_k()
-        s = 2 - (3 * k + 3) // 4
-        return s
+        return 2 - (3 * k + 3) // 4
 
     def get_a(self):
         """
@@ -57,8 +54,7 @@ class EasterDay:
         A(X) = X mod 19
         """
 
-        a = self.year % 19
-        return a
+        return self.year % 19
 
     def get_d(self):
         """
@@ -68,8 +64,7 @@ class EasterDay:
 
         a = self.get_a()
         m = self.get_m()
-        d = (19 * a + m) % 30
-        return d
+        return (19 * a + m) % 30
 
     def get_r(self):
         """
@@ -79,8 +74,7 @@ class EasterDay:
 
         a = self.get_a()
         d = self.get_d()
-        r = d // 29 + (d // 28 - d // 29) * (a // 11)
-        return r
+        return d // 29 + (d // 28 - d // 29) * (a // 11)
 
     def get_og(self):
         """
@@ -90,8 +84,7 @@ class EasterDay:
 
         d = self.get_d()
         r = self.get_r()
-        og = 21 + d - r
-        return og
+        return 21 + d - r
 
     def get_sz(self):
         """
@@ -100,8 +93,7 @@ class EasterDay:
         """
 
         s = self.get_s()
-        sz = 7 - (self.year + self.year // 4 + s) % 7
-        return sz
+        return 7 - (self.year + self.year // 4 + s) % 7
 
     def get_oe(self):
         """
@@ -112,8 +104,7 @@ class EasterDay:
 
         og = self.get_og()
         sz = self.get_sz()
-        oe = 7 - (og - sz) % 7
-        return oe
+        return 7 - (og - sz) % 7
 
     def get_os(self):
         """
@@ -124,8 +115,7 @@ class EasterDay:
 
         og = self.get_og()
         oe = self.get_oe()
-        os = og + oe
-        return os
+        return og + oe
 
     def get_date(self):
         """
@@ -139,8 +129,7 @@ class EasterDay:
         else:
             month = 3
             day = os
-        easter_day = datetime.date(self.year, month, day)
-        return easter_day
+        return datetime.date(self.year, month, day)
 
 
 def get_public_holidays(year):

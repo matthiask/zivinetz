@@ -6,7 +6,7 @@ from zivinetz.models import Assignment
 
 class SchedulingTestCase(TestCase):
     def test_scheduling(self):
-        for i in range(20):
+        for _i in range(20):
             factories.AssignmentFactory.create()
 
         admin = factories.UserFactory.create(is_staff=True, is_superuser=True)

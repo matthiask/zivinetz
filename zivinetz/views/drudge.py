@@ -1,6 +1,6 @@
 import csv
 import os
-from datetime import date
+from datetime import date, datetime
 from io import BytesIO
 
 import schwifty
@@ -178,7 +178,7 @@ class DrudgeForm(forms.ModelForm):
             try:
                 schwifty.IBAN(value)
             except ValueError as exc:
-                raise forms.ValidationError(exc)
+                raise forms.ValidationError(exc) from exc
         return value
 
     def clean_environment_course(self):
@@ -458,7 +458,7 @@ class DrudgePDFExportView(BaseView):
         current_line = []
 
         for word in words:
-            test_line = " ".join(current_line + [word])
+            test_line = " ".join([*current_line, word])
             if p.stringWidth(test_line, font_name, font_size) < max_width:
                 current_line.append(word)
             else:
@@ -515,8 +515,6 @@ class DrudgePDFExportView(BaseView):
 
     def get_active_status(self, drudge):
         """Get the current status of a drudge based on their active assignments."""
-        from zivinetz.models import Assignment
-
         # Check for active assignments
         active_assignments = drudge.assignments.filter(
             status__in=(Assignment.ARRANGED, Assignment.MOBILIZED),
@@ -534,8 +532,6 @@ class DrudgePDFExportView(BaseView):
 
     def format_search_parameter(self, key, value):
         """Format search parameters for display in German."""
-        from zivinetz.models import Assignment, RegionalOffice
-
         # Map of parameter keys to German labels
         param_labels = {
             "s": "Suche",
@@ -574,8 +570,6 @@ class DrudgePDFExportView(BaseView):
             return f"{label}: Nein"
         elif key in ["date_from__gte", "date_until__lte"]:
             try:
-                from datetime import datetime
-
                 date_obj = datetime.strptime(value, "%Y-%m-%d")
                 return f"{label}: {date_obj.strftime('%d.%m.%Y')}"
             except ValueError:
@@ -875,8 +869,6 @@ class DrudgeCSVExportView(BaseView):
 
     def get_active_status(self, drudge):
         """Get the current status of a drudge based on their active assignments."""
-        from zivinetz.models import Assignment
-
         # Check for active assignments
         active_assignments = drudge.assignments.filter(
             status__in=(Assignment.ARRANGED, Assignment.MOBILIZED),

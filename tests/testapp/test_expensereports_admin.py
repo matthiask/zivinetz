@@ -16,7 +16,7 @@ class ExpenseReportsAdminViewsTestCase(TestCase):
         # for_date should not fail
         self.assertEqual(CompensationSet.objects.for_date(), cf)
 
-        for i in range(10):
+        for _i in range(10):
             factories.AssignmentFactory.create(
                 status=Assignment.MOBILIZED,
                 arranged_on=date.today(),

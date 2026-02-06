@@ -1,3 +1,4 @@
+import typing
 from datetime import date, timedelta
 
 from django import forms
@@ -6,6 +7,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
+from django.forms.models import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Context, Template
@@ -65,8 +67,6 @@ class ZivinetzMixin:
 
     def get_form_class(self):
         # TODO Remove this hack.
-        from django.forms.models import modelform_factory
-
         kw = {"form": self.form_class, "formfield_callback": towel_formfield_callback}
         _meta = getattr(self.form_class, "_meta", None)
         if not _meta or not (_meta.fields or _meta.exclude):
@@ -75,16 +75,19 @@ class ZivinetzMixin:
 
         return modelform_factory(self.model, **kw)
 
+    @typing.override
     def allow_add(self, silent=True):
         return self.request.user.has_perm(
             f"{self.model._meta.app_label}.add_{self.model._meta.model_name}"
         )
 
+    @typing.override
     def allow_edit(self, object=None, silent=True):
         return self.request.user.has_perm(
             f"{self.model._meta.app_label}.change_{self.model._meta.model_name}"
         )
 
+    @typing.override
     def allow_delete(self, object=None, silent=True):
         if not self.request.user.has_perm(
             f"{self.model._meta.app_label}.delete_{self.model._meta.model_name}"
@@ -246,7 +249,7 @@ class AssignmentMixin(ZivinetzMixin):
             motor_saw_course = forms.ChoiceField(
                 label=_("Set motor saw course field on drudge to"),
                 required=False,
-                choices=(("", "-" * 10),) + Drudge.MOTOR_SAW_COURSE_CHOICES,
+                choices=(("", "-" * 10), *Drudge.MOTOR_SAW_COURSE_CHOICES),
             )
 
             class Meta:
@@ -482,6 +485,7 @@ class AbsenceMixin(ZivinetzMixin):
 
 
 class ExpenseReportMixin(ZivinetzMixin):
+    @typing.override
     def allow_edit(self, object=None, silent=True):
         if object is not None and object.status >= object.PAID:
             if not silent:
@@ -491,6 +495,7 @@ class ExpenseReportMixin(ZivinetzMixin):
             return False
         return super().allow_edit(object=object, silent=silent)
 
+    @typing.override
     def allow_delete(self, object=None, silent=True):
         if object is not None and object.status >= object.PAID:
             if not silent:
@@ -543,8 +548,9 @@ class ExpenseReportMixin(ZivinetzMixin):
         return redirect(self.object)
 
     def get_batch_actions(self):
-        return super().get_batch_actions() + [
-            ("set_status", _("Set status"), self.set_status)
+        return [
+            *super().get_batch_actions(),
+            ("set_status", _("Set status"), self.set_status),
         ]
 
     def set_status(self, queryset):

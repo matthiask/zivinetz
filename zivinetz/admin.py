@@ -253,7 +253,7 @@ class CustomUserAdmin(UserAdmin):
     def get_user_type(self, obj):
         return obj.userprofile.user_type if hasattr(obj, "userprofile") else "-"
 
-    list_display = UserAdmin.list_display + ("get_user_type",)
+    list_display = (*UserAdmin.list_display, "get_user_type")
 
 
 # Unregister the default UserAdmin and register our custom one
