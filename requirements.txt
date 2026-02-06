@@ -1,10 +1,10 @@
 coverage
-Django<5.1
+Django<6.0
 factory-boy
 pdfdocument
-openpyxl<3.1
+openpyxl>=3,<3.1
 Pillow
-psycopg2-binary
+psycopg[binary]
 pypdf
 pytz
 reportlab
