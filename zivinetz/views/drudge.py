@@ -84,12 +84,15 @@ class AssignmentForm(forms.ModelForm):
     def clean(self):
         data = super().clean()
 
-        if data.get("date_from") and data.get("date_until"):
-            if (
+        if (
+            data.get("date_from")
+            and data.get("date_until")
+            and (
                 data["date_from"] > data["date_until"]
                 or data["date_from"] < date.today()
-            ):
-                raise forms.ValidationError(_("Date period is invalid."))
+            )
+        ):
+            raise forms.ValidationError(_("Date period is invalid."))
 
         return data
 
@@ -100,16 +103,15 @@ def dashboard(request, drudge):
 
     aform = AssignmentForm(initial=aform_initial)
 
-    if request.method == "POST":
-        if "assignment" in request.POST:
-            aform = AssignmentForm(request.POST)
-            if aform.is_valid():
-                assignment = aform.save(commit=False)
-                assignment.drudge = drudge
-                assignment.save()
-                messages.success(request, _("Successfully saved new assignment."))
+    if request.method == "POST" and "assignment" in request.POST:
+        aform = AssignmentForm(request.POST)
+        if aform.is_valid():
+            assignment = aform.save(commit=False)
+            assignment.drudge = drudge
+            assignment.save()
+            messages.success(request, _("Successfully saved new assignment."))
 
-                return HttpResponseRedirect(request.path)
+            return HttpResponseRedirect(request.path)
 
     return render(
         request,
@@ -253,9 +255,7 @@ class AssignmentExportBaseView(BaseView):
 
     def check_permissions(self, request):
         """Check if the user has permission to access this view."""
-        if not request.user.userprofile.user_type == "dev_admin":
-            return False
-        return True
+        return request.user.userprofile.user_type == "dev_admin"
 
     def get_prepared_data(self):
         """Prepare the data for export."""
@@ -578,7 +578,7 @@ class DrudgePDFExportView(BaseView):
         return f"{label}: {value}"
 
     def get(self, request, *args, **kwargs):
-        if not request.user.userprofile.user_type == "dev_admin":
+        if request.user.userprofile.user_type != "dev_admin":
             return HttpResponseForbidden(
                 _("You don't have permission to access this page.")
             )
@@ -885,7 +885,7 @@ class DrudgeCSVExportView(BaseView):
         )
 
     def get(self, request, *args, **kwargs):
-        if not request.user.userprofile.user_type == "dev_admin":
+        if request.user.userprofile.user_type != "dev_admin":
             return HttpResponseForbidden(
                 _("You don't have permission to access this page.")
             )
