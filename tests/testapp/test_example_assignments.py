@@ -174,11 +174,15 @@ class ExampleAssignmentsTestCase(TestCase):
                 self.assertAlmostEqual(*pair)
 
         _assert_almost_equal(
-            "clothing_expenses", [Decimal(s) for s in "20.7 69 71.3 69 10 0 0".split()]
+            "clothing_expenses",
+            [Decimal(s) for s in ["20.7", "69", "71.3", "69", "10", "0", "0"]],
         )
         _assert_almost_equal(
             "total",
-            [Decimal(s) for s in "425.7 1313 1438.3 1407 1350 1367 810".split()],
+            [
+                Decimal(s)
+                for s in ["425.7", "1313", "1438.3", "1407", "1350", "1367", "810"]
+            ],
         )
 
     def test_assignment_811(self):
@@ -273,9 +277,13 @@ class ExampleAssignmentsTestCase(TestCase):
                 self.assertAlmostEqual(*pair)
 
         _assert_almost_equal(
-            "clothing_expenses", [Decimal(s) for s in "43.7 69 71.3 56 0 0 0".split()]
+            "clothing_expenses",
+            [Decimal(s) for s in ["43.7", "69", "71.3", "56", "0", "0", "0"]],
         )
         _assert_almost_equal(
             "total",
-            [Decimal(s) for s in "273.7 627.4 327.3 480 297.1 239 258.5".split()],
+            [
+                Decimal(s)
+                for s in ["273.7", "627.4", "327.3", "480", "297.1", "239", "258.5"]
+            ],
         )

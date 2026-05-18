@@ -779,7 +779,7 @@ class Assignment(models.Model):
             for d in self.reports.values_list("date_from", flat=True)
         ]
 
-        days, monthly_expense_days, expenses = self.expenses()
+        _days, monthly_expense_days, expenses = self.expenses()
 
         created = 0
         for month, data in monthly_expense_days:

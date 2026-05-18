@@ -58,40 +58,31 @@ class AssignmentPDFStationery:
         "breakfast_working_at_company": (92, 161),
         "breakfast_working_at_home": (110, 161),
         "breakfast_working_external": (110, 161),
-        #
         "breakfast_free_at_company": (147.5, 161),
         "breakfast_free_at_home": (165, 161),
         "breakfast_free_external": (165, 161),
-        #
         "lunch_working_at_company": (92, 157),
         "lunch_working_at_home": (110, 157),
         "lunch_working_external": (110, 157),
-        #
         "lunch_free_at_company": (147.5, 157),
         "lunch_free_at_home": (165, 157),
         "lunch_free_external": (165, 157),
-        #
         "supper_working_at_company": (92, 152.5),
         "supper_working_at_home": (110, 152.5),
         "supper_working_external": (110, 152.5),
-        #
         "supper_free_at_company": (147.5, 152.5),
         "supper_free_at_home": (165, 152.5),
         "supper_free_external": (165, 152.5),
-        #
         "accomodation_throughout": (31, 257),
         "accomodation_not_throughout": (100, 258),
-        #
         "food_throughout": (31, 183),
         "food_not_throughout": (31, 178.5),
-        #
         "drudge_uses_accomodation": (35.5, 252.5),
         "drudge_renounce_accomodation_1": (35.5, 243),
         # "drudge_renounce_accomodation_2": (186, 250),
         #
         "public_transports": (31, 206.5),
         "private_transport": (31, 201.5),
-        #
         "special_tickets_yes": (39, 248.5),
         # "special_tickets_no": (186, 137),
         "clothing_provided": (31, 125),
@@ -303,9 +294,8 @@ def assignment_pdf(request, pk):
         Assignment.objects.select_related("drudge__user"), pk=pk
     )
 
-    if not request.user.is_staff:
-        if assignment.drudge.user != request.user:
-            return HttpResponseForbidden("<h1>Access forbidden</h1>")
+    if not request.user.is_staff and assignment.drudge.user != request.user:
+        return HttpResponseForbidden("<h1>Access forbidden</h1>")
 
     result_writer = PdfWriter()
 
@@ -354,10 +344,9 @@ Wir freuen uns auf deinen Einsatz!
     )
     pdf.spacer(26 * mm)
 
-    address = "\n".join([
-        assignment.regional_office.name,
-        assignment.regional_office.address,
-    ]).replace("\r", "")
+    address = f"{assignment.regional_office.name}\n{assignment.regional_office.address}".replace(
+        "\r", ""
+    )
 
     pdf.table([(address, address)], (8.2 * cm, 8.2 * cm), pdf.style.tableBase)
 
@@ -425,9 +414,8 @@ def expense_report_pdf(request, pk):
         pk=pk,
     )
 
-    if not request.user.is_staff:
-        if report.assignment.drudge.user != request.user:
-            return HttpResponseForbidden("<h1>Access forbidden</h1>")
+    if not request.user.is_staff and report.assignment.drudge.user != request.user:
+        return HttpResponseForbidden("<h1>Access forbidden</h1>")
 
     table, additional, total = report.compensations()
 
