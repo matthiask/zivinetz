@@ -145,7 +145,7 @@ class AssessmentForm(forms.ModelForm):
                     for assignment in assignments
                     if assignment.date_from < date.today()
                 )
-            except IndexError:
+            except StopIteration:
                 pass
 
 
