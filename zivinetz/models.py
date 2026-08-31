@@ -492,7 +492,7 @@ class AssignmentManager(SearchManager):
     ]
 
     def for_date(self, day=None):
-        day = day if day else date.today()
+        day = day or date.today()
 
         return self.filter(
             Q(date_from__lte=day)
@@ -1381,8 +1381,10 @@ class AbsenceManager(SearchManager):
             parts = [absence.get_reason_display()]
             if absence.internal_notes:
                 parts.append(" (%s)" % absence.internal_notes)
-            parts.append(": ")
-            parts.append(", ".join(day.strftime("%a %d.%m.%y") for day in in_range))
+            parts.extend((
+                ": ",
+                ", ".join(day.strftime("%a %d.%m.%y") for day in in_range),
+            ))
             reasons["%s_notes" % field].append("".join(parts))
 
         return {
