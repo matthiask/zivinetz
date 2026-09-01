@@ -492,7 +492,7 @@ class AssignmentManager(SearchManager):
     ]
 
     def for_date(self, day=None):
-        day = day if day else date.today()
+        day = day or date.today()
 
         return self.filter(
             Q(date_from__lte=day)
@@ -1079,23 +1079,21 @@ class ExpenseReport(models.Model):
             ]
         ]
 
-        ret.append(line(gettext("working days"), "working", self.working_days))
-        ret.append([self.working_days_notes, "", "", "", "", "", ""])
-        ret.append(line(gettext("free days"), "free", self.free_days))
-        ret.append([self.free_days_notes, "", "", "", "", "", ""])
-        ret.append(line(gettext("sick days"), "sick", self.sick_days))
-        ret.append([self.sick_days_notes, "", "", "", "", "", ""])
-
-        # holiday counts as work
-        ret.append(line(gettext("holiday days"), "free", self.holi_days))
-        ret.append([self.holi_days_notes, "", "", "", "", "", ""])
-
-        # forced leave counts zero
-        ret.append(
+        ret.extend((
+            line(gettext("working days"), "working", self.working_days),
+            [self.working_days_notes, "", "", "", "", "", ""],
+            line(gettext("free days"), "free", self.free_days),
+            [self.free_days_notes, "", "", "", "", "", ""],
+            line(gettext("sick days"), "sick", self.sick_days),
+            [self.sick_days_notes, "", "", "", "", "", ""],
+            # holiday counts as work
+            line(gettext("holiday days"), "free", self.holi_days),
+            [self.holi_days_notes, "", "", "", "", "", ""],
+            # forced leave counts zero
             ["{} {}".format(self.forced_leave_days, gettext("forced leave days"))]
-            + [Decimal("0.00")] * 6
-        )
-        ret.append([self.forced_leave_days_notes, "", "", "", "", "", ""])
+            + [Decimal("0.00")] * 6,
+            [self.forced_leave_days_notes, "", "", "", "", "", ""],
+        ))
 
         additional = [
             (gettext("transport expenses"), self.transport_expenses),
@@ -1381,8 +1379,10 @@ class AbsenceManager(SearchManager):
             parts = [absence.get_reason_display()]
             if absence.internal_notes:
                 parts.append(" (%s)" % absence.internal_notes)
-            parts.append(": ")
-            parts.append(", ".join(day.strftime("%a %d.%m.%y") for day in in_range))
+            parts.extend((
+                ": ",
+                ", ".join(day.strftime("%a %d.%m.%y") for day in in_range),
+            ))
             reasons["%s_notes" % field].append("".join(parts))
 
         return {

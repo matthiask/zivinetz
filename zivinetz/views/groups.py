@@ -1,3 +1,4 @@
+import string
 from collections import defaultdict
 from datetime import timedelta
 
@@ -9,7 +10,7 @@ from openpyxl.styles import Alignment, Border, Font, NamedStyle, PatternFill, Si
 from zivinetz.models import Absence, Assignment, Group, GroupAssignment
 
 
-letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+letters = string.ascii_uppercase
 columns = {}
 columns.update(dict(enumerate(letters)))
 columns.update({i + 26: "A%s" % c for i, c in enumerate(letters)})
