@@ -125,7 +125,7 @@ class Choices:
 class Specification(models.Model):
     ACCOMODATION = Choices((
         ("provided", _("provided")),
-        ("compensated", _("compensated")),
+        ("compensated", _("not compensated")),
     ))
 
     MEAL = Choices((
