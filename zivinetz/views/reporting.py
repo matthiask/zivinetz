@@ -271,8 +271,9 @@ class AssignmentPDFStationery:
             else:
                 self.draw_marker(canvas, "drudge_renounce_accomodation_1")
 
-        if not spec.with_accomodation:
-            self.draw_marker(canvas, "public_transports")
+        # Transport is never compensated
+        # if not spec.with_accomodation:
+        #     self.draw_marker(canvas, "public_transports")
 
         if spec.food_throughout:
             self.draw_marker(canvas, "food_throughout")
