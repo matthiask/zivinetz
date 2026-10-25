@@ -9,6 +9,6 @@ pypdf
 pytz
 reportlab
 schwifty
-towel
-towel-foundation
+towel>=0.32
+towel-foundation>=0.32
 speckenv

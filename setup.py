@@ -51,8 +51,8 @@ setup(
         "schwifty",
         "Pillow",
         "pypdf>=3.0",
-        "towel",
-        "towel-foundation",
+        "towel>=0.32",
+        "towel-foundation>=0.32",
         "openpyxl>=3,<3.1",
     ],
 )
