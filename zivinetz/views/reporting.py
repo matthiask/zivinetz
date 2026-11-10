@@ -380,9 +380,8 @@ Wir freuen uns auf deinen Einsatz!
     overlay_reader = PdfReader(overlay)
 
     for idx in range(2):
-        page = eiv_reader.pages[idx]
+        page = result_writer.add_page(eiv_reader.pages[idx])
         page.merge_page(overlay_reader.pages[idx])
-        result_writer.add_page(page)
 
     # Add the conditions PDF if it exists ####################################
     if assignment.specification.conditions:
